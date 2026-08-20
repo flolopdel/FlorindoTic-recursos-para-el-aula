@@ -65,6 +65,11 @@ function landingPageTemplate({ title, description, backPath, items }) {
   <ul class="listado">
       ${itemsHtml}
   </ul>
+  <script>
+    if (window.top !== window.self) {
+      document.querySelector('.volver').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
 `;

@@ -1,4 +1,5 @@
 let fullTree = null;
+let activeLink = null;
 
 async function loadMenu() {
   const container = document.getElementById('menu');
@@ -6,6 +7,11 @@ async function loadMenu() {
     const res = await fetch('menu.json', { cache: 'no-store' });
     fullTree = await res.json();
     renderTree(fullTree);
+
+    const initialPath = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (initialPath) {
+      loadIntoFrame(initialPath);
+    }
   } catch (err) {
     container.innerHTML = '<p>Error cargando el menú.</p>';
     console.error(err);
@@ -54,15 +60,34 @@ function renderTree(tree, query = '') {
   }
 
   container.appendChild(renderNode(tree, true, Boolean(query)));
+
+  const currentPath = decodeURIComponent(location.hash.replace(/^#/, ''));
+  if (currentPath) highlightLink(currentPath);
+}
+
+function makeLink(path, label, extraClass) {
+  const a = document.createElement('a');
+  a.href = path;
+  a.textContent = label;
+  a.dataset.path = path;
+  if (extraClass) a.className = extraClass;
+
+  a.addEventListener('click', (event) => {
+    // Dejar el comportamiento normal del navegador si abre en pestaña nueva
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+    openContent(path);
+  });
+
+  return a;
 }
 
 function renderNode(node, isRoot = false, forceOpen = false) {
   if (node.type === 'file') {
     const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = node.path;
-    a.textContent = '📄 ' + node.name;
-    li.appendChild(a);
+    li.appendChild(makeLink(node.path, '📄 ' + node.name));
     return li;
   }
 
@@ -81,11 +106,7 @@ function renderNode(node, isRoot = false, forceOpen = false) {
 
   const summary = document.createElement('summary');
   if (node.landing) {
-    const a = document.createElement('a');
-    a.href = node.landing;
-    a.className = 'folder-link';
-    a.textContent = '📁 ' + node.name;
-    summary.appendChild(a);
+    summary.appendChild(makeLink(node.landing, '📁 ' + node.name, 'folder-link'));
   } else {
     const span = document.createElement('span');
     span.textContent = '📁 ' + node.name;
@@ -102,6 +123,44 @@ function renderNode(node, isRoot = false, forceOpen = false) {
   return li;
 }
 
+function openContent(path) {
+  const currentPath = decodeURIComponent(location.hash.replace(/^#/, ''));
+  if (currentPath === path) {
+    loadIntoFrame(path);
+    return;
+  }
+  location.hash = encodeURIComponent(path);
+}
+
+function loadIntoFrame(path) {
+  const frame = document.getElementById('content-frame');
+  frame.removeAttribute('srcdoc');
+  frame.src = path;
+
+  const toolbar = document.getElementById('content-toolbar');
+  const openLink = document.getElementById('open-fullscreen');
+  toolbar.hidden = false;
+  openLink.href = path;
+
+  highlightLink(path);
+}
+
+function highlightLink(path) {
+  if (activeLink) activeLink.classList.remove('active');
+
+  const el = document.querySelector(`[data-path="${CSS.escape(path)}"]`);
+  if (!el) return;
+
+  el.classList.add('active');
+  activeLink = el;
+
+  let ancestor = el.closest('details');
+  while (ancestor) {
+    ancestor.open = true;
+    ancestor = ancestor.parentElement ? ancestor.parentElement.closest('details') : null;
+  }
+}
+
 function handleSearch(event) {
   const query = normalize(event.target.value.trim());
   if (!query) {
@@ -111,6 +170,11 @@ function handleSearch(event) {
   const filtered = filterTree(fullTree, query) || { ...fullTree, children: [] };
   renderTree(filtered, query);
 }
+
+window.addEventListener('hashchange', () => {
+  const path = decodeURIComponent(location.hash.replace(/^#/, ''));
+  if (path) loadIntoFrame(path);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   loadMenu();
