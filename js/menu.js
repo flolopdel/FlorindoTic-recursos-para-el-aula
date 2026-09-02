@@ -102,7 +102,7 @@ function renderNode(node, isRoot = false, forceOpen = false) {
 
   const li = document.createElement('li');
   const details = document.createElement('details');
-  if (forceOpen) details.open = true;
+  if (forceOpen || node.current) details.open = true;
 
   const summary = document.createElement('summary');
   if (node.landing) {

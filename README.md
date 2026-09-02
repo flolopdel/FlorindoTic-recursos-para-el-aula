@@ -27,11 +27,14 @@ Cualquier carpeta puede tener un `meta.json` opcional:
 ```json
 {
   "title": "Computación y Robótica",
-  "description": "Contenidos, prácticas y rúbricas de la asignatura de Computación y Robótica."
+  "description": "Contenidos, prácticas y rúbricas de la asignatura de Computación y Robótica.",
+  "current": false
 }
 ```
 
 Si existe, el build genera automáticamente una página de portada (`_pagina.html`) dentro de esa carpeta, con el título, la descripción y un listado de lo que contiene (subcarpetas con su propia portada y archivos `.html` sueltos). En el menú lateral, el nombre de esa carpeta pasa a ser un enlace directo a su portada.
+
+En las carpetas de cursos, establece `"current": true` en el `meta.json` del curso activo para que el menú lo mantenga desplegado al cargar.
 
 Las carpetas sin `meta.json` siguen funcionando igual que antes: solo se pliegan/despliegan en el menú, sin página propia.
 

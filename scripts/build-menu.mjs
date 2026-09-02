@@ -17,6 +17,7 @@ async function readMeta(dir) {
     return {
       title: typeof data.title === 'string' ? data.title : null,
       description: typeof data.description === 'string' ? data.description : null,
+      current: data.current === true,
     };
   } catch {
     return null;
@@ -222,7 +223,7 @@ async function walk(dir, relBase = '') {
     landingItems.push({
       type: 'folder',
       name: node.name,
-      href: node.landing ? `${d.name}/_pagina.html` : null,
+      href: node.landing ? `${d.name}/_pagina.html` : node.index ? `${d.name}/index.html` : null,
     });
   }
 
@@ -240,9 +241,14 @@ async function walk(dir, relBase = '') {
   const meta = await readMeta(dir);
   const node = { children };
 
+  if (files.some((file) => file.name.toLowerCase() === 'index.html')) {
+    node.index = true;
+  }
+
   if (meta) {
     node.name = meta.title || prettify(path.basename(dir));
     node.description = meta.description || null;
+    node.current = meta.current;
 
     const depth = relBase ? relBase.split('/').length + 1 : 1;
     const backPath = '../'.repeat(depth) + 'index.html';
