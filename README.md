@@ -7,7 +7,7 @@ Menú generado automáticamente a partir de la estructura de carpetas dentro de 
 ```
 content/
   curso2026-2027/
-    robotica/
+    computacion-y-robotica/
       ud1/
         indice.html
         practica1.html
@@ -26,8 +26,8 @@ Cualquier carpeta puede tener un `meta.json` opcional:
 
 ```json
 {
-  "title": "Robótica",
-  "description": "Contenidos, prácticas y rúbricas de la asignatura de Robótica."
+  "title": "Computación y Robótica",
+  "description": "Contenidos, prácticas y rúbricas de la asignatura de Computación y Robótica."
 }
 ```
 
