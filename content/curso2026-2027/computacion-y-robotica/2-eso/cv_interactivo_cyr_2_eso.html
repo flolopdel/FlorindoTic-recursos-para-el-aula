@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CurricuMat - Computación y Robótica 2º ESO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome v6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos de impresión */
+        @media print {
+            header, nav, #filters-section, .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 font-sans flex flex-col bg-slate-50">
+
+    <!-- HEADER FIJO -->
+    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Título y Contexto -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-500 text-white p-2 rounded-xl">
+                        <i class="fa-solid fa-microchip text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold leading-tight">Computación y Robótica</h1>
+                        <p class="text-xs text-slate-400">2º ESO | Marco LOMLOE &amp; Currículo Autonómico</p>
+                    </div>
+                </div>
+
+                <!-- Botones Globales de Acción -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="window.print()" class="px-3 py-1.5 text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors flex items-center gap-2 border border-slate-700">
+                        <i class="fa-solid fa-print"></i>
+                        <span class="hidden md:inline">Imprimir / PDF</span>
+                    </button>
+                    <button onclick="resetAllFilters()" class="px-3 py-1.5 text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors flex items-center gap-2 border border-slate-700">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span class="hidden md:inline">Restablecer Filtros</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU DE PESTAÑAS (TABS) -->
+        <nav class="bg-slate-800 border-t border-slate-700/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 scrollbar-none">
+                    <button onclick="switchTab('matriz')" id="tab-btn-matriz" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-white bg-brand-600 flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-sitemap"></i> Matriz Curricular
+                    </button>
+                    <button onclick="switchTab('saberes')" id="tab-btn-saberes" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-cubes"></i> Mapa de Saberes
+                    </button>
+                    <button onclick="switchTab('cruzada')" id="tab-btn-cruzada" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-table-cells"></i> Relación Cruzada
+                    </button>
+                    <button onclick="switchTab('sda')" id="tab-btn-sda" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador SdA
+                    </button>
+                    <button onclick="switchTab('metodos')" id="tab-btn-metodos" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2 whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-book-bookmark"></i> Justificación &amp; Métodos
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- SECCIÓN DE FILTROS CONTROLES DINÁMICOS -->
+    <section id="filters-section" class="bg-white border-b border-slate-200 shadow-sm sticky top-28 z-30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- Buscador global -->
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="search-input" oninput="applyFilters()" placeholder="Buscar texto, código..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                </div>
+
+                <!-- Filtro Competencia -->
+                <div>
+                    <select id="filter-competence" onchange="applyFilters()" class="w-full py-1.5 px-3 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                        <option value="">Todas las Competencias</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Bloque -->
+                <div>
+                    <select id="filter-block" onchange="applyFilters()" class="w-full py-1.5 px-3 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                        <option value="">Todos los Bloques de Saberes</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Descriptor -->
+                <div>
+                    <select id="filter-descriptor" onchange="applyFilters()" class="w-full py-1.5 px-3 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                        <option value="">Todos los Descriptores Clave</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Barra de Estado y Chips Activos -->
+            <div class="mt-2.5 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+                <div class="flex items-center gap-2">
+                    <span id="results-count" class="font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-200">Resultados: 0</span>
+                    <div id="active-chips" class="flex flex-wrap gap-1"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- PESTAÑA 1: MATRIZ CURRICULAR -->
+        <section id="tab-matriz" class="tab-content space-y-6">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-2xl text-xs sm:text-sm text-blue-900 shadow-sm">
+                <p class="font-semibold mb-1"><i class="fa-solid fa-circle-info mr-1"></i> Organización Curricular por Competencias Específicas</p>
+                <p>Explora cada competencia, los descriptores del Perfil de Salida activados, sus criterios de evaluación oficiales y los saberes básicos vinculados directamente.</p>
+            </div>
+            <div id="competencias-container" class="space-y-6"></div>
+        </section>
+
+        <!-- PESTAÑA 2: MAPA DE SABERES BÁSICOS -->
+        <section id="tab-saberes" class="tab-content hidden space-y-6">
+            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-2xl text-xs sm:text-sm text-purple-900 shadow-sm">
+                <p class="font-semibold mb-1"><i class="fa-solid fa-layer-group mr-1"></i> Mapa de Saberes Básicos (Bloques Temáticos A-I)</p>
+                <p>Listado estructurado de saberes de 2º ESO. Haz clic sobre cualquiera de las tarjetas de saber para ver sus relaciones curriculares completas.</p>
+            </div>
+            <div id="bloques-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- PESTAÑA 3: RELACIÓN CRUZADA (TABULAR) -->
+        <section id="tab-cruzada" class="tab-content hidden space-y-4">
+            <div class="overflow-x-auto bg-white rounded-2xl shadow border border-slate-200">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                    <thead>
+                        <tr class="bg-slate-800 text-white font-semibold">
+                            <th class="p-3.5 border-b border-slate-700 w-1/5">Competencia Específica</th>
+                            <th class="p-3.5 border-b border-slate-700 w-24">Criterio</th>
+                            <th class="p-3.5 border-b border-slate-700">Descripción del Criterio</th>
+                            <th class="p-3.5 border-b border-slate-700 w-1/3">Saberes Básicos Relacionados</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cruzada-body" class="divide-y divide-slate-200"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 4: DISEÑADOR DE SITUACIONES DE APRENDIZAJE (SDA) -->
+        <section id="tab-sda" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Panel Izquierdo: Configuración SdA -->
+                <div class="lg:col-span-6 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+                    <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b pb-3">
+                        <i class="fa-solid fa-pen-ruler text-brand-500"></i> Configuración de la SdA
+                    </h2>
+                    
+                    <div class="space-y-4 text-xs sm:text-sm">
+                        <div>
+                            <label class="block font-medium text-slate-700 mb-1">Título de la Situación de Aprendizaje</label>
+                            <input type="text" id="sda-title" placeholder="Ej: Construcción de un Invernadero Domótico IoT" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Producto Final / Reto</label>
+                                <input type="text" id="sda-product" placeholder="Ej: Maqueta automatizada con ESP32" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Temporalización</label>
+                                <input type="text" id="sda-duration" placeholder="Ej: 8 sesiones (2º Trimestre)" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-slate-700 mb-1">Justificación y Contexto</label>
+                            <textarea id="sda-context" rows="2" placeholder="Describa el problema del mundo real u ODS al que responde..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-slate-700 mb-2">Selección de Criterios de Evaluación a Trabajar</label>
+                            <div id="sda-criterios-selector" class="max-h-64 overflow-y-auto space-y-3 p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <button onclick="clearSdaForm()" class="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition-all">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Limpiar
+                            </button>
+                            <button onclick="copySdaDraft()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold rounded-xl transition-all">
+                                <i class="fa-solid fa-copy mr-1"></i> Copiar Borrador
+                            </button>
+                            <button onclick="generateIaProposal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl transition-all flex-1 shadow-sm">
+                                <i class="fa-solid fa-microchip mr-1"></i> Diseñar Secuencia Didáctica con IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Derecho: Mapeo y Resultados -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b pb-3">
+                            <i class="fa-solid fa-calculator text-emerald-600"></i> Mapeo Automático Curricular
+                        </h2>
+
+                        <!-- Competencias Activadas -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase text-slate-500 mb-2">Competencias Específicas Implicadas</h3>
+                            <div id="sda-mapped-competencias" class="flex flex-wrap gap-1.5 text-xs text-slate-600">
+                                <span class="italic text-slate-400">Seleccione al menos un criterio para calcular.</span>
+                            </div>
+                        </div>
+
+                        <!-- Descriptores del Perfil de Salida -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase text-slate-500 mb-2">Descriptores Perfil de Salida Activados</h3>
+                            <div id="sda-mapped-descriptors" class="flex flex-wrap gap-1.5">
+                                <span class="italic text-slate-400 text-xs">Aguardando selección...</span>
+                            </div>
+                        </div>
+
+                        <!-- Saberes Básicos Requeridos -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase text-slate-500 mb-2">Saberes Básicos Vinculados</h3>
+                            <div id="sda-mapped-saberes" class="space-y-1 max-h-48 overflow-y-auto text-xs">
+                                <span class="italic text-slate-400">Aguardando selección...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Box Resultado IA -->
+                    <div id="ia-output-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hidden space-y-4">
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-robot text-purple-600"></i> Propuesta Didáctica Generada
+                            </h3>
+                            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">IA Pedagógica</span>
+                        </div>
+                        <div id="ia-output-content" class="text-xs sm:text-sm text-slate-700 space-y-3 leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 5: JUSTIFICACIÓN & MÉTODOS -->
+        <section id="tab-metodos" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-brand-600"></i> Justificación de la Materia
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Computación y Robótica en 2º de ESO permite idear, planificar, diseñar y crear sistemas digitales y robóticos como herramientas para transformar el entorno, impulsando el <strong>Pensamiento Computacional</strong> (abstracción, automatización, diseño algorítmico y evaluación). Integrada en los objetivos de la Agenda 2030 y orientada a la consecución del Perfil de Salida al finalizar la etapa básica, une el rigor computacional con el compromiso social y la resolución de problemas reales.
+                    </p>
+                </div>
+
+                <hr class="border-slate-200">
+
+                <div>
+                    <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user text-indigo-600"></i> Orientaciones Metodológicas
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs sm:text-sm">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-brand-700 mb-1"><i class="fa-solid fa-diagram-project mr-1"></i> Aprendizaje Basado en Proyectos (ABP)</div>
+                            <p class="text-slate-600">Resolución de problemas contextualizados mediante el diseño, prototipado e implementación de sistemas tecnológicos reales.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-purple-700 mb-1"><i class="fa-solid fa-hammer mr-1"></i> Filosofía Maker</div>
+                            <p class="text-slate-600">Construcción activa de prototipos físicos y artefactos digitales. Aprender haciendo (learning by doing) e iterando.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-emerald-700 mb-1"><i class="fa-solid fa-code-fork mr-1"></i> Cultura Abierta &amp; Software Libre</div>
+                            <p class="text-slate-600">Uso prioritario de herramientas de código abierto, hardware libre y entornos colaborativos compartidos.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-rose-700 mb-1"><i class="fa-solid fa-[#000] fa-venus-mars mr-1"></i> Inclusión y Perspectiva de Género</div>
+                            <p class="text-slate-600">Reducción activa de la brecha digital y de género, eliminando estereotipos y promoviendo la equidad en disciplinas STEM.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-amber-700 mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Medidas DUA</div>
+                            <p class="text-slate-600">Múltiples formas de representación, expresión e implicación para garantizar el acceso a todo el alumnado.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="font-bold text-teal-700 mb-1"><i class="fa-solid fa-list-check mr-1"></i> Evaluación Formativa</div>
+                            <p class="text-slate-600">Valoración basada en el grado de desarrollo de competencias específicas a través de rúbricas y la observación del proceso.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DETALLADO DE SABER BÁSICO -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white p-4 sm:p-5 flex items-start justify-between">
+                <div>
+                    <span id="modal-saber-code" class="inline-block bg-brand-500 text-white font-mono text-xs px-2 py-0.5 rounded-md font-semibold mb-1"></span>
+                    <h3 id="modal-saber-title" class="text-base sm:text-lg font-bold leading-snug"></h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg px-2 py-1 rounded-lg transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-5 overflow-y-auto space-y-4 text-xs sm:text-sm">
+                <div>
+                    <h4 class="font-bold text-slate-500 uppercase text-[10px] tracking-wider mb-1">Bloque Temático</h4>
+                    <p id="modal-saber-block" class="font-medium text-slate-800"></p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-500 uppercase text-[10px] tracking-wider mb-1">Descripción Oficial del Saber</h4>
+                    <p id="modal-saber-desc" class="text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed"></p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-500 uppercase text-[10px] tracking-wider mb-2">Vinculación con Criterios de Evaluación y Competencias</h4>
+                    <div id="modal-saber-relations" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 p-3 border-t border-slate-200 text-right">
+                <button onclick="closeModal()" class="px-4 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-xl hover:bg-slate-700 transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT / LOGICA DE LA APLICACIÓN -->
+    <script>
+        // ==========================================
+        // 1. ESTRUCTURAS DE DATOS CURRICULARES (2º ESO)
+        // ==========================================
+
+        const SABERES_BASICOS = {
+            "A. Introducción a la Programación": [
+                { code: "CYR.2.A.1", title: "Lenguajes de programación visuales", desc: "Lenguajes de programación visuales: ventajas e inconvenientes." },
+                { code: "CYR.2.A.2", title: "Elementos de programación en bloques", desc: "Elementos de los programas con lenguaje de bloques." },
+                { code: "CYR.2.A.3", title: "Secuencia y expresión de algoritmos", desc: "Secuencia de instrucciones. Medios de expresión de algoritmos." },
+                { code: "CYR.2.A.4", title: "Bucley condicionales", desc: "Generación de tareas repetitivas y condicionales." },
+                { code: "CYR.2.A.5", title: "Pantallas de interacción", desc: "Pantallas de interacción con el usuario." }
+            ],
+            "B. Internet de las Cosas (IoT)": [
+                { code: "CYR.2.B.1", title: "Sensores IoT", desc: "Clasificación de los sensores IoT." },
+                { code: "CYR.2.B.2", title: "Conexión entre dispositivos", desc: "Conexión dispositivo a dispositivos." },
+                { code: "CYR.2.B.3", title: "Conexión BLE", desc: "Conexión BLE (Bluetooth Low Energy)." },
+                { code: "CYR.2.B.4", title: "IoT Industrial", desc: "Aplicaciones de IoT industrial." }
+            ],
+            "C. Robótica": [
+                { code: "CYR.2.C.1", title: "Clasificación de robots", desc: "Clasificación de robots: industriales y de servicios." },
+                { code: "CYR.2.C.2", title: "Aplicaciones robóticas", desc: "Aplicaciones de los robots." },
+                { code: "CYR.2.C.3", title: "Componentes del robot", desc: "Componentes: Sensores, efectores y actuadores." },
+                { code: "CYR.2.C.4", title: "Robots móviles", desc: "Robots móviles con aplicaciones." },
+                { code: "CYR.2.C.5", title: "Programación robótica en bloques", desc: "Programación con lenguajes de bloques." }
+            ],
+            "D. Desarrollo Móvil": [
+                { code: "CYR.2.D.1", title: "IDEs de bloques móviles", desc: "Ejemplos de IDEs de lenguajes de bloques para móviles." },
+                { code: "CYR.2.D.2", title: "Programación orientada a eventos", desc: "Programación orientada a eventos: características, ventajas e inconvenientes." },
+                { code: "CYR.2.D.3", title: "Dependencia de eventos", desc: "Dependencia de eventos." },
+                { code: "CYR.2.D.4", title: "Tipos de eventos", desc: "Tipos de eventos." },
+                { code: "CYR.2.D.5", title: "Eventos de Entradas/Salidas", desc: "Descripción de eventos de E/S." }
+            ],
+            "E. Desarrollo Web": [
+                { code: "CYR.2.E.1", title: "Estructura de página web", desc: "Estructura básica de una página web." },
+                { code: "CYR.2.E.2", title: "Servidores web", desc: "Servidores web: funcionamiento." },
+                { code: "CYR.2.E.3", title: "Lenguajes de edición web", desc: "Lenguajes para la edición de páginas web: diferencias." },
+                { code: "CYR.2.E.4", title: "Animación web", desc: "Tipos de animación web." }
+            ],
+            "F. Fundamentos de Computación Física": [
+                { code: "CYR.2.F.1", title: "Sistemas de computación", desc: "Sistemas de computación: tipologías." },
+                { code: "CYR.2.F.2", title: "Microcontroladores", desc: "Microcontroladores: historia." },
+                { code: "CYR.2.F.3", title: "Hardware y Software", desc: "Hardware: periféricos de entrada y salida. Software: de base y de aplicación." },
+                { code: "CYR.2.F.4", title: "Seguridad eléctrica y SAI", desc: "Seguridad eléctrica: sistemas de alimentación ininterrumpida (SAI)." }
+            ],
+            "G. Datos Masivos (Big Data)": [
+                { code: "CYR.2.G.1", title: "Aplicaciones Big Data y tipos de datos", desc: "Aplicaciones del Big data. Datos cualitativos y cuantitativos." },
+                { code: "CYR.2.G.2", title: "Datos y Metadatos", desc: "Distinción entre datos y metadatos." },
+                { code: "CYR.2.G.3", title: "Gestión de metadatos", desc: "Distinción entre datos y metadatos." },
+                { code: "CYR.2.G.4", title: "Ciclo de vida de metadatos", desc: "Ciclo de vida de los metadatos." }
+            ],
+            "H. Inteligencia Artificial": [
+                { code: "CYR.2.H.1", title: "Historia e ética de la IA", desc: "Historia de la Inteligencia Artificial. Ética y responsabilidad social en el uso de IA: análisis." },
+                { code: "CYR.2.H.2", title: "Ética en la IA", desc: "Ética y responsabilidad social en el uso de IA: análisis." },
+                { code: "CYR.2.H.3", title: "Agentes inteligentes", desc: "Agentes inteligentes simples: tipologías." },
+                { code: "CYR.2.H.4", title: "Aprendizaje automático", desc: "Aprendizaje automático: usos." },
+                { code: "CYR.2.H.5", title: "Supervisado y No Supervisado", desc: "Aprendizaje supervisado y no supervisado: aplicaciones." }
+            ],
+            "I. Ciberseguridad": [
+                { code: "CYR.2.I.1", title: "Privacidad e Identidad", desc: "Privacidad e identidad." },
+                { code: "CYR.2.I.2", title: "Riesgos de exposición", desc: "Tipología de los diferentes riesgos por la exposición de los usuarios." },
+                { code: "CYR.2.I.3", title: "Malware y Antimalware", desc: "Concepto de Malware y antimalware." },
+                { code: "CYR.2.I.4", title: "Vulnerabilidades en plataformas", desc: "Interacción de plataformas virtuales: vulnerabilidades." },
+                { code: "CYR.2.I.5", title: "Propiedad Intelectual", desc: "Protección de la propiedad intelectual." }
+            ]
+        };
+
+        const COMPETENCIAS_ESPECIFICAS = [
+            {
+                id: 1,
+                title: "Impacto social, pensamiento computacional y sistemas sostenibles",
+                shortTitle: "CE1. Impacto & Pensamiento Computacional",
+                description: "Comprender el impacto que la computación y la robótica tienen en nuestra sociedad y desarrollar el pensamiento computacional para realizar proyectos de construcción de sistemas digitales de forma sostenible.",
+                descriptors: ["CCL3", "STEM2", "STEM3", "CD1", "CD4", "CPSAA1", "CC4", "CE1"],
+                criterios: [
+                    {
+                        code: "1.1",
+                        description: "Comprender el funcionamiento de los sistemas de computación física, sus componentes y principales características.",
+                        saberes: ["CYR.2.B.1", "CYR.2.B.2", "CYR.2.B.3", "CYR.2.B.4", "CYR.2.C.1"]
+                    },
+                    {
+                        code: "1.2",
+                        description: "Reconocer el papel de la robótica en nuestra sociedad, conociendo las aplicaciones más comunes.",
+                        saberes: ["CYR.2.C.2"]
+                    },
+                    {
+                        code: "1.3",
+                        description: "Entender cómo funciona un programa informático, la manera de elaborarlo y sus principales componentes.",
+                        saberes: ["CYR.2.A.1", "CYR.2.A.2", "CYR.2.A.3", "CYR.2.A.4", "CYR.2.A.5"]
+                    },
+                    {
+                        code: "1.4",
+                        description: "Comprender los principios de ingeniería en los que se basan los robots, su funcionamiento, componentes y características.",
+                        saberes: ["CYR.2.C.1", "CYR.2.C.3", "CYR.2.C.4", "CYR.2.C.5"]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Programación en bloques y trabajo colaborativo",
+                shortTitle: "CE2. Programación en Bloques",
+                description: "Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado o exhibir un comportamiento deseado.",
+                descriptors: ["STEM1", "STEM3", "CD3", "CD5", "CPSAA3", "CE3", "CCEC3"],
+                criterios: [
+                    {
+                        code: "2.1",
+                        description: "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.",
+                        saberes: ["CYR.2.A.1", "CYR.2.A.2", "CYR.2.A.3", "CYR.2.A.4", "CYR.2.A.5"]
+                    },
+                    {
+                        code: "2.2",
+                        description: "Entender el funcionamiento interno de las aplicaciones móviles y cómo se construyen, dando respuesta a las posibles demandas del escenario a resolver.",
+                        saberes: ["CYR.2.A.3", "CYR.2.A.4", "CYR.2.D.1", "CYR.2.D.2", "CYR.2.D.3"]
+                    },
+                    {
+                        code: "2.3",
+                        description: "Conocer y resolver la variedad de problemas posibles desarrollando una aplicación móvil y generalizando las soluciones.",
+                        saberes: ["CYR.2.B.4", "CYR.2.D.1", "CYR.2.D.2", "CYR.2.D.4", "CYR.2.D.5"]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Sistemas de computación físicos y robótica aplicada",
+                shortTitle: "CE3. Computación Física & Robótica",
+                description: "Diseñar y construir sistemas de computación físicos o robóticos sencillos, aplicando los conocimientos necesarios para desarrollar soluciones automatizadas a problemas planteados.",
+                descriptors: ["STEM2", "STEM3", "STEM5", "CD3", "CD4", "CD5", "CC3", "CE3"],
+                criterios: [
+                    {
+                        code: "3.1",
+                        description: "Ser capaz de construir un sistema de computación o robótico, promoviendo la interacción con el mundo físico en el contexto de un problema del mundo real, de forma sostenible.",
+                        saberes: ["CYR.2.F.1", "CYR.2.F.2", "CYR.2.F.3", "CYR.2.F.4"]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Tratamiento de datos, Big Data e Inteligencia Artificial",
+                shortTitle: "CE4. Big Data & IA",
+                description: "Recopilar, almacenar y procesar datos, identificando patrones y descubriendo conexiones para resolver problemas mediante la Inteligencia Artificial entendiendo cómo nos ayuda a mejorar nuestra comprensión del mundo.",
+                descriptors: ["STEM5", "CD1", "CD4", "CPSAA5", "CC3"],
+                criterios: [
+                    {
+                        code: "4.1",
+                        description: "Conocer las aplicaciones actuales del Big Data, así como la naturaleza de los distintos tipos de datos y metadatos generados, siendo capaces de analizarlos, visualizarlos y compararlos, empleando a su vez un espíritu crítico y científico.",
+                        saberes: ["CYR.2.G.1", "CYR.2.G.2", "CYR.2.G.3", "CYR.2.G.4"]
+                    },
+                    {
+                        code: "4.2",
+                        description: "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la Inteligencia Artificial de forma ética y responsable.",
+                        saberes: ["CYR.2.H.1", "CYR.2.H.2", "CYR.2.H.3", "CYR.2.H.4", "CYR.2.H.5"]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Desarrollo de aplicaciones informáticas y web puras",
+                shortTitle: "CE5. Desarrollo Web & Apps",
+                description: "Utilizar y crear aplicaciones informáticas y web sencillas, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa, protegiendo la identidad online y la privacidad.",
+                descriptors: ["STEM1", "STEM3", "CD5", "CPSAA3", "CPSAA4", "CPSAA5", "CC3", "CE3"],
+                criterios: [
+                    {
+                        code: "5.1",
+                        description: "Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.",
+                        saberes: ["CYR.2.E.1", "CYR.2.E.2", "CYR.2.E.3"]
+                    },
+                    {
+                        code: "5.2",
+                        description: "Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.",
+                        saberes: ["CYR.2.E.3", "CYR.2.E.4"]
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Ciberseguridad y hábitos de protección digital",
+                shortTitle: "CE6. Ciberseguridad & Ciudadanía Digital",
+                description: "Conocer y aplicar los principios de la ciberseguridad, adoptando hábitos y conductas de seguridad, para permitir la protección del individuo en su interacción en la red.",
+                descriptors: ["STEM1", "STEM3", "CD1", "CD4", "CD5", "CPSAA3", "CC3", "CCEC4"],
+                criterios: [
+                    {
+                        code: "6.1",
+                        description: "Adoptar conductas y hábitos que permitan la protección activa del individuo en su interacción en la red.",
+                        saberes: ["CYR.2.I.1", "CYR.2.I.2"]
+                    },
+                    {
+                        code: "6.2",
+                        description: "Acceder a servicios de intercambio y publicación de información digital aplicando criterios de seguridad y uso responsable.",
+                        saberes: ["CYR.2.I.4"]
+                    },
+                    {
+                        code: "6.3",
+                        description: "Reconocer y comprender los derechos de los materiales alojados en Internet.",
+                        saberes: ["CYR.2.I.5"]
+                    },
+                    {
+                        code: "6.4",
+                        description: "Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información.",
+                        saberes: ["CYR.2.I.2", "CYR.2.I.3"]
+                    }
+                ]
+            }
+        ];
+
+        // Paleta de colores para los Bloques Temáticos
+        const BLOCK_COLORS = {
+            "A. Introducción a la Programación": { bg: "bg-sky-50", border: "border-sky-300", header: "bg-sky-600", badge: "bg-sky-100 text-sky-800" },
+            "B. Internet de las Cosas (IoT)": { bg: "bg-teal-50", border: "border-teal-300", header: "bg-teal-600", badge: "bg-teal-100 text-teal-800" },
+            "C. Robótica": { bg: "bg-indigo-50", border: "border-indigo-300", header: "bg-indigo-600", badge: "bg-indigo-100 text-indigo-800" },
+            "D. Desarrollo Móvil": { bg: "bg-purple-50", border: "border-purple-300", header: "bg-purple-600", badge: "bg-purple-100 text-purple-800" },
+            "E. Desarrollo Web": { bg: "bg-emerald-50", border: "border-emerald-300", header: "bg-emerald-600", badge: "bg-emerald-100 text-emerald-800" },
+            "F. Fundamentos de Computación Física": { bg: "bg-amber-50", border: "border-amber-300", header: "bg-amber-600", badge: "bg-amber-100 text-amber-800" },
+            "G. Datos Masivos (Big Data)": { bg: "bg-blue-50", border: "border-blue-300", header: "bg-blue-600", badge: "bg-blue-100 text-blue-800" },
+            "H. Inteligencia Artificial": { bg: "bg-rose-50", border: "border-rose-300", header: "bg-rose-600", badge: "bg-rose-100 text-rose-800" },
+            "I. Ciberseguridad": { bg: "bg-slate-100", border: "border-slate-300", header: "bg-slate-700", badge: "bg-slate-200 text-slate-800" }
+        };
+
+        // Estado global de la app
+        let currentTab = 'matriz';
+        let activeFilters = {
+            search: '',
+            competence: '',
+            block: '',
+            descriptor: ''
+        };
+
+        // ==========================================
+        // 2. INICIALIZACIÓN Y RENDERIZADO
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateFilterOptions();
+            renderMatriz();
+            renderSaberes();
+            renderTablaCruzada();
+            renderSdaSelector();
+            applyFilters();
+        });
+
+        // Cambiar entre pestañas
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-700');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.classList.add('bg-brand-600', 'text-white');
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-700');
+
+            // Ocultar sección de filtros en pestañas 4 y 5
+            const filtersSec = document.getElementById('filters-section');
+            if (tabId === 'sda' || tabId === 'metodos') {
+                filtersSec.classList.add('hidden');
+            } else {
+                filtersSec.classList.remove('hidden');
+            }
+        }
+
+        // Llenar selectores de filtros dinámicos
+        function populateFilterOptions() {
+            const compSelect = document.getElementById('filter-competence');
+            COMPETENCIAS_ESPECIFICAS.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `CE${c.id}. ${c.shortTitle}`;
+                compSelect.appendChild(opt);
+            });
+
+            const blockSelect = document.getElementById('filter-block');
+            Object.keys(SABERES_BASICOS).forEach(blockKey => {
+                const opt = document.createElement('option');
+                opt.value = blockKey;
+                opt.textContent = blockKey;
+                blockSelect.appendChild(opt);
+            });
+
+            const descSelect = document.getElementById('filter-descriptor');
+            const allDescriptors = new Set();
+            COMPETENCIAS_ESPECIFICAS.forEach(c => c.descriptors.forEach(d => allDescriptors.add(d)));
+            Array.from(allDescriptors).sort().forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                descSelect.appendChild(opt);
+            });
+        }
+
+        // ==========================================
+        // 3. RENDERIZADO DE LAS PESTAÑAS
+        // ==========================================
+
+        // Render Pestaña 1: Matriz Curricular
+        function renderMatriz() {
+            const container = document.getElementById('competencias-container');
+            container.innerHTML = '';
+
+            COMPETENCIAS_ESPECIFICAS.forEach(comp => {
+                const card = document.createElement('div');
+                card.className = `comp-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-200`;
+                card.dataset.compCode = comp.id;
+
+                const descriptorsHtml = comp.descriptors.map(d => 
+                    `<span onclick="filterByDescriptor('${d}') text-slate border" class="inline-block bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] px-2 py-0.5 rounded-md cursor-pointer transition-colors border border-slate-300">#${d}</span>`
+                ).join(' ');
+
+                let criteriosHtml = '';
+                comp.criterios.forEach(crit => {
+                    const saberesBadges = crit.saberes.map(code => {
+                        return `<button onclick="openModal('${code}')" class="inline-flex items-center gap-1 bg-brand-50 hover:bg-brand-100 text-brand-700 font-mono text-xs px-2 py-0.5 rounded-md border border-brand-200 transition-colors">
+                            <i class="fa-solid fa-cube text-[10px]"></i> ${code}
+                        </button>`;
+                    }).join(' ');
+
+                    criteriosHtml += `
+                        <div class="criterio-item bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <span class="bg-slate-800 text-white font-bold font-mono text-xs px-2 py-0.5 rounded-md">Criterio ${crit.code}</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${crit.description}</p>
+                            <div class="pt-1">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Saberes Básicos Relacionados:</span>
+                                <div class="flex flex-wrap gap-1.5">${saberesBadges}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="bg-slate-900 text-white p-4 sm:p-5">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="bg-brand-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg">CE ${comp.id}</span>
+                            <div class="flex flex-wrap gap-1">${descriptorsHtml}</div>
+                        </div>
+                        <h3 class="text-base sm:text-lg font-bold mt-2">${comp.title}</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">${comp.description}</p>
+                    </div>
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Criterios de Evaluación Oficiales (${comp.criterios.length})</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${criteriosHtml}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Render Pestaña 2: Mapa de Saberes
+        function renderSaberes() {
+            const container = document.getElementById('bloques-container');
+            container.innerHTML = '';
+
+            Object.entries(SABERES_BASICOS).forEach(([blockTitle, saberes]) => {
+                const color = BLOCK_COLORS[blockTitle] || { bg: "bg-slate-50", border: "border-slate-200", header: "bg-slate-800", badge: "bg-slate-100" };
+                
+                const blockCard = document.createElement('div');
+                blockCard.className = `saber-block-card ${color.bg} border ${color.border} rounded-2xl shadow-sm overflow-hidden flex flex-col`;
+                blockCard.dataset.blockName = blockTitle;
+
+                let itemsHtml = '';
+                saberes.forEach(s => {
+                    itemsHtml += `
+                        <div onclick="openModal('${s.code}')" class="p-3 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 cursor-pointer transition-all shadow-2xs hover:shadow-sm">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="font-mono text-xs font-bold ${color.badge} px-2 py-0.5 rounded-md">${s.code}</span>
+                                <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                            </div>
+                            <h5 class="text-xs font-semibold text-slate-800 leading-snug">${s.title}</h5>
+                            <p class="text-[11px] text-slate-500 line-clamp-2 mt-0.5">${s.desc}</p>
+                        </div>
+                    `;
+                });
+
+                blockCard.innerHTML = `
+                    <div class="${color.header} text-white p-3.5">
+                        <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-xs"></i> ${blockTitle}
+                        </h3>
+                    </div>
+                    <div class="p-3.5 space-y-2.5 flex-1">${itemsHtml}</div>
+                `;
+                container.appendChild(blockCard);
+            });
+        }
+
+        // Render Pestaña 3: Relación Cruzada
+        function renderTablaCruzada() {
+            const tbody = document.getElementById('tabla-cruzada-body');
+            tbody.innerHTML = '';
+
+            COMPETENCIAS_ESPECIFICAS.forEach(comp => {
+                comp.criterios.forEach(crit => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition-colors cruzada-row";
+                    tr.dataset.compId = comp.id;
+                    tr.dataset.critCode = crit.code;
+
+                    const saberesBadges = crit.saberes.map(code => 
+                        `<button onclick="openModal('${code}')" class="inline-block bg-slate-100 hover:bg-slate-200 text-slate-800 font-mono text-xs px-2 py-0.5 rounded border border-slate-300 transition-colors">
+                            ${code}
+                        </button>`
+                    ).join(' ');
+
+                    tr.innerHTML = `
+                        <td class="p-3 border-b border-slate-200 font-medium text-slate-800">
+                            <span class="font-bold text-brand-700 block">CE${comp.id}</span>
+                            <span class="text-xs text-slate-500 line-clamp-2">${comp.shortTitle}</span>
+                        </td>
+                        <td class="p-3 border-b border-slate-200 font-mono font-bold text-slate-700">${crit.code}</td>
+                        <td class="p-3 border-b border-slate-200 text-slate-700">${crit.description}</td>
+                        <td class="p-3 border-b border-slate-200">
+                            <div class="flex flex-wrap gap-1">${saberesBadges}</div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        // Render Selector SdA (Pestaña 4)
+        function renderSdaSelector() {
+            const container = document.getElementById('sda-criterios-selector');
+            container.innerHTML = '';
+
+            COMPETENCIAS_ESPECIFICAS.forEach(comp => {
+                const group = document.createElement('div');
+                group.className = "space-y-1.5 border-b border-slate-200 pb-2 last:border-b-0";
+
+                let critListHtml = '';
+                comp.criterios.forEach(crit => {
+                    critListHtml += `
+                        <label class="flex items-start gap-2 text-xs text-slate-700 hover:bg-white p-1.5 rounded-lg cursor-pointer transition-colors">
+                            <input type="checkbox" value="${crit.code}" data-comp="${comp.id}" onchange="updateSdaMapping()" class="sda-checkbox mt-0.5 text-brand-600 rounded focus:ring-brand-500">
+                            <span><strong>Crit. ${crit.code}:</strong> ${crit.description}</span>
+                        </label>
+                    `;
+                });
+
+                group.innerHTML = `
+                    <div class="font-bold text-xs text-slate-800 bg-slate-200/60 px-2 py-1 rounded-md">CE${comp.id}. ${comp.shortTitle}</div>
+                    <div class="pl-1 space-y-1">${critListHtml}</div>
+                `;
+                container.appendChild(group);
+            });
+        }
+
+        // ==========================================
+        // 4. LÓGICA DE FILTRADO Y BÚSQUEDA
+        // ==========================================
+
+        function applyFilters() {
+            activeFilters.search = document.getElementById('search-input').value.toLowerCase().trim();
+            activeFilters.competence = document.getElementById('filter-competence').value;
+            activeFilters.block = document.getElementById('filter-block').value;
+            activeFilters.descriptor = document.getElementById('filter-descriptor').value;
+
+            renderActiveChips();
+
+            let totalVisibleCriterios = 0;
+
+            // Filtrado Pestaña 1 (Matriz)
+            document.querySelectorAll('.comp-card').forEach(card => {
+                const compId = card.dataset.compCode;
+                const compObj = COMPETENCIAS_ESPECIFICAS.find(c => c.id == compId);
+
+                let compMatch = true;
+
+                if (activeFilters.competence && compId !== activeFilters.competence) compMatch = false;
+                if (activeFilters.descriptor && !compObj.descriptors.includes(activeFilters.descriptor)) compMatch = false;
+
+                // Filtrar criterios internos por texto y por bloque
+                let visibleCriteriosCount = 0;
+                card.querySelectorAll('.criterio-item').forEach((critEl, idx) => {
+                    const critObj = compObj.criterios[idx];
+                    let critMatch = true;
+
+                    if (activeFilters.search) {
+                        const fullText = (critObj.code + " " + critObj.description + " " + compObj.title).toLowerCase();
+                        if (!fullText.includes(activeFilters.search)) critMatch = false;
+                    }
+
+                    if (activeFilters.block) {
+                        const saberesDelBloque = SABERES_BASICOS[activeFilters.block].map(s => s.code);
+                        const tieneSaber = critObj.saberes.some(s => saberesDelBloque.includes(s));
+                        if (!tieneSaber) critMatch = false;
+                    }
+
+                    if (critMatch) {
+                        critEl.classList.remove('hidden');
+                        visibleCriteriosCount++;
+                    } else {
+                        critEl.classList.add('hidden');
+                    }
+                });
+
+                if (compMatch && visibleCriteriosCount > 0) {
+                    card.classList.remove('hidden');
+                    totalVisibleCriterios += visibleCriteriosCount;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Filtrado Pestaña 2 (Saberes)
+            document.querySelectorAll('.saber-block-card').forEach(blockCard => {
+                const blockName = blockCard.dataset.blockName;
+                let blockMatch = true;
+
+                if (activeFilters.block && blockName !== activeFilters.block) blockMatch = false;
+
+                let visibleSaberes = 0;
+                blockCard.querySelectorAll('[onclick^="openModal"]').forEach(saberEl => {
+                    const saberCode = saberEl.querySelector('.font-mono').textContent;
+                    let saberMatch = true;
+
+                    if (activeFilters.search) {
+                        const text = saberEl.textContent.toLowerCase();
+                        if (!text.includes(activeFilters.search)) saberMatch = false;
+                    }
+
+                    if (activeFilters.competence) {
+                        const compObj = COMPETENCIAS_ESPECIFICAS.find(c => c.id == activeFilters.competence);
+                        const saberesComp = compObj.criterios.flatMap(c => c.saberes);
+                        if (!saberesComp.includes(saberCode)) saberMatch = false;
+                    }
+
+                    if (saberMatch) {
+                        saberEl.classList.remove('hidden');
+                        visibleSaberes++;
+                    } else {
+                        saberEl.classList.add('hidden');
+                    }
+                });
+
+                if (blockMatch && visibleSaberes > 0) {
+                    blockCard.classList.remove('hidden');
+                } else {
+                    blockCard.classList.add('hidden');
+                }
+            });
+
+            // Filtrado Pestaña 3 (Cruzada)
+            document.querySelectorAll('.cruzada-row').forEach(row => {
+                const compId = row.dataset.compId;
+                const critCode = row.dataset.critCode;
+                const compObj = COMPETENCIAS_ESPECIFICAS.find(c => c.id == compId);
+                const critObj = compObj.criterios.find(c => c.code === critCode);
+
+                let match = true;
+
+                if (activeFilters.competence && compId !== activeFilters.competence) match = false;
+                if (activeFilters.descriptor && !compObj.descriptors.includes(activeFilters.descriptor)) match = false;
+                if (activeFilters.block) {
+                    const saberesDelBloque = SABERES_BASICOS[activeFilters.block].map(s => s.code);
+                    if (!critObj.saberes.some(s => saberesDelBloque.includes(s))) match = false;
+                }
+                if (activeFilters.search) {
+                    const rowText = (compObj.title + " " + critObj.code + " " + critObj.description + " " + critObj.saberes.join(" ")).toLowerCase();
+                    if (!rowText.includes(activeFilters.search)) match = false;
+                }
+
+                if (match) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            // Actualizar contador
+            document.getElementById('results-count').textContent = `Criterios Visibles: ${totalVisibleCriterios}`;
+        }
+
+        function filterByDescriptor(desc) {
+            document.getElementById('filter-descriptor').value = desc;
+            applyFilters();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-competence').value = '';
+            document.getElementById('filter-block').value = '';
+            document.getElementById('filter-descriptor').value = '';
+            applyFilters();
+        }
+
+        function renderActiveChips() {
+            const container = document.getElementById('active-chips');
+            container.innerHTML = '';
+
+            if (activeFilters.search) {
+                container.innerHTML += `<span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md flex items-center gap-1">Texto: "${activeFilters.search}" <i onclick="document.getElementById('search-input').value='';applyFilters()" class="fa-solid fa-xmark cursor-pointer"></i></span>`;
+            }
+            if (activeFilters.competence) {
+                container.innerHTML += `<span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md flex items-center gap-1">CE ${activeFilters.competence} <i onclick="document.getElementById('filter-competence').value='';applyFilters()" class="fa-solid fa-xmark cursor-pointer"></i></span>`;
+            }
+            if (activeFilters.block) {
+                container.innerHTML += `<span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md flex items-center gap-1">${activeFilters.block.split('.')[0]} <i onclick="document.getElementById('filter-block').value='';applyFilters()" class="fa-solid fa-xmark cursor-pointer"></i></span>`;
+            }
+            if (activeFilters.descriptor) {
+                container.innerHTML += `<span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md flex items-center gap-1">#${activeFilters.descriptor} <i onclick="document.getElementById('filter-descriptor').value='';applyFilters()" class="fa-solid fa-xmark cursor-pointer"></i></span>`;
+            }
+        }
+
+        // ==========================================
+        // 5. MODAL DE DETALLE DE SABER BÁSICO
+        // ==========================================
+
+        function openModal(saberCode) {
+            let saberObj = null;
+            let blockTitle = '';
+
+            for (const [bTitle, list] of Object.entries(SABERES_BASICOS)) {
+                const found = list.find(s => s.code === saberCode);
+                if (found) {
+                    saberObj = found;
+                    blockTitle = bTitle;
+                    break;
+                }
+            }
+
+            if (!saberObj) return;
+
+            document.getElementById('modal-saber-code').textContent = saberObj.code;
+            document.getElementById('modal-saber-title').textContent = saberObj.title;
+            document.getElementById('modal-saber-block').textContent = blockTitle;
+            document.getElementById('modal-saber-desc').textContent = saberObj.desc;
+
+            // Encontrar criterios y competencias asociadas
+            const relationsContainer = document.getElementById('modal-saber-relations');
+            relationsContainer.innerHTML = '';
+
+            let matchesCount = 0;
+            COMPETENCIAS_ESPECIFICAS.forEach(comp => {
+                comp.criterios.forEach(crit => {
+                    if (crit.saberes.includes(saberCode)) {
+                        matchesCount++;
+                        const relCard = document.createElement('div');
+                        relCard.className = "bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1";
+                        relCard.innerHTML = `
+                            <div class="flex items-center justify-between font-bold text-slate-800">
+                                <span class="text-brand-700">Competencia Específica ${comp.id}</span>
+                                <span class="bg-slate-800 text-white font-mono px-1.5 py-0.5 rounded text-[10px]">Criterio ${crit.code}</span>
+                            </div>
+                            <p class="text-slate-600">${crit.description}</p>
+                        `;
+                        relationsContainer.appendChild(relCard);
+                    }
+                });
+            });
+
+            if (matchesCount === 0) {
+                relationsContainer.innerHTML = '<p class="text-slate-400 italic">Sin criterios directamente vinculados.</p>';
+            }
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // 6. DISEÑADOR DE SITUACIONES DE APRENDIZAJE (SDA)
+        // ==========================================
+
+        function updateSdaMapping() {
+            const checkedCriterios = Array.from(document.querySelectorAll('.sda-checkbox:checked')).map(cb => ({
+                code: cb.value,
+                compId: parseInt(cb.dataset.comp)
+            }));
+
+            const compContainer = document.getElementById('sda-mapped-competencias');
+            const descContainer = document.getElementById('sda-mapped-descriptors');
+            const saberesContainer = document.getElementById('sda-mapped-saberes');
+
+            if (checkedCriterios.length === 0) {
+                compContainer.innerHTML = '<span class="italic text-slate-400">Seleccione al menos un criterio para calcular.</span>';
+                descContainer.innerHTML = '<span class="italic text-slate-400 text-xs">Aguardando selección...</span>';
+                saberesContainer.innerHTML = '<span class="italic text-slate-400">Aguardando selección...</span>';
+                return;
+            }
+
+            // Competencias Implicadas
+            const activeCompIds = [...new Set(checkedCriterios.map(c => c.compId))];
+            compContainer.innerHTML = activeCompIds.map(id => {
+                const comp = COMPETENCIAS_ESPECIFICAS.find(c => c.id === id);
+                return `<span class="bg-brand-100 text-brand-800 font-medium px-2 py-1 rounded-lg border border-brand-200">CE${comp.id}: ${comp.shortTitle}</span>`;
+            }).join(' ');
+
+            // Descriptores Unificados
+            const activeDescriptors = new Set();
+            activeCompIds.forEach(id => {
+                const comp = COMPETENCIAS_ESPECIFICAS.find(c => c.id === id);
+                comp.descriptors.forEach(d => activeDescriptors.add(d));
+            });
+
+            descContainer.innerHTML = Array.from(activeDescriptors).map(d => 
+                `<span class="bg-purple-100 text-purple-800 font-mono text-xs font-semibold px-2 py-0.5 rounded-md border border-purple-200">#${d}</span>`
+            ).join(' ');
+
+            // Saberes Básicos Vinculados
+            const requiredSaberesCodes = new Set();
+            checkedCriterios.forEach(item => {
+                const comp = COMPETENCIAS_ESPECIFICAS.find(c => c.id === item.compId);
+                const crit = comp.criterios.find(c => c.code === item.code);
+                if (crit) crit.saberes.forEach(s => requiredSaberesCodes.add(s));
+            });
+
+            if (requiredSaberesCodes.size === 0) {
+                saberesContainer.innerHTML = '<span class="italic text-slate-400">Sin saberes vinculados.</span>';
+            } else {
+                saberesContainer.innerHTML = Array.from(requiredSaberesCodes).map(code => {
+                    // Buscar saber
+                    let saberObj = null;
+                    for (const list of Object.values(SABERES_BASICOS)) {
+                        const found = list.find(s => s.code === code);
+                        if (found) { saberObj = found; break; }
+                    }
+                    return `<div class="bg-slate-50 p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                        <span class="font-mono font-bold text-brand-700">${code}</span>
+                        <span class="text-slate-600 truncate max-w-xs">${saberObj ? saberObj.title : ''}</span>
+                    </div>`;
+                }).join(' ');
+            }
+        }
+
+        function clearSdaForm() {
+            document.getElementById('sda-title').value = '';
+            document.getElementById('sda-product').value = '';
+            document.getElementById('sda-duration').value = '';
+            document.getElementById('sda-context').value = '';
+            document.querySelectorAll('.sda-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('ia-output-box').classList.add('hidden');
+            updateSdaMapping();
+        }
+
+        function copySdaDraft() {
+            const title = document.getElementById('sda-title').value || "Sin Título";
+            const product = document.getElementById('sda-product').value || "N/A";
+            const duration = document.getElementById('sda-duration').value || "N/A";
+            const context = document.getElementById('sda-context').value || "N/A";
+
+            const checkedCriterios = Array.from(document.querySelectorAll('.sda-checkbox:checked')).map(cb => cb.value);
+
+            const textDraft = `--- BORRADOR SITUACIÓN DE APRENDIZAJE ---
+Título: ${title}
+Producto Final/Reto: ${product}
+Temporalización: ${duration}
+Contexto: ${context}
+Criterios de Evaluación Seleccionados: ${checkedCriterios.join(', ')}
+-----------------------------------------`;
+
+            navigator.clipboard.writeText(textDraft).then(() => {
+                alert("Borrador copiado al portapapeles correctamente.");
+            });
+        }
+
+        function generateIaProposal() {
+            const title = document.getElementById('sda-title').value || "Proyecto de Computación y Robótica";
+            const checkedCriterios = Array.from(document.querySelectorAll('.sda-checkbox:checked')).map(cb => cb.value);
+
+            if (checkedCriterios.length === 0) {
+                alert("Por favor, seleccione al menos un Criterio de Evaluación para generar la Secuencia Didáctica.");
+                return;
+            }
+
+            const outputBox = document.getElementById('ia-output-box');
+            const outputContent = document.getElementById('ia-output-content');
+
+            outputBox.classList.remove('hidden');
+            outputContent.innerHTML = `<div class="flex items-center gap-2 text-purple-600 font-medium">
+                <i class="fa-solid fa-spinner fa-spin"></i> Generando propuesta pedagógica con IA...
+            </div>`;
+
+            setTimeout(() => {
+                outputContent.innerHTML = `
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="font-bold text-slate-900 border-b pb-1">1. Fases de la Secuencia Didáctica ("${title}")</h4>
+                            <ul class="list-disc pl-4 space-y-1 mt-1 text-slate-600">
+                                <li><strong>Fase 1 (Inspiración/Reto):</strong> Presentación del problema del mundo real y análisis de requisitos.</li>
+                                <li><strong>Fase 2 (Diseño y Algoritmia):</strong> Diagramado de flujo y prototipado rápido en lenguajes de bloques.</li>
+                                <li><strong>Fase 3 (Desarrollo y Montaje):</strong> Integración de componentes físicos, sensores y programación iterativa.</li>
+                                <li><strong>Fase 4 (Evaluación y Difusión):</strong> Pruebas de funcionamiento, corrección de errores y exposición del producto final.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-slate-900 border-b pb-1">2. Medidas de Atención a la Diversidad (DUA)</h4>
+                            <p class="text-slate-600 mt-1">Uso de andamiaje visual para la programación, bancos de recursos con diferentes niveles de complejidad y trabajo cooperativo con roles definidos (diseñador, programador, tester).</p>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-slate-900 border-b pb-1">3. Instrumentos de Evaluación Formativa</h4>
+                            <p class="text-slate-600 mt-1">Rúbrica holística vinculada a los criterios seleccionados (${checkedCriterios.join(', ')}), diana de autoevaluación grupal y cuaderno de registro técnico del proyecto.</p>
+                        </div>
+                    </div>
+                `;
+            }, 800);
+        }
+    </script>
+</body>
+</html>

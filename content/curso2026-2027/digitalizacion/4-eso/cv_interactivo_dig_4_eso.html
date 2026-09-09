@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículo Interactivo & Diseñador SDA - Digitalización 4º ESO (LOMLOE)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; color: black !important; }
+            .print-break-inside-avoid { break-inside: avoid; }
+            .shadow-xl, .shadow-md, .shadow-sm { box-shadow: none !important; }
+            .border { border-color: #cbd5e1 !important; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md border-b border-slate-800 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-sky-500 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-sky-500/20 text-white">
+                    <i class="fa-solid fa-laptop-code text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-bold text-lg leading-tight">Digitalización</h1>
+                        <span class="bg-sky-500/20 text-sky-300 text-xs px-2 py-0.5 rounded-full font-medium border border-sky-400/30">4º ESO</span>
+                        <span class="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-0.5 rounded-full font-medium border border-emerald-400/30">LOMLOE</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Currículo Oficial, Matriz de Descriptores y Diseñador de SDA</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="resetAllFilters()" class="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i> Restablecer Filtros
+                </button>
+                <button onclick="window.print()" class="px-3 py-1.5 text-xs font-medium text-white bg-sky-600 hover:bg-sky-500 rounded-xl shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-print"></i> Imprimir / PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-[61px] z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 overflow-x-auto custom-scrollbar py-2" id="navigation-tabs">
+                <button onclick="switchTab('matriz')" id="tab-btn-matriz" class="tab-btn px-4 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-sky-50 text-sky-700 border border-sky-200">
+                    <i class="fa-solid fa-sitemap"></i> Matriz Curricular
+                </button>
+                <button onclick="switchTab('saberes')" id="tab-btn-saberes" class="tab-btn px-4 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-cubes"></i> Mapa de Saberes Básicos
+                </button>
+                <button onclick="switchTab('tabla')" id="tab-btn-tabla" class="tab-btn px-4 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-table-cells"></i> Relación Cruzada
+                </button>
+                <button onclick="switchTab('sda')" id="tab-btn-sda" class="tab-btn px-4 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Diseñador de SDA (IA)
+                </button>
+                <button onclick="switchTab('justificacion')" id="tab-btn-justificacion" class="tab-btn px-4 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-book-open"></i> Justificación & Métodos
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dynamic Controls & Filters Bar -->
+    <section class="bg-slate-100 border-b border-slate-200 py-3 px-4 sm:px-6 lg:px-8 no-print" id="filter-section">
+        <div class="max-w-7xl mx-auto space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- Global Text Search -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    <input type="text" id="search-input" oninput="applyFilters()" placeholder="Buscar criterio, saber o término..." 
+                        class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition">
+                </div>
+
+                <!-- Competence Filter -->
+                <div>
+                    <select id="filter-ce" onchange="applyFilters()" class="w-full py-1.5 px-3 text-xs bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none transition">
+                        <option value="">Todas las Competencias Específicas</option>
+                        <option value="1">Competencia Específica 1 (Sistemas y Hardware)</option>
+                        <option value="2">Competencia Específica 2 (Entorno Personal - PLE)</option>
+                        <option value="3">Competencia Específica 3 (Seguridad y Bienestar)</option>
+                        <option value="4">Competencia Específica 4 (Ciudadanía Digital Crítica)</option>
+                    </select>
+                </div>
+
+                <!-- Saberes Block Filter -->
+                <div>
+                    <select id="filter-block" onchange="applyFilters()" class="w-full py-1.5 px-3 text-xs bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none transition">
+                        <option value="">Todos los Bloques de Saberes</option>
+                        <option value="A">Bloque A: Dispositivos y Sistemas</option>
+                        <option value="B">Bloque B: Digitalización del PLE</option>
+                        <option value="C">Bloque C: Seguridad y Bienestar</option>
+                        <option value="D">Bloque D: Ciudadanía Digital Crítica</option>
+                    </select>
+                </div>
+
+                <!-- Descriptor Filter -->
+                <div>
+                    <select id="filter-descriptor" onchange="applyFilters()" class="w-full py-1.5 px-3 text-xs bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none transition">
+                        <option value="">Todos los Descriptores Perfil Salida</option>
+                        <option value="STEM">STEM (Científico-Tecnológico)</option>
+                        <option value="CD">CD (Competencia Digital)</option>
+                        <option value="CPSAA">CPSAA (Personal, Social y Aprender)</option>
+                        <option value="CCL">CCL (Comunicación Lingüística)</option>
+                        <option value="CC">CC (Ciudadana)</option>
+                        <option value="CE">CE (Emprendedora)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Status and Filter Chips -->
+            <div class="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-200/60 gap-2">
+                <div class="flex items-center gap-2" id="filter-chips">
+                    <span>Filtros activos:</span>
+                    <span id="no-filters-label" class="italic text-slate-400">Ninguno</span>
+                </div>
+                <div class="font-medium text-slate-600">
+                    <span id="counter-display">Criterios visibles: 12 | Saberes: 19</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Pestaña 1: Matriz Curricular -->
+        <section id="view-matriz" class="tab-view space-y-6">
+            <div class="bg-blue-50/60 border border-blue-200/80 rounded-2xl p-4 text-xs text-blue-900 flex items-start gap-3 no-print">
+                <i class="fa-solid fa-circle-info text-blue-500 text-base mt-0.5"></i>
+                <div>
+                    <p class="font-semibold">Navegación de la Matriz Curricular</p>
+                    <p>Haz clic en cualquier badge de <strong>Saber Básico</strong> (ej. <span class="bg-white px-1.5 py-0.5 rounded border border-blue-300 font-mono text-[11px] text-sky-700">DIG.4.A.1</span>) dentro de los Criterios de Evaluación para abrir su modal explicativo e inspeccionar sus interconexiones complejas.</p>
+                </div>
+            </div>
+
+            <div id="matriz-container" class="space-y-6">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- Pestaña 2: Mapa de Saberes Básicos -->
+        <section id="view-saberes" class="tab-view hidden space-y-6">
+            <div id="saberes-blocks-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamically Rendered Blocks -->
+            </div>
+        </section>
+
+        <!-- Pestaña 3: Relación Cruzada (Matriz Tabular) -->
+        <section id="view-tabla" class="tab-view hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-900 text-white font-semibold uppercase tracking-wider">
+                                <th class="p-3.5 border-b border-slate-800 w-36">Competencia</th>
+                                <th class="p-3.5 border-b border-slate-800 w-24">Criterio</th>
+                                <th class="p-3.5 border-b border-slate-800">Descripción del Criterio</th>
+                                <th class="p-3.5 border-b border-slate-800 w-48">Saberes Básicos</th>
+                                <th class="p-3.5 border-b border-slate-800 w-40">Perfil de Salida</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cross-table-body" class="divide-y divide-slate-200">
+                            <!-- Dynamically Rendered -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña 4: Diseñador de Situaciones de Aprendizaje (SDA) -->
+        <section id="view-sda" class="tab-view hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Panel: Configurator -->
+                <div class="lg:col-span-6 space-y-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-sky-600"></i> Configuración de la SDA
+                        </h2>
+                        <button onclick="clearSDAForm()" class="text-xs text-rose-600 hover:text-rose-700 font-medium flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i> Limpiar
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Título de la Situación de Aprendizaje</label>
+                            <input type="text" id="sda-title" placeholder="Ej. Auditoría de Ciberseguridad y Salud Digital en la Comunidad Escolar" 
+                                class="w-full p-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Producto Final / Reto</label>
+                                <input type="text" id="sda-product" placeholder="Ej. Guía interactiva y campaña en red sobre bienestar digital" 
+                                    class="w-full p-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Temporalización / Duración</label>
+                                <input type="text" id="sda-timing" placeholder="Ej. 8 sesiones (2º Trimestre)" 
+                                    class="w-full p-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Justificación y Contextualización</label>
+                            <textarea id="sda-context" rows="3" placeholder="Describe brevemente el contexto del alumnado, centro o problema real a abordar..." 
+                                class="w-full p-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none"></textarea>
+                        </div>
+
+                        <!-- Criteria Selection Box -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-2">Selección de Criterios de Evaluación a Trabajar:</label>
+                            <div class="max-h-80 overflow-y-auto custom-scrollbar border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-4" id="sda-criteria-selector">
+                                <!-- Dynamically Rendered Checkboxes grouped by Competence -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Calculation & Mapping -->
+                <div class="lg:col-span-6 space-y-5">
+                    
+                    <!-- Live Mapping Summary Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-calculator text-emerald-600"></i> Mapeo y Alineación Automática
+                            </h2>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full" id="sda-selected-count">0 Criterios</span>
+                        </div>
+
+                        <!-- Summary Numbers -->
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                                <span class="block text-lg font-extrabold text-sky-700" id="sda-comp-count">0</span>
+                                <span class="text-[10px] text-slate-500 uppercase font-medium">Competencias</span>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                                <span class="block text-lg font-extrabold text-indigo-700" id="sda-desc-count">0</span>
+                                <span class="text-[10px] text-slate-500 uppercase font-medium">Descriptores</span>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                                <span class="block text-lg font-extrabold text-emerald-700" id="sda-saberes-count">0</span>
+                                <span class="text-[10px] text-slate-500 uppercase font-medium">Saberes Requeridos</span>
+                            </div>
+                        </div>
+
+                        <!-- Descriptors Activated -->
+                        <div>
+                            <span class="block text-xs font-semibold text-slate-700 mb-1.5">Descriptores del Perfil de Salida Activados:</span>
+                            <div class="flex flex-wrap gap-1.5" id="sda-descriptors-badges">
+                                <span class="text-xs text-slate-400 italic">Selecciona criterios para calcular los descriptores...</span>
+                            </div>
+                        </div>
+
+                        <!-- Required Saberes List -->
+                        <div>
+                            <span class="block text-xs font-semibold text-slate-700 mb-1.5">Saberes Básicos Movilizados (por Bloque):</span>
+                            <div class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar p-2 bg-slate-50 rounded-xl border border-slate-200 text-xs" id="sda-saberes-list">
+                                <span class="text-slate-400 italic">Ningún saber asignado.</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls -->
+                        <div class="pt-2 flex flex-wrap items-center gap-2">
+                            <button onclick="copySDADraft()" class="flex-1 py-2 px-3 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-300 transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-copy"></i> Copiar Borrador
+                            </button>
+                            <button onclick="generateAISequence()" id="btn-generate-ai" class="flex-1 py-2.5 px-4 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Diseñar Secuencia Didáctica (IA)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Result Box -->
+                    <div id="ai-output-card" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 hidden">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-robot text-indigo-600"></i> Propuesta Didáctica Generada
+                            </h3>
+                            <button onclick="copyAIProposal()" class="text-xs text-sky-600 hover:text-sky-700 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-paste"></i> Copiar Propuesta
+                            </button>
+                        </div>
+                        <div id="ai-output-content" class="text-xs space-y-3 text-slate-700 leading-relaxed max-h-96 overflow-y-auto custom-scrollbar pr-1">
+                            <!-- AI Output dynamic injection -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña 5: Justificación & Métodos -->
+        <section id="view-justificacion" class="tab-view hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-compass text-sky-600"></i> Enfoque Pedagógico de la Materia "Digitalización"
+                    </h2>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        La materia Digitalización en 4º de ESO responde a la necesidad de capacitar al alumnado en una sociedad crecientemente tecnologizada, superando la mera alfabetización instrumental. Su propósito pedagógico central es desarrollar una ciudadanía digital <strong>crítica, autónoma, ética, segura y sostenible</strong>. Aborda no solo la resolución de problemas técnicos cotidianos y la gestión de redes o entornos personales de aprendizaje (PLE), sino también la prevención de riesgos ecosociales, la salud mental y la desconexión digital, el ejercicio proactivo de derechos y el análisis crítico de sesgos algorítmicos e Inteligencia Artificial.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    <div class="p-4 bg-sky-50/60 rounded-xl border border-sky-100 space-y-2">
+                        <div class="text-sky-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-project"></i> Aprendizaje Basado en Proyectos (ABP)
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Planteamiento de retos reales y contextualizados (audiencias públicas, proyectos de centro, auditorías informáticas) donde el alumnado crea artefactos digitales con impacto social real.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50/60 rounded-xl border border-indigo-100 space-y-2">
+                        <div class="text-indigo-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-hammer"></i> Cultura Maker & Aprendizaje Práctico
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Manipulación directa de hardware, montaje y configuración de sistemas, programación de aplicaciones móviles o integración de dispositivos IoT con hardware y software libre.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100 space-y-2">
+                        <div class="text-emerald-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-universal-access"></i> DUA (Diseño Universal)
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Múltiples formas de representación y expresión. Incorporación de herramientas de accesibilidad digital, subtitulado, recursos abiertos (REA) y ritmos adaptables.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-amber-50/60 rounded-xl border border-amber-100 space-y-2">
+                        <div class="text-amber-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-shield-heart"></i> Salud y Bienestar Digital
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Especial atención a la gestión proactiva de la huella digital, la identidad virtual, la prevención del ciberacoso y la desconexión tecnológica para preservar el bienestar integral.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2">
+                        <div class="text-rose-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-venus-mars"></i> Perspectiva de Género e Inclusión
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Fomento de referentes femeninos en las TIC, eliminación de sesgos de género en el ámbito STEM y superación activa de las brechas digitales de acceso y uso.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-purple-50/60 rounded-xl border border-purple-100 space-y-2">
+                        <div class="text-purple-700 font-bold text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line"></i> Evaluación Formativa y Rúbricas
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-normal">
+                            Evaluación cualitativa e integradora basada en la coevaluación entre iguales, portafolios digitales de aula y rúbricas centradas en el nivel de desempeño de los criterios.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Detailed Modal Component (#detail-modal) -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all duration-200 scale-95 opacity-0" id="modal-content">
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span id="modal-saber-code" class="px-2.5 py-1 bg-sky-500 text-slate-950 font-mono font-bold text-xs rounded-lg">DIG.4.A.1</span>
+                    <h3 id="modal-saber-block" class="font-bold text-sm text-slate-200">Bloque A</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg p-1 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto custom-scrollbar">
+                <div>
+                    <h4 class="text-xs uppercase font-bold text-slate-400 mb-1">Descripción del Saber Básico</h4>
+                    <p id="modal-saber-desc" class="text-xs text-slate-800 font-medium leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <!-- Dynamic -->
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs uppercase font-bold text-slate-400 mb-2">Criterios de Evaluación Vincualdos</h4>
+                    <div id="modal-linked-criterios" class="space-y-2">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs uppercase font-bold text-slate-400 mb-2">Competencias Específicas Asociadas</h4>
+                    <div id="modal-linked-competencias" class="flex flex-wrap gap-2">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-xl hover:bg-slate-700 transition">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic Javascript -->
+    <script>
+        // Official Curriculum Data extracted directly from official LOMLOE PDF document
+        
+        const SABERES_BASICOS = {
+            "A": {
+                name: "Bloque A. Dispositivos digitales, sistemas operativos y de comunicación",
+                colorClass: "sky",
+                badgeBg: "bg-sky-100 text-sky-800 border-sky-300",
+                cardBg: "bg-sky-50/40 border-sky-200",
+                items: [
+                    { code: "DIG.4.A.1", desc: "Arquitectura de ordenadores: elementos, montaje, configuración y resolución de problemas." },
+                    { code: "DIG.4.A.2", desc: "Sistemas operativos: instalación y configuración de usuario." },
+                    { code: "DIG.4.A.3", desc: "Sistemas de comunicación e internet: dispositivos de red y funcionamiento. Procedimiento de configuración de una red doméstica y conexión de dispositivos." },
+                    { code: "DIG.4.A.4", desc: "Dispositivos conectados (IoT + Wearables): configuración y conexión de dispositivos." }
+                ]
+            },
+            "B": {
+                name: "Bloque B. Digitalización del entorno personal de aprendizaje",
+                colorClass: "indigo",
+                badgeBg: "bg-indigo-100 text-indigo-800 border-indigo-300",
+                cardBg: "bg-indigo-50/40 border-indigo-200",
+                items: [
+                    { code: "DIG.4.B.1", desc: "Búsqueda, administración, gestión, selección y archivo de información." },
+                    { code: "DIG.4.B.2", desc: "Edición y creación de contenidos: aplicaciones de productividad, desarrollo de aplicaciones sencillas para dispositivos móviles y web, realidad virtual, aumentada y mixta." },
+                    { code: "DIG.4.B.3", desc: "Comunicación y colaboración en red." },
+                    { code: "DIG.4.B.4", desc: "Publicación y difusión responsable en redes." }
+                ]
+            },
+            "C": {
+                name: "Bloque C. Seguridad y bienestar digital",
+                colorClass: "emerald",
+                badgeBg: "bg-emerald-100 text-emerald-800 border-emerald-300",
+                cardBg: "bg-emerald-50/40 border-emerald-200",
+                items: [
+                    { code: "DIG.4.C.1", desc: "Seguridad de dispositivos: medidas preventivas y correctivas para hacer frente a riesgos, amenazas y ataques a dispositivos." },
+                    { code: "DIG.4.C.2", desc: "Seguridad y protección de datos: identidad, reputación digital, privacidad y huella digital. Medidas preventivas en la configuración de redes sociales y la gestión de identidades virtuales." },
+                    { code: "DIG.4.C.3", desc: "Seguridad en la salud física y mental. Riesgos y amenazas al bienestar personal. Opciones de respuesta y prácticas de uso saludable. Situaciones de violencia y de riesgo en la red (ciberacoso, sextorsión, acceso a contenidos inadecuados, dependencia tecnológica, etc)." }
+                ]
+            },
+            "D": {
+                name: "Bloque D. Ciudadanía digital crítica",
+                colorClass: "amber",
+                badgeBg: "bg-amber-100 text-amber-800 border-amber-300",
+                cardBg: "bg-amber-50/40 border-amber-200",
+                items: [
+                    { code: "DIG.4.D.1", desc: "Interactividad en la red: libertad de expresión, etiqueta digital, propiedad intelectual y licencias de uso." },
+                    { code: "DIG.4.D.2", desc: "Educación mediática: periodismo digital, blogosfera, estrategias comunicativas y uso crítico de la red. Herramientas para detectar noticias falsas y fraudes." },
+                    { code: "DIG.4.D.3", desc: "Gestiones administrativas: servicios públicos en línea, registros digitales y certificados oficiales." },
+                    { code: "DIG.4.D.4", desc: "Comercio electrónico: facturas digitales, formas de pago y criptomonedas." },
+                    { code: "DIG.4.D.5", desc: "Ética en el uso de datos y herramientas digitales: inteligencia artificial, sesgos algorítmicos e ideológicos, obsolescencia programada, soberanía tecnológica y digitalización sostenible." },
+                    { code: "DIG.4.D.6", desc: "Activismo en línea: plataformas de iniciativa ciudadana y cibervoluntariado y comunidades de hardware y software libres." }
+                ]
+            }
+        };
+
+        const COMPETENCIAS_ESPECIFICAS = [
+            {
+                id: 1,
+                title: "Identificar y resolver problemas técnicos sencillos, conectar y configurar dispositivos a redes domésticas",
+                shortTitle: "Hardware, Redes y Sistemas Operativos",
+                description: "Identificar y resolver problemas técnicos sencillos, conectar y configurar dispositivos a redes domésticas, aplicando los conocimientos de hardware y sistemas operativos, para gestionar de forma sostenible las herramientas e instalaciones informáticas y de comunicación de uso cotidiano.",
+                descriptors: ["STEM1", "STEM2", "CD4", "CD5", "CPSAA1", "CPSAA5", "CE3"],
+                criterios: [
+                    {
+                        code: "1.1",
+                        description: "Conectar dispositivos y gestionar redes locales aplicando los conocimientos y procesos asociados a sistemas de comunicación alámbrica e inalámbrica con una actitud proactiva.",
+                        saberes: ["DIG.4.A.1", "DIG.4.A.3", "DIG.4.A.4"]
+                    },
+                    {
+                        code: "1.2",
+                        description: "Instalar y mantener sistemas operativos, configurando sus características en función de sus necesidades personales, de forma sostenible.",
+                        saberes: ["DIG.4.A.2"]
+                    },
+                    {
+                        code: "1.3",
+                        description: "Identificar y resolver problemas técnicos sencillos, analizando componentes y funciones de los dispositivos digitales, evaluando las soluciones de manera crítica y reformulando el procedimiento, en caso necesario, fomentando un consumo y reposición de los sistemas digitales y/o tecnológicos de manera sostenible y responsable.",
+                        saberes: ["DIG.4.A.1"]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Configurar el entorno personal de aprendizaje, interactuando y aprovechando los recursos del ámbito digital",
+                shortTitle: "Entorno Personal de Aprendizaje (PLE)",
+                description: "Configurar el entorno personal de aprendizaje, interactuando y aprovechando los recursos del ámbito digital, para optimizar y gestionar el aprendizaje permanente.",
+                descriptors: ["CD1", "CD2", "CD3", "CPSAA1", "CPSAA4", "CPSAA5", "CE3"],
+                criterios: [
+                    {
+                        code: "2.1",
+                        description: "Gestionar el aprendizaje en el ámbito digital, configurando el entorno personal de aprendizaje mediante la integración de recursos digitales de manera autónoma.",
+                        saberes: ["DIG.4.B.1", "DIG.4.D.1"]
+                    },
+                    {
+                        code: "2.2",
+                        description: "Buscar, seleccionar y archivar información en función de sus necesidades haciendo uso de las herramientas del entorno personal de aprendizaje con sentido crítico y siguiendo normas básicas de seguridad en la red.",
+                        saberes: ["DIG.4.B.1", "DIG.4.C.2", "DIG.4.C.3"]
+                    },
+                    {
+                        code: "2.3",
+                        description: "Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas para generar nuevo conocimiento y contenidos digitales de manera creativa, respetando los derechos de autor y licencias de uso.",
+                        saberes: ["DIG.4.B.2", "DIG.4.B.4", "DIG.4.D.1"]
+                    },
+                    {
+                        code: "2.4",
+                        description: "Interactuar en espacios virtuales de comunicación y plataformas de aprendizaje colaborativo, compartiendo y publicando información y datos, adaptándose a diferentes audiencias con una actitud participativa y respetuosa.",
+                        saberes: ["DIG.4.B.3", "DIG.4.D.5", "DIG.4.D.6"]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Desarrollar hábitos que fomenten el bienestar digital, aplicando medidas preventivas y correctivas",
+                shortTitle: "Seguridad y Bienestar Digital",
+                description: "Desarrollar hábitos que fomenten el bienestar digital, aplicando medidas preventivas y correctivas, para proteger dispositivos, datos personales y la propia salud.",
+                descriptors: ["CCL3", "STEM5", "CD1", "CD4", "CPSAA2", "CPSAA5", "CC2", "CC3"],
+                criterios: [
+                    {
+                        code: "3.1",
+                        description: "Proteger los datos personales y la huella digital generada en internet, configurando las condiciones de privacidad de las redes sociales y espacios virtuales de trabajo.",
+                        saberes: ["DIG.4.C.2"]
+                    },
+                    {
+                        code: "3.2",
+                        description: "Configurar y actualizar contraseñas, sistemas operativos y antivirus de forma periódica en los distintos dispositivos digitales de uso habitual.",
+                        saberes: ["DIG.4.C.1"]
+                    },
+                    {
+                        code: "3.3",
+                        description: "Identificar y saber reaccionar ante situaciones que representan una amenaza en la red, escogiendo la mejor solución entre diversas opciones, desarrollando prácticas saludables y seguras, y valorando el bienestar físico y mental, tanto personal como colectivo.",
+                        saberes: ["DIG.4.C.3"]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Ejercer una ciudadanía digital crítica, conociendo las posibles acciones que realizar en la red",
+                shortTitle: "Ciudadanía Digital Crítica y Ética",
+                description: "Ejercer una ciudadanía digital crítica, conociendo las posibles acciones que realizar en la red, e identificando sus repercusiones, para hacer un uso activo, responsable y ético de la tecnología.",
+                descriptors: ["CD3", "CD4", "CPSAA1", "CC1", "CC2", "CC3", "CC4", "CE1"],
+                criterios: [
+                    {
+                        code: "4.1",
+                        description: "Hacer un uso ético de los datos y las herramientas digitales, aplicando las normas de etiqueta digital y respetando la privacidad y las licencias de uso y propiedad intelectual en la comunicación, colaboración y participación activa en la red, basadas en el respeto mutuo.",
+                        saberes: ["DIG.4.D.1", "DIG.4.D.5"]
+                    },
+                    {
+                        code: "4.2",
+                        description: "Reconocer las aportaciones de las tecnologías digitales en las gestiones administrativas, y el comercio electrónico, siendo consciente de la brecha social de acceso, uso y aprovechamiento de dichas tecnologías para diversos colectivos.",
+                        saberes: ["DIG.4.D.3", "DIG.4.D.4"]
+                    },
+                    {
+                        code: "4.3",
+                        description: "Valorar la importancia de la oportunidad, facilidad y libertad de expresión que suponen los medios digitales conectados, analizando de forma crítica los mensajes que se reciben y transmiten teniendo en cuenta su objetividad, ideología, intencionalidad, sesgos y caducidad.",
+                        saberes: ["DIG.4.D.1", "DIG.4.D.2", "DIG.4.D.6"]
+                    },
+                    {
+                        code: "4.4",
+                        description: "Analizar la necesidad y los beneficios globales de un uso y desarrollo ecosocialmente responsable de las tecnologías digitales, teniendo en cuenta criterios de accesibilidad, sostenibilidad e impacto.",
+                        saberes: ["DIG.4.D.5"]
+                    }
+                ]
+            }
+        ];
+
+        // Helper function to look up saber description
+        function getSaberByCode(code) {
+            for (const key in SABERES_BASICOS) {
+                const found = SABERES_BASICOS[key].items.find(item => item.code === code);
+                if (found) {
+                    return { ...found, blockKey: key, blockName: SABERES_BASICOS[key].name };
+                }
+            }
+            return { code, desc: 'Descripción no disponible.', blockKey: 'A', blockName: 'General' };
+        }
+
+        // Global State
+        let currentTab = 'matriz';
+        let selectedSDACriteria = new Set();
+
+        // Render Matriz Curricular
+        function renderMatriz() {
+            const container = document.getElementById('matriz-container');
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const ceVal = document.getElementById('filter-ce').value;
+            const blockVal = document.getElementById('filter-block').value;
+            const descVal = document.getElementById('filter-descriptor').value;
+
+            container.innerHTML = '';
+            let totalVisibleCriteria = 0;
+
+            COMPETENCIAS_ESPECIFICAS.forEach(ce => {
+                // Filter by CE
+                if (ceVal && ce.id.toString() !== ceVal) return;
+
+                // Filter criteria inside CE
+                const matchingCriterios = ce.criterios.filter(crit => {
+                    // Match text search
+                    const textMatch = !searchVal || 
+                        crit.code.toLowerCase().includes(searchVal) ||
+                        crit.description.toLowerCase().includes(searchVal) ||
+                        ce.title.toLowerCase().includes(searchVal);
+
+                    // Match Saberes block
+                    const blockMatch = !blockVal || crit.saberes.some(s => s.split('.')[2] === blockVal);
+
+                    // Match Descriptors
+                    const descMatch = !descVal || ce.descriptors.some(d => d.startsWith(descVal));
+
+                    return textMatch && blockMatch && descMatch;
+                });
+
+                if (matchingCriterios.length === 0 && (searchVal || blockVal || descVal || ceVal)) return;
+
+                totalVisibleCriteria += matchingCriterios.length;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition hover:shadow-md';
+
+                let criteriaHTML = matchingCriterios.map(crit => {
+                    const saberesBadges = crit.saberes.map(sCode => {
+                        const sInfo = getSaberByCode(sCode);
+                        const bStyle = SABERES_BASICOS[sInfo.blockKey] ? SABERES_BASICOS[sInfo.blockKey].badgeBg : 'bg-slate-100 text-slate-700';
+                        return `<button onclick="openSaberModal('${sCode}')" class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold border ${bStyle} hover:scale-105 transition cursor-pointer shadow-2xs">
+                                    <i class="fa-solid fa-cube text-[9px] mr-0.5"></i> ${sCode}
+                                </button>`;
+                    }).join(' ');
+
+                    return `
+                        <div class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/80 space-y-2">
+                            <div class="flex items-start justify-between gap-3">
+                                <span class="bg-slate-900 text-white font-mono font-bold text-xs px-2.5 py-1 rounded-lg">Crit. ${crit.code}</span>
+                                <div class="flex flex-wrap gap-1 items-center">
+                                    <span class="text-[10px] text-slate-400 font-semibold uppercase mr-1">Saberes:</span>
+                                    ${saberesBadges}
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-700 leading-relaxed font-normal">${crit.description}</p>
+                        </div>
+                    `;
+                }).join('');
+
+                const descriptorBadges = ce.descriptors.map(d => 
+                    `<span class="px-2 py-0.5 bg-sky-100 text-sky-800 border border-sky-200 font-mono text-[10px] font-semibold rounded-md">${d}</span>`
+                ).join(' ');
+
+                card.innerHTML = `
+                    <div class="p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-sky-500 text-slate-950 font-extrabold text-xs px-2 py-0.5 rounded-md">CE ${ce.id}</span>
+                                <h3 class="font-bold text-sm text-slate-100">${ce.shortTitle}</h3>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-normal max-w-4xl">${ce.description}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-1 items-center bg-slate-800/80 p-2 rounded-xl border border-slate-700/60 shrink-0">
+                            <span class="text-[10px] text-slate-400 uppercase font-semibold mr-1">Perfil Salida:</span>
+                            ${descriptorBadges}
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Criterios de Evaluación y Saberes Vinculados</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            ${criteriaHTML || '<p class="text-xs text-slate-400 italic col-span-3">No hay criterios coincidentes con los filtros.</p>'}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            if (container.children.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-2xl border border-slate-200">
+                        <i class="fa-solid fa-filter-circle-xmark text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-sm font-semibold text-slate-600">No se encontraron resultados</p>
+                        <p class="text-xs text-slate-400">Prueba a modificar los filtros o el término de búsqueda.</p>
+                    </div>
+                `;
+            }
+
+            updateStatusCounter(totalVisibleCriteria);
+        }
+
+        // Render Saberes Básicos Blocks
+        function renderSaberes() {
+            const container = document.getElementById('saberes-blocks-container');
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const blockVal = document.getElementById('filter-block').value;
+
+            container.innerHTML = '';
+
+            for (const key in SABERES_BASICOS) {
+                if (blockVal && key !== blockVal) continue;
+
+                const block = SABERES_BASICOS[key];
+                
+                const filteredItems = block.items.filter(item => 
+                    !searchVal || item.code.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal)
+                );
+
+                if (filteredItems.length === 0 && searchVal) continue;
+
+                const blockCard = document.createElement('div');
+                blockCard.className = `bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col`;
+
+                const itemsHTML = filteredItems.map(item => `
+                    <div onclick="openSaberModal('${item.code}')" class="p-3.5 bg-slate-50 hover:bg-sky-50/50 rounded-xl border border-slate-200/80 transition cursor-pointer group flex items-start justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="font-mono font-bold text-xs text-sky-700 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-2xs">${item.code}</span>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed group-hover:text-slate-900">${item.desc}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-sky-600 text-xs mt-1 transition"></i>
+                    </div>
+                `).join('');
+
+                blockCard.innerHTML = `
+                    <div class="p-4 ${block.cardBg} border-b border-slate-200 flex items-center justify-between">
+                        <h3 class="font-bold text-xs text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-slate-600"></i> ${block.name}
+                        </h3>
+                        <span class="text-xs font-mono font-bold ${block.badgeBg} px-2 py-0.5 rounded-full border">${filteredItems.length} saberes</span>
+                    </div>
+                    <div class="p-4 space-y-2.5 flex-1">
+                        ${itemsHTML || '<p class="text-xs text-slate-400 italic">No hay saberes coincidentes en este bloque.</p>'}
+                    </div>
+                `;
+
+                container.appendChild(blockCard);
+            }
+        }
+
+        // Render Cross Relation Table
+        function renderTabla() {
+            const tbody = document.getElementById('cross-table-body');
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const ceVal = document.getElementById('filter-ce').value;
+            const blockVal = document.getElementById('filter-block').value;
+            const descVal = document.getElementById('filter-descriptor').value;
+
+            tbody.innerHTML = '';
+
+            COMPETENCIAS_ESPECIFICAS.forEach(ce => {
+                if (ceVal && ce.id.toString() !== ceVal) return;
+
+                ce.criterios.forEach(crit => {
+                    const textMatch = !searchVal || 
+                        crit.code.toLowerCase().includes(searchVal) ||
+                        crit.description.toLowerCase().includes(searchVal) ||
+                        ce.title.toLowerCase().includes(searchVal);
+
+                    const blockMatch = !blockVal || crit.saberes.some(s => s.split('.')[2] === blockVal);
+                    const descMatch = !descVal || ce.descriptors.some(d => d.startsWith(descVal));
+
+                    if (!textMatch || !blockMatch || !descMatch) return;
+
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 transition';
+
+                    const saberesBadges = crit.saberes.map(sCode => {
+                        const sInfo = getSaberByCode(sCode);
+                        const bStyle = SABERES_BASICOS[sInfo.blockKey] ? SABERES_BASICOS[sInfo.blockKey].badgeBg : 'bg-slate-100 text-slate-700';
+                        return `<button onclick="openSaberModal('${sCode}')" class="inline-block px-1.5 py-0.5 m-0.5 rounded text-[10px] font-mono font-bold border ${bStyle} hover:scale-105 transition cursor-pointer">
+                                    ${sCode}
+                                </button>`;
+                    }).join('');
+
+                    const descriptorBadges = ce.descriptors.map(d => 
+                        `<span class="inline-block px-1.5 py-0.5 m-0.5 bg-slate-100 text-slate-700 border border-slate-200 font-mono text-[10px] rounded">${d}</span>`
+                    ).join('');
+
+                    tr.innerHTML = `
+                        <td class="p-3 font-semibold text-sky-800 bg-slate-50/50">CE ${ce.id}: ${ce.shortTitle}</td>
+                        <td class="p-3 font-mono font-bold text-slate-900">Crit. ${crit.code}</td>
+                        <td class="p-3 text-slate-700 leading-relaxed">${crit.description}</td>
+                        <td class="p-3">${saberesBadges}</td>
+                        <td class="p-3">${descriptorBadges}</td>
+                    `;
+
+                    tbody.appendChild(tr);
+                });
+            });
+
+            if (tbody.children.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-slate-400 italic">No hay filas coincidentes con los filtros seleccionados.</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Render SDA Criteria Selector Checkboxes
+        function renderSDACriteriaSelector() {
+            const container = document.getElementById('sda-criteria-selector');
+            container.innerHTML = '';
+
+            COMPETENCIAS_ESPECIFICAS.forEach(ce => {
+                const ceGroup = document.createElement('div');
+                ceGroup.className = 'space-y-2';
+
+                const criteriaBoxes = ce.criterios.map(crit => {
+                    const isChecked = selectedSDACriteria.has(crit.code) ? 'checked' : '';
+                    return `
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 hover:border-sky-300 cursor-pointer transition">
+                            <input type="checkbox" value="${crit.code}" onchange="toggleSDACriterion('${crit.code}')" ${isChecked}
+                                class="mt-0.5 h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500">
+                            <div class="text-xs">
+                                <span class="font-mono font-bold text-slate-900 mr-1">Criterio ${crit.code}:</span>
+                                <span class="text-slate-600">${crit.description}</span>
+                            </div>
+                        </label>
+                    `;
+                }).join('');
+
+                ceGroup.innerHTML = `
+                    <div class="font-bold text-xs text-slate-800 border-b border-slate-200 pb-1 flex items-center justify-between">
+                        <span>Competencia Específica ${ce.id}</span>
+                        <span class="text-[10px] font-normal text-slate-400">${ce.shortTitle}</span>
+                    </div>
+                    <div class="space-y-1.5 pl-1">
+                        ${criteriaBoxes}
+                    </div>
+                `;
+
+                container.appendChild(ceGroup);
+            });
+        }
+
+        // Toggle Criterion Selection in SDA
+        function toggleSDACriterion(code) {
+            if (selectedSDACriteria.has(code)) {
+                selectedSDACriteria.delete(code);
+            } else {
+                selectedSDACriteria.add(code);
+            }
+            calculateSDAMapping();
+        }
+
+        // Calculate and Update SDA Mappings in Realtime
+        function calculateSDAMapping() {
+            const selectedArray = Array.from(selectedSDACriteria);
+            document.getElementById('sda-selected-count').innerText = `${selectedArray.length} Criterios`;
+
+            if (selectedArray.length === 0) {
+                document.getElementById('sda-comp-count').innerText = '0';
+                document.getElementById('sda-desc-count').innerText = '0';
+                document.getElementById('sda-saberes-count').innerText = '0';
+                document.getElementById('sda-descriptors-badges').innerHTML = '<span class="text-xs text-slate-400 italic">Selecciona criterios para calcular los descriptores...</span>';
+                document.getElementById('sda-saberes-list').innerHTML = '<span class="text-slate-400 italic">Ningún saber asignado.</span>';
+                return;
+            }
+
+            const activeCEIds = new Set();
+            const activeDescriptors = new Set();
+            const activeSaberesCodes = new Set();
+
+            COMPETENCIAS_ESPECIFICAS.forEach(ce => {
+                ce.criterios.forEach(crit => {
+                    if (selectedSDACriteria.has(crit.code)) {
+                        activeCEIds.add(ce.id);
+                        ce.descriptors.forEach(d => activeDescriptors.add(d));
+                        crit.saberes.forEach(s => activeSaberesCodes.add(s));
+                    }
+                });
+            });
+
+            document.getElementById('sda-comp-count').innerText = activeCEIds.size;
+            document.getElementById('sda-desc-count').innerText = activeDescriptors.size;
+            document.getElementById('sda-saberes-count').innerText = activeSaberesCodes.size;
+
+            // Render Descriptors Badges
+            document.getElementById('sda-descriptors-badges').innerHTML = Array.from(activeDescriptors).map(d => 
+                `<span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 border border-indigo-200 font-mono text-xs font-semibold rounded-md">${d}</span>`
+            ).join(' ');
+
+            // Render Saberes grouped by Block
+            let saberesGroupedHTML = '';
+            for (const bKey in SABERES_BASICOS) {
+                const blockSaberes = Array.from(activeSaberesCodes).filter(s => s.split('.')[2] === bKey);
+                if (blockSaberes.length > 0) {
+                    saberesGroupedHTML += `<div class="font-semibold text-slate-800 text-[11px] mt-1">${SABERES_BASICOS[bKey].name}:</div>`;
+                    blockSaberes.forEach(sCode => {
+                        const sObj = getSaberByCode(sCode);
+                        saberesGroupedHTML += `<div class="pl-2 text-slate-600 flex items-start gap-1"><span class="font-mono font-bold text-sky-700">${sCode}:</span> <span>${sObj.desc}</span></div>`;
+                    });
+                }
+            }
+
+            document.getElementById('sda-saberes-list').innerHTML = saberesGroupedHTML;
+        }
+
+        // Clear SDA Form
+        function clearSDAForm() {
+            document.getElementById('sda-title').value = '';
+            document.getElementById('sda-product').value = '';
+            document.getElementById('sda-timing').value = '';
+            document.getElementById('sda-context').value = '';
+            selectedSDACriteria.clear();
+            renderSDACriteriaSelector();
+            calculateSDAMapping();
+            document.getElementById('ai-output-card').classList.add('hidden');
+        }
+
+        // Copy SDA Draft
+        function copySDADraft() {
+            const title = document.getElementById('sda-title').value || 'Sin título';
+            const product = document.getElementById('sda-product').value || 'Sin definir';
+            const timing = document.getElementById('sda-timing').value || 'Sin definir';
+            const context = document.getElementById('sda-context').value || 'Sin especificar';
+            const criterios = Array.from(selectedSDACriteria).join(', ') || 'Ninguno';
+
+            const draftText = `--- BORRADOR DE SITUACIÓN DE APRENDIZAJE (SDA) ---
+Materia: Digitalización (4º ESO)
+Título: ${title}
+Producto Final/Reto: ${product}
+Temporalización: ${timing}
+Contextualización: ${context}
+Criterios Seleccionados: ${criterios}
+Descriptores Activados: ${document.getElementById('sda-desc-count').innerText}
+Saberes Básicos Requeridos: ${document.getElementById('sda-saberes-count').innerText}
+Generado con Currículo Interactivo LOMLOE.`;
+
+            copyTextToClipboard(draftText);
+            alertMessage('Borrador copiado al portapapeles con éxito.', 'success');
+        }
+
+        // Generate AI Sequence via Gemini API
+        async function generateAISequence() {
+            const title = document.getElementById('sda-title').value;
+            const product = document.getElementById('sda-product').value;
+            const timing = document.getElementById('sda-timing').value;
+            const context = document.getElementById('sda-context').value;
+            const criteriosArr = Array.from(selectedSDACriteria);
+
+            if (criteriosArr.length === 0) {
+                alertMessage('Por favor, selecciona al menos un criterio de evaluación para diseñar la propuesta didáctica.', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btn-generate-ai');
+            const originalBtnHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando propuesta...`;
+
+            const outputCard = document.getElementById('ai-output-card');
+            const outputContent = document.getElementById('ai-output-content');
+            outputCard.classList.remove('hidden');
+            outputContent.innerHTML = `<div class="p-4 text-center text-slate-500"><i class="fa-solid fa-wand-magic-sparkles text-xl text-sky-500 animate-bounce mb-2"></i><p>Conectando con la IA pedagógica y estructurando la secuencia didáctica...</p></div>`;
+
+            // Prompt Construction
+            const systemPrompt = "Actúa como un Diseñador Instruccional y Asesor Pedagógico Senior experto en la LOMLOE y en la materia de Digitalización de 4º de ESO. Debes generar una propuesta pedagógica completa, motivadora y estructurada para una Situación de Aprendizaje.";
+            
+            const selectedSaberesText = Array.from(document.querySelectorAll('#sda-saberes-list div.text-slate-600')).map(e => e.innerText).join('\n');
+
+            const userQuery = `
+Por favor, diseña una Secuencia Didáctica completa para la materia de Digitalización (4º ESO) basada en los siguientes datos de la SDA:
+
+- Título: ${title || 'Sin título definido'}
+- Producto Final / Reto: ${product || 'Diseño de proyecto digital'}
+- Temporalización: ${timing || '6-8 sesiones'}
+- Contexto / Justificación: ${context || 'Alumnado de 4º ESO'}
+- Criterios de Evaluación Seleccionados: ${criteriosArr.join(', ')}
+- Saberes Básicos Requeridos:
+${selectedSaberesText}
+
+Organiza la respuesta en formato estructurado con las siguientes secciones en HTML limpio (usa etiquetas <h4>, <ul>, <li>, <strong>, etc.):
+1. 🎯 **Fase de Inicio (Motivación e Indagación)**: Actividades iniciales para despertar el interés y evaluar conocimientos previos.
+2. ⚙️ **Fase de Desarrollo (Investigación y Creación)**: Pasos prácticos para el desarrollo del producto final (uso de herramientas TIC, trabajo en equipo).
+3. 🏁 **Fase de Cierre y Difusión**: Presentación pública del producto final, metacognición y autoevaluación.
+4. 📝 **Estrategias de Evaluación y Herramientas**: Instrumentos (rúbrica, lista de cotejo, diari de aprendizaje) vinculados a los criterios seleccionados.
+5. ♿ **Medidas DUA y Atención a la Diversidad**: Opciones de representación, expresión y compromiso.
+`;
+
+            const apiKey = ""; // Canvas runtime injection
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const result = await response.json();
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    // Simple Markdown to HTML formatter
+                    let formattedHTML = text
+                        .replace(/### (.*?)\n/g, '<h4 class="font-bold text-slate-900 text-xs mt-3 mb-1 border-b border-slate-200 pb-0.5">$1</h4>')
+                        .replace(/## (.*?)\n/g, '<h3 class="font-bold text-sky-800 text-xs mt-3 mb-1">$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/- (.*?)\n/g, '<li class="ml-4 list-disc">$1</li>')
+                        .replace(/\n\n/g, '<p class="my-2"></p>');
+
+                    outputContent.innerHTML = `<div class="prose prose-xs max-w-none space-y-2">${formattedHTML}</div>`;
+                } else {
+                    throw new Error('Respuesta vacía');
+                }
+            } catch (err) {
+                console.error(err);
+                // Fallback structured generation if API is throttled or offline
+                outputContent.innerHTML = `
+                    <div class="space-y-3 p-2 text-xs">
+                        <div class="p-2.5 bg-amber-50 text-amber-900 border border-amber-200 rounded-xl mb-3">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i>
+                            Generado en modo plantilla estructurada offline:
+                        </div>
+                        <h4 class="font-bold text-sky-800 text-xs border-b pb-1">🎯 1. Fase de Inicio (Sesión 1)</h4>
+                        <p>Presentación del reto: <strong>${product || 'Producto Final'}</strong>. Debate inicial sobre el impacto del tema en la comunidad educativa. Cuestionario interactivo previo.</p>
+                        
+                        <h4 class="font-bold text-sky-800 text-xs border-b pb-1">⚙️ 2. Fase de Desarrollo (Sesiones 2-6)</h4>
+                        <p>Investigación en equipos utilizando recursos del entorno personal de aprendizaje. Creación y desarrollo técnico del prototipo o artefacto digital respetando licencias y normas de ciberseguridad.</p>
+
+                        <h4 class="font-bold text-sky-800 text-xs border-b pb-1">🏁 3. Fase de Cierre y Difusión (Sesiones 7-8)</h4>
+                        <p>Exposición pública del proyecto. Evaluación entre iguales (coevaluación) mediante rúbrica digitalizada.</p>
+
+                        <h4 class="font-bold text-sky-800 text-xs border-b pb-1">📝 4. Evaluación e Inclusión (DUA)</h4>
+                        <p>Evaluación formativa continua ligada a los criterios: <strong>${criteriosArr.join(', ')}</strong>. Flexibilidad en la elección de formatos de entrega.</p>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHTML;
+            }
+        }
+
+        function copyAIProposal() {
+            const content = document.getElementById('ai-output-content').innerText;
+            copyTextToClipboard(content);
+            alertMessage('Propuesta didáctica copiada al portapapeles.', 'success');
+        }
+
+        // Modal Handlers
+        function openSaberModal(sCode) {
+            const saber = getSaberByCode(sCode);
+            document.getElementById('modal-saber-code').innerText = saber.code;
+            document.getElementById('modal-saber-block').innerText = saber.blockName;
+            document.getElementById('modal-saber-desc').innerText = saber.desc;
+
+            // Find linked criterios and competencias
+            const linkedCriterios = [];
+            const linkedCEs = new Set();
+
+            COMPETENCIAS_ESPECIFICAS.forEach(ce => {
+                ce.criterios.forEach(crit => {
+                    if (crit.saberes.includes(sCode)) {
+                        linkedCriterios.push({ ceId: ce.id, code: crit.code, desc: crit.description });
+                        linkedCEs.add(`CE ${ce.id}: ${ce.shortTitle}`);
+                    }
+                });
+            });
+
+            // Render linked criterios
+            const critContainer = document.getElementById('modal-linked-criterios');
+            critContainer.innerHTML = linkedCriterios.map(c => `
+                <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1">
+                    <div class="font-bold text-sky-800 flex items-center justify-between">
+                        <span>Criterio ${c.code}</span>
+                        <span class="text-[10px] text-slate-400">Competencia ${c.ceId}</span>
+                    </div>
+                    <p class="text-slate-600">${c.desc}</p>
+                </div>
+            `).join('') || '<p class="text-xs text-slate-400 italic">No hay criterios asociados.</p>';
+
+            // Render linked CEs
+            const ceContainer = document.getElementById('modal-linked-competencias');
+            ceContainer.innerHTML = Array.from(linkedCEs).map(ceName => `
+                <span class="px-2.5 py-1 bg-slate-900 text-white font-semibold text-[11px] rounded-lg">${ceName}</span>
+            `).join('') || '<p class="text-xs text-slate-400 italic">Sin competencias vinculadas.</p>';
+
+            // Show Modal
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Close Modal on backdrop click
+        document.getElementById('detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Tab Switching logic
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // Hide all views
+            document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+            
+            // Show selected view
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Update Tab Button Styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-50', 'text-sky-700', 'border', 'border-sky-200');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            activeBtn.classList.add('bg-sky-50', 'text-sky-700', 'border', 'border-sky-200');
+
+            // Render view-specific content
+            if (tabId === 'matriz') renderMatriz();
+            if (tabId === 'saberes') renderSaberes();
+            if (tabId === 'tabla') renderTabla();
+            if (tabId === 'sda') {
+                renderSDACriteriaSelector();
+                calculateSDAMapping();
+            }
+        }
+
+        // Apply Global Filters
+        function applyFilters() {
+            updateFilterChips();
+            if (currentTab === 'matriz') renderMatriz();
+            if (currentTab === 'saberes') renderSaberes();
+            if (currentTab === 'tabla') renderTabla();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-ce').value = '';
+            document.getElementById('filter-block').value = '';
+            document.getElementById('filter-descriptor').value = '';
+            applyFilters();
+        }
+
+        function updateFilterChips() {
+            const searchVal = document.getElementById('search-input').value.trim();
+            const ceVal = document.getElementById('filter-ce').value;
+            const blockVal = document.getElementById('filter-block').value;
+            const descVal = document.getElementById('filter-descriptor').value;
+
+            const container = document.getElementById('filter-chips');
+            const noFiltersLabel = document.getElementById('no-filters-label');
+            
+            // Clear existing chips
+            const chips = container.querySelectorAll('.filter-chip');
+            chips.forEach(c => c.remove());
+
+            let hasFilters = false;
+
+            if (searchVal) {
+                hasFilters = true;
+                addChip(container, `Texto: "${searchVal}"`, () => {
+                    document.getElementById('search-input').value = '';
+                    applyFilters();
+                });
+            }
+
+            if (ceVal) {
+                hasFilters = true;
+                addChip(container, `Competencia ${ceVal}`, () => {
+                    document.getElementById('filter-ce').value = '';
+                    applyFilters();
+                });
+            }
+
+            if (blockVal) {
+                hasFilters = true;
+                addChip(container, `Bloque ${blockVal}`, () => {
+                    document.getElementById('filter-block').value = '';
+                    applyFilters();
+                });
+            }
+
+            if (descVal) {
+                hasFilters = true;
+                addChip(container, `Descriptor ${descVal}`, () => {
+                    document.getElementById('filter-descriptor').value = '';
+                    applyFilters();
+                });
+            }
+
+            noFiltersLabel.style.display = hasFilters ? 'none' : 'inline';
+        }
+
+        function addChip(container, text, onRemove) {
+            const chip = document.createElement('span');
+            chip.className = 'filter-chip px-2 py-0.5 bg-slate-200 text-slate-800 rounded-md text-[11px] font-medium flex items-center gap-1';
+            chip.innerHTML = `${text} <i class="fa-solid fa-xmark text-[10px] cursor-pointer hover:text-rose-600"></i>`;
+            chip.querySelector('i').addEventListener('click', onRemove);
+            container.appendChild(chip);
+        }
+
+        function updateStatusCounter(criteriosCount) {
+            const counter = document.getElementById('counter-display');
+            counter.innerText = `Criterios visibles: ${criteriosCount} | Saberes totales: 19`;
+        }
+
+        // Clipboard Copy Utility (fallback safe)
+        function copyTextToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Custom Notification Message
+        function alertMessage(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl shadow-xl text-xs font-semibold text-white transition-all transform translate-y-full ${type === 'success' ? 'bg-emerald-600' : 'bg-amber-600'}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> ${msg}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-y-full'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialization on window load
+        window.onload = function() {
+            renderMatriz();
+            renderSDACriteriaSelector();
+        };
+    </script>
+</body>
+</html>
