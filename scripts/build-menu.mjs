@@ -176,7 +176,7 @@ function landingPageTemplate({ title, description, backPath, items }) {
   </style>
 </head>
 <body>
-  <a class="volver" href="${backPath}">&larr; Volver al índice</a>
+  <a class="volver" href="${backPath}" target="_top" hidden>&larr; Volver al índice</a>
   <div class="cabecera">
     <h1>${title}</h1>
     ${description ? `<p class="desc">${description}</p>` : ''}
@@ -185,8 +185,8 @@ function landingPageTemplate({ title, description, backPath, items }) {
       ${itemsHtml}
   </ul>
   <script>
-    if (window.top !== window.self) {
-      document.querySelector('.volver').style.display = 'none';
+    if (window.top === window.self) {
+      document.querySelector('.volver').hidden = false;
     }
   </script>
 </body>
