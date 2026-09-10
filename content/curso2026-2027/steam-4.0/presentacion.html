@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Proyecto STEAM 4.0 - I.E.S. Villa de Mijas</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        steam: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e',
+                            violet: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .slide-enter {
+            animation: fadeInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-cyan-500 selection:text-white transition-colors duration-300">
+
+    <!-- Top Bar Navigation -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2.5 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2 rounded-xl shadow-md shadow-cyan-500/20 text-white">
+                <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm sm:text-base text-white tracking-tight leading-tight flex items-center gap-2">
+                    Proyecto STEAM 4.0
+                    <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded-full font-normal hidden sm:inline-block">PCT Código Escuela 4.0</span>
+                </h1>
+                <p class="text-xs text-slate-400">I.E.S. Villa de Mijas (Cod: 29701121) | Coordinación Adjunta</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Mode Switcher -->
+            <div class="bg-slate-800/80 p-1 rounded-lg border border-slate-700 flex text-xs">
+                <button id="btn-mode-slides" onclick="switchView('slides')" class="px-2.5 py-1 rounded-md font-medium transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow">
+                    <i data-lucide="presentation" class="w-3.5 h-3.5"></i>
+                    <span class="hidden md:inline">Diapositivas</span>
+                </button>
+                <button id="btn-mode-dashboard" onclick="switchView('dashboard')" class="px-2.5 py-1 rounded-md font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+                    <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                    <span class="hidden md:inline">Panel Completo</span>
+                </button>
+            </div>
+
+            <button onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition border border-slate-700" title="Pantalla Completa (F)">
+                <i data-lucide="maximize" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 flex flex-col relative overflow-x-hidden">
+        
+        <!-- ================= SLIDE MODE VIEW ================= -->
+        <div id="view-slides" class="flex-1 flex flex-col justify-between p-3 sm:p-6 max-w-7xl w-full mx-auto">
+            
+            <!-- Slide Content Area -->
+            <div id="slide-container" class="flex-1 flex flex-col justify-center min-h-[580px] my-2">
+                <!-- Slide content dynamically rendered here -->
+            </div>
+
+            <!-- Slide Navigation Bar -->
+            <div class="mt-4 bg-slate-900/80 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-xl">
+                <div class="flex items-center space-x-2">
+                    <button id="prev-btn" onclick="prevSlide()" class="p-2.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-slate-800 text-white rounded-xl transition border border-slate-700 flex items-center gap-1 font-medium text-xs sm:text-sm">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Anterior</span>
+                    </button>
+                    <button id="next-btn" onclick="nextSlide()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl transition shadow-lg shadow-cyan-600/20 flex items-center gap-1 font-semibold text-xs sm:text-sm">
+                        <span>Siguiente</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Slide indicator pills -->
+                <div class="flex items-center space-x-1.5 overflow-x-auto py-1 custom-scrollbar max-w-[280px] sm:max-w-md" id="slide-dots">
+                    <!-- Dots generated dynamically -->
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <span id="slide-counter" class="text-xs font-semibold text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                        1 / 9
+                    </span>
+                    <select id="slide-select" onchange="goToSlide(parseInt(this.value))" class="bg-slate-800 text-slate-200 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="0">1. Marco & Contexto</option>
+                        <option value="1">2. Diagnóstico CDD</option>
+                        <option value="2">3. Hoja de Ruta Séneca</option>
+                        <option value="3">4. Catálogo Equipamiento ESO</option>
+                        <option value="4">5. Operativa & Mantenimiento</option>
+                        <option value="5">6. Líneas de Actuación PAD</option>
+                        <option value="6">7. Comunicación & Claustro</option>
+                        <option value="7">8. Plazos Oficiales</option>
+                        <option value="8">9. Acompañamiento & Cierre</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DASHBOARD MODE VIEW ================= -->
+        <div id="view-dashboard" class="hidden flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto space-y-8 custom-scrollbar">
+            
+            <!-- Dashboard Hero Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-950 p-6 sm:p-8 rounded-3xl border border-cyan-500/20 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs px-3 py-1 rounded-full mb-3">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                        Resolución de 1 de agosto de 2025 (BOJA) - PCT Código Escuela 4.0
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                        Panel de Control e Implementación STEAM 4.0
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base mt-2 leading-relaxed">
+                        Guía de Acción y Plan de Trabajo para la Coordinación Adjunta STEAM 4.0 en el <strong class="text-white">I.E.S. Villa de Mijas</strong>. Integración curricular, diagnóstico digital, inventario de 115 unidades y calendario de Séneca.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 block">Claustro Total</span>
+                            <span class="text-lg font-bold text-cyan-400">35 Docentes</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 block">CDD Certificados</span>
+                            <span class="text-lg font-bold text-emerald-400">28 (80%)</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 block">Mentores B2</span>
+                            <span class="text-lg font-bold text-violet-400">14 Docentes</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs text-slate-400 block">Dotación ESO</span>
+                            <span class="text-lg font-bold text-amber-400">115 Unidades</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- CDD Chart Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <h3 class="font-bold text-lg text-white flex items-center gap-2 mb-4">
+                        <i data-lucide="pie-chart" class="w-5 h-5 text-cyan-400"></i>
+                        Diagnóstico CDD del Centro (Séneca 10/09/2026)
+                    </h3>
+                    <div class="h-64 relative flex items-center justify-center">
+                        <canvas id="dash-cdd-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Next Milestones Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2 mb-4">
+                            <i data-lucide="calendar-clock" class="w-5 h-5 text-amber-400"></i>
+                            Próximos Hitos Obligatorios
+                        </h3>
+                        <div class="space-y-3" id="dash-deadlines-container">
+                            <!-- Deadlines populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                        <span>Plataforma Oficial: <strong>Séneca</strong></span>
+                        <span class="text-cyan-400 font-medium">Actualizado a Septiembre 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Catalog Dashboard View -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="font-bold text-xl text-white flex items-center gap-2">
+                            <i data-lucide="boxes" class="w-5 h-5 text-emerald-400"></i>
+                            Inventario Completo de Dotación ESO (115 Unidades)
+                        </h3>
+                        <p class="text-xs text-slate-400">Catálogo asignado según Resolución de 1 de agosto de 2025</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">Filtrar:</span>
+                        <button onclick="filterInventory('all')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Todos</button>
+                        <button onclick="filterInventory('3d')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Impresión 3D/Láser</button>
+                        <button onclick="filterInventory('boards')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Placas & Robótica</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">ID Producto</th>
+                                <th class="p-3">Nombre / Descripción del Recurso</th>
+                                <th class="p-3 text-center">Unidades</th>
+                                <th class="p-3">Uso Principal / Protocolo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body" class="divide-y divide-slate-800">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification for Copy / Actions -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-cyan-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-cyan-400">
+        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+        <span id="toast-message" class="text-xs sm:text-sm font-medium">Texto copiado con éxito</span>
+    </div>
+
+    <script>
+        // Global Data Structures
+        const centerInfo = {
+            name: "I.E.S. Villa de Mijas",
+            code: "29701121",
+            role: "Coordinador Adjunto - Proyecto STEAM 4.0",
+            teachersTotal: 35,
+            teachersCertified: 28,
+            studentsTotal: 200,
+            reportDate: "10/09/2026"
+        };
+
+        const cddData = [
+            { level: "A1 (Inicial)", count: 3, pct: "10,71%", desc: "Acompañamiento básico Moodle, Classroom, g.educaand.es y gestión de reservas.", color: "#ef4444" },
+            { level: "A2 (Básico)", count: 10, pct: "35,71%", desc: "Talleres guiados por la Coordinación STEAM para manejo de micro:bit e impresoras 3D.", color: "#f97316" },
+            { level: "B1 (Intermedio)", count: 1, pct: "3,57%", desc: "Apoyo en creación de Situaciones de Aprendizaje con eXeLearning y REA.", color: "#eab308" },
+            { level: "B2 (Avanzado)", count: 14, pct: "50,00%", desc: "Mentores internos para dinamizar retos e ir en parejas con niveles A1/A2.", color: "#10b981" },
+            { level: "C1/C2 (Experto)", count: 0, pct: "0,00%", desc: "Formación especializada externa con el CEP de referencia.", color: "#6366f1" }
+        ];
+
+        const inventoryData = [
+            { id: "L3P01", name: "Impresora 3D con combo", units: 2, cat: "3d", protocol: "Atención al SLA de PLA. Envío previo de STL validados al equipo STEAM." },
+            { id: "L3P02", name: "Filamentos PLA", units: 15, cat: "3d", protocol: "Almacenamiento en zona seca. Control quincenal de consumo." },
+            { id: "L3P03", name: "Kit de limpieza y mantenimiento de impresoras 3D", units: 2, cat: "3d", protocol: "Mantenimiento preventivo quincenal por equipo TDE/STEAM." },
+            { id: "L3P04", name: "Grabadora y cortadora láser", units: 1, cat: "3d", protocol: "Uso con EPIs e iluminación/extracción en aula taller." },
+            { id: "L3P05", name: "Kit con placa de desarrollo compacto tipo Micro:bit", units: 15, cat: "boards", protocol: "Kits con código QR en caja. Programación MakeCode." },
+            { id: "L3P06", name: "Pequeño robot programable con placa Micro:bit incluida", units: 15, cat: "boards", protocol: "Retos de robótica móvil e iniciación a sensores." },
+            { id: "L3P07", name: "Placa de desarrollo avanzada con WiFi y Bluetooth (IoT)", units: 15, cat: "boards", protocol: "Prototipado IoT y redes de sensores avanzadas." },
+            { id: "L3P08", name: "Shield / Módulo de expansión para prototipado rápido", units: 15, cat: "boards", protocol: "Compatibles con placas avanzadas L3P07." },
+            { id: "L3P09", name: "Placa con componentes integrados para robótica con IA", units: 15, cat: "boards", protocol: "Reconocimiento de patrones, visión artificial y modelos de IA." },
+            { id: "L3P010", name: "Caja de sensores y actuadores para proyectos de aula", units: 14, cat: "boards", protocol: "Sensores de temperatura, humedad, luz, distancia, altavoces." },
+            { id: "L3P011", name: "Kit e-Textiles", units: 6, cat: "boards", protocol: "Wearables, hilo conductor y costura de circuitos." }
+        ];
+
+        const deadlinesData = [
+            { task: "Asignación del perfil Coordinación STEAM 4.0 / TDE", date: "Septiembre 2025", SenecaPath: "Personal / Personal del centro / Asignación de perfiles", done: true },
+            { task: "Generación Informe CDD de Centro & Rúbrica TDE", date: "Hasta 15 de Octubre 2025", SenecaPath: "Centro / Planes y prog. / Transf. Digital Educativa / Rúbrica #TDE", done: true },
+            { task: "Diseño Líneas de Actuación en PAD", date: "1 al 30 de Octubre 2025", SenecaPath: "Centro / Planes y prog. / Transf. Digital Educativa / PAD", done: true },
+            { task: "Cumplimentación Proyecto STEAM (2.1 y 2.2)", date: "Antes del 15 de Noviembre 2025", SenecaPath: "Centro / Planes y prog. / Transf. Digital Educativa / Proyecto STEAM", done: true },
+            { task: "Revisión y Actualización Proyecto STEAM (Curso 26/27)", date: "Hasta 30 de Octubre 2026", SenecaPath: "Centro / Planes y prog. / Transf. Digital Educativa / Proyecto STEAM", done: false },
+            { task: "Carga de Evidencias y Situaciones de Aprendizaje (2.4)", date: "Continuo curso 2025-2027", SenecaPath: "Séneca -> Proyecto STEAM 4.0 -> Apartado 2.4 Evidencias", done: false }
+        ];
+
+        let currentSlide = 0;
+        let cddChartInstance = null;
+        let dashChartInstance = null;
+
+        const slidesContent = [
+            // Slide 1: Portada
+            {
+                title: "Proyecto STEAM 4.0 - I.E.S. Villa de Mijas",
+                subtitle: "Marco Normativo & Diagnóstico Inicial",
+                render: () => `
+                    <div class="glass-card p-6 sm:p-10 rounded-3xl border border-slate-800 slide-enter relative overflow-hidden">
+                        <div class="absolute -right-20 -top-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-semibold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+                                <i data-lucide="file-badge" class="w-3.5 h-3.5"></i>
+                                Resolución 1 de agosto de 2025 (BOJA)
+                            </span>
+                            <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold text-xs px-3 py-1 rounded-full">
+                                Código Centro: 29701121
+                            </span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+                            Guía de Acción y Plan de Trabajo:<br/>
+                            <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
+                                Coordinación STEAM 4.0
+                            </span>
+                        </h1>
+
+                        <p class="text-slate-300 text-sm sm:text-lg max-w-3xl leading-relaxed mb-8">
+                            Transformación Digital Educativa y despliegue del <strong class="text-white">Programa de Cooperación Territorial Código Escuela 4.0</strong> para potenciar el pensamiento computacional, la robótica y la inteligencia artificial en la ESO.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-xs text-slate-400 font-medium">Dimensiones del Centro</div>
+                                <div class="text-xl font-bold text-cyan-400 mt-1">35 Docentes</div>
+                                <div class="text-xs text-slate-400 mt-0.5">200 Alumnos matriculados</div>
+                            </div>
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-xs text-slate-400 font-medium">Profesorado Certificado CDD</div>
+                                <div class="text-xl font-bold text-emerald-400 mt-1">28 Docentes (80%)</div>
+                                <div class="text-xs text-slate-400 mt-0.5">Informe Séneca 10/09/2026</div>
+                            </div>
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-xs text-slate-400 font-medium">Estrategia Clave</div>
+                                <div class="text-xl font-bold text-violet-400 mt-1">Mentoring en Parejas</div>
+                                <div class="text-xs text-slate-400 mt-0.5">14 Mentores Nivel B2</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 2: CDD Chart & Mentoring Strategy
+            {
+                title: "Diagnóstico CDD del Centro",
+                subtitle: "Distribución del Claustro & Estrategia de Mentoring",
+                render: () => `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 slide-enter">
+                        <!-- Chart Area -->
+                        <div class="lg:col-span-5 glass-card p-5 rounded-3xl border border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                                    <i data-lucide="pie-chart" class="w-5 h-5 text-cyan-400"></i>
+                                    Competencia Digital Docente
+                                </h3>
+                                <p class="text-xs text-slate-400">Datos cargados desde Séneca (28 de 35 certificados)</p>
+                            </div>
+                            <div class="h-60 relative flex items-center justify-center my-2">
+                                <canvas id="slide-cdd-chart"></canvas>
+                            </div>
+                            <div class="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 text-center">
+                                C1/C2 (0,00%): Formación especializada externa con el CEP.
+                            </div>
+                        </div>
+
+                        <!-- Table / Strategy Area -->
+                        <div class="lg:col-span-7 glass-card p-5 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="users" class="w-5 h-5 text-emerald-400"></i>
+                                Plan de Formación Graduado (Sin Sobrecarga)
+                            </h3>
+
+                            <div class="space-y-2.5 overflow-y-auto max-h-[380px] custom-scrollbar pr-1">
+                                ${cddData.map(item => `
+                                    <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 flex items-start gap-3">
+                                        <div class="w-3 h-3 rounded-full mt-1.5 flex-shrink-0" style="background-color: ${item.color}"></div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between">
+                                                <span class="font-bold text-sm text-white">${item.level}</span>
+                                                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                                                    ${item.count} docentes (${item.pct})
+                                                </span>
+                                            </div>
+                                            <p class="text-xs text-slate-300 mt-1">${item.desc}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="bg-gradient-to-r from-emerald-950/60 to-slate-900 p-3 rounded-2xl border border-emerald-500/30 text-xs text-emerald-200 flex items-center gap-3">
+                                <i data-lucide="zap" class="w-6 h-6 text-emerald-400 flex-shrink-0"></i>
+                                <span><strong>Emparejamiento Ágil:</strong> Cada uno de los 14 docentes B2 apoyará directamente a un compañero/a de niveles A1/A2 en microtalleres prácticos de 30 minutos.</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 3: Roadmap Séneca
+            {
+                title: "Hoja de Ruta Paso a Paso para la Coordinación",
+                subtitle: "Cronograma de Fases Oficiales en Séneca (2025 - 2027)",
+                render: () => `
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 slide-enter space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Phase 1 -->
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 relative">
+                                <div class="text-xs font-bold text-cyan-400 tracking-wider uppercase mb-1">Fase 1: Septiembre - 15 Octubre</div>
+                                <h4 class="font-bold text-white text-base">Diagnóstico y Configuración</h4>
+                                <ul class="text-xs text-slate-300 space-y-2 mt-2">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Asignación de Roles:</strong> Verificar perfil de "Coordinador/a TDE" en Séneca.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Informe CDD & Rúbrica TDE:</strong> Evaluar descriptores STEAM (2.1, 5.1, 6.1, 6.2, 7.4, 8.7, 15.1).</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-3 text-[10px] bg-slate-950 text-slate-400 p-2 rounded-lg font-mono">
+                                    Ruta: Centro / Planes y prog. Educativos / Transf. Digital Educativa / Rúbrica #TDE
+                                </div>
+                            </div>
+
+                            <!-- Phase 2 -->
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 relative">
+                                <div class="text-xs font-bold text-amber-400 tracking-wider uppercase mb-1">Fase 2: 1 al 30 de Octubre</div>
+                                <h4 class="font-bold text-white text-base">Integración en el PAD</h4>
+                                <ul class="text-xs text-slate-300 space-y-2 mt-2">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Línea Organización:</strong> Gestión de dotación (115 unidades), etiquetado QR y reserva online.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Línea Procesos E-A:</strong> Pensamiento computacional, robótica e IA con ABP/Retos.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-3 text-[10px] bg-slate-950 text-slate-400 p-2 rounded-lg font-mono">
+                                    Ruta: Transf. Digital Educativa / Plan de Actuación Digital (PAD)
+                                </div>
+                            </div>
+
+                            <!-- Phase 3 -->
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 relative">
+                                <div class="text-xs font-bold text-emerald-400 tracking-wider uppercase mb-1">Fase 3: Hasta 15 de Noviembre</div>
+                                <h4 class="font-bold text-white text-base">Proyecto STEAM 4.0 en Séneca</h4>
+                                <ul class="text-xs text-slate-300 space-y-2 mt-2">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Apartados 2.1 y 2.2:</strong> Cumplimentar Objetivos del centro e Integración curricular.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="info" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Apartado 2.3:</strong> Recursos tecnológicos (se completa tras recibir la dotación).</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-3 text-[10px] bg-slate-950 text-slate-400 p-2 rounded-lg font-mono">
+                                    Ruta: Transf. Digital Educativa / Proyecto STEAM 4.0
+                                </div>
+                            </div>
+
+                            <!-- Phase 4 -->
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 relative">
+                                <div class="text-xs font-bold text-violet-400 tracking-wider uppercase mb-1">Fase 4: Ejecución y Evidencias (2025-2027)</div>
+                                <h4 class="font-bold text-white text-base">Seguimiento & Memoria</h4>
+                                <ul class="text-xs text-slate-300 space-y-2 mt-2">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Evidencias (2.4):</strong> Subir periódicamente productos, REA con eXeLearning y memorias.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="alert-circle" class="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5"></i>
+                                        <span><strong>Revisión 26/27:</strong> Actualización del proyecto antes del 30 de Octubre de 2026.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-3 text-[10px] bg-slate-950 text-slate-400 p-2 rounded-lg font-mono">
+                                    Ruta: Transf. Digital Educativa / Proyecto STEAM 4.0 / Evidencias 2.4
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 4: Tech Catalog
+            {
+                title: "Dotación Tecnológica Código Escuela 4.0",
+                subtitle: "115 Unidades Asignadas para Educación Secundaria Obligatoria",
+                render: () => `
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 slide-enter flex flex-col justify-between space-y-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                            <div>
+                                <span class="text-xs text-cyan-400 font-semibold uppercase">Catálogo Oficial ESO</span>
+                                <h3 class="text-lg font-bold text-white">Equipamiento Técnico Recibido</h3>
+                            </div>
+                            <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold px-3 py-1 rounded-xl text-xs">
+                                Total: 115 Unidades
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[400px] custom-scrollbar pr-1">
+                            ${inventoryData.map(item => `
+                                <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">${item.id}</span>
+                                            <span class="text-xs font-extrabold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-800/60">
+                                                ${item.units} ud${item.units > 1 ? 's' : ''}
+                                            </span>
+                                        </div>
+                                        <h4 class="font-bold text-sm text-white mt-2 leading-snug">${item.name}</h4>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-2 bg-slate-950/40 p-2 rounded-lg border border-slate-800/80">
+                                        ${item.protocol}
+                                    </p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 5: Operative Solutions
+            {
+                title: "Soluciones Operativas y Mantenimiento",
+                subtitle: "Organización Eficiente para Centros Pequeños",
+                render: () => `
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 slide-enter space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-start gap-3.5">
+                                <div class="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20">
+                                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Inventario de Kits & Etiquetado QR</h4>
+                                    <p class="text-xs text-slate-300 mt-1">
+                                        Clasificación de las 115 unidades en cajas con códigos QR pegados. Escaneo mediante smartphone corporativo para consultar manuales y piezas.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-start gap-3.5">
+                                <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                                    <i data-lucide="calendar" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Reserva de Espacios & Carritos</h4>
+                                    <p class="text-xs text-slate-300 mt-1">
+                                        Sistema MRBS en Moodle Centros o Google Calendar (cuentas g.educaand.es). Reserva obligatoria con 24h de antelación. Cuadrante en sala de profesores.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-start gap-3.5">
+                                <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
+                                    <i data-lucide="wrench" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Gestión Ágil de Incidencias TDE</h4>
+                                    <p class="text-xs text-slate-300 mt-1">
+                                        Formulario integrado en Moodle/Web. Revisión quincenal por la Coordinación STEAM para mantenimiento preventivo y reporte a soporte oficial.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-start gap-3.5">
+                                <div class="p-2.5 bg-violet-500/10 text-violet-400 rounded-xl border border-violet-500/20">
+                                    <i data-lucide="printer" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Optimización Impresión 3D</h4>
+                                    <p class="text-xs text-slate-300 mt-1">
+                                        Guía breve de "Instrucciones de Impresión" y validación previa de archivos STL por el equipo STEAM para evitar atascamientos en las 2 impresoras L3P01.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="globe" class="w-5 h-5 text-cyan-400"></i>
+                                <span class="text-xs text-slate-300"><strong>Presencia Web Institucional:</strong> Módulo "Proyecto STEAM 4.0" en BlogsAverroes con actualización mensual.</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 6: Action Lines in PAD
+            {
+                title: "Líneas de Actuación en el PAD (Rúbrica TDE)",
+                subtitle: "Ámbitos Organizativo y Procesos de Enseñanza-Aprendizaje",
+                render: () => `
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 slide-enter space-y-3">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            
+                            <!-- Ámbito Organización -->
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                                    <h4 class="font-bold text-cyan-400 text-sm flex items-center gap-1.5">
+                                        <i data-lucide="building" class="w-4 h-4"></i> Ámbito Organización del Centro
+                                    </h4>
+                                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Requerido en Séneca</span>
+                                </div>
+
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Desc. 2.1: Espacios STEAM / Aula del Futuro</span>
+                                        <p class="text-slate-400 mt-0.5">Plano digital, diseño de aulas flexibles y reservas con Google Calendar/MRBS.</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Desc. 5.1 & 6.1: Guía de uso & Inventario QR</span>
+                                        <p class="text-slate-400 mt-0.5">Guía pública en web y clasificación digital de las 115 unidades.</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Desc. 7.4: Plan de Formación CDD</span>
+                                        <p class="text-slate-400 mt-0.5">Diagnóstico inicial, módulos específicos con CEP y mentores B2.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ámbito E-A -->
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                                    <h4 class="font-bold text-emerald-400 text-sm flex items-center gap-1.5">
+                                        <i data-lucide="book-open" class="w-4 h-4"></i> Ámbito Enseñanza-Aprendizaje
+                                    </h4>
+                                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Requerido en Séneca</span>
+                                </div>
+
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Desc. 8.7: Innovación STEAM & Perspectiva de Género</span>
+                                        <p class="text-slate-400 mt-0.5">Situaciones de Aprendizaje interdisciplinares con Micro:bit, robótica e IA.</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Desc. 15.1: Intercambio de Experiencias</span>
+                                        <p class="text-slate-400 mt-0.5">Semana STEAM del centro, ferias provinciales e intercambios eTwinning.</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="font-bold text-white block">Evidencias en Séneca (Apartado 2.4)</span>
+                                        <p class="text-slate-400 mt-0.5">Publicación de REA eXeLearning, fotos y trabajos del alumnado.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 7: Communication & Templates
+            {
+                title: "Estrategias de Motivación y Plantillas",
+                subtitle: "Comunicación sin Sobrecarga Laboral para el Claustro",
+                render: () => `
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 slide-enter space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- Template 1 -->
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-cyan-400 flex items-center gap-1">
+                                            <i data-lucide="mail" class="w-3.5 h-3.5"></i> Correo Lanzamiento al Claustro
+                                        </span>
+                                        <button onclick="copyToClipboard('email-template-text')" class="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 flex items-center gap-1">
+                                            <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                                        </button>
+                                    </div>
+                                    <div id="email-template-text" class="text-[11px] text-slate-300 bg-slate-950 p-3 rounded-xl font-mono leading-relaxed max-h-56 overflow-y-auto custom-scrollbar">
+Asunto: Puesta en marcha del Proyecto STEAM 4.0 - Apoyo y facilidades para el claustro
+
+Estimados/as compañeros/as:
+Como sabéis, este curso impulsamos en el centro el Proyecto STEAM 4.0 (PCT Código Escuela 4.0), una oportunidad para incorporar robótica, pensamiento computacional y diseño digital sin sobrecarga.
+
+Medidas facilitadoras:
+1. Kits STEAM listos para llevar al aula con reserva online ágil.
+2. Parejas de acompañamiento: mentores B2 asignados.
+3. Repositorio de Situaciones de Aprendizaje reutilizables.
+
+Un saludo,
+La Coordinación STEAM 4.0 / Equipo TDE
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 2 -->
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                                            <i data-lucide="globe" class="w-3.5 h-3.5"></i> Circular para la Web Institucional
+                                        </span>
+                                        <button onclick="copyToClipboard('web-template-text')" class="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 flex items-center gap-1">
+                                            <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                                        </button>
+                                    </div>
+                                    <div id="web-template-text" class="text-[11px] text-slate-300 bg-slate-950 p-3 rounded-xl font-mono leading-relaxed max-h-56 overflow-y-auto custom-scrollbar">
+¡El I.E.S. Villa de Mijas se transforma con el Proyecto STEAM 4.0!
+
+Nuestro centro ha iniciado la implantación del Programa Código Escuela 4.0 con equipamiento de vanguardia: impresoras 3D, cortadora láser, sensores IoT y placas programables con IA.
+
+A través de esta iniciativa, nuestro alumnado desarrollará habilidades en programación, pensamiento computacional e IA mediante retos reales.
+
+¡Construyendo el futuro de la educación pública en Andalucía!
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 8: Official Deadlines Table
+            {
+                title: "Resumen de Plazos Oficiales de Obligado Cumplimiento",
+                subtitle: "Fechas Límite y Rutas Directas en el Sistema Séneca",
+                render: () => `
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 slide-enter space-y-3">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300">
+                                <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-3">Hito / Actuación</th>
+                                        <th class="p-3">Fecha Límite Oficial</th>
+                                        <th class="p-3">Plataforma / Ruta en Séneca</th>
+                                        <th class="p-3 text-center">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    ${deadlinesData.map(d => `
+                                        <tr class="hover:bg-slate-900/50 transition">
+                                            <td class="p-3 font-semibold text-white">${d.task}</td>
+                                            <td class="p-3 font-bold text-amber-400">${d.date}</td>
+                                            <td class="p-3 font-mono text-[11px] text-slate-400">${d.SenecaPath}</td>
+                                            <td class="p-3 text-center">
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${d.done ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-300 border border-slate-700'}">
+                                                    ${d.done ? 'Completado' : 'Pendiente'}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `
+            },
+
+            // Slide 9: Closure & ATI Support
+            {
+                title: "Acompañamiento, Red ATI y Pasos Inmediatos",
+                subtitle: "Soporte Técnico-Pedagógico para el I.E.S. Villa de Mijas",
+                render: () => `
+                    <div class="glass-card p-8 rounded-3xl border border-slate-800 slide-enter space-y-6 text-center max-w-4xl mx-auto">
+                        <div class="inline-flex p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl border border-cyan-500/20">
+                            <i data-lucide="rocket" class="w-8 h-8"></i>
+                        </div>
+
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">
+                            Soporte Continuo para el Éxito del Proyecto
+                        </h2>
+
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Contamos con el apoyo directo de las <strong class="text-cyan-400">Asesorías Técnicas de Innovación (ATI)</strong> y el CEP de referencia para la resolución de dudas técnicas, diseño de Situaciones de Aprendizaje y dinamización de las 115 unidades recibidas.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                                <span class="text-xs text-cyan-400 font-bold block mb-1">1. Mentoring Interno</span>
+                                <p class="text-xs text-slate-300">Acompañamiento entre docentes B2 y A1/A2 en parejas de trabajo.</p>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                                <span class="text-xs text-emerald-400 font-bold block mb-1">2. Recursos REA</span>
+                                <p class="text-xs text-slate-300">Descarga y adaptación de REA eXeLearning listos para el aula.</p>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                                <span class="text-xs text-amber-400 font-bold block mb-1">3. Carga en Séneca</span>
+                                <p class="text-xs text-slate-300">Registro periódico de evidencias y actividades en el apartado 2.4.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800 flex justify-center items-center gap-3">
+                            <button onclick="switchView('dashboard')" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-cyan-600/20">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Explorar Panel Completo
+                            </button>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        function switchView(viewName) {
+            const slidesView = document.getElementById('view-slides');
+            const dashView = document.getElementById('view-dashboard');
+            const btnSlides = document.getElementById('btn-mode-slides');
+            const btnDash = document.getElementById('btn-mode-dashboard');
+
+            if (viewName === 'slides') {
+                slidesView.classList.remove('hidden');
+                dashView.classList.add('hidden');
+                btnSlides.className = "px-2.5 py-1 rounded-md font-medium transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow";
+                btnDash.className = "px-2.5 py-1 rounded-md font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5";
+                renderSlide(currentSlide);
+            } else {
+                slidesView.classList.add('hidden');
+                dashView.classList.remove('hidden');
+                btnDash.className = "px-2.5 py-1 rounded-md font-medium transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow";
+                btnSlides.className = "px-2.5 py-1 rounded-md font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5";
+                initDashboardCharts();
+                renderDashboardDeadlines();
+                renderInventoryTable(inventoryData);
+            }
+            lucide.createIcons();
+        }
+
+        function renderSlide(index) {
+            currentSlide = index;
+            const container = document.getElementById('slide-container');
+            const slide = slidesContent[index];
+            
+            container.innerHTML = `
+                <div class="mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">${slide.subtitle}</span>
+                    <h2 class="text-xl sm:text-2xl font-black text-white leading-tight">${slide.title}</h2>
+                </div>
+                ${slide.render()}
+            `;
+
+            document.getElementById('slide-counter').innerText = `${index + 1} / ${slidesContent.length}`;
+            document.getElementById('slide-select').value = index;
+
+            document.getElementById('prev-btn').disabled = (index === 0);
+            document.getElementById('next-btn').disabled = (index === slidesContent.length - 1);
+
+            renderSlideDots();
+            lucide.createIcons();
+
+            // Special chart initialization for slide 2
+            if (index === 1) {
+                setTimeout(initSlideCDDChart, 50);
+            }
+        }
+
+        function renderSlideDots() {
+            const dotsContainer = document.getElementById('slide-dots');
+            dotsContainer.innerHTML = slidesContent.map((_, i) => `
+                <button onclick="goToSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-cyan-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}" title="Diapositiva ${i + 1}">
+                </button>
+            `).join('');
+        }
+
+        function nextSlide() {
+            if (currentSlide < slidesContent.length - 1) {
+                renderSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                renderSlide(currentSlide - 1);
+            }
+        }
+
+        function goToSlide(index) {
+            renderSlide(index);
+        }
+
+        function initSlideCDDChart() {
+            const canvas = document.getElementById('slide-cdd-chart');
+            if (!canvas) return;
+
+            if (cddChartInstance) {
+                cddChartInstance.destroy();
+            }
+
+            const ctx = canvas.getContext('2d');
+            cddChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: cddData.map(d => d.level),
+                    datasets: [{
+                        data: cddData.map(d => d.count),
+                        backgroundColor: cddData.map(d => d.color),
+                        borderWidth: 2,
+                        borderColor: '#0f172a'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10, family: 'Inter' },
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        function initDashboardCharts() {
+            const canvas = document.getElementById('dash-cdd-chart');
+            if (!canvas) return;
+
+            if (dashChartInstance) {
+                dashChartInstance.destroy();
+            }
+
+            const ctx = canvas.getContext('2d');
+            dashChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: cddData.map(d => d.level.split(' ')[0]),
+                    datasets: [{
+                        label: 'Nº Docentes Certificados',
+                        data: cddData.map(d => d.count),
+                        backgroundColor: cddData.map(d => d.color),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8', stepSize: 2 }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function renderDashboardDeadlines() {
+            const container = document.getElementById('dash-deadlines-container');
+            container.innerHTML = deadlinesData.map(d => `
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="${d.done ? 'check-circle' : 'clock'}" class="w-4 h-4 ${d.done ? 'text-emerald-400' : 'text-amber-400'}"></i>
+                        <div>
+                            <span class="font-bold text-xs text-white block">${d.task}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">${d.SenecaPath}</span>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-bold ${d.done ? 'text-emerald-400' : 'text-amber-400'} flex-shrink-0">
+                        ${d.date}
+                    </span>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderInventoryTable(items) {
+            const tbody = document.getElementById('inventory-table-body');
+            tbody.innerHTML = items.map(item => `
+                <tr class="hover:bg-slate-950/40 transition">
+                    <td class="p-3 font-mono font-bold text-cyan-400">${item.id}</td>
+                    <td class="p-3 font-semibold text-white">${item.name}</td>
+                    <td class="p-3 text-center font-bold text-amber-400">${item.units}</td>
+                    <td class="p-3 text-slate-400 text-xs">${item.protocol}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterInventory(category) {
+            if (category === 'all') {
+                renderInventoryTable(inventoryData);
+            } else {
+                renderInventoryTable(inventoryData.filter(i => i.cat === category));
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Texto copiado al portapapeles");
+            } catch (err) {
+                console.error("Error al copiar text", err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Global Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            const slidesView = document.getElementById('view-slides');
+            if (slidesView.classList.contains('hidden')) return;
+
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullScreen();
+            }
+        });
+
+        window.onload = function() {
+            renderSlide(0);
+        };
+    </script>
+</body>
+</html>
