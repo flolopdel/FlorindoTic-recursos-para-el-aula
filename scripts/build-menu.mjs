@@ -3,6 +3,7 @@ import path from 'path';
 
 const CONTENT_DIR = path.resolve('content');
 const OUTPUT_FILE = path.resolve('menu.json');
+const HIDDEN_DIRECTORIES = new Set(['steam-4.0']);
 
 const WORD_LABELS = new Map([
   ['computacion', 'computación'],
@@ -240,7 +241,7 @@ async function walk(dir, relBase = '') {
   const entries = await fs.readdir(dir, { withFileTypes: true });
 
   const dirs = entries
-    .filter((e) => e.isDirectory())
+    .filter((e) => e.isDirectory() && !HIDDEN_DIRECTORIES.has(e.name.toLowerCase()))
     .sort((a, b) => a.name.localeCompare(b.name, 'es'));
 
   const files = entries

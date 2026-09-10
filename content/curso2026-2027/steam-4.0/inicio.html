@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva - Coordinación Proyecto STEAM 4.0</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        steam: {
+                            blue: '#0284c7',
+                            purple: '#7c3aed',
+                            amber: '#d97706',
+                            teal: '#0d9488'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-steam-blue to-steam-purple p-2 rounded-xl text-white shadow-lg">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold leading-tight">Proyecto STEAM 4.0</h1>
+                        <p class="text-xs text-slate-400">Guía de Coordinación & Gestor de Implantación</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> Res. 1 de Agosto de 2025
+                    </span>
+                    <span class="text-xs text-slate-400 border-l border-slate-700 pl-4">
+                        Centro: 30 Docentes | 200 Alumnos
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex overflow-hidden">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex-shrink-0 hidden lg:flex flex-col">
+            <div class="p-4 border-b border-slate-100">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Fases de Implementación</p>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-3 space-y-1" id="sidebar-nav">
+                <button onclick="switchTab('tab-cronograma')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-brand-50 text-brand-700" data-tab="tab-cronograma">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    <span>1. Cronograma & Séneca</span>
+                </button>
+                <button onclick="switchTab('tab-fase1-pad')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-fase1-pad">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>2. Fase 1: Integración PAD</span>
+                </button>
+                <button onclick="switchTab('tab-fase2-steam')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-fase2-steam">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>3. Fase 2: Proyecto STEAM</span>
+                </button>
+                <button onclick="switchTab('tab-dotacion')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-dotacion">
+                    <i data-lucide="box" class="w-4 h-4"></i>
+                    <span>4. Equipamiento (115 Uds)</span>
+                </button>
+                <button onclick="switchTab('tab-lineas-catalogo')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-lineas-catalogo">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>5. Generador de Líneas</span>
+                </button>
+                
+                <div class="pt-4 mt-4 border-t border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Herramientas Centro</p>
+                    <button onclick="switchTab('tab-herramientas')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-herramientas">
+                        <i data-lucide="wrench" class="w-4 h-4"></i>
+                        <span>6. Reservas e Incidencias</span>
+                    </button>
+                    <button onclick="switchTab('tab-claustro')" class="nav-btn w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" data-tab="tab-claustro">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>7. Comunicación Claustro</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Quick Progress Widget -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200">
+                <div class="flex justify-between text-xs font-medium text-slate-600 mb-1">
+                    <span>Progreso Global</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar" class="bg-brand-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8">
+            
+            <!-- TAB 1: CRONOGRAMA & SÉNECA -->
+            <section id="tab-cronograma" class="tab-content space-y-6">
+                <!-- Header Card -->
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 rounded-2xl p-6 text-white shadow-md">
+                    <div class="max-w-3xl">
+                        <span class="inline-block px-3 py-1 bg-brand-500/20 text-brand-300 rounded-full text-xs font-semibold mb-3 border border-brand-500/30">
+                            Hoja de Ruta del Coordinador
+                        </span>
+                        <h2 class="text-2xl font-bold mb-2">Cronograma Oficial y Pasos de Tramitación</h2>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Organización temporal y checklist interactiva con los accesos exactos a las pantallas del Sistema de Información Séneca para no pasar por alto ningún requisito formal.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline / Interactive Checklist -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column: Sequential Milestones -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="clock" class="w-5 h-5 text-brand-600"></i> Hitos y Fechas Límite
+                        </h3>
+
+                        <!-- Milestone 1 -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative pl-6 border-l-4 border-l-brand-500">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-brand-100 text-brand-800">SEPTIEMBRE</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">1º Asignación del Perfil en Séneca</h4>
+                                    <p class="text-xs text-slate-500 mt-1">La Dirección asigna el perfil de Transformación Digital Educativa / STEAM 4.0.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                            <div class="mt-3 bg-slate-50 p-2.5 rounded-lg text-xs font-mono text-slate-600 flex items-center justify-between">
+                                <span><strong class="text-slate-700">Séneca:</strong> Personal / Personal del Centro / Asignación de Perfiles</span>
+                                <button onclick="copyText('Personal / Personal del Centro')" class="text-brand-600 hover:text-brand-700 font-semibold text-xs flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 2 -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative pl-6 border-l-4 border-l-steam-blue">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800">HASTA EL 15 DE OCTUBRE</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">2º Diagnóstico CDD (Informe de Centro) y Rúbrica TDE</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Descarga del Informe de CDD y autoevaluación con Equipo Directivo y Coordinación TDE.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                            <div class="mt-3 space-y-1.5">
+                                <div class="bg-slate-50 p-2 rounded text-xs font-mono text-slate-600 flex items-center justify-between">
+                                    <span><strong class="text-slate-700">Informe:</strong> Documentos / Personal del Centro / Competencia Digital Docente</span>
+                                    <button onclick="copyText('Documentos que se pueden pedir / Personal del Centro / Competencia Digital Docente / Informe de centro')" class="text-sky-600 hover:text-sky-700 font-semibold text-xs flex items-center gap-1">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                                    </button>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded text-xs font-mono text-slate-600 flex items-center justify-between">
+                                    <span><strong class="text-slate-700">Rúbrica TDE:</strong> Centro / Planes y prog. Educativos / Transf. Digital Educativa / Rúbrica #TDE</span>
+                                    <button onclick="copyText('Centro / Planes y prog. Educativos / Transf. Digital Educativa / Rúbrica #TDE')" class="text-sky-600 hover:text-sky-700 font-semibold text-xs flex items-center gap-1">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 3 -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative pl-6 border-l-4 border-l-steam-purple">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">DEL 1 AL 30 DE OCTUBRE</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">3º Fase 1: Integración en el PAD</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Cumplimentar al menos 2 Líneas de Actuación (Organización y Procesos E/A) en Séneca.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                            <div class="mt-3 bg-slate-50 p-2.5 rounded-lg text-xs font-mono text-slate-600 flex items-center justify-between">
+                                <span><strong class="text-slate-700">Ruta:</strong> Centro / Planes y prog. Educativos / Transf. Digital Educativa / Plan de Actuación Digital</span>
+                                <button onclick="copyText('Centro / Planes y prog. Educativos / Transf. Digital Educativa / Plan de Actuación Digital')" class="text-purple-600 hover:text-purple-700 font-semibold text-xs flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 4 -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative pl-6 border-l-4 border-l-steam-amber">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">ANTES DEL 15 DE NOVIEMBRE DE 2025</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">4º Fase 2: Proyecto STEAM 4.0 (Aprobación Plan de Centro)</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Grabar apartados 2.1 (Objetivos) y 2.2 (Integración Curricular) en Séneca.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                            <div class="mt-3 bg-slate-50 p-2.5 rounded-lg text-xs font-mono text-slate-600 flex items-center justify-between">
+                                <span><strong class="text-slate-700">Ruta:</strong> Centro / Planes y prog. Educativos / Transf. Digital Educativa / Proyecto STEAM 4.0</span>
+                                <button onclick="copyText('Centro / Planes y prog. Educativos / Transf. Digital Educativa / Proyecto STEAM 4.0')" class="text-amber-600 hover:text-amber-700 font-semibold text-xs flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Milestone 5 & 6 (Continuous) -->
+                        <div class="bg-slate-100 p-5 rounded-xl border border-slate-200 space-y-3">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">TRAS RECEPCIÓN & CONTINUO</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">5º Apartado 2.3 (Recursos) y 2.4 (Evidencias de Aula)</h4>
+                                    <p class="text-xs text-slate-500">El apartado 2.3 se cumplimenta tras recibir el material. El 2.4 recopila fotos, vídeos y registros a lo largo del curso.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                            <div class="border-t border-slate-200 pt-3 flex items-start justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">HASTA 30 OCTUBRE 2026</span>
+                                    <h4 class="font-semibold text-slate-800 mt-1">6º Revisión y Actualización Curso 2026-2027</h4>
+                                    <p class="text-xs text-slate-500">Actualización formal del proyecto y aportación final de evidencias en 2.4.</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleCheck(this)" class="check-item rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-5 h-5">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Key Contacts & Info Box -->
+                    <div class="space-y-4">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
+                                <i data-lucide="users" class="w-4 h-4 text-brand-600"></i> Agentes Clave del Proyecto
+                            </h3>
+                            <div class="space-y-3 text-xs">
+                                <div class="p-2.5 rounded-lg bg-slate-50">
+                                    <p class="font-semibold text-slate-800">Coordinación STEAM 4.0 + TDE</p>
+                                    <p class="text-slate-500 mt-0.5">Lideran la actualización del PAD y grabación en Séneca. *Si recae en la misma persona, se certifica solo STEAM 4.0.</p>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-50">
+                                    <p class="font-semibold text-slate-800">Asesoría Técnica de Innovación (ATI)</p>
+                                    <p class="text-slate-500 mt-0.5">Red de apoyo externo nombrada por la Consejería para soporte técnico, pedagógico y acompañamiento en aula.</p>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-50">
+                                    <p class="font-semibold text-slate-800">Equipo Directivo</p>
+                                    <p class="text-slate-500 mt-0.5">Asigna el perfil en Séneca y valida la integración en el Plan de Centro antes del 15 de noviembre.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-xs text-emerald-900 space-y-2">
+                            <div class="flex items-center gap-2 font-bold text-emerald-800">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> Consejo de Coordinación Adjunta
+                            </div>
+                            <p>En un centro de 200 alumnos, no intentes que los 30 profesores apliquen robótica simultáneamente. Empieza con 2-3 departamentos dinámicos (Matemáticas, Tecnología, Ciencias) e incentiva al resto compartiendo sus logros visuales en la web del centro.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: FASE 1 INTEGRACIÓN PAD -->
+            <section id="tab-fase1-pad" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xl font-bold text-slate-900 mb-1">Fase 1: Integración en el Plan de Actuación Digital (PAD)</h2>
+                    <p class="text-sm text-slate-500 mb-4">El PAD se actualiza en Séneca del 1 al 30 de octubre. Debes incluir obligatoriamente al menos 2 Líneas de Actuación:</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="inline-block px-2.5 py-1 bg-sky-100 text-sky-800 font-bold text-xs rounded mb-2">Obligatoria 1</span>
+                            <h3 class="font-semibold text-slate-800 text-sm">Ámbito "Organización del centro"</h3>
+                            <p class="text-xs text-slate-500 mt-1">Gestión, almacenamiento, reserva y conservación de la dotación asignada por Código Escuela 4.0.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="inline-block px-2.5 py-1 bg-purple-100 text-purple-800 font-bold text-xs rounded mb-2">Obligatoria 2</span>
+                            <h3 class="font-semibold text-slate-800 text-sm">Ámbito "Procesos de Enseñanza-Aprendizaje"</h3>
+                            <p class="text-xs text-slate-500 mt-1">Desarrollo directo en el aula del pensamiento computacional, robótica, programación o Inteligencia Artificial.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">Campos Requeridos en el Formulario de Séneca por cada Línea:</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs">
+                            <p class="font-bold text-brand-700">a) Formación</p>
+                            <p class="text-slate-500 mt-1">Repercusión en el Plan de Formación del Profesorado.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs">
+                            <p class="font-bold text-brand-700">b) Tareas</p>
+                            <p class="text-slate-500 mt-1">Tareas concretas previstas para su implementación.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs">
+                            <p class="font-bold text-brand-700">c) Evaluación</p>
+                            <p class="text-slate-500 mt-1">Mecanismo e indicadores para su evaluación.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs">
+                            <p class="font-bold text-brand-700">d) Responsables</p>
+                            <p class="text-slate-500 mt-1">Grupos responsables y departamentos implicados.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs">
+                            <p class="font-bold text-brand-700">e) Temporalización</p>
+                            <p class="text-slate-500 mt-1">Distribución en el calendario del curso.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: FASE 2 PROYECTO STEAM -->
+            <section id="tab-fase2-steam" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Fase 2: Integración con Procesos de Enseñanza y Aprendizaje</h2>
+                        <p class="text-sm text-slate-500">Estructura del formulario en Séneca (`Centro / Planes / Transf. Digital / Proyecto STEAM 4.0`):</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- 2.1 Objetivos -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs">2.1</span>
+                                    Objetivos Planteados para Secundaria (ESO)
+                                </h3>
+                                <span class="text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-medium">Límite: 15 Nov 2025</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-3">Propuesta adaptada de la normativa oficial para copiar y pegar en Séneca:</p>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1.5 font-mono">
+                                <p>• Integrar el pensamiento computacional, la programación, el diseño digital 3D y la robótica en las programaciones didácticas de ESO.</p>
+                                <p>• Promover proyectos interdisciplinares mediante Aprendizaje Basado en Proyectos (ABP) para resolver retos reales del entorno.</p>
+                                <p>• Consolidar espacios de aprendizaje digital y el uso seguro de tecnologías STEAM (incluyendo el buen uso de la Inteligencia Artificial).</p>
+                                <p>• Fomentar la formación continua del profesorado y garantizar el mantenimiento y aprovechamiento eficiente de la dotación tecnológica.</p>
+                            </div>
+                            <button onclick="copyText('• Integrar el pensamiento computacional, la programación, el diseño digital 3D y la robótica en las programaciones didácticas de ESO.\n• Promover proyectos interdisciplinares mediante Aprendizaje Basado en Proyectos (ABP) para resolver retos reales del entorno.\n• Consolidar espacios de aprendizaje digital y el uso seguro de tecnologías STEAM (incluyendo el buen uso de la Inteligencia Artificial).\n• Fomentar la formación continua del profesorado y garantizar el mantenimiento y aprovechamiento eficiente de la dotación tecnológica.')" class="mt-2 text-xs text-brand-600 hover:text-brand-700 font-semibold flex items-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Objetivos en Portapapeles
+                            </button>
+                        </div>
+
+                        <!-- 2.2 Integración Curricular -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs">2.2</span>
+                                    Integración Curricular en el Proyecto Educativo
+                                </h3>
+                                <span class="text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-medium">Límite: 15 Nov 2025</span>
+                            </div>
+                            <p class="text-xs text-slate-600">Vinculación con la Orden de 30 de mayo de 2023 de ESO en Andalucía. Conexión del Perfil de Salida STEM con asignaturas de Tecnología, Matemáticas, Biología y Física y Química.</p>
+                        </div>
+
+                        <!-- 2.3 Recursos Tecnológicos -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-slate-600 text-white flex items-center justify-center text-xs">2.3</span>
+                                    Recursos Tecnológicos Disponibles
+                                </h3>
+                                <span class="text-xs text-slate-600 bg-slate-200 px-2 py-0.5 rounded font-medium">Tras recepción de la dotación</span>
+                            </div>
+                            <p class="text-xs text-slate-600">Registro de las 115 unidades del kit Código Escuela 4.0 asignadas al centro.</p>
+                        </div>
+
+                        <!-- 2.4 Evidencias -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-slate-600 text-white flex items-center justify-center text-xs">2.4</span>
+                                    Evidencias de Actividades / Situaciones de Aprendizaje (SDA)
+                                </h3>
+                                <span class="text-xs text-slate-600 bg-slate-200 px-2 py-0.5 rounded font-medium">A lo largo de todo el curso</span>
+                            </div>
+                            <p class="text-xs text-slate-600">Subida de fotos, enlaces a REAs, vídeos de proyectos de alumnos y actividades con robótica e impresoras 3D.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: EQUIPAMIENTO Y DOTACIÓN (115 UDS) -->
+            <section id="tab-dotacion" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Catálogo de Equipamiento Asignado (ESO)</h2>
+                            <p class="text-xs text-slate-500">Programa Código Escuela 4.0 - Total: 115 Unidades de Producto</p>
+                        </div>
+                        <div class="relative w-full sm:w-64">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                            <input type="text" id="search-dotacion" onkeyup="filterDotacion()" placeholder="Buscar material o ID..." class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-brand-500 focus:border-brand-500">
+                        </div>
+                    </div>
+
+                    <!-- Inventory Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-700">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">ID Producto</th>
+                                    <th class="p-3">Nombre del Producto / Descripción</th>
+                                    <th class="p-3 text-center">Unidades</th>
+                                    <th class="p-3">Uso Pedagógico Sugerido en Centro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dotacion-table-body" class="divide-y divide-slate-200">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P01</td>
+                                    <td class="p-3 font-semibold text-slate-800">Impresora 3D con combo</td>
+                                    <td class="p-3 text-center font-bold bg-brand-50 text-brand-800 rounded">2</td>
+                                    <td class="p-3 text-slate-600">Diseño e impresión de piezas para maquetas en Tecnología / Matemáticas.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P02</td>
+                                    <td class="p-3">Filamentos PLA</td>
+                                    <td class="p-3 text-center font-bold">15</td>
+                                    <td class="p-3 text-slate-600">Consumible para la creación de proyectos 3D durante el curso.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P03</td>
+                                    <td class="p-3">Kit de limpieza y mantenimiento de impresoras 3D</td>
+                                    <td class="p-3 text-center font-bold">2</td>
+                                    <td class="p-3 text-slate-600">Mantenimiento preventivo por el departamento responsable.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P04</td>
+                                    <td class="p-3 font-semibold text-slate-800">Grabadora y cortadora láser</td>
+                                    <td class="p-3 text-center font-bold bg-brand-50 text-brand-800 rounded">1</td>
+                                    <td class="p-3 text-slate-600">Corte de metacrilato/madera para carcasas de robots y señalética.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P05</td>
+                                    <td class="p-3 font-semibold text-slate-800">Kit con placa de desarrollo tipo Micro:bit</td>
+                                    <td class="p-3 text-center font-bold bg-brand-50 text-brand-800 rounded">15</td>
+                                    <td class="p-3 text-slate-600">Iniciación a la programación por bloques en 1º/2º ESO.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P06</td>
+                                    <td class="p-3 font-semibold text-slate-800">Pequeño robot programable con placa incluida</td>
+                                    <td class="p-3 text-center font-bold bg-brand-50 text-brand-800 rounded">15</td>
+                                    <td class="p-3 text-slate-600">Proyectos de robótica móvil, siguelíneas y esquiva obstáculos.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P07</td>
+                                    <td class="p-3">Placa de desarrollo avanzada (WiFi/Bluetooth) para IoT</td>
+                                    <td class="p-3 text-center font-bold">15</td>
+                                    <td class="p-3 text-slate-600">Proyectos de Internet de las Cosas (estación meteorológica, riego).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P08</td>
+                                    <td class="p-3">Shield / módulo de expansión para prototipado rápido</td>
+                                    <td class="p-3 text-center font-bold">15</td>
+                                    <td class="p-3 text-slate-600">Conexión rápida de sensores sin soldaduras.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P09</td>
+                                    <td class="p-3 font-semibold text-slate-800">Placa con componentes para robótica con IA</td>
+                                    <td class="p-3 text-center font-bold bg-brand-50 text-brand-800 rounded">15</td>
+                                    <td class="p-3 text-slate-600">Reconocimiento de imágenes, visión artificial y proyectos de IA en 3º/4º ESO.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P010</td>
+                                    <td class="p-3">Caja de sensores y actuadores para proyectos</td>
+                                    <td class="p-3 text-center font-bold">14</td>
+                                    <td class="p-3 text-slate-600">Sensores de humedad, luz, distancia, servomotores y relés.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-mono font-bold text-brand-700">L3P011</td>
+                                    <td class="p-3">Kit e-Textiles</td>
+                                    <td class="p-3 text-center font-bold">6</td>
+                                    <td class="p-3 text-slate-600">Ropa inteligente, circuitos vestibles e integración STEAM y arte.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: GENERADOR DE LÍNEAS DE ACTUACIÓN -->
+            <section id="tab-lineas-catalogo" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Generador de Redacción para Séneca (Catálogo TDE)</h2>
+                        <p class="text-xs text-slate-500">Selecciona un descriptor oficial para ver la propuesta de tareas y mecanismos de evaluación adaptados para copiar directamente a Séneca.</p>
+                    </div>
+
+                    <!-- Selector -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <select id="descriptor-select" onchange="loadDescriptorData()" class="flex-1 p-2 border border-slate-300 rounded-lg text-xs focus:ring-brand-500 focus:border-brand-500 font-semibold text-slate-700">
+                            <option value="2.1">2.1. Espacios para uso de recursos STEAM 4.0 (Organización)</option>
+                            <option value="5.1">5.1. Guías de uso responsable de equipos (Organización)</option>
+                            <option value="6.1">6.1. Sistema digital de reserva y gestión (Organización)</option>
+                            <option value="6.2">6.2. Registro digital de incidencias (Organización)</option>
+                            <option value="7.4">7.4. Plan de Formación en Competencia Digital STEAM (Organización)</option>
+                            <option value="8.7">8.7. Innovación metodológica con perspectiva de género (Organización)</option>
+                            <option value="15.1">15.1. Actividades de intercambio de experiencias / Semana STEAM (Comunicación)</option>
+                            <option value="19.4">19.4. Adopción de metodologías activas y ABP STEAM (Enseñanza-Aprendizaje)</option>
+                            <option value="21.1">21.1. Elaboración e implementación de SDA con recursos digitales (Enseñanza-Aprendizaje)</option>
+                            <option value="22.1">22.1. Uso y creación de Recursos Educativos Abiertos (REA/eXeLearning) (Enseñanza-Aprendizaje)</option>
+                            <option value="24.1">24.1. Comportamiento responsable en línea, ética e IA (Enseñanza-Aprendizaje)</option>
+                            <option value="26.2">26.2. Evaluación de la competencia digital del alumnado (Enseñanza-Aprendizaje)</option>
+                            <option value="28.1">28.1. Desarrollo de destrezas socioemocionales y Netiqueta (Enseñanza-Aprendizaje)</option>
+                        </select>
+                    </div>
+
+                    <!-- Output Card -->
+                    <div id="descriptor-output" class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: HERRAMIENTAS DE CENTRO (RESERVAS E INCIDENCIAS) -->
+            <section id="tab-herramientas" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Simulación Sistema Reservas -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4 text-brand-600"></i> Sistema de Reservas de Espacios y Carros STEAM
+                            </h3>
+                            <span class="text-[10px] bg-brand-50 text-brand-700 px-2 py-0.5 rounded font-mono">Descriptor 6.1</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Demo interactiva de reserva rápida para el profesorado (se puede vincular a Google Calendar g.educaand.es o Moodle MRBS):</p>
+                        
+                        <form onsubmit="handleReserva(event)" class="space-y-3 text-xs">
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Recurso a Reservar</label>
+                                <select id="res-recurso" class="w-full p-2 border border-slate-300 rounded-lg">
+                                    <option>Aula STEAM / Futuro</option>
+                                    <option>Carro de Impresoras 3D y Corte Láser</option>
+                                    <option>Kit 15 Robots Programables + Micro:bit</option>
+                                    <option>Kit Sensores e IA IoT</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block font-medium text-slate-700 mb-1">Docente / Depto.</label>
+                                    <input type="text" required placeholder="Ej. M. García (Mates)" class="w-full p-2 border border-slate-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block font-medium text-slate-700 mb-1">Fecha y Hora</label>
+                                    <input type="datetime-local" required class="w-full p-2 border border-slate-300 rounded-lg">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2 rounded-lg text-xs transition-colors">
+                                Confirmar Reserva Digital
+                            </button>
+                        </form>
+                        <div id="reserva-status" class="hidden p-2.5 rounded bg-emerald-50 text-emerald-800 text-xs border border-emerald-200">
+                            ✓ Reserva registrada correctamente en el inventario digital.
+                        </div>
+                    </div>
+
+                    <!-- Simulación Registro Incidencias -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i> Registro de Incidencias Técnicas
+                            </h3>
+                            <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-mono">Descriptor 6.2</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Gestión ágil para mantener la trazabilidad del material del programa Código Escuela 4.0:</p>
+
+                        <form onsubmit="handleIncidencia(event)" class="space-y-3 text-xs">
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Material Afectado</label>
+                                <select id="inc-material" class="w-full p-2 border border-slate-300 rounded-lg">
+                                    <option>Impresora 3D (L3P01) - Atasco/Extrusor</option>
+                                    <option>Cortadora Láser (L3P04) - Calibración</option>
+                                    <option>Kit Micro:bit / Placas - Cable/Conectividad</option>
+                                    <option>Red / Conexión WiFi en Aula STEAM</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Descripción de la Incidencia</label>
+                                <textarea required rows="2" placeholder="Detalla el fallo detectado..." class="w-full p-2 border border-slate-300 rounded-lg"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 rounded-lg text-xs transition-colors">
+                                Notificar a Coordinación STEAM / TDE
+                            </button>
+                        </form>
+                        <div id="incidencia-status" class="hidden p-2.5 rounded bg-amber-50 text-amber-800 text-xs border border-amber-200">
+                            ✓ Incidencia registrada. La coordinación revisará el equipo a la mayor brevedad.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ideas para Impresión y Web -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i data-lucide="printer" class="w-4 h-4 text-steam-blue"></i> Pautas de Visibilidad: Web del Centro e Instrucciones de Impresión
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <p class="font-bold text-slate-800 mb-1">Cartelería de Aula (Instrucciones para Imprimir)</p>
+                            <p class="text-slate-600">Genera códigos QR pegados a los carros de portátiles y kits de robótica que apunten a:</p>
+                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-slate-500">
+                                <li>Formulario de reserva rápida.</li>
+                                <li>Guía de uso responsable y apagado correcto.</li>
+                                <li>Reporte de piezas defectuosas en 3D/Láser.</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <p class="font-bold text-slate-800 mb-1">Sección STEAM en la Web de Centro (BlogsAverroes)</p>
+                            <p class="text-slate-600">Crea una pestaña "Proyecto STEAM 4.0" pública con:</p>
+                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-slate-500">
+                                <li>Galería fotográfica de proyectos del alumnado (Evidencias 2.4).</li>
+                                <li>Guía de Seguridad y Protección de Datos para familias.</li>
+                                <li>Publicación de REA creados con eXeLearning.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: COMUNICACIÓN CLAUSTRO -->
+            <section id="tab-claustro" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Estrategia de Motivación del Claustro (30 Docentes)</h2>
+                            <p class="text-xs text-slate-500">Modelo de comunicación interna amigable para evitar la percepción de sobrecarga burocrática.</p>
+                        </div>
+                        <button onclick="copyText(document.getElementById('email-template').innerText)" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Plantilla
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 font-mono text-xs text-slate-700 leading-relaxed whitespace-pre-wrap" id="email-template">
+ASUNTO: ¡Damos el paso al Proyecto STEAM 4.0! Herramientas y acompañamiento para nuestro centro
+
+Estimadas compañeras y compañeros,
+
+Iniciamos este curso la puesta en marcha del Programa Código Escuela 4.0 en nuestro centro. Como sabéis, somos un centro cercano (30 docentes) y la meta no es recargar nuestra labor diaria, sino facilitaros recursos innovadores que enriquezcan vuestras clases.
+
+¿Qué novedades nos aporta este proyecto?
+1. Nueva dotación tecnológica: Contamos con impresoras 3D, cortadora láser, placas Micro:bit, kits de robótica e IA adaptados a Secundaria.
+2. Formación práctica y acompañada: No estaréis solos. Contamos con el apoyo del CEP y de la Asesoría Técnica de Innovación (ATI), además de plantillas ya diseñadas.
+3. Reservas sencillas: Hemos habilitado un sistema digital para reservar los materiales o el aula STEAM en 2 clics.
+
+¿Qué os pedimos en esta primera etapa?
+- Simplemente explorar las oportunidades en vuestra asignatura (Tecnología, Mates, Ciencias, Lengua, etc.).
+- Os facilitaremos Situaciones de Aprendizaje (SDA) sencillas ya estructuradas para que las podáis probar en el aula sin complicaciones.
+
+Quedo a vuestra entera disposición para cualquier duda o para diseñar juntos cualquier reto que queráis llevar al aula.
+
+Un saludo cordial,
+Coordinación Proyecto STEAM 4.0
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-message">Texto copiado al portapapeles</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Descriptor Data Store
+        const descriptorData = {
+            "2.1": {
+                title: "2.1. Espacios para el uso de los recursos STEAM 4.0",
+                ambito: "Organización del centro",
+                tareas: [
+                    "Tarea 1: Elaboración de plano digital identificando zonas de aprendizaje digital.",
+                    "Tarea 2: Acondicionamiento de aulas con mobiliario flexible, paneles y kits STEAM.",
+                    "Tarea 3: Talleres informativos al claustro sobre la gestión compartida de los espacios.",
+                    "Tarea 4: Implementación de sistema de reserva digital (Google Calendar / Moodle MRBS)."
+                ],
+                evaluacion: "Estadísticas de ocupación de espacios, actas de departamento y cuestionarios de satisfacción.",
+                formacion: "Módulo sobre diseño y dinamización de Aulas del Futuro / Espacios STEAM.",
+                documentos: "ROF (Organización de espacios), Proyecto de Gestión."
+            },
+            "5.1": {
+                title: "5.1. Guías de uso responsable de equipos y dispositivos",
+                ambito: "Organización del centro",
+                tareas: [
+                    "Tarea 1: Redacción de la guía de uso responsable, conservación y sostenibilidad del material Código Escuela 4.0.",
+                    "Tarea 2: Publicación accesible en la web del centro (BlogsAverroes).",
+                    "Tarea 3: Inclusión formal en el Plan de Centro.",
+                    "Tarea 4: Recogida de FAQ e incidencias para actualización continua."
+                ],
+                evaluacion: "Lista de cotejo comprobando accesibilidad pública e integración en Plan de Centro.",
+                formacion: "Sensibilización en seguridad digital y propiedad intelectual.",
+                documentos: "ROF (Normas de uso de dispositivos), Proyecto de Gestión."
+            },
+            "6.1": {
+                title: "6.1. Sistema digital de registro, reserva y gestión de recursos",
+                ambito: "Organización del centro",
+                tareas: [
+                    "Tarea 1: Implantación de app/web de reserva accesible para el claustro.",
+                    "Tarea 2: Organización de kits con etiquetado por códigos QR e inventario digital.",
+                    "Tarea 3: Difusión del protocolo de reserva en órganos colegiados."
+                ],
+                evaluacion: "Porcentaje de profesorado que utiliza la herramienta de reserva digital e inspección periódica de inventario.",
+                formacion: "Tutorial sobre gestión de reservas e inventarios.",
+                documentos: "ROF, Proyecto de Gestión."
+            },
+            "6.2": {
+                title: "6.2. Sistema digital de registro de incidencias de recursos",
+                ambito: "Organización del centro",
+                tareas: [
+                    "Tarea 1: Creación de formulario digital para parte de incidencias y mantenimientos.",
+                    "Tarea 2: Protocolo de revisión periódica del material Código Escuela 4.0.",
+                    "Tarea 3: Informes trimestrales de estado del equipamiento al Equipo Directivo."
+                ],
+                evaluacion: "Análisis del número y tiempo de resolución de incidencias notificadas.",
+                formacion: "Instrucciones de mantenimiento básico de impresoras 3D y robótica.",
+                documentos: "ROF, Proyecto de Gestión."
+            },
+            "7.4": {
+                title: "7.4. Plan de Formación en Competencia Digital STEAM 4.0",
+                ambito: "Organización del centro",
+                tareas: [
+                    "Tarea 1: Diagnóstico inicial de necesidades formativas del claustro.",
+                    "Tarea 2: Módulos formativos con el CEP sobre robótica, cortadora láser e IA.",
+                    "Tarea 3: Sistema de acompañamiento/mentoría entre docentes del centro."
+                ],
+                evaluacion: "Cuestionarios de impacto formativo y revisión de memorias de aula.",
+                formacion: "Curso CEP específico del programa Código Escuela 4.0.",
+                documentos: "Proyecto Educativo (Plan de Formación del Profesorado)."
+            },
+            "8.7": {
+                title: "8.7. Innovación metodológica STEAM con perspectiva de género",
+                ambito: "Organización del centro / Coeducación",
+                tareas: [
+                    "Tarea 1: Inclusión en programaciones de Situaciones de Aprendizaje (SDA) orientadas a reducir la brecha de género STEM.",
+                    "Tarea 2: Espacios interdepartamentales para planificar ABP con Micro:bit y robótica.",
+                    "Tarea 3: Publicación de proyectos creados en el repositorio del centro."
+                ],
+                evaluacion: "Registros en Séneca de SDA aplicadas e indicadores de participación equilibrada.",
+                formacion: "Taller sobre coeducación en disciplinas vocacionales STEAM.",
+                documentos: "Proyecto Educativo (Líneas generales de actuación pedagógica)."
+            },
+            "15.1": {
+                title: "15.1. Actividades de intercambio de experiencias (Semana STEAM)",
+                ambito: "Información y Comunicación",
+                tareas: [
+                    "Tarea 1: Organización de la Semana STEAM en el centro abriendo talleres a las familias.",
+                    "Tarea 2: Participación del alumnado en ferias y encuentros provinciales de ciencia y tecnología.",
+                    "Tarea 3: Difusión de trabajos a través de la web del centro y redes institucionales."
+                ],
+                evaluacion: "Memoria del evento, número de participantes e indicadores de visibilidad web.",
+                formacion: "Difusión de buenas prácticas educativas.",
+                documentos: "ROF (Cauces de participación de la comunidad educativa)."
+            },
+            "19.4": {
+                title: "19.4. Adopción de metodologías activas integrando proyectos STEAM",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Actualización del Plan de Centro integrando el enfoque ABP y STEAM.",
+                    "Tarea 2: Diseño de itinerario metodológico para aplicar retos de programación y robótica.",
+                    "Tarea 3: Creación de foro interno entre docentes para resolver dudas de aula."
+                ],
+                evaluacion: "Número de docentes implicados y catálogo de proyectos interdisciplinares creados.",
+                formacion: "Formación en ABP y pensamiento computacional transversal.",
+                documentos: "Proyecto Educativo (Estrategias metodológicas)."
+            },
+            "21.1": {
+                title: "21.1. Elaboración e implementación de secuencias didácticas (SDA)",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Formación interna sobre diseño de SDA con componentes STEAM.",
+                    "Tarea 2: Aplicación en aula de Situaciones de Aprendizaje utilizando kits de robótica y sensores.",
+                    "Tarea 3: Recopilación de evidencias (vídeos/fotos) para el apartado 2.4 de Séneca."
+                ],
+                evaluacion: "Portafolio docente con SDA implementadas y producciones del alumnado.",
+                formacion: "Diseño curricular de SDA alineadas con LOMLOE y perfil STEM.",
+                documentos: "Proyecto Educativo (Objetivos de mejora del rendimiento)."
+            },
+            "22.1": {
+                title: "22.1. Uso y creación de Recursos Educativos Abiertos (REA)",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Talleres prácticos para la edición de contenidos con eXeLearning.",
+                    "Tarea 2: Elaboración de REA sobre pensamiento computacional e Inteligencia Artificial.",
+                    "Tarea 3: Publicación en repositorios oficiales bajo licencias Creative Commons (CC)."
+                ],
+                evaluacion: "Número de REA publicados e integrados en las programaciones didácticas.",
+                formacion: "Curso eXeLearning y creación de REA.",
+                documentos: "Proceso de Autoevaluación y Mejora."
+            },
+            "24.1": {
+                title: "24.1. Comportamiento responsable en línea, ética e Inteligencia Artificial",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Integración en programaciones de contenidos sobre etiqueta digital, derechos de autor y sesgos en la IA.",
+                    "Tarea 2: Talleres de uso ético de la IA generativa para Secundaria.",
+                    "Tarea 3: Difusión de la Guía de Protección de Datos a las familias."
+                ],
+                evaluacion: "Lista de cotejo en las programaciones y productos de reflexión del alumnado.",
+                formacion: "Uso ético y seguro de la IA en educación.",
+                documentos: "Proyecto Educativo, ROF."
+            },
+            "26.2": {
+                title: "26.2. Evaluación de la Competencia Digital del Alumnado",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Inclusión de tareas digitales progresivas en las programaciones de ESO.",
+                    "Tarea 2: Evaluación del pensamiento computacional alineado con el perfil de salida STEM.",
+                    "Tarea 3: Uso de Google Classroom / Moodle Centro como entorno activo de trabajo."
+                ],
+                evaluacion: "Rúbricas de evaluación de la competencia digital y datos de participación en plataformas.",
+                formacion: "Evaluación por competencias mediante rúbricas digitales.",
+                documentos: "Proyecto Educativo (Procedimientos y criterios de evaluación)."
+            },
+            "28.1": {
+                title: "28.1. Desarrollo de destrezas socioemocionales en entornos digitales",
+                ambito: "Procesos de Enseñanza-Aprendizaje",
+                tareas: [
+                    "Tarea 1: Diseño de SDA cooperativas para la resolución inclusiva de retos tecnológicos.",
+                    "Tarea 2: Pautas comunes de comunicación respetuosa en foros y entornos virtuales del centro."
+                ],
+                evaluacion: "Rúbricas de trabajo en equipo y clima de convivencia digital.",
+                formacion: "Bienestar emocional y convivencia digital en redes.",
+                documentos: "Plan de Convivencia, Proyecto Educativo."
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadDescriptorData();
+        });
+
+        // Tab Switching Function
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('bg-brand-50', 'text-brand-700');
+                    btn.classList.remove('text-slate-600');
+                } else {
+                    btn.classList.remove('bg-brand-50', 'text-brand-700');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+        }
+
+        // Load Selected Descriptor Details
+        function loadDescriptorData() {
+            const select = document.getElementById('descriptor-select');
+            const data = descriptorData[select.value];
+            const output = document.getElementById('descriptor-output');
+
+            if (!data) return;
+
+            let tareasHTML = data.tareas.map(t => `<li class="mb-1">${t}</li>`).join('');
+
+            const formattedTextToCopy = `LÍNEA DE ACTUACIÓN: ${data.title}\nÁMBITO: ${data.ambito}\n\nTAREAS PREVISTAS:\n${data.tareas.join('\n')}\n\nMECANISMO DE EVALUACIÓN:\n${data.evaluacion}\n\nREPERCUSIÓN EN EL PLAN DE FORMACIÓN:\n${data.formacion}\n\nVINCULACIÓN CON PLAN DE CENTRO:\n${data.documentos}`;
+
+            output.innerHTML = `
+                <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-brand-100 text-brand-800">${data.ambito}</span>
+                        <h3 class="font-bold text-slate-800 text-sm mt-1">${data.title}</h3>
+                    </div>
+                    <button onclick="copyText(\`${formattedTextToCopy}\`)" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar para Séneca
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <p class="font-bold text-slate-700 mb-1">Tareas previstas para implementación:</p>
+                        <ul class="list-disc list-inside text-slate-600 space-y-1">
+                            ${tareasHTML}
+                        </ul>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="font-bold text-slate-700 mb-0.5">Mecanismo de Evaluación:</p>
+                            <p class="text-slate-600">${data.evaluacion}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-700 mb-0.5">Plan de Formación Asociado:</p>
+                            <p class="text-slate-600">${data.formacion}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-700 mb-0.5">Documentos del Centro vinculados:</p>
+                            <p class="text-slate-600">${data.documentos}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Copy Text Utility
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copiado al portapapeles listo para pegar en Séneca");
+            }).catch(() => {
+                showToast("Error al copiar");
+            });
+        }
+
+        // Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Checklist Progress Handler
+        function toggleCheck(checkbox) {
+            const total = document.querySelectorAll('.check-item').length;
+            const checked = document.querySelectorAll('.check-item:checked').length;
+            const percent = Math.round((checked / total) * 100);
+
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+
+            if (checkbox.checked) {
+                checkbox.closest('.bg-white, .bg-slate-100')?.classList.add('bg-emerald-50/50');
+            } else {
+                checkbox.closest('.bg-white, .bg-slate-100')?.classList.remove('bg-emerald-50/50');
+            }
+        }
+
+        // Filter Dotacion Equipment Table
+        function filterDotacion() {
+            const query = document.getElementById('search-dotacion').value.toLowerCase();
+            const rows = document.querySelectorAll('#dotacion-table-body tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // Demo Handlers for Reservation & Incidents
+        function handleReserva(e) {
+            e.preventDefault();
+            const status = document.getElementById('reserva-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 4000);
+        }
+
+        function handleIncidencia(e) {
+            e.preventDefault();
+            const status = document.getElementById('incidencia-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 4000);
+        }
+    </script>
+</body>
+</html>
