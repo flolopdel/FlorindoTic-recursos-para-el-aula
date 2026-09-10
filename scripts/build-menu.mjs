@@ -4,10 +4,52 @@ import path from 'path';
 const CONTENT_DIR = path.resolve('content');
 const OUTPUT_FILE = path.resolve('menu.json');
 
+const WORD_LABELS = new Map([
+  ['computacion', 'computación'],
+  ['digitalizacion', 'digitalización'],
+  ['evaluacion', 'evaluación'],
+  ['indice', 'índice'],
+  ['index', 'índice'],
+  ['presentacion', 'presentación'],
+  ['robotica', 'robótica'],
+  ['tecnologia', 'tecnología'],
+]);
+
+const SMALL_WORDS = new Set(['a', 'con', 'de', 'del', 'en', 'para', 'por', 'y']);
+
+const EXACT_LABELS = new Map([
+  ['cv_interactivo_cyr_1_eso', 'CV Interactivo CyR 1.º ESO'],
+  ['cv_interactivo_cyr_2_eso', 'CV Interactivo CyR 2.º ESO'],
+  ['cv_interactivo_cyr_3_eso', 'CV Interactivo CyR 3.º ESO'],
+  ['cv_interactivo_dig_4_eso', 'CV Interactivo Digitalización 4.º ESO'],
+  ['cv_interactivo_tec_4_eso', 'CV Interactivo Tecnología 4.º ESO'],
+  ['cv_interactivo_tyd_3_eso', 'CV Interactivo TyD 3.º ESO'],
+  ['presentacion_computacion_y_robotica', 'Presentación de Computación y Robótica'],
+  ['presentacion_digitalizacion', 'Presentación de Digitalización'],
+  ['presentacion_tecnologia', 'Presentación de Tecnología'],
+  ['presentacion_tecnologia_y_digitalizacion', 'Presentación de Tecnología y Digitalización'],
+]);
+
 function prettify(name) {
-  return name
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const exactLabel = EXACT_LABELS.get(name.toLowerCase());
+  if (exactLabel) return exactLabel;
+
+  const normalized = name.replace(/[-_]+/g, ' ').trim();
+  const courseMatch = normalized.match(/^(\d+) eso$/i);
+  if (courseMatch) return `${courseMatch[1]}.º ESO`;
+
+  const unitMatch = normalized.match(/^ud\s*(\d+)$/i);
+  if (unitMatch) return `UD ${unitMatch[1]}`;
+
+  return normalized
+    .split(/\s+/)
+    .map((word, index) => {
+      const lowerWord = word.toLowerCase();
+      const label = WORD_LABELS.get(lowerWord) || lowerWord;
+      if (index > 0 && SMALL_WORDS.has(label)) return label;
+      return label.charAt(0).toUpperCase() + label.slice(1);
+    })
+    .join(' ');
 }
 
 async function readMeta(dir) {
