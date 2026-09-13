@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio Interactivo de Origami - Papiroflexia para Todos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        kids: ['Fredoka', 'cursive']
+                    },
+                    colors: {
+                        origami: {
+                            50: '#fffbf0',
+                            100: '#fef3c7',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        valley: '#2563eb',
+                        mountain: '#dc2626',
+                        guide: '#16a34a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transitions for interactive elements */
+        .tab-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* SVG Diagram line dash animation */
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -24;
+            }
+        }
+        .animate-fold-line {
+            stroke-dasharray: 6, 4;
+            animation: dash 1.5s linear infinite;
+        }
+
+        /* Subtle paper texture effect */
+        .paper-texture {
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e5e7eb 0.75px, transparent 0.75px);
+            background-size: 16px 16px;
+        }
+
+        /* Fold line legend styles */
+        .fold-valley-line { stroke: #2563eb; stroke-dasharray: 6, 4; stroke-width: 2.5; }
+        .fold-mountain-line { stroke: #dc2626; stroke-dasharray: 8, 3, 2, 3; stroke-width: 2.5; }
+        .fold-crease-line { stroke: #9ca3af; stroke-width: 1.5; stroke-dasharray: 2, 2; }
+        .arrow-path { fill: none; stroke: #059669; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="paper-texture text-slate-800 min-h-full flex flex-col font-sans antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-amber-100 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center text-white shadow-md shadow-amber-500/20 transform hover:rotate-6 transition-transform">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 19h20L12 2zm0 3.8L18.5 17H5.5L12 5.8zM12 9l-3.5 5.5h7L12 9z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                        Origami Studio
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Aprende Papiroflexia Paso a Paso</p>
+                </div>
+            </div>
+
+            <!-- Controls & Sound Toggle -->
+            <div class="flex items-center space-x-3">
+                <button id="soundToggle" onclick="toggleSound()" class="p-2 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-700 transition-colors flex items-center space-x-1.5 text-xs font-medium" title="Activar/Desactivar Efectos de Sonido">
+                    <span id="soundIcon">🔊</span>
+                    <span class="hidden md:inline">Sonido</span>
+                </button>
+                <div class="h-4 w-px bg-slate-200"></div>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full">
+                    100% Interactivo
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+        <!-- Level Selector Banner -->
+        <section class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-sm">
+            <div class="text-center max-w-xl mx-auto mb-6">
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Elige tu Nivel de Desafío</h2>
+                <p class="text-slate-600 text-sm mt-1">Selecciona la audiencia para cargar el modelo de origami adaptado.</p>
+            </div>
+
+            <!-- Audience Level Tabs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
+                <!-- Kids Tab -->
+                <button onclick="selectLevel('kids')" id="btn-kids" class="level-btn tab-transition p-4 rounded-xl border-2 border-slate-200 hover:border-pink-300 text-left flex items-start space-x-3.5 group relative overflow-hidden">
+                    <div class="p-2.5 rounded-lg bg-pink-100 text-pink-600 group-hover:scale-110 transition-transform">
+                        🐶
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-900 text-sm">Niños</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 font-bold">FÁCIL</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Carita de Perro</p>
+                        <p class="text-[11px] text-slate-400 mt-1">4 pasos • 3 min</p>
+                    </div>
+                </button>
+
+                <!-- Teens Tab -->
+                <button onclick="selectLevel('teens')" id="btn-teens" class="level-btn tab-transition p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-300 text-left flex items-start space-x-3.5 group relative overflow-hidden">
+                    <div class="p-2.5 rounded-lg bg-indigo-100 text-indigo-600 group-hover:scale-110 transition-transform">
+                        🕊️
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-900 text-sm">Adolescentes</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 font-bold">MEDIO</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Grulla de la Paz</p>
+                        <p class="text-[11px] text-slate-400 mt-1">7 pasos • 8 min</p>
+                    </div>
+                </button>
+
+                <!-- Adults Tab -->
+                <button onclick="selectLevel('adults')" id="btn-adults" class="level-btn tab-transition p-4 rounded-xl border-2 border-slate-200 hover:border-emerald-300 text-left flex items-start space-x-3.5 group relative overflow-hidden">
+                    <div class="p-2.5 rounded-lg bg-emerald-100 text-emerald-600 group-hover:scale-110 transition-transform">
+                        🪷
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-900 text-sm">Adultos</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">AVANZADO</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">Flor de Loto Geométrica</p>
+                        <p class="text-[11px] text-slate-400 mt-1">7 pasos • 12 min</p>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Interactive Workspace -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- SVG Diagram & Visualizer (Left Column on Desktop) -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 sm:p-7 flex flex-col items-center justify-between min-h-[420px] relative overflow-hidden">
+                
+                <!-- Fold Type Badge & Legend Bar -->
+                <div class="w-full flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-medium text-slate-400">Tipo de Pliegue:</span>
+                        <span id="foldTypeBadge" class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                            Pliegue Valle
+                        </span>
+                    </div>
+
+                    <!-- Visual Legend Modal/Tooltip Trigger -->
+                    <div class="flex items-center space-x-3 text-[11px] text-slate-500">
+                        <span class="inline-flex items-center"><span class="w-3 h-0.5 bg-blue-600 border-dashed mr-1"></span> Valle</span>
+                        <span class="inline-flex items-center"><span class="w-3 h-0.5 bg-red-600 mr-1"></span> Montaña</span>
+                    </div>
+                </div>
+
+                <!-- SVG Container -->
+                <div class="w-full flex-1 flex items-center justify-center p-2 relative my-2">
+                    <div id="svgContainer" class="w-full max-w-[340px] aspect-square flex items-center justify-center transition-all duration-300 transform">
+                        <!-- Dynamic SVG injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Step Counter Indicator (Desktop/Mobile) -->
+                <div class="w-full pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span id="targetAudienceLabel" class="font-medium text-amber-700">Para Niños</span>
+                    <span id="paperSpecLabel" class="bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-medium">Papel recomendado: Cuadrado 15x15 cm</span>
+                </div>
+            </div>
+
+            <!-- Instruction Details & Controls (Right Column on Desktop) -->
+            <div class="lg:col-span-5 flex flex-col gap-5">
+                
+                <!-- Main Step Card -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between flex-1 min-h-[360px]">
+                    <div>
+                        <!-- Header / Step Title -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="stepNumberBadge" class="text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full bg-amber-100 text-amber-800">
+                                Paso 1 de 4
+                            </span>
+                            <label class="inline-flex items-center cursor-pointer select-none">
+                                <input type="checkbox" id="stepCheck" onchange="toggleStepComplete()" class="w-4 h-4 text-amber-600 border-slate-300 rounded focus:ring-amber-500">
+                                <span class="ml-2 text-xs font-medium text-slate-600">¡Completado!</span>
+                            </label>
+                        </div>
+
+                        <h3 id="stepTitle" class="text-xl font-bold text-slate-900 mb-2">
+                            Preparar la Hoja Base
+                        </h3>
+
+                        <!-- Step Description -->
+                        <p id="stepDescription" class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Coloca el papel cuadrado sobre una superficie plana. Dóblalo por la mitad uniendo dos esquinas opuestas para formar un triángulo grande.
+                        </p>
+
+                        <!-- Pro Tip Box -->
+                        <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/60 text-xs text-amber-900 flex items-start space-x-3 mb-4">
+                            <span class="text-base flex-shrink-0">💡</span>
+                            <div>
+                                <span class="font-bold block mb-0.5">Consejo Pro:</span>
+                                <span id="stepTip" class="text-amber-800/90">Pasa la uña firmemente sobre el pliegue para que quede bien marcado.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs font-medium text-slate-500 mb-1.5">
+                            <span>Progreso del Modelo</span>
+                            <span id="progressPercentage">25%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div id="progressBar" class="bg-gradient-to-r from-amber-500 to-orange-500 h-2.5 rounded-full transition-all duration-500" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 flex items-center justify-between gap-3">
+                    <button id="btnPrev" onclick="navigateStep(-1)" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center space-x-2">
+                        <span>←</span>
+                        <span>Anterior</span>
+                    </button>
+                    
+                    <button id="btnNext" onclick="navigateStep(1)" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-sm shadow-md shadow-amber-500/20 transition-all flex items-center justify-center space-x-2">
+                        <span id="btnNextText">Siguiente</span>
+                        <span>→</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Completion Celebration Modal -->
+    <div id="completionModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl border border-amber-100 transform scale-95 transition-transform duration-300">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-bounce">
+                🎉
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">¡Felicitaciones!</h3>
+            <p id="modalMessage" class="text-slate-600 text-sm mb-6">
+                Has completado con éxito la figura de Origami. ¡Eres un auténtico maestro del papel!
+            </p>
+
+            <div class="space-y-3">
+                <button onclick="restartCurrentLevel()" class="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/30 transition-all">
+                    Repetir esta figura
+                </button>
+                <button onclick="closeModalAndNextLevel()" class="w-full py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-all">
+                    Explorar otro nivel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Repository for the 3 Audience Levels and their step-by-step instructions
+        const ORIGAMI_DATA = {
+            kids: {
+                id: "kids",
+                audience: "Niños (5-10 años)",
+                title: "Carita de Perro",
+                paperSpec: "1 Hoja cuadrada de color (ej. 15x15 cm)",
+                steps: [
+                    {
+                        title: "El Triángulo Base",
+                        desc: "Coloca tu hoja cuadrada en forma de diamante (con una punta mirando hacia ti). Dóblala por la mitad juntando la punta superior con la inferior.",
+                        foldType: "Pliegue Valle",
+                        foldClass: "bg-blue-100 text-blue-800 border-blue-200",
+                        tip: "Marca muy bien el doblez aplastándolo con tu dedo pulgar.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="100,20 180,100 100,180 20,100" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                                <line x1="20" y1="100" x2="180" y2="100" class="fold-valley-line animate-fold-line"/>
+                                <path d="M100,40 Q100,70 100,90" class="arrow-path"/>
+                                <polygon points="96,85 100,95 104,85" fill="#059669"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Las Orejas del Perro",
+                        desc: "Dobla las dos esquinas superiores izquierda y derecha hacia abajo en diagonal para crear las dos orejitas caídas.",
+                        foldType: "Pliegue Valle",
+                        foldClass: "bg-blue-100 text-blue-800 border-blue-200",
+                        tip: "No las dobles totalmente rectas; déjalas un poco inclinadas hacia afuera.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="20,40 180,40 100,140" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                                <!-- Oreja Izquierda -->
+                                <polygon points="20,40 60,40 40,110" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+                                <!-- Oreja Derecha -->
+                                <polygon points="180,40 140,40 160,110" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+                                <path d="M40,50 Q30,70 40,90" class="arrow-path"/>
+                                <path d="M160,50 Q170,70 160,90" class="arrow-path"/>
+                            </svg>`
+                    },
+                    {
+                        title: "El Hocico",
+                        desc: "Toma solo la primera capa del pico inferior de abajo y dóblala un poco hacia arriba para formar la barbilla/hocico.",
+                        foldType: "Pliegue Montaña / Valle simple",
+                        foldClass: "bg-blue-100 text-blue-800 border-blue-200",
+                        tip: "Deja un pequeño espacio triangular blanco o doblado en la punta.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Cabeza y Orejas -->
+                                <polygon points="30,40 170,40 100,150" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                                <polygon points="30,40 60,40 35,110" fill="#eab308"/>
+                                <polygon points="170,40 140,40 165,110" fill="#eab308"/>
+                                <!-- Hocico Doblado -->
+                                <polygon points="100,150 75,120 125,120" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                                <line x1="75" y1="120" x2="125" y2="120" class="fold-valley-line"/>
+                            </svg>`
+                    },
+                    {
+                        title: "¡Dibuja los Detalles!",
+                        desc: "¡Tu origami está listo! Toma un rotulador o lápiz y dibújale los dos ojos, la nariz negra en la punta del hocico y una gran sonrisa.",
+                        foldType: "Finalización Creativa",
+                        foldClass: "bg-purple-100 text-purple-800 border-purple-200",
+                        tip: "¡Puedes añadirle pecas, manchas o dibujarle una lengua divertida!",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Perro Completo con Cara -->
+                                <polygon points="30,40 170,40 100,150" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                                <polygon points="30,40 60,40 35,110" fill="#eab308"/>
+                                <polygon points="170,40 140,40 165,110" fill="#eab308"/>
+                                <polygon points="100,150 75,125 125,125" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                                <!-- Ojos -->
+                                <circle cx="75" cy="80" r="7" fill="#1e293b"/>
+                                <circle cx="125" cy="80" r="7" fill="#1e293b"/>
+                                <!-- Nariz -->
+                                <ellipse cx="100" cy="125" rx="10" ry="7" fill="#1e293b"/>
+                                <!-- Lengua divertida -->
+                                <path d="M95,132 Q100,145 105,132" fill="#ef4444"/>
+                            </svg>`
+                    }
+                ]
+            },
+            teens: {
+                id: "teens",
+                audience: "Adolescentes (11-17 años)",
+                title: "Grulla de la Paz (Tsuru)",
+                paperSpec: "1 Hoja cuadrada de origami (15x15 cm bicolor)",
+                steps: [
+                    {
+                        title: "Marcado de Guías (Diagonales y Cruces)",
+                        desc: "Dobla el cuadrado por ambas diagonales (valle) y por la mitad horizontal y vertical (montaña). Desdobla todo para dejar marcadas las líneas.",
+                        foldType: "Marcaje Previo",
+                        foldClass: "bg-gray-100 text-gray-800 border-gray-200",
+                        tip: "La precisión en las líneas iniciales es el secreto para una grulla perfecta.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <rect x="30" y="30" width="140" height="140" fill="#818cf8" stroke="#4f46e5" stroke-width="2"/>
+                                <line x1="30" y1="30" x2="170" y2="170" class="fold-crease-line"/>
+                                <line x1="170" y1="30" x2="30" y2="170" class="fold-crease-line"/>
+                                <line x1="100" y1="30" x2="100" y2="170" class="fold-crease-line"/>
+                                <line x1="30" y1="100" x2="170" y2="100" class="fold-crease-line"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Formar la Base Cuadrada Preliminar",
+                        desc: "Colapsa las esquinas hacia el interior aprovechando los pliegues guía para formar un cuadrado más pequeño de 4 capas.",
+                        foldType: "Pliegue Colapsado",
+                        foldClass: "bg-amber-100 text-amber-800 border-amber-200",
+                        tip: "Asegúrate de que la abertura del nuevo cuadrado quede hacia ti (abajo).",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="100,30 160,100 100,170 40,100" fill="#6366f1" stroke="#4338ca" stroke-width="2"/>
+                                <line x1="100" y1="30" x2="100" y2="170" class="fold-crease-line"/>
+                                <path d="M40,100 Q70,100 90,120" class="arrow-path"/>
+                                <path d="M160,100 Q130,100 110,120" class="arrow-path"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Pliegues en Forma de Cometa",
+                        desc: "Dobla los bordes inferiores externos hacia la línea central. Haz lo mismo con el triángulo superior doblándolo hacia abajo para marcar la guía.",
+                        foldType: "Pliegue Valle",
+                        foldClass: "bg-blue-100 text-blue-800 border-blue-200",
+                        tip: "Desdobla estas solapas después de marcarlas muy firmemente.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="100,30 160,100 100,170 40,100" fill="#6366f1" stroke="#4338ca" stroke-width="1.5"/>
+                                <!-- Cometa izquierda y derecha -->
+                                <polygon points="100,170 65,100 100,100" fill="#a5b4fc" stroke="#4338ca"/>
+                                <polygon points="100,170 135,100 100,100" fill="#a5b4fc" stroke="#4338ca"/>
+                                <line x1="65" y1="100" x2="135" y2="100" class="fold-valley-line"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Pliegue de Pétalo (Apertura)",
+                        desc: "Abre la capa superior desde abajo y llévala hacia arriba manteniendo los lados colapsados hacia adentro a lo largo de las marcas.",
+                        foldType: "Pliegue Pétalo (Avanzado)",
+                        foldClass: "bg-purple-100 text-purple-800 border-purple-200",
+                        tip: "Tómate tu tiempo. Guía el papel suavemente con los dedos para evitar romper el vértice.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Forma de rombo alargado -->
+                                <polygon points="100,15 145,100 100,185 55,100" fill="#818cf8" stroke="#3730a3" stroke-width="2"/>
+                                <line x1="100" y1="15" x2="100" y2="185" stroke="#3730a3" stroke-width="1"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Repetir en el Reverso",
+                        desc: "Gira el papel 180° y repite el pliegue de cometa y de pétalo en el lado posterior. Obtendrás un rombo estilizado.",
+                        foldType: "Simetría Reverso",
+                        foldClass: "bg-indigo-100 text-indigo-800 border-indigo-200",
+                        tip: "Ambos lados deben lucir idénticos antes de continuar.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="100,20 140,100 100,180 60,100" fill="#818cf8" stroke="#3730a3" stroke-width="2"/>
+                                <!-- Afinar las solapas inferiores -->
+                                <polygon points="100,180 75,100 100,100" fill="#a5b4fc"/>
+                                <polygon points="100,180 125,100 100,100" fill="#a5b4fc"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Inversión del Cuello y Cola",
+                        desc: "Realiza pliegues invertidos interiores en las dos extremidades inferiores delgadas para elevarlas entre las capas superiores.",
+                        foldType: "Pliegue Invertido Interior",
+                        foldClass: "bg-red-100 text-red-800 border-red-200",
+                        tip: "Abre ligeramente el lateral del cuerpo para meter la tira hacia arriba.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Cuerpo central -->
+                                <polygon points="100,70 130,120 100,140 70,120" fill="#6366f1"/>
+                                <!-- Cuello elevado -->
+                                <polygon points="70,120 40,40 60,100" fill="#818cf8" stroke="#3730a3"/>
+                                <!-- Cola elevada -->
+                                <polygon points="130,120 160,50 140,100" fill="#818cf8" stroke="#3730a3"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Detalle de Cabeza y Apertura de Alas",
+                        desc: "Haz un pequeño pliegue invertido en la punta del cuello para formar la cabeza. Despliega las dos alas hacia los lados suavemente.",
+                        foldType: "Finalización",
+                        foldClass: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        tip: "Puedes soplar con cuidado en el orificio inferior para inflar levemente el cuerpo.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Grulla Completa -->
+                                <path d="M35,65 L48,70 L65,100 L100,125 L135,100 L165,60" fill="none" stroke="#3730a3" stroke-width="3"/>
+                                <!-- Ala Izquierda -->
+                                <polygon points="100,125 40,50 80,100" fill="#818cf8" stroke="#3730a3"/>
+                                <!-- Ala Derecha -->
+                                <polygon points="100,125 160,50 120,100" fill="#a5b4fc" stroke="#3730a3"/>
+                                <!-- Cabeza doblada -->
+                                <polygon points="35,65 25,75 40,75" fill="#ef4444"/>
+                            </svg>`
+                    }
+                ]
+            },
+            adults: {
+                id: "adults",
+                audience: "Adultos (Avanzado / Modular)",
+                title: "Flor de Loto Geométrica",
+                paperSpec: "1 Hoja cuadrada de papel fino pero resistente (20x20 cm)",
+                steps: [
+                    {
+                        title: "Primer Pliegue Blintz (4 Esquinas al Centro)",
+                        desc: "Marca los ejes central e intermedio. Dobla las 4 esquinas del cuadrado haciendo que converjan exactamente en el centro.",
+                        foldType: "Pliegue Blintz",
+                        foldClass: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        tip: "Cuida que los vértices no se encanten ni se solapen entre sí.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <rect x="20" y="20" width="160" height="160" fill="#34d399" stroke="#059669" stroke-width="2"/>
+                                <!-- 4 Esquinas al centro -->
+                                <polygon points="20,20 100,100 20,100" fill="#6ee7b7" stroke="#059669"/>
+                                <polygon points="180,20 100,100 180,100" fill="#6ee7b7" stroke="#059669"/>
+                                <polygon points="20,180 100,100 20,100" fill="#6ee7b7" stroke="#059669"/>
+                                <polygon points="180,180 100,100 180,100" fill="#6ee7b7" stroke="#059669"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Segundo Pliegue Blintz",
+                        desc: "Sin dar la vuelta a la figura, vuelve a doblar las nuevas 4 esquinas exteriores exactamente hacia el centro.",
+                        foldType: "Pliegue Blintz Doble",
+                        foldClass: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        tip: "El papel empezará a sentirse más grueso y tenso. Acomoda los pliegues firmemente.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <rect x="20" y="20" width="160" height="160" fill="#10b981" stroke="#047857" stroke-width="2"/>
+                                <!-- Capa secundaria -->
+                                <polygon points="20,20 100,100 100,20" fill="#a7f3d0" stroke="#047857"/>
+                                <polygon points="180,20 100,100 100,20" fill="#a7f3d0" stroke="#047857"/>
+                                <polygon points="20,180 100,100 100,180" fill="#a7f3d0" stroke="#047857"/>
+                                <polygon points="180,180 100,100 100,180" fill="#a7f3d0" stroke="#047857"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Tercer Pliegue Blintz",
+                        desc: "Por tercera vez consecutiva, dobla las 4 esquinas del cuadrado hacia el centro.",
+                        foldType: "Pliegue Blintz Triple",
+                        foldClass: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        tip: "Utiliza la yema del pulgar para aplanar la zona central congestionada.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <polygon points="100,20 180,100 100,180 20,100" fill="#059669" stroke="#064e3b" stroke-width="2"/>
+                                <polygon points="100,20 100,100 60,60" fill="#d1fae5"/>
+                                <polygon points="100,20 100,100 140,60" fill="#d1fae5"/>
+                                <polygon points="100,180 100,100 60,140" fill="#d1fae5"/>
+                                <polygon points="100,180 100,100 140,140" fill="#d1fae5"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Inversión Posterior (Pequeño Doblez)",
+                        desc: "Voltea la figura boca abajo. Dobla ligeramente las 4 esquinas exteriores hacia el centro (aproximadamente 1 cm).",
+                        foldType: "Pliegue Montaña Posterior",
+                        foldClass: "bg-red-100 text-red-800 border-red-200",
+                        tip: "Este pequeño doblez asegurará la estructura cuando saques los pétalos.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <rect x="30" y="30" width="140" height="140" fill="#047857" stroke="#064e3b" stroke-width="2"/>
+                                <!-- Puntas traseras pequeñas -->
+                                <polygon points="30,30 50,30 30,50" fill="#10b981"/>
+                                <polygon points="170,30 150,30 170,50" fill="#10b981"/>
+                                <polygon points="30,170 50,170 30,150" fill="#10b981"/>
+                                <polygon points="170,170 150,170 170,150" fill="#10b981"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Extracción del Primer Grupo de Pétalos",
+                        desc: "Sostén el centro con el pulgar. Toma la primera capa de papel de la parte posterior y trágala delicadamente hacia el frente volteándola al revés.",
+                        foldType: "Pliegue Tensión / Inversión 3D",
+                        foldClass: "bg-orange-100 text-orange-800 border-orange-200",
+                        tip: "Hazlo con suma delicadeza para evitar que el papel se rasgue.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <circle cx="100" cy="100" r="70" fill="#065f46"/>
+                                <!-- Pétalos desplegados capa 1 -->
+                                <path d="M100,10 Q120,50 100,90 Q80,50 100,10" fill="#f43f5e" stroke="#be123c"/>
+                                <path d="M100,190 Q120,150 100,110 Q80,150 100,190" fill="#f43f5e" stroke="#be123c"/>
+                                <path d="M10,100 Q50,120 90,100 Q50,80 10,100" fill="#f43f5e" stroke="#be123c"/>
+                                <path d="M190,100 Q150,120 110,100 Q150,80 190,100" fill="#f43f5e" stroke="#be123c"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Extracción de la Segunda Capa de Pétalos",
+                        desc: "Repite el procedimiento anterior con la siguiente capa de solapas que ha quedado en el reverso, trayéndolas hacia adelante entre los primeros pétalos.",
+                        foldType: "Inversión 3D Secundaria",
+                        foldClass: "bg-orange-100 text-orange-800 border-orange-200",
+                        tip: "Verás cómo se crea un volumen tridimensional de pétalos entrelazados.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <circle cx="100" cy="100" r="75" fill="#047857"/>
+                                <!-- Pétalos Capa 1 -->
+                                <path d="M100,15 Q120,55 100,95 Q80,55 100,15" fill="#fb7185"/>
+                                <path d="M100,185 Q120,145 100,105 Q80,145 100,185" fill="#fb7185"/>
+                                <!-- Pétalos Capa 2 Diagonales -->
+                                <path d="M35,35 Q75,65 95,95 Q65,75 35,35" fill="#f43f5e" stroke="#be123c"/>
+                                <path d="M165,35 Q125,65 105,95 Q135,75 165,35" fill="#f43f5e" stroke="#be123c"/>
+                            </svg>`
+                    },
+                    {
+                        title: "Despliegue de la Hojas Base",
+                        desc: "Finalmente, despliega la última capa restante en la parte inferior para formar la base plana de hojas verdes de la flor.",
+                        foldType: "Modelo Escultural Completo",
+                        foldClass: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        tip: "Moldea con las yemas de las manos para dar forma redondeada y natural al loto.",
+                        svg: `
+                            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                                <!-- Hojas Verdes Base -->
+                                <polygon points="100,5 125,35 75,35" fill="#10b981"/>
+                                <polygon points="100,195 125,165 75,165" fill="#10b981"/>
+                                <polygon points="5,100 35,125 35,75" fill="#10b981"/>
+                                <polygon points="195,100 165,125 165,75" fill="#10b981"/>
+                                <!-- Flor de Loto Rosa Interna -->
+                                <circle cx="100" cy="100" r="55" fill="#fda4af" stroke="#f43f5e" stroke-width="2"/>
+                                <circle cx="100" cy="100" r="35" fill="#ffe4e6"/>
+                                <circle cx="100" cy="100" r="15" fill="#fef08a"/>
+                            </svg>`
+                    }
+                ]
+            }
+        };
+
+        // Global State
+        let currentLevelKey = 'kids';
+        let currentStepIndex = 0;
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            selectLevel('kids');
+            setupKeyboardNav();
+        });
+
+        // Web Audio Synthesizer for paper fold sound effects
+        function playFoldSound() {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                // Create noise buffer simulating paper sliding/creasing
+                const bufferSize = audioCtx.sampleRate * 0.08; // 80ms sound
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 800;
+                filter.Q.value = 3;
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                noise.start();
+            } catch (e) {
+                console.log('Audio disabled or unsupported:', e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').innerText = soundEnabled ? '🔊' : '🔇';
+        }
+
+        // Level Switch Handler
+        function selectLevel(key) {
+            currentLevelKey = key;
+            currentStepIndex = 0;
+
+            // Update UI Level Tab styles
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('border-amber-500', 'bg-amber-50/50', 'ring-2', 'ring-amber-400');
+                btn.classList.add('border-slate-200');
+            });
+
+            const activeBtn = document.getElementById(`btn-${key}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-slate-200');
+                activeBtn.classList.add('border-amber-500', 'bg-amber-50/50', 'ring-2', 'ring-amber-400');
+            }
+
+            renderCurrentStep();
+            playFoldSound();
+        }
+
+        // Render Current Step Data to DOM
+        function renderCurrentStep() {
+            const model = ORIGAMI_DATA[currentLevelKey];
+            const step = model.steps[currentStepIndex];
+            const totalSteps = model.steps.length;
+
+            // Target Info
+            document.getElementById('targetAudienceLabel').innerText = `Auditorio: ${model.audience}`;
+            document.getElementById('paperSpecLabel').innerText = model.paperSpec;
+
+            // Step Badge & Title
+            document.getElementById('stepNumberBadge').innerText = `Paso ${currentStepIndex + 1} de ${totalSteps}`;
+            document.getElementById('stepTitle').innerText = step.title;
+            document.getElementById('stepDescription').innerText = step.desc;
+            document.getElementById('stepTip').innerText = step.tip;
+
+            // Fold Type Badge
+            const badge = document.getElementById('foldTypeBadge');
+            badge.innerText = step.foldType;
+            badge.className = `inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold border ${step.foldClass}`;
+
+            // Inject Dynamic SVG Diagram
+            const svgBox = document.getElementById('svgContainer');
+            svgBox.style.opacity = '0';
+            svgBox.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                svgBox.innerHTML = step.svg;
+                svgBox.style.opacity = '1';
+                svgBox.style.transform = 'scale(1)';
+            }, 150);
+
+            // Update Progress Bar
+            const progressPercent = Math.round(((currentStepIndex + 1) / totalSteps) * 100);
+            document.getElementById('progressPercentage').innerText = `${progressPercent}%`;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Navigation Buttons State
+            document.getElementById('btnPrev').disabled = (currentStepIndex === 0);
+            
+            const nextText = document.getElementById('btnNextText');
+            if (currentStepIndex === totalSteps - 1) {
+                nextText.innerText = '¡Finalizar!';
+            } else {
+                nextText.innerText = 'Siguiente';
+            }
+
+            // Reset Checkbox
+            document.getElementById('stepCheck').checked = false;
+        }
+
+        // Navigation Actions
+        function navigateStep(direction) {
+            const model = ORIGAMI_DATA[currentLevelKey];
+            const newIndex = currentStepIndex + direction;
+
+            if (newIndex >= 0 && newIndex < model.steps.length) {
+                currentStepIndex = newIndex;
+                renderCurrentStep();
+                playFoldSound();
+            } else if (newIndex >= model.steps.length) {
+                showCompletionModal();
+            }
+        }
+
+        function toggleStepComplete() {
+            playFoldSound();
+            const checkbox = document.getElementById('stepCheck');
+            if (checkbox.checked && currentStepIndex < ORIGAMI_DATA[currentLevelKey].steps.length - 1) {
+                setTimeout(() => navigateStep(1), 300);
+            }
+        }
+
+        // Keyboard Navigation Support
+        function setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    navigateStep(1);
+                } else if (e.key === 'ArrowLeft') {
+                    navigateStep(-1);
+                }
+            });
+        }
+
+        // Completion Modal Handlers
+        function showCompletionModal() {
+            const modal = document.getElementById('completionModal');
+            const model = ORIGAMI_DATA[currentLevelKey];
+            document.getElementById('modalMessage').innerText = `¡Has completado con éxito la "${model.title}" adaptada para ${model.audience}!`;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+            
+            triggerConfettiEffect();
+        }
+
+        function restartCurrentLevel() {
+            closeModal();
+            currentStepIndex = 0;
+            renderCurrentStep();
+        }
+
+        function closeModalAndNextLevel() {
+            closeModal();
+            const keys = ['kids', 'teens', 'adults'];
+            const nextIdx = (keys.indexOf(currentLevelKey) + 1) % keys.length;
+            selectLevel(keys[nextIdx]);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('completionModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Pure Canvas Confetti Burst Effect
+        function triggerConfettiEffect() {
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = '9999';
+            document.body.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#ec4899'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.7) * 14,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 8 + 4,
+                    rotation: Math.random() * 360,
+                    spin: (Math.random() - 0.5) * 10
+                });
+            }
+
+            let animationFrame;
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // Gravity
+                    p.rotation += p.spin;
+
+                    if (p.y < canvas.height) alive = true;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (alive) {
+                    animationFrame = requestAnimationFrame(animateConfetti);
+                } else {
+                    cancelAnimationFrame(animationFrame);
+                    canvas.remove();
+                }
+            }
+            animateConfetti();
+        }
+    </script>
+</body>
+</html>
