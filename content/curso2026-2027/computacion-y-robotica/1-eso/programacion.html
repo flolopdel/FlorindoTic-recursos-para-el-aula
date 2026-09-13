@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Curricular LOMLOE - Computación y Robótica 1º ESO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .badge-cev {
+            background-color: #dbeafe; /* blue-100 */
+            color: #1e40af; /* blue-800 */
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .badge-cev:hover {
+            background-color: #bfdbfe; /* blue-200 */
+            transform: scale(1.05);
+        }
+        .badge-desc {
+            background-color: #dcfce7; /* green-100 */
+            color: #166534; /* green-800 */
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .badge-desc:hover {
+            background-color: #bbf7d0; /* green-200 */
+            transform: scale(1.05);
+        }
+        .sda-card {
+            transition: all 0.3s ease;
+        }
+        .sda-card.active {
+            border-left: 4px solid #2563eb; /* blue-600 */
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-blue-800 text-white p-4 shadow-md flex justify-between items-center z-10 shrink-0">
+        <div>
+            <h1 class="text-2xl font-bold">Asistente de Programación LOMLOE</h1>
+            <p class="text-sm text-blue-200">Computación y Robótica 1º ESO - Junta de Andalucía</p>
+        </div>
+        <div class="text-right hidden sm:block">
+            <p class="text-sm font-semibold">Auditoría Curricular: <span class="text-green-400">100% Cobertura</span></p>
+            <p class="text-xs text-blue-200">6 SdA | 48 Sesiones | 15 Criterios Evaluados</p>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Panel Izquierdo: Lista de SdA -->
+        <section class="w-full md:w-2/3 h-full overflow-y-auto p-4 lg:p-6 bg-gray-50 border-r border-gray-200">
+            <h2 class="text-xl font-bold mb-4 text-gray-700 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Mapa de Situaciones de Aprendizaje (SdA)
+            </h2>
+            <div id="sda-container" class="space-y-4 pb-10">
+                <!-- SdA items will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Panel Derecho: Visor Normativo -->
+        <section class="w-full md:w-1/3 h-full bg-white flex flex-col shadow-inner z-0">
+            <div class="p-4 bg-gray-100 border-b border-gray-200 flex-shrink-0">
+                <h3 class="font-bold text-gray-700 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Visor Normativo Oficial
+                </h3>
+            </div>
+            
+            <div id="normative-viewer" class="p-6 flex-1 overflow-y-auto">
+                <div class="flex flex-col items-center justify-center h-full text-gray-400 text-center">
+                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                    <p class="text-sm">Haz clic en cualquier <span class="font-bold text-blue-600 bg-blue-100 px-1 rounded">Criterio</span> o <span class="font-bold text-green-600 bg-green-100 px-1 rounded">Descriptor</span> en el panel izquierdo para ver su redacción exacta según el currículo oficial (CYR 1 ESO y Descriptores operativos).</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Data Structure for Situaciones de Aprendizaje
+        const sdaData = [
+            {
+                id: 1,
+                title: "Supervivencia Digital: Nuestro Entorno de Trabajo",
+                sesiones: 5,
+                peso: "10%",
+                ce: [6],
+                cev: ["6.1", "6.2", "6.4"],
+                descriptores: ["CD1", "CD2", "CD4", "CPSAA3", "CC3"],
+                justificacion: "El alumnado necesita dominar el ecosistema digital del centro. Se evalúa la seguridad activa/pasiva y el acceso responsable a plataformas (iPasen, Moodle)."
+            },
+            {
+                id: 2,
+                title: "Pensamiento Computacional: Creando con Scratch",
+                sesiones: 12,
+                peso: "25%",
+                ce: [1, 2, 4, 6],
+                cev: ["1.3", "2.1", "4.1", "6.2", "6.3"],
+                descriptores: ["STEM1", "STEM3", "CD1", "CD3", "CD5", "CPSAA1", "CE3"],
+                justificacion: "Desarrollo de videojuego. Al tener gran peso, además de la lógica algorítmica (1.3, 2.1), se evalúa el uso de variables/datos (4.1), la publicación segura del proyecto (6.2) y el respeto a los derechos de autor de recursos multimedia (6.3)."
+            },
+            {
+                id: 3,
+                title: "Descubriendo la Robótica y la Micro:bit",
+                sesiones: 12,
+                peso: "25%",
+                ce: [1, 2],
+                cev: ["1.1", "1.2", "1.3", "1.4", "2.1"],
+                descriptores: ["CCL3", "STEM2", "STEM3", "CD5", "CPSAA1", "CE1"],
+                justificacion: "Transición al hardware. Se evalúa el funcionamiento de componentes robóticos (1.1, 1.2, 1.4) y, al programar la placa con MakeCode, se reevalúan de forma continua los criterios de desarrollo de software (1.3, 2.1)."
+            },
+            {
+                id: 4,
+                title: "Ingeniería con Propósito: Reto IoT y App Móvil",
+                sesiones: 9,
+                peso: "20%",
+                ce: [1, 2, 3],
+                cev: ["1.1", "1.4", "2.1", "2.2", "3.1"],
+                descriptores: ["STEM3", "STEM5", "CD4", "CD5", "CC3", "CE3"],
+                justificacion: "Construcción de una solución física real (3.1) que interactúa con una App Móvil creada por el alumnado (2.2), consolidando conocimientos de ingeniería (1.1, 1.4) y código (2.1)."
+            },
+            {
+                id: 5,
+                title: "Identidad Digital: El Caso de Laura",
+                sesiones: 4,
+                peso: "8%",
+                ce: [6],
+                cev: ["6.1", "6.3", "6.4"],
+                descriptores: ["STEM1", "CD1", "CD4", "CPSAA3", "CC3"],
+                justificacion: "Análisis de un caso de estudio sobre peligros en la red para consolidar la protección de datos, prevención de ciberacoso y civismo digital."
+            },
+            {
+                id: 6,
+                title: "Relanzando un Producto: IA y Web",
+                sesiones: 6,
+                peso: "12%",
+                ce: [4, 5],
+                cev: ["4.1", "4.2", "5.1", "5.2"],
+                descriptores: ["STEM3", "CD1", "CD4", "CD5", "CPSAA5", "CE3"],
+                justificacion: "Uso de agentes de IA generativa (4.2) y análisis básico de datos (4.1) para idear una campaña, culminando en el desarrollo de una Landing Page responsiva (5.1, 5.2)."
+            }
+        ];
+
+        const currNormativo = {
+            criterios: {
+                "1.1": "Comprender el funcionamiento global de los sistemas de computación física, sus componentes y principales características.",
+                "1.2": "Reconocer el papel de la robótica en nuestra sociedad, indicando el marco elemental de trabajo de los mismos.",
+                "1.3": "Entender la estructura básica de un programa informático.",
+                "1.4": "Comprender los principios básicos de ingeniería en los que se basan los robots.",
+                "2.1": "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.",
+                "2.2": "Conocer y resolver la variedad de problemas posibles desarrollando una aplicación móvil, particularizando las soluciones.",
+                "3.1": "Ser capaz de construir un sistema de computación o robótico, promoviendo la interacción con el mundo físico en el contexto de un problema del mundo real, de forma sostenible.",
+                "4.1": "Conocer la naturaleza de los distintos tipos de datos generados hoy en día, siendo capaces de analizarlos, visualizarlos y compararlos, empleando a su vez un espíritu crítico y científico.",
+                "4.2": "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la Inteligencia Artificial de forma ética y responsable.",
+                "5.1": "Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.",
+                "5.2": "Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.",
+                "6.1": "Adoptar conductas y hábitos que permitan la protección del individuo en su interacción en la red.",
+                "6.2": "Acceder a servicios de intercambio y publicación de información digital aplicando criterios básicos de seguridad y uso responsable.",
+                "6.3": "Reconocer y comprender los derechos de los materiales alojados en la web.",
+                "6.4": "Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información."
+            },
+            descriptores: {
+                "CCL3": "Localiza, selecciona y contrasta de manera progresivamente autónoma información procedente de diferentes fuentes evaluando su fiabilidad y pertinencia...",
+                "CD1": "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica...",
+                "CD2": "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales, mediante estrategias de tratamiento de la información...",
+                "CD3": "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales...",
+                "CD4": "Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, los datos personales, la salud...",
+                "CD5": "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos o responder a retos...",
+                "CC3": "Comprende y analiza problemas éticos fundamentales y de actualidad, considerando críticamente los valores propios y ajenos...",
+                "CC4": "Comprende las relaciones sistémicas de interdependencia, ecodependencia e interconexión entre actuaciones locales y globales, y adopta... un estilo de vida sostenible...",
+                "CE1": "Analiza necesidades y oportunidades y afronta retos con sentido crítico, haciendo balance de su sostenibilidad... para presentar ideas y soluciones innovadoras...",
+                "CE3": "Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones, de manera razonada, utilizando estrategias ágiles de planificación...",
+                "STEM1": "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona y emplea diferentes estrategias para resolver problemas...",
+                "STEM2": "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, confiando en el conocimiento como motor de desarrollo...",
+                "STEM3": "Plantea y desarrolla proyectos diseñando, fabricando y evaluando diferentes prototipos o modelos para generar o utilizar productos que den solución a una necesidad...",
+                "STEM5": "Emprende acciones fundamentadas científicamente para promover la salud física, mental y social, y preservar el medio ambiente y los seres vivos...",
+                "CPSAA1": "Regula y expresa sus emociones, fortaleciendo el optimismo, la resiliencia, la autoeficacia y la búsqueda de propósito y motivación hacia el aprendizaje...",
+                "CPSAA3": "Comprende proactivamente las perspectivas y las experiencias de las demás personas y las incorpora a su aprendizaje, para participar en el trabajo en grupo...",
+                "CPSAA4": "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información...",
+                "CPSAA5": "Planea objetivos a medio plazo y desarrolla procesos metacognitivos de retroalimentación para aprender de sus errores en el proceso de construcción del conocimiento.",
+                "CCEC3": "Expresa ideas, opiniones, sentimientos y emociones por medio de producciones culturales y artísticas, integrando su propio cuerpo y desarrollando la autoestima...",
+                "CCEC4": "Conoce, selecciona y utiliza con creatividad diversos medios y soportes, así como técnicas plásticas, visuales, audiovisuales, sonoras o corporales..."
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sda-container');
+            
+            sdaData.forEach(sda => {
+                // Create SdA Card
+                const card = document.createElement('div');
+                card.className = 'sda-card bg-white rounded-lg border border-gray-200 p-5 hover:shadow-md';
+                card.id = `sda-${sda.id}`;
+                
+                // Generate CEv Badges
+                const cevHTML = sda.cev.map(c => 
+                    `<span class="badge-cev text-xs font-semibold px-2.5 py-0.5 rounded mr-2 mb-2 inline-block" onclick="showDetail('criterios', '${c}')">CEv ${c}</span>`
+                ).join('');
+                
+                // Generate Descriptors Badges
+                const descHTML = sda.descriptores.map(d => 
+                    `<span class="badge-desc text-xs font-semibold px-2.5 py-0.5 rounded mr-2 mb-2 inline-block border border-green-200" onclick="showDetail('descriptores', '${d}')">${d}</span>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-gray-800">SdA ${sda.id}: ${sda.title}</h3>
+                        <div class="text-right flex-shrink-0 ml-4">
+                            <span class="block text-sm font-semibold text-blue-600">${sda.peso}</span>
+                            <span class="block text-xs text-gray-500">${sda.sesiones} sesiones</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">${sda.justificacion}</p>
+                    
+                    <div class="mb-3">
+                        <p class="text-xs font-bold text-gray-500 uppercase mb-1">Criterios de Evaluación (Clic para ver norma):</p>
+                        <div class="flex flex-wrap">${cevHTML}</div>
+                    </div>
+                    
+                    <div>
+                        <p class="text-xs font-bold text-gray-500 uppercase mb-1">Perfil de Salida (Descriptores):</p>
+                        <div class="flex flex-wrap">${descHTML}</div>
+                    </div>
+                `;
+                
+                // Click on card logic to highlight it
+                card.addEventListener('click', (e) => {
+                    // Prevent activating card if clicking on a badge
+                    if(e.target.classList.contains('badge-cev') || e.target.classList.contains('badge-desc')) return;
+                    
+                    document.querySelectorAll('.sda-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                });
+
+                container.appendChild(card);
+            });
+        });
+
+        function showDetail(type, id) {
+            const viewer = document.getElementById('normative-viewer');
+            const data = currNormativo[type][id];
+            
+            if(!data) {
+                viewer.innerHTML = `<p class="text-red-500">Definición no encontrada para ${id}.</p>`;
+                return;
+            }
+
+            let titlePrefix = type === 'criterios' ? 'Criterio de Evaluación' : 'Descriptor Operativo';
+            let colorTheme = type === 'criterios' ? 'blue' : 'green';
+            let documentSource = type === 'criterios' ? 'CYR 1 ESO.pdf (Págs. 8-10)' : 'Descriptores operativos.pdf';
+            
+            viewer.innerHTML = `
+                <div class="animate-fade-in-up">
+                    <div class="inline-block px-3 py-1 bg-${colorTheme}-100 text-${colorTheme}-800 rounded-full text-sm font-bold mb-4 border border-${colorTheme}-200">
+                        ${titlePrefix} ${id}
+                    </div>
+                    
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 shadow-sm relative">
+                        <svg class="absolute top-3 left-3 w-8 h-8 text-gray-200" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+                           <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"></path>
+                        </svg>
+                        <p class="text-gray-800 text-lg leading-relaxed relative z-10 pl-6 italic">
+                            "${data}"
+                        </p>
+                    </div>
+                    
+                    <div class="mt-6 border-t border-gray-100 pt-4 flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        Extraído literalmente del documento oficial: <span class="font-semibold ml-1 text-gray-700">${documentSource}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Add a small animation style dynamically
+            if (!document.getElementById('anim-style')) {
+                const style = document.createElement('style');
+                style.id = 'anim-style';
+                style.innerHTML = `
+                    @keyframes fadeInUp {
+                        from { opacity: 0; transform: translateY(10px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    </script>
+</body>
+</html>
