@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina y Horario de Aula | Prof. Florindo López</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                        tec: '#3b82f6',     // Tecnologia - Blue
+                        rob: '#8b5cf6',     // Comp y Rob - Purple
+                        tyd: '#10b981',     // TYD - Emerald
+                        dig: '#f59e0b',     // Digit - Amber
+                        guardia: '#64748b', // Guardia - Slate
+                        recreo: '#ec4899'   // Recreo - Pink
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-active {
+            box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.5);
+        }
+        .glow-breakfast {
+            box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.6);
+        }
+        .glow-warning {
+            box-shadow: 0 0 30px -5px rgba(239, 68, 68, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-sky-500 selection:text-white">
+
+    <!-- TOP NAVBAR & SYSTEM STATUS -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Brand & Teacher Info -->
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-gradient-to-tr from-sky-600 to-indigo-600 rounded-xl text-white shadow-md">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight text-white flex items-center gap-2">
+                        <span>Prof. Florindo López Delgado</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-sky-950 text-sky-400 border border-sky-800/50 font-mono font-medium">IES Villa de Mijas</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Dpto. Tecnología & Informática • Curso 2026-2027</p>
+                </div>
+            </div>
+
+            <!-- Live Clock & Date -->
+            <div class="flex items-center space-x-4 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700/60 shadow-inner">
+                <div class="text-right">
+                    <div id="live-date" class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cargando fecha...</div>
+                    <div id="live-clock" class="text-xl font-extrabold font-mono text-sky-400 leading-tight">00:00:00</div>
+                </div>
+                <div class="h-8 w-px bg-slate-700"></div>
+                <button id="btn-fullscreen" onclick="toggleFullscreen()" title="Pantalla completa para proyector" class="p-2 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition">
+                    <i data-lucide="maximize" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Control Bar: Sound & Simulation Controls -->
+            <div class="flex items-center space-x-2">
+                <!-- Sound Toggle -->
+                <button id="btn-audio-toggle" onclick="toggleAudio()" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
+                    <i data-lucide="volume-2" id="icon-audio" class="w-4 h-4 text-emerald-400"></i>
+                    <span id="label-audio">Audio Activo</span>
+                </button>
+
+                <!-- Voice Announcement Toggle -->
+                <button id="btn-voice-toggle" onclick="toggleVoice()" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
+                    <i data-lucide="message-square" id="icon-voice" class="w-4 h-4 text-sky-400"></i>
+                    <span id="label-voice">Voz ON</span>
+                </button>
+
+                <!-- Mode Switch (Real Time vs Simulation) -->
+                <button id="btn-sim-toggle" onclick="toggleSimulationMode()" class="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-indigo-900/60 hover:bg-indigo-800/80 text-indigo-200 border border-indigo-700/50 text-xs font-semibold transition">
+                    <i data-lucide="flask-conical" class="w-4 h-4 text-indigo-400"></i>
+                    <span id="sim-mode-text">Probar Simulación</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Simulation Selector Panel (Hidden by default) -->
+        <div id="sim-controls" class="hidden max-w-7xl mx-auto mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center space-x-2 text-amber-400 font-medium">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                <span>Modo Simulación Activo: Elige un día y hora ficticios para probar los avisos.</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <label class="text-slate-400">Día:
+                    <select id="sim-day-select" onchange="updateSimulationTime()" class="ml-1 bg-slate-800 border border-slate-700 text-white rounded px-2 py-1 focus:outline-none">
+                        <option value="1">Lunes</option>
+                        <option value="2">Martes</option>
+                        <option value="3">Miércoles</option>
+                        <option value="4">Jueves</option>
+                        <option value="5">Viernes</option>
+                    </select>
+                </label>
+                <label class="text-slate-400">Hora:
+                    <input type="time" id="sim-time-input" value="09:15" onchange="updateSimulationTime()" class="ml-1 bg-slate-800 border border-slate-700 text-white rounded px-2 py-1 font-mono focus:outline-none">
+                </label>
+                <button onclick="setQuickSimTime('09:05')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-sky-400">9:05 (Clase 1ª)</button>
+                <button onclick="setQuickSimTime('09:48')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-amber-400">9:48 (Pre-Desayuno)</button>
+                <button onclick="setQuickSimTime('10:15')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-purple-400">10:15 (Clase 2ª)</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APPLICATION CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT/CENTER COLUMN: ACTIVE SESSION & COUNTDOWN TIMER (7 COLUMNS ON LARGE SCREENS) -->
+        <section class="lg:col-span-7 flex flex-col space-y-6">
+
+            <!-- Active Class Banner / Card -->
+            <div id="active-class-card" class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 relative overflow-hidden transition-all duration-300 shadow-xl">
+                
+                <!-- Background Accent Glow -->
+                <div id="card-bg-glow" class="absolute -top-24 -right-24 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-wrap items-start justify-between gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span id="badge-period" class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">Tramo Lectivo</span>
+                            <span id="badge-aula" class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-slate-800 text-amber-400 border border-slate-700 flex items-center gap-1">
+                                <i data-lucide="map-pin" class="w-3 h-3"></i> <span id="text-aula">Aula --</span>
+                            </span>
+                        </div>
+                        <h2 id="text-subject" class="text-3xl font-extrabold text-white mt-2 tracking-tight">Sin clase programada</h2>
+                        <p id="text-groups" class="text-sm font-medium text-slate-400 mt-1">Horario libre o fuera de lectivo</p>
+                    </div>
+
+                    <!-- Audio Signal Gong Button -->
+                    <button onclick="playGongSound()" title="Tocar timbre de aviso en aula" class="p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-amber-400 hover:text-amber-300 shadow active:scale-95 transition flex items-center space-x-2">
+                        <i data-lucide="bell-ring" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold">Aviso Sonoro</span>
+                    </button>
+                </div>
+
+                <!-- Breakfast Notification Banner (For 9:00 - 10:00 session) -->
+                <div id="breakfast-notice" class="hidden mb-4 p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 rounded-xl flex items-center space-x-3 text-amber-200 text-xs md:text-sm">
+                    <div class="p-2 bg-amber-500 text-slate-950 rounded-lg font-bold">
+                        <i data-lucide="utensils" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-amber-400 block">Rutina Especial 9:00 - 10:00h</span>
+                        <span>La clase finaliza a las <strong>9:50</strong> para disponer de 10 min de <strong>desayuno en el aula</strong> previo al recreo.</span>
+                    </div>
+                </div>
+
+                <!-- TIMER DISPLAY BLOCK -->
+                <div class="bg-slate-950/80 rounded-2xl p-6 border border-slate-800/80 flex flex-col items-center justify-center relative my-2">
+                    
+                    <!-- Timer Status Tag -->
+                    <div id="timer-status-tag" class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2 font-semibold flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-slate-500 animate-pulse"></span>
+                        <span id="timer-phase-title">Contador de Clase</span>
+                    </div>
+
+                    <!-- Circular Progress & Digital Countdown -->
+                    <div class="relative w-56 h-56 md:w-64 md:h-64 flex items-center justify-center my-2">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <!-- Background track -->
+                            <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" class="text-slate-800" fill="transparent" />
+                            <!-- Progress ring -->
+                            <circle id="timer-progress-ring" cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" class="text-sky-500 transition-all duration-500" fill="transparent" />
+                        </svg>
+
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                            <span id="timer-digits" class="text-5xl md:text-6xl font-black font-mono tracking-tighter text-white drop-shadow-md">
+                                00:00
+                            </span>
+                            <span id="timer-sublabel" class="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">
+                                Restante
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Milestone Alerts Bar -->
+                    <div class="w-full grid grid-cols-4 gap-2 mt-2">
+                        <div id="m-15" class="py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500">
+                            -15 MIN
+                        </div>
+                        <div id="m-10" class="py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500">
+                            -10 MIN
+                        </div>
+                        <div id="m-5" class="py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500">
+                            -5 MIN
+                        </div>
+                        <div id="m-2" class="py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500">
+                            -2 MIN (Recoger)
+                        </div>
+                    </div>
+
+                    <!-- Main Timer Control Buttons -->
+                    <div class="flex items-center space-x-3 mt-6">
+                        <button id="btn-timer-start" onclick="toggleTimer()" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5">
+                            <i data-lucide="play" id="icon-timer-start" class="w-5 h-5 fill-current"></i>
+                            <span id="label-timer-start">Iniciar Contador</span>
+                        </button>
+                        
+                        <button onclick="resetTimer()" class="p-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 rounded-xl border border-slate-700 transition" title="Reiniciar contador">
+                            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Classroom Closing Routine Checklist -->
+                <div class="mt-4 pt-4 border-t border-slate-800">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-4 h-4 text-sky-400"></i>
+                        <span>Rutina de Cierre de Clase & Taller</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
+                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-300">Guardar trabajos y apagar ordenadores</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
+                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-300">Recoger herramientas de Taller / EPV</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
+                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-300">Limpiar mesas y colocar sillas</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
+                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-300">Entregar fichas / Tarea Classroom</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CLASSROOM HELPER TOOLS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Random Student Picker Widget -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                <i data-lucide="dices" class="w-4 h-4 text-indigo-400"></i>
+                                <span>Selector de Alumno/a</span>
+                            </h3>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Participación</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">Sorteo rápido para intervenciones o revisión de prácticas.</p>
+                        <div id="picker-result" class="py-3 px-4 bg-slate-950 rounded-xl border border-slate-800 text-center font-mono font-bold text-lg text-indigo-300 min-h-[52px] flex items-center justify-center">
+                            ---
+                        </div>
+                    </div>
+                    <button onclick="pickRandomStudent()" class="mt-3 w-full py-2 px-3 bg-indigo-600/80 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
+                        <span>Elegir al azar</span>
+                    </button>
+                </div>
+
+                <!-- Quick Sound Effects / Alerts -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                <i data-lucide="volume-x" class="w-4 h-4 text-emerald-400"></i>
+                                <span>Señales de Aula</span>
+                            </h3>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Directo</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">Atención inmediata o aviso verbal en altavoz.</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="speakText('Atención clase, guardamos silencio por favor.')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-medium text-slate-300 text-left flex items-center gap-2">
+                                <i data-lucide="mic" class="w-3.5 h-3.5 text-sky-400"></i>
+                                <span>"Silencio"</span>
+                            </button>
+                            <button onclick="speakText('Quedan dos minutos. Comenzamos a recoger el aula.')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-medium text-slate-300 text-left flex items-center gap-2">
+                                <i data-lucide="mic" class="w-3.5 h-3.5 text-amber-400"></i>
+                                <span>"A Recoger"</span>
+                            </button>
+                            <button onclick="speakText('Es la hora del desayuno. Podéis tomar vuestro bocadillo.')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-medium text-slate-300 text-left flex items-center gap-2">
+                                <i data-lucide="mic" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                <span>"Desayuno"</span>
+                            </button>
+                            <button onclick="playChimeSound()" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-medium text-slate-300 text-left flex items-center gap-2">
+                                <i data-lucide="music" class="w-3.5 h-3.5 text-purple-400"></i>
+                                <span>Chime</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN: FULL WEEKLY SCHEDULE GRID (5 COLUMNS ON LARGE SCREENS) -->
+        <section class="lg:col-span-5 flex flex-col space-y-6">
+
+            <!-- Timetable Card Container -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col h-full">
+                
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-sky-400"></i>
+                            <span>Horario Semanal Prof. Florindo</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Haz clic en cualquier tramo para simular o consultar.</p>
+                    </div>
+                    <span class="text-[11px] font-mono font-semibold px-2 py-1 bg-slate-800 text-sky-300 rounded border border-slate-700">
+                        IES VILLA DE MIJAS
+                    </span>
+                </div>
+
+                <!-- Schedule Table Wrapper -->
+                <div class="overflow-x-auto custom-scrollbar flex-1">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 font-mono">
+                                <th class="p-2 text-center w-14">Hora</th>
+                                <th class="p-2 text-center">L</th>
+                                <th class="p-2 text-center">M</th>
+                                <th class="p-2 text-center">X</th>
+                                <th class="p-2 text-center">J</th>
+                                <th class="p-2 text-center">V</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetable-body" class="divide-y divide-slate-800/60 font-sans">
+                            <!-- Populated dynamically by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Legend of Subjects -->
+                <div class="mt-5 pt-4 border-t border-slate-800 grid grid-cols-2 gap-2 text-[11px]">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-blue-600"></span>
+                        <span class="text-slate-300">Tec. 4 II (4º A,B,C)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-purple-600"></span>
+                        <span class="text-slate-300">Comp. y Rob. (1º, 2º, 3º)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-emerald-600"></span>
+                        <span class="text-slate-300">TYD 3º (3º A, B)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-amber-600"></span>
+                        <span class="text-slate-300">Digit. 4 (4º A)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-slate-600"></span>
+                        <span class="text-slate-300">Guardia / Recreo</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded bg-slate-800 border border-slate-700"></span>
+                        <span class="text-slate-400">Horario Libre</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT APP ENGINE -->
+    <script>
+        
+        // Full weekly schedule definition based on official prompt data
+        const SCHEDULE_DATA = [
+            {
+                slot: "8:00 - 9:00",
+                start: "08:00",
+                end: "09:00",
+                days: { 1: null, 2: null, 3: null, 4: null, 5: null }
+            },
+            {
+                slot: "9:00 - 10:00",
+                start: "09:00",
+                end: "10:00",
+                specialBreakfast: true, // Requires special 9:50-10:00 breakfast routine
+                days: {
+                    1: { code: 'tec4', subject: 'Tec. 4 II', groups: '4º A, 4º B, 4º C', aula: 'A 00', type: 'tec' },
+                    2: { code: 'tec4', subject: 'Tec. 4 II', groups: '4º A, 4º B, 4º C', aula: 'A 00', type: 'tec' },
+                    3: { code: 'tyd3', subject: 'TYD 3º', groups: '3º A, 3º DIV A', aula: 'TEC.', type: 'tyd' },
+                    4: null,
+                    5: null
+                }
+            },
+            {
+                slot: "10:00 - 10:15",
+                start: "10:00",
+                end: "10:15",
+                days: {
+                    1: { code: 'guardia', subject: 'GUARDIA', groups: '[A] GUARDIA', aula: 'Guardias', type: 'guardia' },
+                    2: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    3: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    4: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    5: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' }
+                }
+            },
+            {
+                slot: "10:15 - 11:15",
+                start: "10:15",
+                end: "11:15",
+                days: {
+                    1: { code: 'rob', subject: 'Comp. y Rob.', groups: '2º A, 2º B, 2º C', aula: 'TEC.', type: 'rob' },
+                    2: null,
+                    3: { code: 'tec4', subject: 'Tec. 4 II', groups: '4º A, 4º B, 4º C', aula: 'A 11', type: 'tec' },
+                    4: { code: 'guardia', subject: 'GUARDIA', groups: 'Lectiva', aula: 'Guardias', type: 'guardia' },
+                    5: { code: 'rob', subject: 'Comp. y Rob.', groups: '2º A, 2º B, 2º C', aula: 'TEC.', type: 'rob' }
+                }
+            },
+            {
+                slot: "11:15 - 12:15",
+                start: "11:15",
+                end: "12:15",
+                days: {
+                    1: null,
+                    2: null,
+                    3: { code: 'tyd3', subject: 'TYD 3º', groups: '3º B, 3º DIV B', aula: 'TEC.', type: 'tyd' },
+                    4: { code: 'rob', subject: 'Comp. y Rob.', groups: '1º A, 1º B, 1º C', aula: 'EPV', type: 'rob' },
+                    5: { code: 'tyd3', subject: 'TYD 3º', groups: '3º A, 3º DIV A', aula: 'TEC.', type: 'tyd' }
+                }
+            },
+            {
+                slot: "12:15 - 12:30",
+                start: "12:15",
+                end: "12:30",
+                days: {
+                    1: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    2: { code: 'guardia', subject: 'GUARDIA', groups: '[A] GUARDIA', aula: 'Guardias', type: 'guardia' },
+                    3: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    4: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' },
+                    5: { code: 'recreo', subject: 'Recreo', groups: 'Patios', aula: 'Patio', type: 'recreo' }
+                }
+            },
+            {
+                slot: "12:30 - 13:30",
+                start: "12:30",
+                end: "13:30",
+                days: {
+                    1: { code: 'rob', subject: 'Comp. y Rob.', groups: '1º A, 1º B, 1º C', aula: 'A 12', type: 'rob' },
+                    2: { code: 'rob', subject: 'Comp. y Rob.', groups: '3º A, 3º B, 3º DIV A, 3º DIV B', aula: 'TEC.', type: 'rob' },
+                    3: { code: 'rob', subject: 'Comp. y Rob.', groups: '3º A, 3º B, 3º DIV A, 3º DIV B', aula: 'TEC.', type: 'rob' },
+                    4: { code: 'tyd3', subject: 'TYD 3º', groups: '3º B, 3º DIV B', aula: 'A 00', type: 'tyd' },
+                    5: { code: 'guardia', subject: 'GUARDIA', groups: 'Lectiva', aula: 'Guardias', type: 'guardia' }
+                }
+            },
+            {
+                slot: "13:30 - 14:30",
+                start: "13:30",
+                end: "14:30",
+                days: {
+                    1: { code: 'guardia', subject: 'GUARDIA', groups: 'Lectiva', aula: 'Guardias', type: 'guardia' },
+                    2: { code: 'dig4', subject: 'Digit. 4', groups: '4º A', aula: 'EPV', type: 'dig' },
+                    3: { code: 'dig4', subject: 'Digit. 4', groups: '4º A', aula: 'EPV', type: 'dig' },
+                    4: { code: 'dig4', subject: 'Digit. 4', groups: '4º A', aula: 'EPV', type: 'dig' },
+                    5: null
+                }
+            }
+        ];
+
+        // Roster for random picker
+        const SAMPLE_STUDENTS = [
+            "Álvaro G.", "Ana M.", "Carlos R.", "Daniela P.", "Elena S.", 
+            "Francisco J.", "Gabriel T.", "Hugo N.", "Inés V.", "Javier L.",
+            "Lucia B.", "Manuel C.", "Nuria F.", "Pablo K.", "Rocío E."
+        ];
+
+        let isSimulationMode = false;
+        let simDay = 1; // Default Monday
+        let simTime = "09:15"; // Default 09:15
+
+        let timerInterval = null;
+        let timerSecondsRemaining = 0;
+        let timerTotalSeconds = 0;
+        let isTimerRunning = false;
+        let activeTargetEndTime = null; // Date or Target Time string
+        let isBreakfastPhase = false;
+
+        // Sound Settings
+        let isAudioEnabled = true;
+        let isVoiceEnabled = true;
+        let audioCtx = null;
+
+        // Notification flags to prevent repeated alerts
+        let alertsFired = {
+            m15: false,
+            m10: false,
+            m5: false,
+            m2: false,
+            breakfast: false,
+            end: false
+        };
+
+        // Initialize Web Audio Context
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Sound synth generators using Web Audio API
+        function playBeep(freq = 600, type = 'sine', duration = 0.2) {
+            if (!isAudioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio error:", e);
+            }
+        }
+
+        function playChimeSound() {
+            if (!isAudioEnabled) return;
+            playBeep(523.25, 'sine', 0.3); // C5
+            setTimeout(() => playBeep(659.25, 'sine', 0.3), 150); // E5
+            setTimeout(() => playBeep(783.99, 'sine', 0.5), 300); // G5
+        }
+
+        function playGongSound() {
+            if (!isAudioEnabled) return;
+            playBeep(440, 'triangle', 0.8);
+            setTimeout(() => playBeep(880, 'sine', 1.0), 200);
+        }
+
+        function speakText(text) {
+            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel(); // Cancel current queue
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {
+                console.log("Speech error:", e);
+            }
+        }
+
+        // Utility functions for dates & times
+        function getCurrentDateTime() {
+            if (isSimulationMode) {
+                const [h, m] = simTime.split(':').map(Number);
+                const d = new Date();
+                d.setHours(h, m, 0, 0);
+                return {
+                    dayOfWeek: parseInt(simDay), // 1=Mon, 5=Fri
+                    hours: h,
+                    minutes: m,
+                    seconds: (new Date()).getSeconds(),
+                    timeString: simTime + ":" + String((new Date()).getSeconds()).padStart(2, '0'),
+                    dateObj: d
+                };
+            } else {
+                const now = new Date();
+                let day = now.getDay(); // 0=Sun, 1=Mon, 6=Sat
+                if (day === 0 || day === 6) day = 1; // Default to Monday on weekend for classroom context
+                return {
+                    dayOfWeek: day,
+                    hours: now.getHours(),
+                    minutes: now.getMinutes(),
+                    seconds: now.getSeconds(),
+                    timeString: now.toTimeString().split(' ')[0],
+                    dateObj: now
+                };
+            }
+        }
+
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        // Render Timetable Grid in HTML
+        function renderTimetable() {
+            const tbody = document.getElementById('timetable-body');
+            tbody.innerHTML = '';
+
+            const current = getCurrentDateTime();
+            const currentMin = current.hours * 60 + current.minutes;
+
+            SCHEDULE_DATA.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition";
+
+                // Time Slot Header
+                const tdTime = document.createElement('td');
+                tdTime.className = "p-2 font-mono text-[11px] text-slate-400 font-semibold border-r border-slate-800 text-center whitespace-nowrap";
+                tdTime.innerText = row.slot;
+                tr.appendChild(tdTime);
+
+                // Days Monday(1) to Friday(5)
+                for (let d = 1; d <= 5; d++) {
+                    const td = document.createElement('td');
+                    td.className = "p-1.5 text-center transition cursor-pointer relative";
+                    
+                    const cellData = row.days[d];
+                    const slotStartMin = timeToMinutes(row.start);
+                    const slotEndMin = timeToMinutes(row.end);
+
+                    const isCurrentSlot = (current.dayOfWeek === d) && (currentMin >= slotStartMin && currentMin < slotEndMin);
+
+                    if (cellData) {
+                        let bgClass = "bg-slate-800/60 hover:bg-slate-700/80 text-slate-200";
+                        if (cellData.type === 'tec') bgClass = "bg-blue-950/80 hover:bg-blue-900/80 text-blue-200 border border-blue-800/40";
+                        if (cellData.type === 'rob') bgClass = "bg-purple-950/80 hover:bg-purple-900/80 text-purple-200 border border-purple-800/40";
+                        if (cellData.type === 'tyd') bgClass = "bg-emerald-950/80 hover:bg-emerald-900/80 text-emerald-200 border border-emerald-800/40";
+                        if (cellData.type === 'dig') bgClass = "bg-amber-950/80 hover:bg-amber-900/80 text-amber-200 border border-amber-800/40";
+                        if (cellData.type === 'guardia') bgClass = "bg-slate-800 text-slate-400";
+                        if (cellData.type === 'recreo') bgClass = "bg-pink-950/50 text-pink-300 border border-pink-800/30";
+
+                        if (isCurrentSlot) {
+                            bgClass += " ring-2 ring-sky-400 font-bold scale-[1.02] shadow-lg z-10";
+                        }
+
+                        td.innerHTML = `
+                            <div class="${bgClass} p-2 rounded-lg flex flex-col justify-between h-full text-[11px] leading-tight">
+                                <span class="font-bold truncate">${cellData.subject}</span>
+                                <span class="text-[10px] opacity-80 truncate">${cellData.aula}</span>
+                            </div>
+                        `;
+                    } else {
+                        if (isCurrentSlot) {
+                            td.innerHTML = `<div class="p-2 rounded-lg bg-slate-800 ring-2 ring-sky-400 text-[10px] text-slate-400">Libre</div>`;
+                        } else {
+                            td.innerHTML = `<div class="p-2 rounded-lg bg-slate-950/30 text-[10px] text-slate-600 font-mono">-</div>`;
+                        }
+                    }
+
+                    // Click event to simulate or load this block
+                    td.onclick = () => {
+                        enableSimulationMode(d, row.start);
+                    };
+
+                    tr.appendChild(td);
+                }
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Calculate dynamic active period and setup timer parameters
+        let lastActiveKey = null;
+
+        function updateActiveSession() {
+            const current = getCurrentDateTime();
+            const currentMin = current.hours * 60 + current.minutes;
+            const currentDay = current.dayOfWeek;
+
+            // Find matching row in schedule
+            let activeRow = null;
+            SCHEDULE_DATA.forEach(row => {
+                const sMin = timeToMinutes(row.start);
+                const eMin = timeToMinutes(row.end);
+                if (currentMin >= sMin && currentMin < eMin) {
+                    activeRow = row;
+                }
+            });
+
+            const activeClass = (activeRow && activeRow.days[currentDay]) ? activeRow.days[currentDay] : null;
+
+            // Render Card UI Details
+            const card = document.getElementById('active-class-card');
+            const periodBadge = document.getElementById('badge-period');
+            const textAula = document.getElementById('text-aula');
+            const textSubject = document.getElementById('text-subject');
+            const textGroups = document.getElementById('text-groups');
+            const breakfastNotice = document.getElementById('breakfast-notice');
+
+            const currentKey = `${currentDay}-${activeRow ? activeRow.slot : 'free'}`;
+
+            if (activeClass) {
+                periodBadge.innerText = activeRow.slot;
+                textAula.innerText = activeClass.aula;
+                textSubject.innerText = activeClass.subject;
+                textGroups.innerText = `Grupos: ${activeClass.groups}`;
+                
+                // Special check for 9:00 - 10:00 breakfast routine
+                if (activeRow.specialBreakfast) {
+                    breakfastNotice.classList.remove('hidden');
+                } else {
+                    breakfastNotice.classList.add('hidden');
+                }
+
+            } else {
+                periodBadge.innerText = activeRow ? activeRow.slot : "Sin tramo";
+                textAula.innerText = "N/A";
+                textSubject.innerText = "Sin Clase Activa";
+                textGroups.innerText = "Horario libre o fuera de jornada escolar";
+                breakfastNotice.classList.add('hidden');
+            }
+
+            // If session changed and timer isn't manually running, re-calculate target
+            if (currentKey !== lastActiveKey && !isTimerRunning) {
+                lastActiveKey = currentKey;
+                setupTimerForCurrentSlot(activeRow, activeClass, currentMin);
+            }
+        }
+
+        function setupTimerForCurrentSlot(row, activeClass, currentMin) {
+            resetAlertFlags();
+
+            if (!row) {
+                setTimerDisplay(0, 0, "Sin Clase");
+                return;
+            }
+
+            const startMin = timeToMinutes(row.start);
+            const endMin = timeToMinutes(row.end);
+
+            // Special logic for 9:00 - 10:00 session
+            if (row.specialBreakfast && activeClass) {
+                const breakfastStartMin = 9 * 60 + 50; // 9:50 (590 mins)
+                
+                if (currentMin < breakfastStartMin) {
+                    // Phase 1: Class work until 9:50
+                    isBreakfastPhase = false;
+                    const totalSecs = (50) * 60; // 50 mins total
+                    const remainingSecs = (breakfastStartMin - currentMin) * 60 - getCurrentDateTime().seconds;
+                    setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Clase (Límite 9:50h)");
+                } else {
+                    // Phase 2: Breakfast in class (9:50 - 10:00)
+                    isBreakfastPhase = true;
+                    const totalSecs = (10) * 60; // 10 mins
+                    const remainingSecs = (endMin - currentMin) * 60 - getCurrentDateTime().seconds;
+                    setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Desayuno en Aula");
+                }
+            } else {
+                // Standard session timer
+                isBreakfastPhase = false;
+                const totalSecs = (endMin - startMin) * 60;
+                const remainingSecs = (endMin - currentMin) * 60 - getCurrentDateTime().seconds;
+                setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Tiempo Restante");
+            }
+        }
+
+        function resetAlertFlags() {
+            alertsFired = {
+                m15: false,
+                m10: false,
+                m5: false,
+                m2: false,
+                breakfast: false,
+                end: false
+            };
+            
+            // Reset visual badge indicators
+            ['m-15', 'm-10', 'm-5', 'm-2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.className = "py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500";
+                }
+            });
+        }
+
+        function setTimerDisplay(remainingSecs, totalSecs, phaseTitle) {
+            timerSecondsRemaining = Math.max(0, remainingSecs);
+            timerTotalSeconds = totalSecs > 0 ? totalSecs : 1;
+
+            document.getElementById('timer-phase-title').innerText = phaseTitle || "Contador";
+
+            updateTimerVisuals();
+        }
+
+        function updateTimerVisuals() {
+            const m = Math.floor(timerSecondsRemaining / 60);
+            const s = timerSecondsRemaining % 60;
+            const formattedStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            
+            document.getElementById('timer-digits').innerText = formattedStr;
+
+            // SVG Circular Progress Ring
+            const circle = document.getElementById('timer-progress-ring');
+            const circumference = 2 * Math.PI * 44; // 276.46
+            const fraction = timerSecondsRemaining / timerTotalSeconds;
+            const strokeDashoffset = circumference - (fraction * circumference);
+            
+            circle.style.strokeDashoffset = isNaN(strokeDashoffset) ? 0 : strokeDashoffset;
+
+            // Visual Ring Color depending on remaining minutes
+            if (isBreakfastPhase) {
+                circle.setAttribute('class', 'text-amber-500 transition-all duration-500');
+            } else if (m <= 2) {
+                circle.setAttribute('class', 'text-red-500 transition-all duration-500');
+            } else if (m <= 5) {
+                circle.setAttribute('class', 'text-orange-400 transition-all duration-500');
+            } else {
+                circle.setAttribute('class', 'text-sky-500 transition-all duration-500');
+            }
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            getAudioContext(); // Ensure Audio Context is initialized
+            isTimerRunning = true;
+
+            document.getElementById('btn-timer-start').className = "px-6 py-3 bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-bold rounded-xl shadow-lg shadow-amber-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5";
+            document.getElementById('icon-timer-start').setAttribute('data-lucide', 'pause');
+            document.getElementById('label-timer-start').innerText = "Pausar";
+            lucide.createIcons();
+
+            timerInterval = setInterval(() => {
+                if (timerSecondsRemaining > 0) {
+                    timerSecondsRemaining--;
+                    updateTimerVisuals();
+                    checkMilestoneAlerts();
+                } else {
+                    pauseTimer();
+                    handleTimerCompletion();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+
+            document.getElementById('btn-timer-start').className = "px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5";
+            document.getElementById('icon-timer-start').setAttribute('data-lucide', 'play');
+            document.getElementById('label-timer-start').innerText = "Continuar";
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            lastActiveKey = null; // Force refresh
+            updateActiveSession();
+        }
+
+        function highlightMilestoneBadge(id, colorClass) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = `py-1.5 px-1 rounded text-center font-mono font-bold text-[10px] md:text-xs shadow-md animate-pulse ${colorClass}`;
+            }
+        }
+
+        function checkMilestoneAlerts() {
+            const mins = Math.floor(timerSecondsRemaining / 60);
+            const secs = timerSecondsRemaining % 60;
+
+            // 15 Minutes Warning
+            if (mins === 15 && secs === 0 && !alertsFired.m15) {
+                alertsFired.m15 = true;
+                highlightMilestoneBadge('m-15', 'bg-sky-500 text-white border-sky-400');
+                playChimeSound();
+                speakText("Atención clase. Quedan quince minutos para finalizar.");
+            }
+
+            // 10 Minutes Warning
+            if (mins === 10 && secs === 0 && !alertsFired.m10) {
+                alertsFired.m10 = true;
+                highlightMilestoneBadge('m-10', 'bg-amber-500 text-slate-950 border-amber-400');
+                playChimeSound();
+                speakText("Quedan diez minutos. Id concluyendo las tareas.");
+            }
+
+            // 5 Minutes Warning
+            if (mins === 5 && secs === 0 && !alertsFired.m5) {
+                alertsFired.m5 = true;
+                highlightMilestoneBadge('m-5', 'bg-orange-500 text-white border-orange-400');
+                playChimeSound();
+                speakText("Atención: quedan cinco minutos de clase.");
+            }
+
+            // 2 Minutes Warning (Pick up & Clean routine)
+            if (mins === 2 && secs === 0 && !alertsFired.m2) {
+                alertsFired.m2 = true;
+                highlightMilestoneBadge('m-2', 'bg-red-600 text-white border-red-400');
+                playGongSound();
+                speakText("Quedan dos minutos. Es momento de recoger el aula y guardar ordenadores.");
+            }
+        }
+
+        function handleTimerCompletion() {
+            playGongSound();
+            const current = getCurrentDateTime();
+            
+            // Check if completing 9:00 - 10:00 first phase
+            if (current.hours === 9 && !isBreakfastPhase) {
+                speakText("Tiempo de clase finalizado. Es la hora del desayuno en el aula antes del recreo.");
+                // Automatically switch to breakfast 10-minute timer
+                isBreakfastPhase = true;
+                setTimerDisplay(10 * 60, 10 * 60, "Hora del Desayuno");
+                startTimer();
+            } else {
+                speakText("Tiempo finalizado. Fin del tramo lectivo.");
+            }
+        }
+
+        // Random Student Picker function
+        function pickRandomStudent() {
+            const display = document.getElementById('picker-result');
+            display.innerText = "Seleccionando...";
+            playBeep(800, 'sine', 0.1);
+
+            let count = 0;
+            const interval = setInterval(() => {
+                const randomIdx = Math.floor(Math.random() * SAMPLE_STUDENTS.length);
+                display.innerText = SAMPLE_STUDENTS[randomIdx];
+                count++;
+                if (count > 12) {
+                    clearInterval(interval);
+                    playChimeSound();
+                }
+            }, 80);
+        }
+
+        // Toggle Audio Signals
+        function toggleAudio() {
+            isAudioEnabled = !isAudioEnabled;
+            const label = document.getElementById('label-audio');
+            const icon = document.getElementById('icon-audio');
+            if (isAudioEnabled) {
+                label.innerText = "Audio Activo";
+                icon.className = "w-4 h-4 text-emerald-400";
+                playBeep(800, 'sine', 0.1);
+            } else {
+                label.innerText = "Audio Silenciado";
+                icon.className = "w-4 h-4 text-slate-500";
+            }
+        }
+
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            const label = document.getElementById('label-voice');
+            const icon = document.getElementById('icon-voice');
+            if (isVoiceEnabled) {
+                label.innerText = "Voz ON";
+                icon.className = "w-4 h-4 text-sky-400";
+                speakText("Voz activada");
+            } else {
+                label.innerText = "Voz OFF";
+                icon.className = "w-4 h-4 text-slate-500";
+            }
+        }
+
+        // Simulation Mode Controls
+        function toggleSimulationMode() {
+            isSimulationMode = !isSimulationMode;
+            const simPanel = document.getElementById('sim-controls');
+            const simText = document.getElementById('sim-mode-text');
+
+            if (isSimulationMode) {
+                simPanel.classList.remove('hidden');
+                simText.innerText = "Salir de Simulación";
+            } else {
+                simPanel.classList.add('hidden');
+                simText.innerText = "Probar Simulación";
+            }
+
+            resetTimer();
+            renderTimetable();
+        }
+
+        function enableSimulationMode(day, startTimeStr) {
+            isSimulationMode = true;
+            document.getElementById('sim-controls').classList.remove('hidden');
+            document.getElementById('sim-mode-text').innerText = "Salir de Simulación";
+
+            document.getElementById('sim-day-select').value = day;
+            document.getElementById('sim-time-input').value = startTimeStr;
+
+            simDay = day;
+            simTime = startTimeStr;
+
+            resetTimer();
+            renderTimetable();
+        }
+
+        function updateSimulationTime() {
+            simDay = parseInt(document.getElementById('sim-day-select').value);
+            simTime = document.getElementById('sim-time-input').value;
+            resetTimer();
+            renderTimetable();
+        }
+
+        function setQuickSimTime(timeStr) {
+            document.getElementById('sim-time-input').value = timeStr;
+            updateSimulationTime();
+        }
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Clock loop
+        function updateLiveClock() {
+            const current = getCurrentDateTime();
+            
+            const daysNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+            const dateStr = `${daysNames[current.dayOfWeek]} • ${current.timeString}`;
+
+            document.getElementById('live-clock').innerText = current.timeString;
+            document.getElementById('live-date').innerText = isSimulationMode ? `[SIMULACIÓN] ${daysNames[current.dayOfWeek]}` : dateStr;
+
+            updateActiveSession();
+            renderTimetable();
+        }
+
+        window.onload = function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Initial render
+            updateLiveClock();
+
+            // Run clock update every second
+            setInterval(updateLiveClock, 1000);
+        };
+    </script>
+</body>
+</html>
