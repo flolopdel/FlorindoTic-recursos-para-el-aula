@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 1: Mi Identidad Digital y Pasaporte Virtual (4º ESO)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 340px;
+            }
+        }
+        /* Custom modal animation */
+        .modal-enter {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        /* Dotted underline for acronyms */
+        .abbr-link {
+            text-decoration: underline dotted;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+        .abbr-link:hover {
+            color: #0d9488;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-teal-500 selection:text-white relative">
+
+    <!-- Chosen Palette: Slate & Teal Horizon -->
+    <!-- Application Structure Plan:
+         Designed as an interactive Pedagogical Portal & Dashboard for teachers and students regarding SdA 1 (Digitalización 4º ESO - Andalucía).
+         Structure:
+         1. Hero Header & Overview KPIs (Sessions, Weight, Deliverables, Target Grade).
+         2. Tabbed Navigation Bar for seamless switching between major report dimensions:
+            - Vista General & Justificación (Pedagogical background & final deliverables)
+            - Mapeo Curricular (Interactive criteria details, Chart.js weight breakdown chart, clickable LOMLOE codes)
+            - Secuenciación Didáctica (Interactive session-by-session flow chart & checkpoint tracker)
+            - Calculadora & Rúbrica Criterial (Interactive scoring tool & 4-level rubric explorer)
+            - DUA & Moodle Centros (Universal Design for Learning & Virtual Classroom setup guide)
+         3. Dynamic Pop-up Modal System:
+            - Interactive pop-up card for CEv, Saberes Básicos (DIG.4.X), Descriptores Operativos (CD, CPSAA, CCL, STEM, CC, CE), and Acronyms (PLE, DUA, LOMLOE, SdA).
+         WHY: Allows educators to quickly digest the LOMLOE curricular alignment, inspect official definitions of all abbreviations on demand, simulate student assessment, and follow the 5-step gamified classroom passport sequence.
+    -->
+    <!-- Visualization & Content Choices:
+         - Criteria Distribution: Chart.js Donut chart to clearly visualize equal 25% distribution across the 4 key CEvs.
+         - Session Tracker: Step-by-step visual workflow built with Tailwind CSS & JavaScript interactivity to simulate the 5 checkpoints.
+         - Interactive Rubric & Grade Calculator: Custom JS dynamic scoring engine to evaluate CEv 2.1, 2.3, 2.4, 3.1 based on rubrics.
+         - Info Pop-up Modal: Modal overlay with JS dictionary providing official decree definitions for codes and abbreviations upon click.
+         - CONFIRMATION: NO SVG graphics used (pure CSS & Unicode characters/icons used). NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">🛡️</span>
+                    <div>
+                        <h1 class="text-lg font-bold text-teal-400 leading-tight">
+                            <span onclick="showInfoModal('SdA')" class="cursor-pointer hover:underline">SdA 1</span>: Pasaporte Digital
+                        </h1>
+                        <p class="text-xs text-slate-400">
+                            Digitalización 4º ESO • Andalucía (<span onclick="showInfoModal('LOMLOE')" class="abbr-link">LOMLOE</span>)
+                        </p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-1 text-sm font-medium">
+                    <button onclick="switchTab('resumen')" id="tab-resumen" class="nav-tab px-3 py-2 rounded-md bg-teal-600 text-white">Resumen</button>
+                    <button onclick="switchTab('curriculo')" id="tab-curriculo" class="nav-tab px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">Currículo & Pesos</button>
+                    <button onclick="switchTab('secuenciacion')" id="tab-secuenciacion" class="nav-tab px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">5 Sesiones</button>
+                    <button onclick="switchTab('evaluacion')" id="tab-evaluacion" class="nav-tab px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">Rúbrica & Evaluador</button>
+                    <button onclick="switchTab('dua-moodle')" id="tab-dua-moodle" class="nav-tab px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">DUA & Moodle</button>
+                </div>
+            </div>
+            <!-- Mobile subnav -->
+            <div class="md:hidden flex overflow-x-auto py-2 border-t border-slate-800 space-x-2 text-xs">
+                <button onclick="switchTab('resumen')" id="tab-mob-resumen" class="nav-tab-mob px-3 py-1.5 rounded-md bg-teal-600 text-white whitespace-nowrap">Resumen</button>
+                <button onclick="switchTab('curriculo')" id="tab-mob-curriculo" class="nav-tab-mob px-3 py-1.5 rounded-md bg-slate-800 text-slate-300 whitespace-nowrap">Currículo</button>
+                <button onclick="switchTab('secuenciacion')" id="tab-mob-secuenciacion" class="nav-tab-mob px-3 py-1.5 rounded-md bg-slate-800 text-slate-300 whitespace-nowrap">5 Sesiones</button>
+                <button onclick="switchTab('evaluacion')" id="tab-mob-evaluacion" class="nav-tab-mob px-3 py-1.5 rounded-md bg-slate-800 text-slate-300 whitespace-nowrap">Rúbrica</button>
+                <button onclick="switchTab('dua-moodle')" id="tab-mob-dua-moodle" class="nav-tab-mob px-3 py-1.5 rounded-md bg-slate-800 text-slate-300 whitespace-nowrap">DUA & Moodle</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Global Helper Notice for Modals -->
+        <div class="mb-4 bg-teal-50 border border-teal-200 text-teal-800 text-xs px-4 py-2.5 rounded-xl flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-2">
+                <span class="text-base">💡</span>
+                <span><strong>Glosario Interactivo:</strong> Haz clic sobre cualquier código o abreviatura (<span onclick="showInfoModal('CEv')" class="font-bold underline cursor-pointer">CEv</span>, <span onclick="showInfoModal('DIG.4.B.1')" class="font-bold underline cursor-pointer">DIG.4.B.1</span>, <span onclick="showInfoModal('CD1')" class="font-bold underline cursor-pointer">CD1</span>, <span onclick="showInfoModal('PLE')" class="font-bold underline cursor-pointer">PLE</span>, <span onclick="showInfoModal('DUA')" class="font-bold underline cursor-pointer">DUA</span>) para abrir una ventana flotante con su descripción oficial.</span>
+            </div>
+            <span class="text-xs text-teal-600 font-semibold hidden sm:inline">Haz clic en las etiquetas 👆</span>
+        </div>
+
+        <!-- Banner / Hero Summary -->
+        <div class="bg-gradient-to-r from-teal-800 to-slate-900 rounded-2xl p-6 text-white shadow-xl mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                <div class="lg:col-span-2 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-teal-500/30 text-teal-300 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">Primer Trimestre</span>
+                        <span class="bg-emerald-500/30 text-emerald-300 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                            Evaluación Inicial & <span onclick="showInfoModal('PLE')" class="underline cursor-pointer">PLE</span>
+                        </span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                        <span onclick="showInfoModal('SdA')" class="underline cursor-pointer">SdA 1</span>: Mi Identidad Digital y Pasaporte Virtual
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Situación de aprendizaje diseñada para 4º de ESO donde el alumnado configura autónomamente su Entorno Personal de Aprendizaje (<span onclick="showInfoModal('PLE')" class="abbr-link text-teal-300">PLE</span>), ejercita la ciberseguridad preventiva, respeta la propiedad intelectual y acredita la comunicación formal institucional.
+                    </p>
+                </div>
+                <!-- KPI Grid -->
+                <div class="grid grid-cols-2 gap-3 bg-slate-800/80 p-4 rounded-xl border border-slate-700/50">
+                    <div class="text-center p-2 bg-slate-900/60 rounded-lg">
+                        <span class="block text-2xl font-bold text-teal-400">5</span>
+                        <span class="text-xs text-slate-300">Sesiones (~2.5 sem)</span>
+                    </div>
+                    <div class="text-center p-2 bg-slate-900/60 rounded-lg">
+                        <span class="block text-2xl font-bold text-emerald-400">10%</span>
+                        <span class="text-xs text-slate-300">Nota Global Curso</span>
+                    </div>
+                    <div class="text-center p-2 bg-slate-900/60 rounded-lg">
+                        <span class="block text-2xl font-bold text-cyan-400 cursor-pointer" onclick="showInfoModal('CEv')">4 ℹ️</span>
+                        <span class="text-xs text-slate-300 cursor-pointer" onclick="showInfoModal('CEv')"><span class="underline">Criterios Evaluables</span></span>
+                    </div>
+                    <div class="text-center p-2 bg-slate-900/60 rounded-lg">
+                        <span class="block text-2xl font-bold text-amber-400">5</span>
+                        <span class="text-xs text-slate-300">Puntos de Control</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 1: RESUMEN GENERAL -->
+        <section id="content-resumen" class="tab-content space-y-8">
+            <!-- Intro Paragraph -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>💡</span>
+                    <span>Justificación Pedagógica y Propósito Didáctico</span>
+                </h3>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    Al comenzar el curso de <strong>4º de ESO en Digitalización</strong>, es crucial consolidar el dominio de los entornos corporativos oficiales de la Junta de Andalucía (<code>@g.educaand.es</code> y Moodle Centros) y articular de forma estructurada el Entorno Personal de Aprendizaje (<span onclick="showInfoModal('PLE')" class="abbr-link font-semibold text-teal-700">PLE</span>). A través del reto gamificado <strong>"El Pasaporte Digital de Aula"</strong>, el alumnado no solo configura sus herramientas de trabajo colaborativo en la nube, sino que también ejercita pautas de ciberseguridad preventiva, gestiona éticamente su huella digital y aplica normas de <span onclick="showInfoModal('Netiqueta')" class="abbr-link font-semibold text-teal-700">netiqueta</span> en la comunicación institucional.
+                </p>
+            </div>
+
+            <!-- Deliverables Breakdown -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <span>📦</span>
+                    <span>Componentes del Producto Final: "El Pasaporte Digital"</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Product 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 bg-teal-100 text-teal-700 rounded-lg flex items-center justify-center font-bold text-xl mb-4">1</div>
+                        <h4 class="font-bold text-slate-900 text-base mb-2">Decálogo Multimedia Interactivo</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Presentación interactiva elaborada en Canva, Google Slides o Genially. Sintetiza pautas de ciberseguridad, huella digital, <span onclick="showInfoModal('Netiqueta')" class="abbr-link font-semibold text-teal-700">netiqueta</span> y uso ético de licencias web.
+                        </p>
+                        <ul class="text-xs text-slate-500 space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>• Portada institucional</li>
+                            <li>• 4 Pautas de ciberseguridad</li>
+                            <li>• 3 Normas de Netiqueta</li>
+                            <li>• Créditos y licencias CC/Copyright</li>
+                        </ul>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center font-bold text-xl mb-4">2</div>
+                        <h4 class="font-bold text-slate-900 text-base mb-2">Documento PDF del Pasaporte</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Documento maquetado en Google Docs y exportado a PDF accesible que recopila las evidencias técnicas etiquetadas de la configuración del entorno digital.
+                        </p>
+                        <ul class="text-xs text-slate-500 space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>• Captura Moodle Centros</li>
+                            <li>• Captura Perfil Corporativo</li>
+                            <li>• Enlace incrustado a la presentación</li>
+                            <li>• Captura del árbol del <span onclick="showInfoModal('PLE')" class="abbr-link font-semibold">PLE</span> en Drive</li>
+                        </ul>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center font-bold text-xl mb-4">3</div>
+                        <h4 class="font-bold text-slate-900 text-base mb-2">Acreditación de Comunicación Formal</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Demostración práctica de comunicación institucional respetando la etiqueta digital a través del envío formal del entregable por correo electrónico corporativo.
+                        </p>
+                        <ul class="text-xs text-slate-500 space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>• Asunto estandarizado normalizado</li>
+                            <li>• Estructura formal con saludo/cierre</li>
+                            <li>• Firma corporativa automática</li>
+                            <li>• Archivo PDF correctamente adjunto</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 2: CURRÍCULO & PESOS -->
+        <section id="content-curriculo" class="tab-content space-y-8 hidden">
+            <!-- Section Intro -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>📐</span>
+                    <span>Marco Curricular <span onclick="showInfoModal('LOMLOE')" class="abbr-link text-teal-700">LOMLOE</span> (Digitalización 4º ESO - Andalucía)</span>
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    La calificación de la SdA 1 recae exclusivamente en los <strong>Criterios de Evaluación (<span onclick="showInfoModal('CEv')" class="abbr-link font-semibold text-teal-700">CEv</span>)</strong>. Los <strong>Saberes Básicos</strong> actúan como los contenidos procedimentales y conceptuales necesarios para su consecución, mientras que los <strong>Descriptores Operativos del Perfil de Salida</strong> definen las competencias clave alcanzadas.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Chart Section -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+                    <h4 class="text-base font-bold text-slate-900 mb-1 text-center">Ponderación Criterial en la SdA 1</h4>
+                    <p class="text-xs text-slate-500 mb-4 text-center">Distribución de peso sobre el 10% global del curso</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="criteriaChart"></canvas>
+                    </div>
+
+                    <div class="mt-4 text-xs text-slate-500 text-center bg-slate-50 p-3 rounded-lg w-full border border-slate-100">
+                        Cada Criterio de Evaluación (<span onclick="showInfoModal('CEv')" class="abbr-link">CEv</span>) aporta exactamente un <strong>2,5%</strong> a la calificación global del curso académico (25% dentro de la SdA 1).
+                    </div>
+                </div>
+
+                <!-- Curricular Alignment Table -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                            <span>🎯</span>
+                            <span>Alineación de Criterios, Saberes y Descriptores</span>
+                        </h4>
+                        <span class="text-xs text-teal-600 font-semibold bg-teal-50 px-2 py-1 rounded border border-teal-100">Haz clic en cualquier código 🔍</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Card CEv 2.1 -->
+                        <div class="p-4 rounded-lg bg-teal-50/60 border border-teal-200 hover:border-teal-400 transition-colors">
+                            <div class="flex items-center justify-between mb-1">
+                                <span onclick="showInfoModal('CEv 2.1')" class="font-bold text-sm text-teal-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                    <span>CEv 2.1. Gestión del PLE</span>
+                                    <span class="text-xs text-teal-600">ℹ️</span>
+                                </span>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-teal-200 text-teal-800">Peso SdA: 25%</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mb-2">Gestionar el aprendizaje en el ámbito digital, configurando el entorno personal de aprendizaje mediante la integración de recursos digitales de manera autónoma.</p>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mr-1">Saberes y Descriptores:</span>
+                                <button onclick="showInfoModal('DIG.4.B.1')" class="text-[10px] bg-slate-200 hover:bg-teal-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.B.1</button>
+                                <button onclick="showInfoModal('DIG.4.D.1')" class="text-[10px] bg-slate-200 hover:bg-teal-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.D.1</button>
+                                <button onclick="showInfoModal('CD1')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CD1</button>
+                                <button onclick="showInfoModal('CD2')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CD2</button>
+                                <button onclick="showInfoModal('CD3')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CD3</button>
+                                <button onclick="showInfoModal('CPSAA1')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA1</button>
+                                <button onclick="showInfoModal('CPSAA4')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA4</button>
+                                <button onclick="showInfoModal('CPSAA5')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA5</button>
+                                <button onclick="showInfoModal('CE3')" class="text-[10px] bg-teal-100 hover:bg-teal-300 text-teal-900 px-2 py-0.5 rounded font-bold transition-colors">CE3</button>
+                            </div>
+                        </div>
+
+                        <!-- Card CEv 2.3 -->
+                        <div class="p-4 rounded-lg bg-emerald-50/60 border border-emerald-200 hover:border-emerald-400 transition-colors">
+                            <div class="flex items-center justify-between mb-1">
+                                <span onclick="showInfoModal('CEv 2.3')" class="font-bold text-sm text-emerald-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                    <span>CEv 2.3. Creación Multimedia & Licencias</span>
+                                    <span class="text-xs text-emerald-600">ℹ️</span>
+                                </span>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-200 text-emerald-800">Peso SdA: 25%</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mb-2">Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas respetando derechos de autor y licencias.</p>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mr-1">Saberes y Descriptores:</span>
+                                <button onclick="showInfoModal('DIG.4.B.2')" class="text-[10px] bg-slate-200 hover:bg-emerald-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.B.2</button>
+                                <button onclick="showInfoModal('DIG.4.B.4')" class="text-[10px] bg-slate-200 hover:bg-emerald-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.B.4</button>
+                                <button onclick="showInfoModal('DIG.4.D.1')" class="text-[10px] bg-slate-200 hover:bg-emerald-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.D.1</button>
+                                <button onclick="showInfoModal('CD1')" class="text-[10px] bg-emerald-100 hover:bg-emerald-300 text-emerald-900 px-2 py-0.5 rounded font-bold transition-colors">CD1</button>
+                                <button onclick="showInfoModal('CD2')" class="text-[10px] bg-emerald-100 hover:bg-emerald-300 text-emerald-900 px-2 py-0.5 rounded font-bold transition-colors">CD2</button>
+                                <button onclick="showInfoModal('CPSAA4')" class="text-[10px] bg-emerald-100 hover:bg-emerald-300 text-emerald-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA4</button>
+                                <button onclick="showInfoModal('CPSAA5')" class="text-[10px] bg-emerald-100 hover:bg-emerald-300 text-emerald-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA5</button>
+                                <button onclick="showInfoModal('CE3')" class="text-[10px] bg-emerald-100 hover:bg-emerald-300 text-emerald-900 px-2 py-0.5 rounded font-bold transition-colors">CE3</button>
+                            </div>
+                        </div>
+
+                        <!-- Card CEv 2.4 -->
+                        <div class="p-4 rounded-lg bg-cyan-50/60 border border-cyan-200 hover:border-cyan-400 transition-colors">
+                            <div class="flex items-center justify-between mb-1">
+                                <span onclick="showInfoModal('CEv 2.4')" class="font-bold text-sm text-cyan-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                    <span>CEv 2.4. Comunicación y Netiqueta</span>
+                                    <span class="text-xs text-cyan-600">ℹ️</span>
+                                </span>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-200 text-cyan-800">Peso SdA: 25%</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mb-2">Interactuar en espacios virtuales de comunicación y plataformas colaborativas, compartiendo y publicando información con una actitud participativa y respetuosa.</p>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mr-1">Saberes y Descriptores:</span>
+                                <button onclick="showInfoModal('DIG.4.B.3')" class="text-[10px] bg-slate-200 hover:bg-cyan-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.B.3</button>
+                                <button onclick="showInfoModal('DIG.4.D.5')" class="text-[10px] bg-slate-200 hover:bg-cyan-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.D.5</button>
+                                <button onclick="showInfoModal('CD3')" class="text-[10px] bg-cyan-100 hover:bg-cyan-300 text-cyan-900 px-2 py-0.5 rounded font-bold transition-colors">CD3</button>
+                                <button onclick="showInfoModal('CPSAA3')" class="text-[10px] bg-cyan-100 hover:bg-cyan-300 text-cyan-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA3</button>
+                                <button onclick="showInfoModal('CC1')" class="text-[10px] bg-cyan-100 hover:bg-cyan-300 text-cyan-900 px-2 py-0.5 rounded font-bold transition-colors">CC1</button>
+                                <button onclick="showInfoModal('CC3')" class="text-[10px] bg-cyan-100 hover:bg-cyan-300 text-cyan-900 px-2 py-0.5 rounded font-bold transition-colors">CC3</button>
+                            </div>
+                        </div>
+
+                        <!-- Card CEv 3.1 -->
+                        <div class="p-4 rounded-lg bg-indigo-50/60 border border-indigo-200 hover:border-indigo-400 transition-colors">
+                            <div class="flex items-center justify-between mb-1">
+                                <span onclick="showInfoModal('CEv 3.1')" class="font-bold text-sm text-indigo-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                    <span>CEv 3.1. Protección de Datos e Identidad</span>
+                                    <span class="text-xs text-indigo-600">ℹ️</span>
+                                </span>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-200 text-indigo-800">Peso SdA: 25%</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mb-2">Proteger los datos personales y la huella digital generada en internet, configurando las condiciones de privacidad de redes sociales y entornos virtuales de trabajo.</p>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mr-1">Saberes y Descriptores:</span>
+                                <button onclick="showInfoModal('DIG.4.C.2')" class="text-[10px] bg-slate-200 hover:bg-indigo-200 text-slate-800 px-2 py-0.5 rounded font-medium transition-colors">DIG.4.C.2</button>
+                                <button onclick="showInfoModal('CCL3')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">CCL3</button>
+                                <button onclick="showInfoModal('STEM5')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">STEM5</button>
+                                <button onclick="showInfoModal('CD1')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">CD1</button>
+                                <button onclick="showInfoModal('CD4')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">CD4</button>
+                                <button onclick="showInfoModal('CPSAA2')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA2</button>
+                                <button onclick="showInfoModal('CPSAA5')" class="text-[10px] bg-indigo-100 hover:bg-indigo-300 text-indigo-900 px-2 py-0.5 rounded font-bold transition-colors">CPSAA5</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 3: SECUENCIACIÓN DIDÁCTICA -->
+        <section id="content-secuenciacion" class="tab-content space-y-8 hidden">
+            <!-- Section Intro -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>🗺️</span>
+                    <span>Secuenciación Didáctica Interactiva (5 Sesiones + Puntos de Control)</span>
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Haz clic en cada una de las 5 sesiones para explorar los objetivos, el desarrollo de las actividades y la evidencia técnica que el alumnado debe registrar en su <strong>Punto de Control</strong> para la consecución del Pasaporte Digital.
+                </p>
+            </div>
+
+            <!-- Session Stepper Selector -->
+            <div class="grid grid-cols-5 gap-2 bg-slate-200 p-1.5 rounded-xl text-center text-xs font-bold">
+                <button onclick="showSession(1)" id="btn-session-1" class="session-btn py-2.5 rounded-lg bg-white text-teal-700 shadow-sm transition-all">Sesión 1</button>
+                <button onclick="showSession(2)" id="btn-session-2" class="session-btn py-2.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Sesión 2</button>
+                <button onclick="showSession(3)" id="btn-session-3" class="session-btn py-2.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Sesión 3</button>
+                <button onclick="showSession(4)" id="btn-session-4" class="session-btn py-2.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Sesión 4</button>
+                <button onclick="showSession(5)" id="btn-session-5" class="session-btn py-2.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Sesión 5</button>
+            </div>
+
+            <!-- Session Detail View Container -->
+            <div id="session-detail-card" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <!-- Content will be injected dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 4: RÚBRICA & EVALUADOR -->
+        <section id="content-evaluacion" class="tab-content space-y-8 hidden">
+            <!-- Section Intro -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>📊</span>
+                    <span>Evaluador Criterial y Simulación de Calificación</span>
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Selecciona el nivel de desempeño (Nivel 1 al 4) para cada Criterio de Evaluación. La herramienta calculará automáticamente la nota ponderada en la SdA 1 (sobre 10) y su aportación equivalente a la nota global del curso académico.
+                </p>
+            </div>
+
+            <!-- Interactive Rubric Simulator Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Selector Column -->
+                <div class="lg:col-span-8 space-y-6">
+                    <!-- Criteria 2.1 Selector -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span onclick="showInfoModal('CEv 2.1')" class="font-bold text-sm text-slate-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                <span>CEv 2.1 - Estructuración del PLE</span>
+                                <span class="text-xs text-teal-600">ℹ️</span>
+                            </span>
+                            <span class="text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full font-semibold">Peso: 25%</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-xs">
+                            <button onclick="setScore('cev21', 3)" id="btn-cev21-1" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-teal-400">
+                                <span class="font-bold block text-red-600">N1: Iniciante (1-4)</span>
+                                <span class="text-[11px] text-slate-500">Dificultad para organizar el <span onclick="event.stopPropagation(); showInfoModal('PLE')" class="abbr-link">PLE</span>. No crea carpetas.</span>
+                            </button>
+                            <button onclick="setScore('cev21', 5.5)" id="btn-cev21-2" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-teal-400">
+                                <span class="font-bold block text-amber-600">N2: En Proceso (5-6)</span>
+                                <span class="text-[11px] text-slate-500">Organiza carpetas con ayuda o de forma incompleta.</span>
+                            </button>
+                            <button onclick="setScore('cev21', 7.5)" id="btn-cev21-3" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-teal-400 border-teal-500 bg-teal-50/50">
+                                <span class="font-bold block text-emerald-600">N3: Competente (7-8)</span>
+                                <span class="text-[11px] text-slate-500">Configura su PLE en Drive y Moodle con orden.</span>
+                            </button>
+                            <button onclick="setScore('cev21', 9.5)" id="btn-cev21-4" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-teal-400">
+                                <span class="font-bold block text-teal-600">N4: Excelente (9-10)</span>
+                                <span class="text-[11px] text-slate-500">Estructura jerárquica impecable y total autonomía.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criteria 2.3 Selector -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span onclick="showInfoModal('CEv 2.3')" class="font-bold text-sm text-slate-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                <span>CEv 2.3 - Creación Multimedia y Licencias</span>
+                                <span class="text-xs text-emerald-600">ℹ️</span>
+                            </span>
+                            <span class="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full font-semibold">Peso: 25%</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-xs">
+                            <button onclick="setScore('cev23', 3)" id="btn-cev23-1" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-emerald-400">
+                                <span class="font-bold block text-red-600">N1: Iniciante (1-4)</span>
+                                <span class="text-[11px] text-slate-500">Sin presentación o usa recursos ajenos sin citar.</span>
+                            </button>
+                            <button onclick="setScore('cev23', 5.5)" id="btn-cev23-2" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-emerald-400">
+                                <span class="font-bold block text-amber-600">N2: En Proceso (5-6)</span>
+                                <span class="text-[11px] text-slate-500">Presentación básica con atribución incompleta.</span>
+                            </button>
+                            <button onclick="setScore('cev23', 7.5)" id="btn-cev23-3" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-emerald-400 border-emerald-500 bg-emerald-50/50">
+                                <span class="font-bold block text-emerald-600">N3: Competente (7-8)</span>
+                                <span class="text-[11px] text-slate-500">Interactiva, bien maquetada y licencias atribuidas.</span>
+                            </button>
+                            <button onclick="setScore('cev23', 9.5)" id="btn-cev23-4" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-emerald-400">
+                                <span class="font-bold block text-teal-600">N4: Excelente (9-10)</span>
+                                <span class="text-[11px] text-slate-500">Alto impacto visual, PDF maquetado y citación ética.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criteria 2.4 Selector -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span onclick="showInfoModal('CEv 2.4')" class="font-bold text-sm text-slate-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                <span>CEv 2.4 - Comunicación Formal y Netiqueta</span>
+                                <span class="text-xs text-cyan-600">ℹ️</span>
+                            </span>
+                            <span class="text-xs text-cyan-700 bg-cyan-50 px-2.5 py-1 rounded-full font-semibold">Peso: 25%</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-xs">
+                            <button onclick="setScore('cev24', 3)" id="btn-cev24-1" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-cyan-400">
+                                <span class="font-bold block text-red-600">N1: Iniciante (1-4)</span>
+                                <span class="text-[11px] text-slate-500">Omite correo formal o lenguaje inadecuado e informal.</span>
+                            </button>
+                            <button onclick="setScore('cev24', 5.5)" id="btn-cev24-2" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-cyan-400">
+                                <span class="font-bold block text-amber-600">N2: En Proceso (5-6)</span>
+                                <span class="text-[11px] text-slate-500">Errores en asunto, cuerpo, firma o archivo adjunto.</span>
+                            </button>
+                            <button onclick="setScore('cev24', 7.5)" id="btn-cev24-3" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-cyan-400 border-cyan-500 bg-cyan-50/50">
+                                <span class="font-bold block text-emerald-600">N3: Competente (7-8)</span>
+                                <span class="text-[11px] text-slate-500">Correo formal respetando asunto, firma y adjunto.</span>
+                            </button>
+                            <button onclick="setScore('cev24', 9.5)" id="btn-cev24-4" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-cyan-400">
+                                <span class="font-bold block text-teal-600">N4: Excelente (9-10)</span>
+                                <span class="text-[11px] text-slate-500">Correo formal impecable, tono técnico y firma oficial.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criteria 3.1 Selector -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span onclick="showInfoModal('CEv 3.1')" class="font-bold text-sm text-slate-900 cursor-pointer hover:underline flex items-center space-x-1">
+                                <span>CEv 3.1 - Protección de Datos y Privacidad</span>
+                                <span class="text-xs text-indigo-600">ℹ️</span>
+                            </span>
+                            <span class="text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full font-semibold">Peso: 25%</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-xs">
+                            <button onclick="setScore('cev31', 3)" id="btn-cev31-1" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-indigo-400">
+                                <span class="font-bold block text-red-600">N1: Iniciante (1-4)</span>
+                                <span class="text-[11px] text-slate-500">Expone datos, clave débil o permisos públicos.</span>
+                            </button>
+                            <button onclick="setScore('cev31', 5.5)" id="btn-cev31-2" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-indigo-400">
+                                <span class="font-bold block text-amber-600">N2: En Proceso (5-6)</span>
+                                <span class="text-[11px] text-slate-500">Configuración básica de privacidad tras indicaciones.</span>
+                            </button>
+                            <button onclick="setScore('cev31', 7.5)" id="btn-cev31-3" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-indigo-400 border-indigo-500 bg-indigo-50/50">
+                                <span class="font-bold block text-emerald-600">N3: Competente (7-8)</span>
+                                <span class="text-[11px] text-slate-500">Perfil corporativo, <span onclick="event.stopPropagation(); showInfoModal('Passphrase')" class="abbr-link">passphrases</span> seguras y permisos.</span>
+                            </button>
+                            <button onclick="setScore('cev31', 9.5)" id="btn-cev31-4" class="rubric-opt p-3 rounded-lg border border-slate-200 text-left hover:border-indigo-400">
+                                <span class="font-bold block text-teal-600">N4: Excelente (9-10)</span>
+                                <span class="text-[11px] text-slate-500">Cuidado ejemplar de huella digital y credenciales.</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Score Summary Column -->
+                <div class="lg:col-span-4">
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl sticky top-24 space-y-6">
+                        <h4 class="text-lg font-bold text-teal-400 flex items-center space-x-2">
+                            <span>🧮</span>
+                            <span>Resultado Calificación</span>
+                        </h4>
+
+                        <div class="space-y-3 border-b border-slate-800 pb-4">
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <span onclick="showInfoModal('CEv 2.1')" class="cursor-pointer hover:underline">CEv 2.1 (PLE & Drive):</span>
+                                <span id="calc-v21" class="font-bold text-teal-300">7.5 pts</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <span onclick="showInfoModal('CEv 2.3')" class="cursor-pointer hover:underline">CEv 2.3 (Multimedia/Licencias):</span>
+                                <span id="calc-v23" class="font-bold text-emerald-300">7.5 pts</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <span onclick="showInfoModal('CEv 2.4')" class="cursor-pointer hover:underline">CEv 2.4 (Correo & Netiqueta):</span>
+                                <span id="calc-v24" class="font-bold text-cyan-300">7.5 pts</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <span onclick="showInfoModal('CEv 3.1')" class="cursor-pointer hover:underline">CEv 3.1 (Ciberseguridad):</span>
+                                <span id="calc-v31" class="font-bold text-indigo-300">7.5 pts</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center py-2">
+                            <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">Nota Final SdA 1 (Escala 1-10)</span>
+                            <span id="total-sda-score" class="text-5xl font-black text-teal-400">7.5</span>
+                        </div>
+
+                        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center">
+                            <span class="text-xs text-slate-400 block mb-1">Aportación a Nota Final del Curso (10%)</span>
+                            <span id="total-global-contribution" class="text-xl font-bold text-emerald-400">0.75 / 1.00 pts</span>
+                        </div>
+
+                        <div id="grade-feedback" class="text-xs text-slate-300 bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
+                            Demuestra un desempeño competente acorde a los estándares de 4º de ESO en autonomía digital y ciberseguridad.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CONTENT 5: DUA & MOODLE CENTROS -->
+        <section id="content-dua-moodle" class="tab-content space-y-8 hidden">
+            <!-- Section Intro -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>♿</span>
+                    <span>Inclusión <span onclick="showInfoModal('DUA')" class="abbr-link text-teal-700">DUA</span> & Configuración en Moodle Centros</span>
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Estrategias para garantizar el Diseño Universal para el Aprendizaje (<span onclick="showInfoModal('DUA')" class="abbr-link font-semibold">DUA</span>) y especificaciones técnicas para configurar los cuadernos de evaluación y tareas en el aula virtual de la Junta de Andalucía.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- DUA Principles Card -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
+                        <span>🌈</span>
+                        <span>Medidas de Atención a la Diversidad (<span onclick="showInfoModal('DUA')" class="abbr-link">DUA</span>)</span>
+                    </h4>
+
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h5 class="font-bold text-xs text-teal-800 mb-1">Principio I: Múltiples Formas de Representación</h5>
+                            <p class="text-xs text-slate-600">Instrucciones con guías visuales paso a paso e infografías sobre licencias CC. Micro-videotutoriales (1-2 min) alojados en Moodle sobre exportación PDF y enlaces públicos.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h5 class="font-bold text-xs text-emerald-800 mb-1">Principio II: Múltiples Formas de Acción y Expresión</h5>
+                            <p class="text-xs text-slate-600">Libre elección de herramienta multimedia (Canva, Slides, Genially). Opción de integrar audios explicativos o notas de voz para alumnado con dificultades escritas.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h5 class="font-bold text-xs text-cyan-800 mb-1">Principio III: Múltiples Formas de Implicación</h5>
+                            <p class="text-xs text-slate-600">Sistema gamificado de hitos (Puntos de Control 1 a 5) con retroalimentación inmediata. Transferencia útil a la rutina escolar real en 4º de ESO.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moodle Centros Setup Card -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
+                        <span>🖥️</span>
+                        <span>Implementación en Moodle Centros</span>
+                    </h4>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 bg-slate-900 text-slate-200 rounded-lg space-y-1">
+                            <span class="font-bold text-teal-400 block">1. Recurso de Bienvenida (Página / HTML)</span>
+                            <p class="text-slate-400">Título: <code>[SdA 1] Mi Identidad Digital y Pasaporte Virtual</code></p>
+                            <p class="text-slate-400">Incluye el checklist de los 5 Puntos de Control y la guía gráfica interactiva.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 text-slate-200 rounded-lg space-y-1">
+                            <span class="font-bold text-emerald-400 block">2. Tarea 1: Puntos de Control 1-3 (Formativa)</span>
+                            <p class="text-slate-400">Registro preliminar del enlace a la presentación interactiva y capturas de seguridad.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 text-slate-200 rounded-lg space-y-1">
+                            <span class="font-bold text-cyan-400 block">3. Tarea 2: Entregable Final Pasaporte PDF (Calificable)</span>
+                            <p class="text-slate-400">
+                                Límite 5 MB, extensión <code>.pdf</code>. Evaluada mediante la Rúbrica Criterial vinculada a 
+                                <span onclick="showInfoModal('CEv 2.1')" class="text-teal-300 underline cursor-pointer">CEv 2.1</span>, 
+                                <span onclick="showInfoModal('CEv 2.3')" class="text-emerald-300 underline cursor-pointer">CEv 2.3</span> y 
+                                <span onclick="showInfoModal('CEv 3.1')" class="text-indigo-300 underline cursor-pointer">CEv 3.1</span> en Moodle.
+                            </p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 text-slate-200 rounded-lg space-y-1">
+                            <span class="font-bold text-amber-400 block">4. Tarea 3: Verificación Correo Formal (Calificable)</span>
+                            <p class="text-slate-400">
+                                Registro de comprobación del correo institucional recibido con firma corporativa. Asignada al criterio 
+                                <span onclick="showInfoModal('CEv 2.4')" class="text-cyan-300 underline cursor-pointer">CEv 2.4</span>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Popup Overlay -->
+    <div id="info-modal-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 modal-enter relative space-y-4">
+            
+            <!-- Close Button -->
+            <button onclick="hideInfoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors">
+                ✕
+            </button>
+
+            <!-- Modal Header -->
+            <div class="space-y-1 pr-6">
+                <span id="modal-category" class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-teal-100 text-teal-800 inline-block">
+                    Categoría
+                </span>
+                <h3 id="modal-title" class="text-xl font-bold text-slate-900">
+                    Título del Código
+                </h3>
+            </div>
+
+            <!-- Modal Body Text -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed max-h-60 overflow-y-auto space-y-2">
+                <p id="modal-description">
+                    Descripción detallada del código oficial...
+                </p>
+            </div>
+
+            <!-- Modal Context/Meta info -->
+            <div id="modal-meta" class="text-[11px] text-slate-500 bg-teal-50/50 p-3 rounded-lg border border-teal-100/60 flex items-center space-x-2">
+                <span>📍</span>
+                <span id="modal-meta-text">Referencia oficial Decreto LOMLOE Andalucía (Digitalización 4º ESO).</span>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="pt-2 flex justify-end">
+                <button onclick="hideInfoModal()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Situación de Aprendizaje 1 • Digitalización 4º ESO • Junta de Andalucía (<span onclick="showInfoModal('LOMLOE')" class="abbr-link">LOMLOE</span>)</p>
+            <p class="text-slate-500">Diseño pedagógico optimizado con evaluación criterial transparente y atención a la diversidad.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Comprehensive Dictionary of Curricular Terms, Codes & Abbreviations
+        const infoDictionary = {
+            // --- CRITERIOS DE EVALUACIÓN (CEv) ---
+            "CEv": {
+                title: "CEv - Criterios de Evaluación",
+                category: "Evaluación LOMLOE",
+                description: "Los Criterios de Evaluación son los referentes definitivos para valorar el grado de adquisición de las Competencias Específicas en Digitalización 4º ESO. En la LOMLOE Andalucía, la nota recae al 100% en la superación de estos criterios.",
+                meta: "Aportan el 100% de la calificación de cada Situación de Aprendizaje."
+            },
+            "CEv 2.1": {
+                title: "CEv 2.1. Gestión del Entorno Personal de Aprendizaje (PLE)",
+                category: "Criterio de Evaluación • Ponderación 25%",
+                description: "Gestionar el aprendizaje en el ámbito digital, configurando el entorno personal de aprendizaje mediante la integración de recursos digitales de manera autónoma.",
+                meta: "Competencia Específica 2 • Vinculado a DIG.4.B.1 y DIG.4.D.1."
+            },
+            "CEv 2.3": {
+                title: "CEv 2.3. Creación Multimedia & Licencias de Uso",
+                category: "Criterio de Evaluación • Ponderación 25%",
+                description: "Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas para generar nuevo conocimiento y contenidos digitales de manera creativa, respetando los derechos de autor y licencias de uso.",
+                meta: "Competencia Específica 2 • Vinculado a DIG.4.B.2, DIG.4.B.4 y DIG.4.D.1."
+            },
+            "CEv 2.4": {
+                title: "CEv 2.4. Comunicación y Netiqueta en Entornos Virtuales",
+                category: "Criterio de Evaluación • Ponderación 25%",
+                description: "Interactuar en espacios virtuales de comunicación y plataformas de aprendizaje colaborativo, compartiendo y publicando información y datos, adaptándose a diferentes audiencias con una actitud participativa y respetuosa.",
+                meta: "Competencia Específica 2 • Vinculado a DIG.4.B.3, DIG.4.D.5 y DIG.4.D.6."
+            },
+            "CEv 3.1": {
+                title: "CEv 3.1. Protección de Datos y Huella Digital",
+                category: "Criterio de Evaluación • Ponderación 25%",
+                description: "Proteger los datos personales y la huella digital generada en internet, configurando las condiciones de privacidad de las redes sociales y espacios virtuales de trabajo.",
+                meta: "Competencia Específica 3 • Vinculado a DIG.4.C.2."
+            },
+
+            // --- SABERES BÁSICOS ---
+            "DIG.4.B.1": {
+                title: "DIG.4.B.1. Gestión de Información",
+                category: "Saber Básico • Bloque B: Digitalización del PLE",
+                description: "Búsqueda, administración, gestión, selección y archivo de información en entornos digitales.",
+                meta: "Saber Básico procedural de 4º ESO."
+            },
+            "DIG.4.B.2": {
+                title: "DIG.4.B.2. Edición y Creación Multimedia",
+                category: "Saber Básico • Bloque B: Digitalización del PLE",
+                description: "Edición y creación de contenidos: aplicaciones de productividad, desarrollo de aplicaciones sencillas para dispositivos móviles y web, realidad virtual, aumentada y mixta.",
+                meta: "Saber Básico de creación de contenidos."
+            },
+            "DIG.4.B.3": {
+                title: "DIG.4.B.3. Comunicación y Colaboración",
+                category: "Saber Básico • Bloque B: Digitalización del PLE",
+                description: "Comunicación y colaboración en red mediante canales corporativos y herramientas colaborativas.",
+                meta: "Saber Básico de trabajo colaborativo."
+            },
+            "DIG.4.B.4": {
+                title: "DIG.4.B.4. Publicación y Difusión",
+                category: "Saber Básico • Bloque B: Digitalización del PLE",
+                description: "Publicación y difusión responsable de producciones en redes sociales y entornos educativos.",
+                meta: "Saber Básico sobre difusión pública."
+            },
+            "DIG.4.C.1": {
+                title: "DIG.4.C.1. Seguridad de Dispositivos",
+                category: "Saber Básico • Bloque C: Seguridad y Bienestar",
+                description: "Seguridad de dispositivos: medidas preventivas y correctivas para hacer frente a riesgos, amenazas y ataques a dispositivos.",
+                meta: "Saber Básico sobre protección de hardware y sistemas."
+            },
+            "DIG.4.C.2": {
+                title: "DIG.4.C.2. Protección de Datos y Huella Digital",
+                category: "Saber Básico • Bloque C: Seguridad y Bienestar",
+                description: "Seguridad y protección de datos: identidad, reputación digital, privacidad y huella digital. Medidas preventivas en la configuración de redes sociales y la gestión de identidades virtuales.",
+                meta: "Saber Básico de ciberseguridad personal."
+            },
+            "DIG.4.C.3": {
+                title: "DIG.4.C.3. Salud Física y Bienestar Digital",
+                category: "Saber Básico • Bloque C: Seguridad y Bienestar",
+                description: "Seguridad en la salud física y mental. Riesgos y amenazas al bienestar personal. Opciones de respuesta y prácticas de uso saludable. Situaciones de violencia y de riesgo en la red (ciberacoso, sextorsión, etc.).",
+                meta: "Saber Básico de salud y bienestar digital."
+            },
+            "DIG.4.D.1": {
+                title: "DIG.4.D.1. Interactividad y Licencias de Uso",
+                category: "Saber Básico • Bloque D: Ciudadanía Digital Crítica",
+                description: "Interactividad en la red: libertad de expresión, etiqueta digital, propiedad intelectual y licencias de uso (Creative Commons, Copyright, Dominio Público).",
+                meta: "Saber Básico de ciudadanía crítica y derechos de autor."
+            },
+            "DIG.4.D.5": {
+                title: "DIG.4.D.5. Ética Digital y Sesgos",
+                category: "Saber Básico • Bloque D: Ciudadanía Digital Crítica",
+                description: "Ética en el uso de datos y herramientas digitales: inteligencia artificial, sesgos algorítmicos e ideológicos, obsolescencia programada, soberanía tecnológica y digitalización sostenible.",
+                meta: "Saber Básico de ética tecnológica."
+            },
+            "DIG.4.D.6": {
+                title: "DIG.4.D.6. Activismo y Comunidades Libres",
+                category: "Saber Básico • Bloque D: Ciudadanía Digital Crítica",
+                description: "Activismo en línea: plataformas de iniciativa ciudadana y cibervoluntariado y comunidades de hardware y software libres.",
+                meta: "Saber Básico de cultura libre y participación."
+            },
+
+            // --- DESCRIPTORES OPERATIVOS DEL PERFIL DE SALIDA ---
+            "CD1": {
+                title: "CD1 - Búsqueda Crítica y Propiedad Intelectual",
+                category: "Descriptor Operativo • Competencia Digital",
+                description: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos, para recuperarlos, referenciarlos y reutilizarlos, respetando la propiedad intelectual.",
+                meta: "Perfil de Salida ESO - Competencia Digital."
+            },
+            "CD2": {
+                title: "CD2 - Creación de Contenidos y Gestión del PLE",
+                category: "Descriptor Operativo • Competencia Digital",
+                description: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales, mediante estrategias de tratamiento de la información y el uso de diferentes herramientas digitales, seleccionando y configurando la más adecuada.",
+                meta: "Perfil de Salida ESO - Competencia Digital."
+            },
+            "CD3": {
+                title: "CD3 - Comunicación e Interacción Ciudadana",
+                category: "Descriptor Operativo • Competencia Digital",
+                description: "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales, y gestiona de manera responsable sus acciones, presencia y visibilidad en la red.",
+                meta: "Perfil de Salida ESO - Competencia Digital."
+            },
+            "CD4": {
+                title: "CD4 - Protección Digital y Uso Saludable",
+                category: "Descriptor Operativo • Competencia Digital",
+                description: "Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, los datos personales, la salud y el medioambiente, y para tomar conciencia de un uso seguro y sostenible.",
+                meta: "Perfil de Salida ESO - Competencia Digital."
+            },
+            "CD5": {
+                title: "CD5 - Desarrollo de Soluciones Informáticas",
+                category: "Descriptor Operativo • Competencia Digital",
+                description: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos o responder a retos propuestos.",
+                meta: "Perfil de Salida ESO - Competencia Digital."
+            },
+            "CPSAA1": {
+                title: "CPSAA1 - Autorregulación y Motivación",
+                category: "Descriptor Operativo • Personal, Social y Aprender a Aprender",
+                description: "Regula y expresa sus emociones, fortaleciendo el optimismo, la resiliencia, la autoeficacia y la búsqueda de propósito y motivación hacia el aprendizaje, para gestionar los retos.",
+                meta: "Perfil de Salida ESO - Competencia CPSAA."
+            },
+            "CPSAA2": {
+                title: "CPSAA2 - Salud y Convivencia",
+                category: "Descriptor Operativo • Personal, Social y Aprender a Aprender",
+                description: "Comprende los riesgos para la salud relacionados con factores sociales, consolida estilos de vida saludable a nivel físico y mental, reconoce conductas contrarias a la convivencia y aplica estrategias para abordarlas.",
+                meta: "Perfil de Salida ESO - Competencia CPSAA."
+            },
+            "CPSAA3": {
+                title: "CPSAA3 - Empatía y Trabajo en Equipo",
+                category: "Descriptor Operativo • Personal, Social y Aprender a Aprender",
+                description: "Comprende proactivamente las perspectivas y las experiencias de las demás personas y las incorpora a su aprendizaje, para participar en el trabajo en grupo distribuido.",
+                meta: "Perfil de Salida ESO - Competencia CPSAA."
+            },
+            "CPSAA4": {
+                title: "CPSAA4 - Autoevaluación y Fuentes Fiables",
+                category: "Descriptor Operativo • Personal, Social y Aprender a Aprender",
+                description: "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información y para obtener conclusiones relevantes.",
+                meta: "Perfil de Salida ESO - Competencia CPSAA."
+            },
+            "CPSAA5": {
+                title: "CPSAA5 - Planificación y Metacognición",
+                category: "Descriptor Operativo • Personal, Social y Aprender a Aprender",
+                description: "Planea objetivos a medio plazo y desarrolla procesos metacognitivos de retroalimentación para aprender de sus errores en el proceso de construcción del conocimiento.",
+                meta: "Perfil de Salida ESO - Competencia CPSAA."
+            },
+            "CCL3": {
+                title: "CCL3 - Selección Crítica de Información",
+                category: "Descriptor Operativo • Comunicación Lingüística",
+                description: "Localiza, selecciona y contrasta de manera progresivamente autónoma información procedente de diferentes fuentes evaluando su fiabilidad y pertinencia en función de los objetivos, evitando manipulación y respetando la propiedad intelectual.",
+                meta: "Perfil de Salida ESO - Competencia Comunicativa."
+            },
+            "STEM1": {
+                title: "STEM1 - Razonamiento y Resolución de Problemas",
+                category: "Descriptor Operativo • STEM",
+                description: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona y emplea diferentes estrategias para resolver problemas analizando críticamente las soluciones.",
+                meta: "Perfil de Salida ESO - Competencia STEM."
+            },
+            "STEM2": {
+                title: "STEM2 - Pensamiento Científico",
+                category: "Descriptor Operativo • STEM",
+                description: "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, planteándose preguntas y comprobando hipótesis mediante la indagación.",
+                meta: "Perfil de Salida ESO - Competencia STEM."
+            },
+            "STEM5": {
+                title: "STEM5 - Promoción de la Salud y Medioambiente",
+                category: "Descriptor Operativo • STEM",
+                description: "Emprende acciones fundamentadas científicamente para promover la salud física, mental y social, y preservar el medio ambiente; aplica principios de ética y seguridad.",
+                meta: "Perfil de Salida ESO - Competencia STEM."
+            },
+            "CC1": {
+                title: "CC1 - Identidad Ciudadana y Respeto",
+                category: "Descriptor Operativo • Competencia Ciudadana",
+                description: "Analiza y comprende ideas relativas a la dimensión social y ciudadana de su propia identidad, demostrando respeto por las normas, empatía y equidad.",
+                meta: "Perfil de Salida ESO - Competencia Ciudadana."
+            },
+            "CC2": {
+                title: "CC2 - Valores Democráticos y Derechos",
+                category: "Descriptor Operativo • Competencia Ciudadana",
+                description: "Analiza y asume fundadamente los principios y valores de los derechos humanos y la Constitución, participando en actividades comunitarias con actitud democrática.",
+                meta: "Perfil de Salida ESO - Competencia Ciudadana."
+            },
+            "CC3": {
+                title: "CC3 - Reflexión Ética y Dialogante",
+                category: "Descriptor Operativo • Competencia Ciudadana",
+                description: "Comprende y analiza problemas éticos fundamentales y de actualidad, desarrollando juicios propios con actitud dialogante y opuesta a la discriminación o violencia.",
+                meta: "Perfil de Salida ESO - Competencia Ciudadana."
+            },
+            "CE3": {
+                title: "CE3 - Creación de Soluciones e Innovación",
+                category: "Descriptor Operativo • Competencia Emprendedora",
+                description: "Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones, de manera razonada, utilizando estrategias ágiles de planificación para crear prototipos innovadores.",
+                meta: "Perfil de Salida ESO - Competencia Emprendedora."
+            },
+
+            // --- CONCEPTOS Y ACRÓNIMOS CLAVE ---
+            "PLE": {
+                title: "PLE - Personal Learning Environment",
+                category: "Concepto Pedagógico",
+                description: "Entorno Personal de Aprendizaje. Conjunto de fuentes de información, herramientas, conexiones y actividades que cada estudiante utiliza de forma asidua para aprender, organizar y compartir sus conocimientos.",
+                meta: "Eje central de la Competencia Específica 2 de Digitalización."
+            },
+            "DUA": {
+                title: "DUA - Diseño Universal para el Aprendizaje",
+                category: "Marco Inclusivo",
+                description: "Modelo de enseñanza que busca eliminar barreras de aprendizaje proporcionando múltiples formas de representación (el qué), expresión (el cómo) e implicación (el porqué) para todo el alumnado.",
+                meta: "Principio pedagógico obligatorio LOMLOE."
+            },
+            "LOMLOE": {
+                title: "LOMLOE",
+                category: "Marco Normativo",
+                description: "Ley Orgánica de Modificación de la LOE (Ley 3/2020). Regula la ordenación del currículo basado en competencias en la Educación Secundaria Obligatoria en España.",
+                meta: "Normativa reguladora vigente."
+            },
+            "SdA": {
+                title: "SdA - Situación de Aprendizaje",
+                category: "Unidad Didáctica LOMLOE",
+                description: "Unidad didáctica competencial basada en un reto contextualizado, auténtico y significativo del mundo real que requiere la movilización integrada de saberes y actitudes.",
+                meta: "Estructura didáctica oficial."
+            },
+            "Netiqueta": {
+                title: "Netiqueta (Etiqueta Digital)",
+                category: "Norma de Convivencia Virtual",
+                description: "Conjunto de normas de comportamiento y respeto mutuo aceptadas para la comunicación eficaz y respetuosa en entornos virtuales, redes sociales y correo electrónico formal.",
+                meta: "Saber Básico DIG.4.D.1."
+            },
+            "Passphrase": {
+                title: "Passphrase (Frase de Paso)",
+                category: "Ciberseguridad",
+                description: "Método de autenticación robusto basado en una secuencia o frase larga de palabras con espacios o caracteres especiales, mucho más segura y fácil de recordar que una contraseña tradicional corta.",
+                meta: "Medida preventiva de la SdA 1."
+            }
+        };
+
+        // Session Data Object
+        const sessionData = {
+            1: {
+                title: "Sesión 1: Configuración del PLE, Moodle Centros y Propiedad Intelectual",
+                objectives: "Estructurar el Entorno Personal de Aprendizaje (PLE), identificar Moodle Centros y comprender licencias digitales (Copyright vs. CC).",
+                criteria: ["CEv 2.1", "CEv 2.3"],
+                activities: [
+                    "Estructuración (10 min): Presentación del reto 'El Pasaporte Digital de Aula' y modelo PLE para 4º ESO.",
+                    "Diagnóstico (20 min): Cuestionario inicial en Moodle Centros sobre hábitos de navegación y licencias de autor.",
+                    "Práctica Dirigida (20 min): Acceso a Moodle Centros y exploración de bancos libres (Unsplash, Wikimedia Commons, Freesound)."
+                ],
+                checkpoint: "Punto de Control 1: Captura de pantalla del área personal de Moodle Centros guardada en la carpeta local."
+            },
+            2: {
+                title: "Sesión 2: Ciberseguridad, Huella Digital y Identidad Corporativa",
+                objectives: "Configurar la cuenta corporativa @g.educaand.es, definir passphrases seguras y proteger la privacidad y huella digital.",
+                criteria: ["CEv 3.1"],
+                activities: [
+                    "Instrucción (15 min): Análisis crítico del rastro digital, reputación online y privacidad en la nube.",
+                    "Taller Práctico (25 min): Activación de @g.educaand.es, avatar neutro educativo y generación de contraseña segura (passphrase).",
+                    "Verificación entre iguales (10 min): Peer checking por parejas del acceso al espacio corporativo de Google Workspace."
+                ],
+                checkpoint: "Punto de Control 2: Captura del perfil activado mostrando la identidad corporativa y ajustes de privacidad."
+            },
+            3: {
+                title: "Sesión 3: Taller de Creación Multimedia e Interactividad (Decálogo)",
+                objectives: "Diseñar la presentación interactiva sobre ciberseguridad y etiqueta digital, atribuyendo adecuadamente las fuentes.",
+                criteria: ["CEv 2.3", "CEv 2.4"],
+                activities: [
+                    "Exposición Técnica (15 min): Pautas de diseño accesible, interactividad y citación adecuada de licencias Creative Commons.",
+                    "Creación Guiada (25 min): Elaboración individual de la presentación (Canva/Slides/Genially) de 4 diapositivas: Portada, 4 Pautas Ciberseguridad, 3 Reglas Netiqueta y Créditos/Licencias.",
+                    "Publicación (10 min): Configuración de permisos de visualización pública mediante enlace."
+                ],
+                checkpoint: "Punto de Control 3: URL / Enlace web público accesible a la presentación interactiva."
+            },
+            4: {
+                title: "Sesión 4: Arquitectura del PLE en Google Drive y Descarga del Pasaporte PDF",
+                objectives: "Organizar la estructura en Google Drive, maquetar el documento maestro en Google Docs y exportarlo a PDF accesible.",
+                criteria: ["CEv 2.1", "CEv 2.3"],
+                activities: [
+                    "Organización en Drive (15 min): Creación del árbol de carpetas 'DIG_4ESO_Nombre_Apellidos' con subcarpetas temáticas (01_Pasaporte, 02_PLE, etc.).",
+                    "Maquetación Docs (30 min): Redacción del documento recopilando las capturas de Moodle, Perfil Corporativo, árbol de carpetas, enlace incrustado y reflexión escrita (4-5 líneas).",
+                    "Exportación (5 min): Generación y descarga en local del archivo en formato PDF."
+                ],
+                checkpoint: "Punto de Control 4: Archivo 'Pasaporte_Digital_Nombre_Apellidos.pdf' descargado en local."
+            },
+            5: {
+                title: "Sesión 5: Comunicación Institucional, Netiqueta y Cierre de la SdA",
+                objectives: "Redactar un correo electrónico formal adaptado a la audiencia con firma corporativa, normas de netiqueta y adjunto final.",
+                criteria: ["CEv 2.4"],
+                activities: [
+                    "Taller de Comunicación Formal (15 min): Pautas de comunicación por email: asunto estandarizado, saludo formal, cuerpo estructurado, firma automática y adjunto.",
+                    "Envío y Moodle (25 min): Envío del correo al docente con asunto '[DIG 4º ESO] Pasaporte Digital - Nombre' y subida del PDF a Moodle Centros.",
+                    "Autoevaluación (10 min): Compleción del cuestionario de autoevaluación criterial en Moodle Centros."
+                ],
+                checkpoint: "Punto de Control 5: Confirmación de correo recibido por el docente y tarea subida a Moodle Centros."
+            }
+        };
+
+        // Score State Engine
+        let scores = {
+            cev21: 7.5,
+            cev23: 7.5,
+            cev24: 7.5,
+            cev31: 7.5
+        };
+
+        // Modal Functionality
+        function showInfoModal(codeKey) {
+            const data = infoDictionary[codeKey] || {
+                title: codeKey,
+                category: "Información Curricular",
+                description: `Término o código oficial ${codeKey} perteneciente al currículo de Digitalización 4º ESO.`,
+                meta: "Junta de Andalucía - Normativa LOMLOE."
+            };
+
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-category').textContent = data.category;
+            document.getElementById('modal-description').textContent = data.description;
+            document.getElementById('modal-meta-text').textContent = data.meta;
+
+            const modal = document.getElementById('info-modal-backdrop');
+            modal.classList.remove('hidden');
+        }
+
+        function hideInfoModal() {
+            document.getElementById('info-modal-backdrop').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside content card
+        document.getElementById('info-modal-backdrop').addEventListener('click', (e) => {
+            if (e.target.id === 'info-modal-backdrop') {
+                hideInfoModal();
+            }
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Remove active classes from all header buttons
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                el.classList.remove('bg-teal-600', 'text-white');
+                el.classList.add('hover:bg-slate-800', 'text-slate-300');
+            });
+            document.querySelectorAll('.nav-tab-mob').forEach(el => {
+                el.classList.remove('bg-teal-600', 'text-white');
+                el.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            // Show current tab content
+            const targetContent = document.getElementById(`content-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            // Highlight desktop tab
+            const deskBtn = document.getElementById(`tab-${tabId}`);
+            if (deskBtn) {
+                deskBtn.classList.add('bg-teal-600', 'text-white');
+                deskBtn.classList.remove('hover:bg-slate-800', 'text-slate-300');
+            }
+
+            // Highlight mobile tab
+            const mobBtn = document.getElementById(`tab-mob-${tabId}`);
+            if (mobBtn) {
+                mobBtn.classList.add('bg-teal-600', 'text-white');
+                mobBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            }
+        }
+
+        // Render Session Information
+        function showSession(sessionNum) {
+            // Update session active button styles
+            document.querySelectorAll('.session-btn').forEach((btn, idx) => {
+                if (idx + 1 === sessionNum) {
+                    btn.className = "session-btn py-2.5 rounded-lg bg-white text-teal-700 font-bold shadow-sm transition-all";
+                } else {
+                    btn.className = "session-btn py-2.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-semibold";
+                }
+            });
+
+            const data = sessionData[sessionNum];
+            const container = document.getElementById('session-detail-card');
+
+            let criteriaBadges = data.criteria.map(c => `
+                <button onclick="showInfoModal('${c}')" class="bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs font-semibold px-2.5 py-1 rounded transition-colors flex items-center space-x-1">
+                    <span>${c}</span>
+                    <span class="text-[10px]">ℹ️</span>
+                </button>
+            `).join(' ');
+
+            let activitiesList = data.activities.map(act => `<li class="flex items-start space-x-2 text-xs sm:text-sm text-slate-600"><span class="text-teal-500 font-bold">›</span><span>${act}</span></li>`).join('');
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                        <h4 class="text-xl font-bold text-slate-900">${data.title}</h4>
+                        <div class="flex items-center space-x-2">
+                            ${criteriaBadges}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Objetivo Didáctico</h5>
+                        <p class="text-sm font-medium text-slate-800">${data.objectives}</p>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Desarrollo de Actividades en el Aula</h5>
+                        <ul class="space-y-2">
+                            ${activitiesList}
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-teal-50/70 border border-teal-200 rounded-xl">
+                        <h5 class="text-xs font-bold text-teal-900 uppercase tracking-wider mb-1 flex items-center space-x-1">
+                            <span>📌</span>
+                            <span>Entregable / Punto de Control Evaluativo</span>
+                        </h5>
+                        <p class="text-xs sm:text-sm font-semibold text-teal-800">${data.checkpoint}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Calculator Score Engine
+        function setScore(criterion, val) {
+            scores[criterion] = val;
+
+            // Highlight buttons for this criterion
+            const btnPrefix = `btn-${criterion}-`;
+            [1, 2, 3, 4].forEach((idx) => {
+                const btn = document.getElementById(`${btnPrefix}${idx}`);
+                if (btn) {
+                    btn.classList.remove('border-teal-500', 'bg-teal-50/50', 'border-emerald-500', 'bg-emerald-50/50', 'border-cyan-500', 'bg-cyan-50/50', 'border-indigo-500', 'bg-indigo-50/50');
+                }
+            });
+
+            let selectedIdx = 1;
+            if (val === 5.5) selectedIdx = 2;
+            if (val === 7.5) selectedIdx = 3;
+            if (val === 9.5) selectedIdx = 4;
+
+            const activeBtn = document.getElementById(`${btnPrefix}${selectedIdx}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-teal-500', 'bg-teal-50/50');
+            }
+
+            // Update display values
+            document.getElementById('calc-v21').textContent = `${scores.cev21} pts`;
+            document.getElementById('calc-v23').textContent = `${scores.cev23} pts`;
+            document.getElementById('calc-v24').textContent = `${scores.cev24} pts`;
+            document.getElementById('calc-v31').textContent = `${scores.cev31} pts`;
+
+            // Calculate total weighted score (25% each)
+            const totalScore = (scores.cev21 + scores.cev23 + scores.cev24 + scores.cev31) / 4;
+            const globalContrib = (totalScore * 0.10).toFixed(2);
+
+            document.getElementById('total-sda-score').textContent = totalScore.toFixed(1);
+            document.getElementById('total-global-contribution').textContent = `${globalContrib} / 1.00 pts`;
+
+            // Update feedback wording
+            const feedbackEl = document.getElementById('grade-feedback');
+            if (totalScore >= 9) {
+                feedbackEl.textContent = "Excelente desempeño. El alumnado demuestra dominio avanzado de la ciberseguridad, etiqueta digital y gestión autónoma del PLE.";
+            } else if (totalScore >= 7) {
+                feedbackEl.textContent = "Desempeño competente. Cumple con todos los estándares esperados para el inicio de 4º de ESO con soltura.";
+            } else if (totalScore >= 5) {
+                feedbackEl.textContent = "En proceso de desarrollo. Ha alcanzado los mínimos exigibles pero requiere reforzar hábitos de ciberseguridad y citado ético.";
+            } else {
+                feedbackEl.textContent = "Iniciante / Dificultad. Requiere apoyo directo docente para la reestructuración del PLE y adecuación del formato de comunicación formal.";
+            }
+        }
+
+        // Initialize Chart.js Donut Visualization
+        function initChart() {
+            const ctx = document.getElementById('criteriaChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'CEv 2.1: PLE y Drive (25%)',
+                        'CEv 2.3: Multimedia & Licencias (25%)',
+                        'CEv 2.4: Netiqueta & Email (25%)',
+                        'CEv 3.1: Protección & Datos (25%)'
+                    ],
+                    datasets: [{
+                        data: [25, 25, 25, 25],
+                        backgroundColor: [
+                            '#0d9488', // Teal
+                            '#10b981', // Emerald
+                            '#06b6d4', // Cyan
+                            '#6366f1'  // Indigo
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 11
+                                },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: Ponderación del 25% en la SdA 1`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Keyboard navigation (ESC closes modal)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideInfoModal();
+            }
+        });
+
+        // Document Ready Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            showSession(1);
+        });
+    </script>
+</body>
+</html>

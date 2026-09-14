@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 1: Mi Identidad Digital y Pasaporte Virtual (3º ESO)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .abbr-tag {
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .abbr-tag:hover {
+            transform: translateY(-1px);
+            filter: brightness(0.95);
+        }
+        .abbr-text {
+            border-bottom: 1px dotted currentColor;
+            cursor: pointer;
+        }
+        .abbr-text:hover {
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Tech Slate (Slate 50 background, Indigo 700 main headers/accents, Emerald 600 secondary highlights) -->
+    <!-- Application Structure Plan: La SPA se organiza en 5 secciones temáticas accesibles mediante una barra de navegación superior: 1) Resumen General y Justificación, 2) Conexión Curricular (mapeo de CEvs, Saberes Básicos y Descriptores del Perfil de Salida con gráfico de ponderación), 3) Secuenciación Didáctica (visor interactivo de sesiones y Puntos de Control), 4) Evaluador por Rúbrica (calculadora e interactivo de rúbricas criteriales), y 5) Atenciones DUA e Incrustación Moodle Centros. Se integra un Modal Pop-Up global activable desde cualquier abreviatura (CEv, Saberes, Descriptores u acrónimos pedagogicos) para mostrar la definición curricular completa de forma instantánea. -->
+    <!-- Visualization & Content Choices: 
+        - Modal Pop-up emergente interactivo para abreviaturas curriculares (CEv, Saberes CYR.3.x.x, Descriptores Perfil de Salida STEM/CD/CC/CE/CPSAA/CCEC/CCL, DUA, LOMLOE).
+        - Gráfico de Torta (Chart.js / Canvas) para la Ponderación Criterial de la SdA.
+        - Gráfico de Radar (Chart.js / Canvas) en la calculadora de evaluación para visualizar el desempeño del alumnado a través de los 6 Criterios de Evaluación.
+        - Listas de cotejo interactivas con JS para simular Puntos de Control.
+        - Se evitan gráficos SVG y Mermaid.js por completo, empleando únicamente Canvas de Chart.js e iconos de fuente (FontAwesome).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header & Navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-lg">
+                        <i class="fa-solid fa-passport"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base sm:text-lg leading-tight">
+                            <span class="abbr-text" onclick="showInfo('SdA')">SdA</span> 1: Mi Identidad Digital y Pasaporte Virtual
+                        </h1>
+                        <p class="text-xs text-slate-400">Computación y Robótica • 3º <span class="abbr-text" onclick="showInfo('ESO')">ESO</span> • Junta de Andalucía</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('resumen')" id="nav-resumen" class="px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition">Visión General</button>
+                    <button onclick="switchTab('curricular')" id="nav-curricular" class="px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition">Currículo & CEv</button>
+                    <button onclick="switchTab('secuenciacion')" id="nav-secuenciacion" class="px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition">Sesiones & Reto</button>
+                    <button onclick="switchTab('evaluacion')" id="nav-evaluacion" class="px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition">Calculadora Rúbrica</button>
+                    <button onclick="switchTab('dua-moodle')" id="nav-dua-moodle" class="px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 transition">DUA & Moodle</button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu tabs -->
+        <div class="md:hidden flex overflow-x-auto bg-slate-800 text-xs px-2 py-1 space-x-1 border-t border-slate-700">
+            <button onclick="switchTab('resumen')" id="mob-resumen" class="px-2 py-1 whitespace-nowrap rounded text-slate-300">Resumen</button>
+            <button onclick="switchTab('curricular')" id="mob-curricular" class="px-2 py-1 whitespace-nowrap rounded text-slate-300">Currículo</button>
+            <button onclick="switchTab('secuenciacion')" id="mob-secuenciacion" class="px-2 py-1 whitespace-nowrap rounded text-slate-300">Sesiones</button>
+            <button onclick="switchTab('evaluacion')" id="mob-evaluacion" class="px-2 py-1 whitespace-nowrap rounded text-slate-300">Rúbrica</button>
+            <button onclick="switchTab('dua-moodle')" id="mob-dua-moodle" class="px-2 py-1 whitespace-nowrap rounded text-slate-300">DUA/Moodle</button>
+        </div>
+    </header>
+
+    <!-- Global Info Modal (Pop-up) -->
+    <div id="info-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 transform transition-all relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-100 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-3">
+                <div id="modal-badge-icon" class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div>
+                    <span id="modal-category" class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 block">Categoría Curricular</span>
+                    <h3 id="modal-title" class="text-lg font-extrabold text-slate-900 leading-tight">Título del Elemento</h3>
+                </div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 my-3">
+                <p id="modal-description" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    Descripción detallada del elemento seleccionado.
+                </p>
+            </div>
+            <div id="modal-extra-info" class="text-[11px] text-slate-500 flex items-center justify-between border-t pt-3 mt-3">
+                <span><i class="fa-solid fa-book-bookmark mr-1 text-slate-400"></i> Fuente: Orden Curricular Andalucía (LOMLOE)</span>
+                <button onclick="closeInfoModal()" class="px-3 py-1 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SECTION 1: RESUMEN Y JUSTIFICACIÓN -->
+        <section id="sec-resumen" class="space-y-6">
+            <div class="bg-indigo-900 text-white rounded-2xl p-6 md:p-8 shadow-lg relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-block px-3 py-1 bg-indigo-500 bg-opacity-30 border border-indigo-400 text-indigo-200 text-xs font-semibold rounded-full uppercase tracking-wider mb-3">
+                        <span class="abbr-text" onclick="showInfo('SdA')">Situación de Aprendizaje</span> 1 • 1er Trimestre
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mb-3">
+                        "Mi Identidad Digital y Pasaporte Virtual en el Aula"
+                    </h2>
+                    <p class="text-indigo-100 text-sm sm:text-base leading-relaxed mb-4">
+                        Esta unidad de inducción capacita al alumnado de 3º de <span class="abbr-text" onclick="showInfo('ESO')">ESO</span> en la gestión avanzada y ética de sus plataformas institucionales (<code class="bg-indigo-950 px-1.5 py-0.5 rounded text-amber-300">@g.educaand.es</code> y Moodle Centros), previniendo riesgos en ciberseguridad, consolidando la protección de datos personales y promoviendo el respeto activo por la propiedad intelectual.
+                    </p>
+                    <div class="flex flex-wrap gap-4 text-xs sm:text-sm font-medium">
+                        <div class="bg-indigo-800/80 border border-indigo-700 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                            <i class="fa-regular fa-clock text-indigo-300"></i>
+                            <span>5 Sesiones (~2,5 Semanas)</span>
+                        </div>
+                        <div class="bg-indigo-800/80 border border-indigo-700 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-pie text-indigo-300"></i>
+                            <span>Ponderación: 10% Nota Global</span>
+                        </div>
+                        <div class="bg-indigo-800/80 border border-indigo-700 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-graduation-cap text-indigo-300"></i>
+                            <span>Evaluación Inicial & Acreditación</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intro Section Context -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-indigo-600"></i> Propósito de la Unidad en 3º ESO
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Al inicio de 3º de <span class="abbr-text" onclick="showInfo('ESO')">ESO</span>, el alumnado debe consolidar competencias de ciberseguridad activa/pasiva y responsabilidad en la red antes de abordar bloques avanzados de programación y robótica. Mediante la dinámica gamificada del <strong>Pasaporte Digital de Aula</strong>, el estudiante no solo configura de manera segura sus plataformas, sino que también crea materiales interactivos multimedia (Canva, Slides o Genially) respetando las licencias de autor.
+                </p>
+            </div>
+
+            <!-- Componentes del Producto Final -->
+            <h3 class="text-xl font-bold text-slate-900 pt-2">Producto Final Completo (3 Componentes)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Comp 1 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold mb-3">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">1. Decálogo Multimedia Interactivo</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Presentación elaborada libremente en <strong>Canva, Google Slides o Genially</strong> con reglas de seguridad activa/pasiva, normas de etiqueta digital y atribución formal de licencias (Creative Commons / CC0).
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="abbr-tag text-xs font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded border border-purple-200" onclick="showInfo('CEv 5.2')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 5.2
+                        </span>
+                        <span class="abbr-tag text-xs font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded border border-purple-200" onclick="showInfo('CEv 6.3')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.3
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Comp 2 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold mb-3">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">2. Pasaporte PDF Estructurado</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Documento redactado en Google Docs y exportado a <code class="bg-slate-100 px-1 py-0.5 rounded">.pdf</code> con jerarquía de estilos, evidencias técnicas (capturas de Moodle, Google Drive y perfil) y el enlace incrustado a su presentación.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="abbr-tag text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded border border-blue-200" onclick="showInfo('CEv 5.1')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 5.1
+                        </span>
+                        <span class="abbr-tag text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded border border-blue-200" onclick="showInfo('CEv 6.1')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.1
+                        </span>
+                        <span class="abbr-tag text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded border border-blue-200" onclick="showInfo('CEv 6.4')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.4
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Comp 3 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-3">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">3. Comunicación Formal Institucional</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Envío de un correo corporativo formal al docente desde Gmail (<code class="bg-slate-100 px-1 py-0.5 rounded">@g.educaand.es</code>) con asunto normalizado, Netiqueta, firma institucional redactada y el archivo PDF adjunto.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="abbr-tag text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200" onclick="showInfo('CEv 6.2')">
+                            <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.2
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CONEXIÓN CURRICULAR -->
+        <section id="sec-curricular" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-diagram-project text-indigo-600"></i> Marco Normativo Curricular (3º ESO Andalucía)
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Esta sección explicita la alineación entre las <strong>Competencias Específicas (<span class="abbr-text" onclick="showInfo('CE')">CE</span>)</strong>, los <strong>Criterios de Evaluación (<span class="abbr-text" onclick="showInfo('CEv')">CEv</span>)</strong> calificables, los <strong>Saberes Básicos</strong> movilizados y sus <strong>Descriptores Operativos del Perfil de Salida</strong>. 
+                    <span class="inline-block mt-1 text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                        <i class="fa-solid fa-hand-pointer mr-1"></i> Haz clic en cualquier código (CEv, CYR, STEM, CD, etc.) para abrir su descripción completa en un Pop-Up.
+                    </span>
+                </p>
+            </div>
+
+            <!-- Dynamic Chart & Table Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Weightings Chart Container -->
+                <div class="lg:col-span-5 bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm mb-1">Distribución de Ponderación por Criterio</h4>
+                        <p class="text-xs text-slate-500 mb-3">Peso de cada <span class="abbr-text" onclick="showInfo('CEv')">CEv</span> sobre el total del 10% de la SdA 1</p>
+                        <div class="chart-container">
+                            <canvas id="weightingsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>Nota evaluativa:</strong> Los Saberes Básicos actúan exclusivamente como vehículos instruccionales para alcanzar el desempeño descrito en cada <span class="abbr-text" onclick="showInfo('CEv')">CEv</span>.
+                    </div>
+                </div>
+
+                <!-- CEv Interactive Table -->
+                <div class="lg:col-span-7 bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-900 text-sm mb-3">Filtro de Criterios, Descriptores y Saberes de 3º de ESO</h4>
+                    <div class="space-y-3 max-h-[460px] overflow-y-auto pr-2">
+
+                        <!-- CEv 5.1 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 5.1')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 5.1 (Ponderación: 20%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM1')">STEM1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM3')">STEM3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD5')">CD5</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA3')">CPSAA3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CC3')">CC3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CE3')">CE3</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-indigo-50 text-indigo-800 border border-indigo-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.E.1')"><i class="fa-solid fa-code text-[9px]"></i> CYR.3.E.1</span>
+                                <span class="abbr-tag bg-indigo-50 text-indigo-800 border border-indigo-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.E.2')"><i class="fa-solid fa-server text-[9px]"></i> CYR.3.E.2</span>
+                            </div>
+                        </div>
+
+                        <!-- CEv 5.2 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 5.2')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 5.2 (Ponderación: 20%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM1')">STEM1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM3')">STEM3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD5')">CD5</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA4')">CPSAA4</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA5')">CPSAA5</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.E.3')"><i class="fa-solid fa-film text-[9px]"></i> CYR.3.E.3</span>
+                                <span class="abbr-tag bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.E.4')"><i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i> CYR.3.E.4</span>
+                            </div>
+                        </div>
+
+                        <!-- CEv 6.1 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 6.1')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 6.1 (Ponderación: 15%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM1')">STEM1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM3')">STEM3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD1')">CD1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD4')">CD4</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA3')">CPSAA3</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Adoptar conductas y hábitos que permitan la protección del individuo en su interacción en la red.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-blue-50 text-blue-800 border border-blue-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.1')"><i class="fa-solid fa-shield-halved text-[9px]"></i> CYR.3.I.1</span>
+                                <span class="abbr-tag bg-blue-50 text-blue-800 border border-blue-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.2')"><i class="fa-solid fa-user-shield text-[9px]"></i> CYR.3.I.2</span>
+                            </div>
+                        </div>
+
+                        <!-- CEv 6.2 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 6.2')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 6.2 (Ponderación: 15%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD3')">CD3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD4')">CD4</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA3')">CPSAA3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CC3')">CC3</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Acceder a servicios de intercambio y publicación de información digital aplicando criterios de seguridad y uso responsable.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.4')"><i class="fa-solid fa-network-wired text-[9px]"></i> CYR.3.I.4</span>
+                            </div>
+                        </div>
+
+                        <!-- CEv 6.3 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 6.3')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 6.3 (Ponderación: 15%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD1')">CD1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD4')">CD4</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CC3')">CC3</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CCEC4')">CCEC4</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Reconocer y comprender los derechos de los materiales alojados en la web.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-amber-50 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.5')"><i class="fa-solid fa-copyright text-[9px]"></i> CYR.3.I.5</span>
+                            </div>
+                        </div>
+
+                        <!-- CEv 6.4 -->
+                        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+                                <span class="abbr-tag font-bold text-xs text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded" onclick="showInfo('CEv 6.4')">
+                                    <i class="fa-solid fa-circle-info"></i> CEv 6.4 (Ponderación: 15%)
+                                </span>
+                                <div class="flex flex-wrap gap-1 text-[10px]">
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('STEM1')">STEM1</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD4')">CD4</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CD5')">CD5</span>
+                                    <span class="abbr-tag bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono" onclick="showInfo('CPSAA3')">CPSAA3</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-800 font-medium mb-1.5">Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información.</p>
+                            <div class="text-[11px] text-slate-600 bg-white p-2 rounded border border-slate-100 flex flex-wrap items-center gap-1.5">
+                                <strong>Saberes Movilizados:</strong> 
+                                <span class="abbr-tag bg-red-50 text-red-800 border border-red-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.1')"><i class="fa-solid fa-bug text-[9px]"></i> CYR.3.I.1</span>
+                                <span class="abbr-tag bg-red-50 text-red-800 border border-red-200 px-1.5 py-0.5 rounded" onclick="showInfo('CYR.3.I.3')"><i class="fa-solid fa-lock text-[9px]"></i> CYR.3.I.3</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SECUENCIACIÓN DIDÁCTICA Y PUNTOS DE CONTROL -->
+        <section id="sec-secuenciacion" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-600"></i> Secuenciación Didáctica y Simulador de Puntos de Control
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    La unidad se estructura en 5 sesiones de 55 minutos. Cada sesión culmina en un <strong>Punto de Control</strong> obligatorio para asegurar el avance competencial del alumnado. Puede marcar las casillas a continuación para simular la verificación en el aula.
+                </p>
+            </div>
+
+            <!-- Timeline & Session Navigation -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Session Selector Buttons -->
+                <div class="lg:col-span-4 space-y-2">
+                    <button onclick="selectSession(1)" id="sess-btn-1" class="w-full text-left p-3.5 rounded-xl border border-indigo-500 bg-indigo-50 font-medium text-xs sm:text-sm flex items-center justify-between transition shadow-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">1</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Sesión 1: Activación y Licencias</p>
+                                <p class="text-[11px] text-slate-500">Moodle & Propiedad Intelectual</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-indigo-600"></i>
+                    </button>
+
+                    <button onclick="selectSession(2)" id="sess-btn-2" class="w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">2</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Sesión 2: Perfil Corporativo</p>
+                                <p class="text-[11px] text-slate-500">Google Workspace & Passphrases</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </button>
+
+                    <button onclick="selectSession(3)" id="sess-btn-3" class="w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">3</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Sesión 3: Taller Canva/Slides/Genially</p>
+                                <p class="text-[11px] text-slate-500">Decálogo Multimedia Interactivo</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </button>
+
+                    <button onclick="selectSession(4)" id="sess-btn-4" class="w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">4</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Sesión 4: Estructura Nube & PDF</p>
+                                <p class="text-[11px] text-slate-500">Google Drive & Docs Interactivo</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </button>
+
+                    <button onclick="selectSession(5)" id="sess-btn-5" class="w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm flex items-center justify-between transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">5</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Sesión 5: Envío Formal & Moodle</p>
+                                <p class="text-[11px] text-slate-500">Correo Institucional & Cierre</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </button>
+
+                    <!-- Checkpoints Interactive Tracker Card -->
+                    <div class="bg-slate-900 text-white p-4 rounded-xl space-y-3 mt-4">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span>Progreso del Pasaporte Digital</span>
+                            <span id="progress-percent" class="text-emerald-400">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2">
+                            <div id="progress-bar" class="bg-emerald-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Marca los hitos completados en las sesiones para simular la obtención del pasaporte.</p>
+                    </div>
+                </div>
+
+                <!-- Session Detail View -->
+                <div class="lg:col-span-8 bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <div id="session-detail-container">
+                        <!-- Content dynamically injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CALCULADORA Y RÚBRICA GRADUADA -->
+        <section id="sec-evaluacion" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-indigo-600"></i> Calculadora e Instrumento de Evaluación Criterial
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Seleccione el nivel alcanzado por el estudiante en cada Criterio de Evaluación (<span class="abbr-text" onclick="showInfo('CEv')">CEv</span>) de la rúbrica graduada. La herramienta calculará automáticamente la calificación autonómica oficial sobre 10 para esta <span class="abbr-text" onclick="showInfo('SdA')">SdA</span> y actualizará el perfil competencial.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Rubric Evaluator Table -->
+                <div class="lg:col-span-7 bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="font-bold text-slate-900 text-sm border-b pb-2">Rúbrica Criterial Graduada (3º ESO)</h4>
+
+                    <!-- CEv 5.1 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-indigo-700" onclick="showInfo('CEv 5.1')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 5.1: Uso de Plataformas (20%)
+                            </span>
+                            <span id="score-cev51" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-indigo-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev51', 3)" id="btn-cev51-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> Inseguro en plataformas.
+                            </button>
+                            <button onclick="setRubric('cev51', 5.5)" id="btn-cev51-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Manejo con ayuda ocasional.
+                            </button>
+                            <button onclick="setRubric('cev51', 7.5)" id="btn-cev51-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Fluidez sin errores.
+                            </button>
+                            <button onclick="setRubric('cev51', 10)" id="btn-cev51-4" class="p-2 border rounded text-left hover:bg-indigo-100 transition bg-indigo-50 border-indigo-500 font-semibold text-indigo-900">
+                                <strong>N4 (10):</strong> Total autonomía y maestría.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CEv 5.2 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-purple-700" onclick="showInfo('CEv 5.2')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 5.2: Creación Canva/Slides/Genially (20%)
+                            </span>
+                            <span id="score-cev52" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-purple-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev52', 3)" id="btn-cev52-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> Sin interactividad / incompleta.
+                            </button>
+                            <button onclick="setRubric('cev52', 5.5)" id="btn-cev52-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Presentación básica interactiva.
+                            </button>
+                            <button onclick="setRubric('cev52', 7.5)" id="btn-cev52-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Bien estructurada y animada.
+                            </button>
+                            <button onclick="setRubric('cev52', 10)" id="btn-cev52-4" class="p-2 border rounded text-left hover:bg-purple-100 transition bg-purple-50 border-purple-500 font-semibold text-purple-900">
+                                <strong>N4 (10):</strong> Excelente diseño multimedia.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CEv 6.1 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-blue-700" onclick="showInfo('CEv 6.1')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.1: Protecc. Identidad & Passphrase (15%)
+                            </span>
+                            <span id="score-cev61" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-blue-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev61', 3)" id="btn-cev61-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> Claves débiles / expone datos.
+                            </button>
+                            <button onclick="setRubric('cev61', 5.5)" id="btn-cev61-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Claves aceptables / foto mejorable.
+                            </button>
+                            <button onclick="setRubric('cev61', 7.5)" id="btn-cev61-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Passphrase e identidad neutra.
+                            </button>
+                            <button onclick="setRubric('cev61', 10)" id="btn-cev61-4" class="p-2 border rounded text-left hover:bg-blue-100 transition bg-blue-50 border-blue-500 font-semibold text-blue-900">
+                                <strong>N4 (10):</strong> Ciberseguridad ejemplar.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CEv 6.2 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-emerald-700" onclick="showInfo('CEv 6.2')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.2: Correo Formal y Netiqueta (15%)
+                            </span>
+                            <span id="score-cev62" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-emerald-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev62', 3)" id="btn-cev62-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> No envía o informalidad.
+                            </button>
+                            <button onclick="setRubric('cev62', 5.5)" id="btn-cev62-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Envía con fallos de formato.
+                            </button>
+                            <button onclick="setRubric('cev62', 7.5)" id="btn-cev62-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Respeto formal completo.
+                            </button>
+                            <button onclick="setRubric('cev62', 10)" id="btn-cev62-4" class="p-2 border rounded text-left hover:bg-emerald-100 transition bg-emerald-50 border-emerald-500 font-semibold text-emerald-900">
+                                <strong>N4 (10):</strong> Redacción impecable y firma.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CEv 6.3 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-amber-700" onclick="showInfo('CEv 6.3')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.3: Propiedad Intelectual / CC (15%)
+                            </span>
+                            <span id="score-cev63" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-amber-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev63', 3)" id="btn-cev63-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> Omite licencias y derechos.
+                            </button>
+                            <button onclick="setRubric('cev63', 5.5)" id="btn-cev63-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Atribución incompleta.
+                            </button>
+                            <button onclick="setRubric('cev63', 7.5)" id="btn-cev63-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Licencias libres y autoría.
+                            </button>
+                            <button onclick="setRubric('cev63', 10)" id="btn-cev63-4" class="p-2 border rounded text-left hover:bg-amber-100 transition bg-amber-50 border-amber-500 font-semibold text-amber-900">
+                                <strong>N4 (10):</strong> Dominio Creative Commons.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CEv 6.4 Evaluator -->
+                    <div class="p-3 bg-slate-50 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="abbr-tag text-xs font-bold text-red-700" onclick="showInfo('CEv 6.4')">
+                                <i class="fa-solid fa-circle-question text-[10px]"></i> CEv 6.4: Permisos Drive & Datos (15%)
+                            </span>
+                            <span id="score-cev64" class="text-xs font-bold bg-white px-2 py-0.5 rounded border border-slate-200 text-red-600">10 / 10</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+                            <button onclick="setRubric('cev64', 3)" id="btn-cev64-1" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N1 (3):</strong> Permisos abiertos / inseguro.
+                            </button>
+                            <button onclick="setRubric('cev64', 5.5)" id="btn-cev64-2" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N2 (5.5):</strong> Ajustes tras aviso.
+                            </button>
+                            <button onclick="setRubric('cev64', 7.5)" id="btn-cev64-3" class="p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200">
+                                <strong>N3 (7.5):</strong> Restricción corporativa.
+                            </button>
+                            <button onclick="setRubric('cev64', 10)" id="btn-cev64-4" class="p-2 border rounded text-left hover:bg-red-100 transition bg-red-50 border-red-500 font-semibold text-red-900">
+                                <strong>N4 (10):</strong> Protección activa avanzada.
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Result & Radar Chart -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm text-center">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Calificación Final SdA 1</span>
+                        <div class="text-5xl font-extrabold text-indigo-600 my-2" id="final-score">10.0</div>
+                        <p class="text-xs text-slate-500" id="score-label">Nivel de Desempeño: Excelente</p>
+                        <div class="mt-4 text-xs font-medium text-slate-700 bg-indigo-50 border border-indigo-200 p-2.5 rounded-lg">
+                            Aportación a la Nota Global del Curso (10%): <strong id="global-contribution" class="text-indigo-800">1.0 / 1.0 pto</strong>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-900 text-xs text-center mb-2">Perfil Criterial de Desempeño</h4>
+                        <div class="chart-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DUA Y MOODLE CENTROS -->
+        <section id="sec-dua-moodle" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-universal-access text-indigo-600"></i> Diseños de Accesibilidad (<span class="abbr-text" onclick="showInfo('DUA')">DUA</span>) e Incrustación Moodle
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Estrategias de inclusión universal para garantizar la accesibilidad de todo el alumnado de 3º de <span class="abbr-text" onclick="showInfo('ESO')">ESO</span> e instrucciones para la importación directa a Moodle Centros.
+                </p>
+            </div>
+
+            <!-- DUA Principles Tabs -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h4 class="font-bold text-slate-900 text-base mb-4">Pautas <span class="abbr-text text-indigo-700" onclick="showInfo('DUA')">DUA</span> Aplicadas en esta SdA</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                        <div class="flex items-center space-x-2 text-blue-800 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>I. Representación (El Qué)</span>
+                        </div>
+                        <ul class="text-xs text-blue-950 space-y-2 leading-relaxed">
+                            <li>• <strong>Libre elección de herramienta:</strong> Alternativa abierta entre Canva, Google Slides o Genially según la preferencia visual.</li>
+                            <li>• <strong>Guías visuales:</strong> Capturas anotadas y plantillas de citación Creative Commons incrustadas en Moodle.</li>
+                            <li>• <strong>Videotutoriales:</strong> Micro-vídeos (1-2 min) con subtítulos de configuración de permisos en Drive.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <div class="flex items-center space-x-2 text-emerald-800 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-pen-ruler"></i>
+                            <span>II. Expresión (El Cómo)</span>
+                        </div>
+                        <ul class="text-xs text-emerald-950 space-y-2 leading-relaxed">
+                            <li>• <strong>Respuesta multimodal:</strong> Alumnado con dificultades de redacción puede incorporar audio explicativo grabado directamente en Genially/Canva.</li>
+                            <li>• <strong>Atajos de teclado:</strong> Infografía impresa con combinaciones para capturas de pantalla (<kbd class="bg-white border px-1 rounded">Win+Shift+S</kbd>).</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div class="flex items-center space-x-2 text-amber-800 font-bold text-sm mb-2">
+                            <i class="fa-solid fa-fire text-amber-600"></i>
+                            <span>III. Implicación (El Porqué)</span>
+                        </div>
+                        <ul class="text-xs text-amber-950 space-y-2 leading-relaxed">
+                            <li>• <strong>Gamificación:</strong> Desbloqueo de insignias digitales (Badges) al completar los 5 Puntos de Control.</li>
+                            <li>• <strong>Transferencia real:</strong> Configuración inmediata del <span class="abbr-text" onclick="showInfo('VLE')">VLE</span> institucional para todo el curso.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moodle Centros Guide -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+                <h4 class="font-bold text-slate-900 text-base mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-server text-indigo-600"></i> Guía de Configuración en Moodle Centros (Andalucía)
+                </h4>
+                <div class="space-y-3">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1">
+                        <p class="font-bold text-slate-900">1. Recurso Etiqueta / Página HTML Principal</p>
+                        <p class="text-slate-600">Incrustar la guía visual con la lista de cotejo de los 5 Puntos de Control y enlaces directos a las tareas.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1">
+                        <p class="font-bold text-slate-900">2. Tarea Moodle 1 (Formativa)</p>
+                        <p class="text-slate-600"><em>Puntos de Control 1 al 3: Capturas y Enlace a la Presentación (Canva/Slides/Genially)</em>.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1">
+                        <p class="font-bold text-slate-900">3. Tarea Moodle 2 (Entregable Final PDF - Calificable)</p>
+                        <p class="text-slate-600">
+                            Pondera <span class="abbr-text" onclick="showInfo('CEv 5.1')">CEv 5.1</span>, <span class="abbr-text" onclick="showInfo('CEv 5.2')">CEv 5.2</span>, <span class="abbr-text" onclick="showInfo('CEv 6.1')">CEv 6.1</span>, <span class="abbr-text" onclick="showInfo('CEv 6.3')">CEv 6.3</span> y <span class="abbr-text" onclick="showInfo('CEv 6.4')">CEv 6.4</span>. Configurar entrega en <code class="bg-white px-1 py-0.5 rounded border">.pdf</code> (máx. 5 MB) y evaluar mediante la Rúbrica de Moodle.
+                        </p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1">
+                        <p class="font-bold text-slate-900">4. Tarea Moodle 3 (Verificación de Correo Corporativo)</p>
+                        <p class="text-slate-600">Pondera <span class="abbr-text" onclick="showInfo('CEv 6.2')">CEv 6.2</span>. Entrega en Texto en línea (registro de fecha/hora de envío del correo formal al docente con el PDF adjunto).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-5 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
+            <p>Programación Didáctica Adaptada a la <span class="abbr-text text-slate-300" onclick="showInfo('LOMLOE')">LOMLOE</span> • Materia: Computación y Robótica (3º <span class="abbr-text text-slate-300" onclick="showInfo('ESO')">ESO</span>)</p>
+            <p class="text-slate-500">Junta de Andalucía • Diseñado para la facilitación de la gestión docente en Moodle Centros</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic & Pop-Up Dictionary -->
+    <script>
+        // Official Curriculum Definitions & Abbreviations Dictionary
+        const infoDictionary = {
+            // --- CRITERIOS DE EVALUACIÓN (CEv) ---
+            "CEv 5.1": {
+                title: "Criterio de Evaluación 5.1 (Ponderación: 20%)",
+                category: "Criterio de Evaluación • Bloque E (Desarrollo Web)",
+                description: "Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.",
+                icon: "fa-solid fa-globe"
+            },
+            "CEv 5.2": {
+                title: "Criterio de Evaluación 5.2 (Ponderación: 20%)",
+                category: "Criterio de Evaluación • Bloque E (Desarrollo Web)",
+                description: "Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.",
+                icon: "fa-solid fa-wand-magic-sparkles"
+            },
+            "CEv 6.1": {
+                title: "Criterio de Evaluación 6.1 (Ponderación: 15%)",
+                category: "Criterio de Evaluación • Bloque I (Ciberseguridad)",
+                description: "Adoptar conductas y hábitos que permitan la protección del individuo en su interacción en la red.",
+                icon: "fa-solid fa-user-shield"
+            },
+            "CEv 6.2": {
+                title: "Criterio de Evaluación 6.2 (Ponderación: 15%)",
+                category: "Criterio de Evaluación • Bloque I (Ciberseguridad)",
+                description: "Acceder a servicios de intercambio y publicación de información digital aplicando criterios de seguridad y uso responsable.",
+                icon: "fa-solid fa-envelope-circle-check"
+            },
+            "CEv 6.3": {
+                title: "Criterio de Evaluación 6.3 (Ponderación: 15%)",
+                category: "Criterio de Evaluación • Bloque I (Ciberseguridad)",
+                description: "Reconocer y comprender los derechos de los materiales alojados en la web (propiedad intelectual y licencias libres/cerradas).",
+                icon: "fa-solid fa-copyright"
+            },
+            "CEv 6.4": {
+                title: "Criterio de Evaluación 6.4 (Ponderación: 15%)",
+                category: "Criterio de Evaluación • Bloque I (Ciberseguridad)",
+                description: "Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información.",
+                icon: "fa-solid fa-lock"
+            },
+            "CEv": {
+                title: "Criterio de Evaluación (CEv)",
+                category: "Elemento Curricular Evaluable",
+                description: "Es el elemento de referencia que mide el grado de desarrollo de la competencia específica alcanzado por el alumnado. En la LOMLOE, la calificación recae de forma exclusiva sobre los Criterios de Evaluación.",
+                icon: "fa-solid fa-chart-line"
+            },
+            "CE": {
+                title: "Competencia Específica (CE)",
+                category: "Elemento Curricular",
+                description: "Desempeño que el alumnado debe poder desplegar en actividades o situaciones cuyo aprendizaje requiere los saberes básicos de la materia.",
+                icon: "fa-solid fa-bullseye"
+            },
+
+            // --- SABERES BÁSICOS ---
+            "CYR.3.E.1": {
+                title: "CYR.3.E.1: Estructura de Páginas Web",
+                category: "Saber Básico • Bloque E (Desarrollo Web)",
+                description: "Análisis de la estructura de las páginas web (etiquetado, encabezados, bloques de contenido y enlaces).",
+                icon: "fa-solid fa-code"
+            },
+            "CYR.3.E.2": {
+                title: "CYR.3.E.2: Servidores Web",
+                category: "Saber Básico • Bloque E (Desarrollo Web)",
+                description: "Servidores web: tipología, alojamiento, protocolos de petición/respuesta y funcionamiento del dominio.",
+                icon: "fa-solid fa-server"
+            },
+            "CYR.3.E.3": {
+                title: "CYR.3.E.3: Formatos de Animación Web",
+                category: "Saber Básico • Bloque E (Desarrollo Web)",
+                description: "Formatos de animación web y recursos dinámicos para la presentación visual de contenidos.",
+                icon: "fa-solid fa-film"
+            },
+            "CYR.3.E.4": {
+                title: "CYR.3.E.4: Herramientas de Animación y Diseño Web",
+                category: "Saber Básico • Bloque E (Desarrollo Web)",
+                description: "Herramientas de animación web y plataformas interactivas de creación (Canva, Slides, Genially, etc.).",
+                icon: "fa-solid fa-wand-magic-sparkles"
+            },
+            "CYR.3.I.1": {
+                title: "CYR.3.I.1: Tipologías de Ciberseguridad",
+                category: "Saber Básico • Bloque I (Ciberseguridad)",
+                description: "Ciberseguridad: tipologías, amenazas en la red e identificación de riesgos de la huella digital.",
+                icon: "fa-solid fa-shield-halved"
+            },
+            "CYR.3.I.2": {
+                title: "CYR.3.I.2: Necesidad y Concienciación",
+                category: "Saber Básico • Bloque I (Ciberseguridad)",
+                description: "Ciberseguridad: necesidad y concienciación en el ámbito personal, académico y social.",
+                icon: "fa-solid fa-user-shield"
+            },
+            "CYR.3.I.3": {
+                title: "CYR.3.I.3: Malware y Antimalware",
+                category: "Saber Básico • Bloque I (Ciberseguridad)",
+                description: "Tipos de Malware y antimalware: técnicas de prevención, análisis y herramientas de protección activa/pasiva.",
+                icon: "fa-solid fa-bug"
+            },
+            "CYR.3.I.4": {
+                title: "CYR.3.I.4: Interacción en Plataformas Virtuales",
+                category: "Saber Básico • Bloque I (Ciberseguridad)",
+                description: "Interacción de plataformas virtuales: soluciones técnicas para el intercambio seguro y canales oficiales.",
+                icon: "fa-solid fa-network-wired"
+            },
+            "CYR.3.I.5": {
+                title: "CYR.3.I.5: Ley de Propiedad Intelectual",
+                category: "Saber Básico • Bloque I (Ciberseguridad)",
+                description: "Ley de propiedad intelectual: derechos de autor, licencias de uso libre (Creative Commons, CC0) y reconocimiento de autoría en la web.",
+                icon: "fa-solid fa-copyright"
+            },
+
+            // --- DESCRIPTORES OPERATIVOS DEL PERFIL DE SALIDA ---
+            "STEM1": {
+                title: "Descriptor Operativo STEM1",
+                category: "Perfil de Salida • Competencia STEM",
+                description: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona y emplea diferentes estrategias para resolver problemas analizando críticamente las soluciones.",
+                icon: "fa-solid fa-calculator"
+            },
+            "STEM2": {
+                title: "Descriptor Operativo STEM2",
+                category: "Perfil de Salida • Competencia STEM",
+                description: "Utiliza el pensamiento científico para entender y explicar los fenómenos a su alrededor, planteándose preguntas y comprobando hipótesis mediante indagación.",
+                icon: "fa-solid fa-flask"
+            },
+            "STEM3": {
+                title: "Descriptor Operativo STEM3",
+                category: "Perfil de Salida • Competencia STEM",
+                description: "Plantea y desarrolla proyectos diseñando, fabricando y evaluando prototipos o modelos para generar o utilizar productos que den solución a una necesidad o problema de forma creativa y en equipo.",
+                icon: "fa-solid fa-microchip"
+            },
+            "STEM5": {
+                title: "Descriptor Operativo STEM5",
+                category: "Perfil de Salida • Competencia STEM",
+                description: "Aplica principios de ética y seguridad en la realización de proyectos para transformar su entorno próximo de forma sostenible.",
+                icon: "fa-solid fa-leaf"
+            },
+            "CD1": {
+                title: "Descriptor Operativo CD1",
+                category: "Perfil de Salida • Competencia Digital",
+                description: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos respetando la propiedad intelectual.",
+                icon: "fa-solid fa-magnifying-glass font-bold"
+            },
+            "CD3": {
+                title: "Descriptor Operativo CD3",
+                category: "Perfil de Salida • Competencia Digital",
+                description: "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales, gestionando su visibilidad en la red para una ciudadanía digital activa y cívica.",
+                icon: "fa-solid fa-users text-sm"
+            },
+            "CD4": {
+                title: "Descriptor Operativo CD4",
+                category: "Perfil de Salida • Competencia Digital",
+                description: "Identifica riesgos y adopta medidas preventivas al usar tecnologías digitales para proteger dispositivos, datos personales, salud y medioambiente, tomando conciencia de su uso seguro.",
+                icon: "fa-solid fa-shield-heart"
+            },
+            "CD5": {
+                title: "Descriptor Operativo CD5",
+                category: "Perfil de Salida • Competencia Digital",
+                description: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos o responder a retos propuestos.",
+                icon: "fa-solid fa-code"
+            },
+            "CPSAA3": {
+                title: "Descriptor Operativo CPSAA3",
+                category: "Perfil de Salida • Personal, Social y Aprender a Aprender",
+                description: "Comprende proactivamente las perspectivas y las experiencias de las demás personas y las incorpora a su aprendizaje para participar en el trabajo en grupo distribuyendo responsabilidades de forma equitativa.",
+                icon: "fa-solid fa-handshake"
+            },
+            "CPSAA4": {
+                title: "Descriptor Operativo CPSAA4",
+                category: "Perfil de Salida • Personal, Social y Aprender a Aprender",
+                description: "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información.",
+                icon: "fa-solid fa-list-check"
+            },
+            "CPSAA5": {
+                title: "Descriptor Operativo CPSAA5",
+                category: "Perfil de Salida • Personal, Social y Aprender a Aprender",
+                description: "Planea objetivos a medio plazo y desarrolla procesos metacognitivos de retroalimentación para aprender de sus errores en la construcción del conocimiento.",
+                icon: "fa-solid fa-brain"
+            },
+            "CC3": {
+                title: "Descriptor Operativo CC3",
+                category: "Perfil de Salida • Competencia Ciudadana",
+                description: "Comprende y analiza problemas éticos fundamentales y de actualidad, considerando críticamente los valores propios y ajenos y desarrollando juicios propios con actitud dialogante y opuesta a cualquier discriminación.",
+                icon: "fa-solid fa-scale-balanced"
+            },
+            "CE3": {
+                title: "Descriptor Operativo CE3",
+                category: "Perfil de Salida • Competencia Emprendedora",
+                description: "Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones de manera razonada, utilizando estrategias ágiles de planificación y gestión para crear prototipos innovadores.",
+                icon: "fa-solid fa-lightbulb"
+            },
+            "CCEC4": {
+                title: "Descriptor Operativo CCEC4",
+                category: "Perfil de Salida • Conciencia y Expresión Culturales",
+                description: "Conoce, selecciona y utiliza con creatividad diversos medios y soportes, así como técnicas plásticas, visuales o audiovisuales para la creación de productos artísticos y culturales.",
+                icon: "fa-solid fa-palette"
+            },
+            "CCL3": {
+                title: "Descriptor Operativo CCL3",
+                category: "Perfil de Salida • Comunicación Lingüística",
+                description: "Localiza, selecciona y contrasta información procedente de diferentes fuentes evaluando su fiabilidad e integrándola respetando la propiedad intelectual.",
+                icon: "fa-solid fa-book-open"
+            },
+
+            // --- ACRÓNIMOS Y CONCEPTOS CLAVE ---
+            "DUA": {
+                title: "Diseño Universal para el Aprendizaje (DUA)",
+                category: "Marco Metodológico Inclusivo",
+                description: "Modelo de enseñanza que proporciona múltiples formas de Implicación (el porqué), Representación (el qué) y Acción/Expresión (el cómo) para derribar barreras de aprendizaje y garantizar el acceso equitativo.",
+                icon: "fa-solid fa-universal-access"
+            },
+            "LOMLOE": {
+                title: "LOMLOE",
+                category: "Marco Normativo Educativo",
+                description: "Ley Orgánica 3/2020 de modificación de la LOE. Define el marco curricular competencial, la evaluación criterial pura y los Descriptores del Perfil de Salida al finalizar la Educación Básica.",
+                icon: "fa-solid fa-gavel"
+            },
+            "SdA": {
+                title: "Situación de Aprendizaje (SdA)",
+                category: "Unidad Didáctica Competencial",
+                description: "Conjunto de actividades articuladas que implican el despliegue de competencias clave y específicas para resolver un reto o problema del mundo real mediante un producto final.",
+                icon: "fa-solid fa-cubes"
+            },
+            "ESO": {
+                title: "Educación Secundaria Obligatoria (ESO)",
+                category: "Etapa Educativa",
+                description: "Etapa educativa obligatoria y gratuita para alumnado entre 12 y 16 años orientada al desarrollo de las competencias clave del Perfil de Salida.",
+                icon: "fa-solid fa-graduation-cap"
+            },
+            "VLE": {
+                title: "Virtual Learning Environment (VLE)",
+                category: "Entorno Virtual de Aprendizaje",
+                description: "Plataforma digital educativa (como Moodle Centros o Google Workspace) destinada a la interacción, gestión de recursos, tareas y comunicación entre alumnado y profesorado.",
+                icon: "fa-solid fa-laptop-code"
+            }
+        };
+
+        // Function to show Info Modal / Pop-Up
+        function showInfo(key) {
+            const data = infoDictionary[key];
+            if (!data) return;
+
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-category').innerText = data.category;
+            document.getElementById('modal-description').innerText = data.description;
+            document.getElementById('modal-badge-icon').innerHTML = `<i class="${data.icon}"></i>`;
+            
+            const modal = document.getElementById('info-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal').classList.add('hidden');
+        }
+
+        // Close Modal when clicking backdrop or pressing Escape key
+        document.getElementById('info-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'info-modal') closeInfoModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeInfoModal();
+        });
+
+        // Data Store for Sessions
+        const sessionData = {
+            1: {
+                title: "Sesión 1: Activación, Diagnóstico y Propiedad Intelectual",
+                cev: "CEv 6.3",
+                cevKey: "CEv 6.3",
+                cevColor: "bg-amber-100 text-amber-800 border-amber-300",
+                objectives: "Identificar las plataformas oficiales (iPasen y Moodle Centros) y comprender los derechos de autor/licencias web.",
+                steps: [
+                    "<strong>Estructuración (10 min):</strong> Presentación del reto 'El Pasaporte Digital' y demostración del producto multimedia en Canva/Slides/Genially.",
+                    "<strong>Exploración (20 min):</strong> Cuestionario interactivo en Moodle Centros sobre navegación segura y conceptos de propiedad intelectual (Copyright vs Creative Commons).",
+                    "<strong>Práctica Dirigida (20 min):</strong> Acceso inicial a Moodle Centros. Búsqueda de recursos multimedia libres de derechos en repositorios abiertos (Unsplash, Wikimedia Commons)."
+                ],
+                checkpointId: "chk1",
+                checkpointLabel: "Punto de Control 1: Captura del área personal de Moodle Centros con el curso guardada en local."
+            },
+            2: {
+                title: "Sesión 2: Ciberseguridad e Identidad Corporativa",
+                cev: "CEv 6.1 • CEv 6.4",
+                cevKey: "CEv 6.1",
+                cevColor: "bg-blue-100 text-blue-800 border-blue-300",
+                objectives: "Activar la cuenta corporativa @g.educaand.es, configurar passphrases seguras y establecer pautas para la protección de la propia imagen.",
+                steps: [
+                    "<strong>Estructuración (15 min):</strong> Charla analítica sobre la Huella Digital, la privacidad de datos personales y la importancia de las frases de paso (passphrases).",
+                    "<strong>Taller Práctica (25 min):</strong> Activación e inicio de sesión en @g.educaand.es. Configuración de foto de perfil neutra para el entorno académico y cambio de clave.",
+                    "<strong>Puesta en común (10 min):</strong> Verificación por parejas (peer checking) del acceso correcto a la suite corporativa."
+                ],
+                checkpointId: "chk2",
+                checkpointLabel: "Punto de Control 2: Captura del perfil activado en Google Workspace mostrando correo corporativo y foto."
+            },
+            3: {
+                title: "Sesión 3: Taller de Creación Multimedia Interactiva",
+                cev: "CEv 5.2 • CEv 6.3",
+                cevKey: "CEv 5.2",
+                cevColor: "bg-purple-100 text-purple-800 border-purple-300",
+                objectives: "Diseñar una presentación web interactiva (Canva, Slides o Genially) sobre ciberseguridad atribuyendo correctamente las licencias del contenido.",
+                steps: [
+                    "<strong>Instrucción Técnica (15 min):</strong> Demostración sobre uso de herramientas de edición web, integración de animaciones (<span class='abbr-text' onclick=\"showInfo('CYR.3.E.3')\">CYR.3.E.3</span>, <span class='abbr-text' onclick=\"showInfo('CYR.3.E.4')\">CYR.3.E.4</span>) y cómo atribuir autoría (<span class='abbr-text' onclick=\"showInfo('CYR.3.I.5')\">CYR.3.I.5</span>).",
+                    "<strong>Creación Guiada (25 min):</strong> Diseño de la presentación de 3-4 diapositivas titulado 'Mi Decálogo de Ciberseguridad'. Incluir créditos y licencias Creative Commons.",
+                    "<strong>Obtención de Enlace (10 min):</strong> Publicación y configuración del enlace web accesible público."
+                ],
+                checkpointId: "chk3",
+                checkpointLabel: "Punto de Control 3: Enlace web público accesible a la presentación interactiva en Canva, Slides o Genially."
+            },
+            4: {
+                title: "Sesión 4: Estructura en la Nube y Maquetación del Pasaporte",
+                cev: "CEv 5.1 • CEv 6.2 • CEv 6.4",
+                cevKey: "CEv 5.1",
+                cevColor: "bg-indigo-100 text-indigo-800 border-indigo-300",
+                objectives: "Crear la estructura estandarizada de carpetas en Google Drive, maquetar el documento en Docs y exportarlo a PDF.",
+                steps: [
+                    "<strong>Organización en Drive (15 min):</strong> Creación de carpetas CyR_3ESO_Nombre_Apellidos y subcarpetas (01_Pasaporte_Digital, etc.) con permisos restringidos al dominio.",
+                    "<strong>Maquetación en Docs (30 min):</strong> Documento Pasaporte_Digital_Nombre_Apellidos integrando las 3 capturas, enlace a la presentación y breve reflexión de 3 líneas sobre privacidad.",
+                    "<strong>Exportación (5 min):</strong> Descarga del documento final en formato PDF."
+                ],
+                checkpointId: "chk4",
+                checkpointLabel: "Punto de Control 4: Archivo Pasaporte_Digital_Nombre_Apellidos.pdf listo en almacenamiento local."
+            },
+            5: {
+                title: "Sesión 5: Envío Formal, Verificación y Cierre en Moodle",
+                cev: "CEv 6.2",
+                cevKey: "CEv 6.2",
+                cevColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+                objectives: "Redactar un correo electrónico formal con firma institucional, adjuntar el PDF y entregar la tarea final en Moodle Centros.",
+                steps: [
+                    "<strong>Taller de Comunicación Digital (15 min):</strong> Redacción de correo formal en Gmail corporativo con asunto normalizado [CyR 3ºESO] Pasaporte Digital y firma automática.",
+                    "<strong>Envío y Entrega en Moodle (25 min):</strong> Envío del correo al docente con el PDF adjunto y subida simultánea a la Tarea calificable de Moodle Centros.",
+                    "<strong>Autoevaluación (10 min):</strong> Formulario de autoevaluación criterial en el aula virtual."
+                ],
+                checkpointId: "chk5",
+                checkpointLabel: "Punto de Control 5: Envío del correo verificado y tarea entregada correctamente en Moodle Centros."
+            }
+        };
+
+        // Checkpoint State Tracker
+        const checkpointsState = {
+            chk1: false,
+            chk2: false,
+            chk3: false,
+            chk4: false,
+            chk5: false
+        };
+
+        // Rubric Scores State
+        const rubricScores = {
+            cev51: 10,
+            cev52: 10,
+            cev61: 10,
+            cev62: 10,
+            cev63: 10,
+            cev64: 10
+        };
+
+        const rubricWeights = {
+            cev51: 0.20,
+            cev52: 0.20,
+            cev61: 0.15,
+            cev62: 0.15,
+            cev63: 0.15,
+            cev64: 0.15
+        };
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const tabs = ['resumen', 'curricular', 'secuenciacion', 'evaluacion', 'dua-moodle'];
+            tabs.forEach(t => {
+                document.getElementById(`sec-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('bg-indigo-700', 'text-white');
+                document.getElementById(`mob-${t}`).classList.remove('bg-indigo-700', 'text-white');
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('bg-indigo-700', 'text-white');
+            document.getElementById(`mob-${tabId}`).classList.add('bg-indigo-700', 'text-white');
+
+            // Resize charts on switch to handle responsive canvas bounds
+            if (tabId === 'curricular' && weightingsChart) {
+                weightingsChart.resize();
+            }
+            if (tabId === 'evaluacion' && radarChart) {
+                radarChart.resize();
+            }
+        }
+
+        // Session Renderer
+        function selectSession(sessionNum) {
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`sess-btn-${i}`);
+                if (i === sessionNum) {
+                    btn.className = "w-full text-left p-3.5 rounded-xl border border-indigo-500 bg-indigo-50 font-medium text-xs sm:text-sm flex items-center justify-between transition shadow-sm";
+                } else {
+                    btn.className = "w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-medium text-xs sm:text-sm flex items-center justify-between transition";
+                }
+            }
+
+            const data = sessionData[sessionNum];
+            const isChecked = checkpointsState[data.checkpointId];
+
+            const html = `
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+                        <h4 class="font-extrabold text-slate-900 text-base sm:text-lg">${data.title}</h4>
+                        <span class="abbr-tag text-xs font-bold px-2.5 py-1 rounded border ${data.cevColor}" onclick="showInfo('${data.cevKey}')">
+                            <i class="fa-solid fa-circle-info"></i> ${data.cev}
+                        </span>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Objetivo Pedagógico</h5>
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">${data.objectives}</p>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Desarrollo de la Sesión (55 min)</h5>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
+                            ${data.steps.map(step => `<li class="flex items-start gap-2 bg-white p-2.5 border border-slate-100 rounded-lg shadow-2xs"><i class="fa-solid fa-angle-right text-indigo-600 mt-0.5"></i> <div>${step}</div></li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-200">
+                        <div class="p-4 rounded-xl border ${isChecked ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'} transition">
+                            <label class="flex items-start space-x-3 cursor-pointer">
+                                <input type="checkbox" onchange="toggleCheckpoint('${data.checkpointId}')" ${isChecked ? 'checked' : ''} class="mt-1 h-4 w-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                <div>
+                                    <span class="font-bold text-xs sm:text-sm text-slate-900 block mb-0.5">Hito de Entregable Obligatorio</span>
+                                    <span class="text-xs text-slate-600 leading-relaxed">${data.checkpointLabel}</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('session-detail-container').innerHTML = html;
+        }
+
+        // Toggle Checkpoint Checkbox
+        function toggleCheckpoint(chkId) {
+            checkpointsState[chkId] = !checkpointsState[chkId];
+            
+            // Calculate progress percentage
+            const completedCount = Object.values(checkpointsState).filter(Boolean).length;
+            const percent = Math.round((completedCount / 5) * 100);
+
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+
+            // Re-render current session detail
+            const currentSess = Object.keys(sessionData).find(k => sessionData[k].checkpointId === chkId);
+            if (currentSess) {
+                selectSession(parseInt(currentSess));
+            }
+        }
+
+        // Rubric Value Setter & Interactive Score Calculation
+        function setRubric(cevKey, score) {
+            rubricScores[cevKey] = score;
+
+            // Highlight selected button UI
+            const levels = [3, 5.5, 7.5, 10];
+            levels.forEach((lvl, idx) => {
+                const btn = document.getElementById(`btn-${cevKey}-${idx+1}`);
+                if (lvl === score) {
+                    btn.className = "p-2 border rounded text-left transition font-semibold bg-indigo-50 border-indigo-500 text-indigo-900";
+                } else {
+                    btn.className = "p-2 border rounded text-left hover:bg-slate-200 transition bg-white border-slate-200";
+                }
+            });
+
+            document.getElementById(`score-${cevKey}`).innerText = `${score} / 10`;
+
+            calculateFinalScore();
+        }
+
+        function calculateFinalScore() {
+            let total = 0;
+            for (let key in rubricScores) {
+                total += rubricScores[key] * rubricWeights[key];
+            }
+
+            const formattedScore = total.toFixed(1);
+            document.getElementById('final-score').innerText = formattedScore;
+
+            // Score Labels
+            let label = "Nivel 4: Excelente";
+            if (total < 5) label = "Nivel 1: Iniciante";
+            else if (total < 7) label = "Nivel 2: En Proceso";
+            else if (total < 9) label = "Nivel 3: Competente";
+
+            document.getElementById('score-label').innerText = `Nivel de Desempeño: ${label}`;
+
+            // Global Contribution (10%)
+            const contrib = (total * 0.1).toFixed(2);
+            document.getElementById('global-contribution').innerText = `${contrib} / 1.0 pto`;
+
+            // Update Radar Chart
+            if (radarChart) {
+                radarChart.data.datasets[0].data = [
+                    rubricScores.cev51,
+                    rubricScores.cev52,
+                    rubricScores.cev61,
+                    rubricScores.cev62,
+                    rubricScores.cev63,
+                    rubricScores.cev64
+                ];
+                radarChart.update();
+            }
+        }
+
+        // Chart.js Instances
+        let weightingsChart = null;
+        let radarChart = null;
+
+        function initCharts() {
+            // Chart 1: Donut Chart for Weightings
+            const ctx1 = document.getElementById('weightingsChart').getContext('2d');
+            weightingsChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'CEv 5.1 (Plataformas)',
+                        'CEv 5.2 (Animación Web)',
+                        'CEv 6.1 (Identidad Digital)',
+                        'CEv 6.2 (Correo & Netiqueta)',
+                        'CEv 6.3 (Prop. Intelectual)',
+                        'CEv 6.4 (Seguridad/Drive)'
+                    ],
+                    datasets: [{
+                        data: [20, 20, 15, 15, 15, 15],
+                        backgroundColor: [
+                            '#4f46e5',
+                            '#9333ea',
+                            '#2563eb',
+                            '#059669',
+                            '#d97706',
+                            '#dc2626'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10 },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}% de la SdA`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Radar Chart for Student Rubric Profile
+            const ctx2 = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['CEv 5.1', 'CEv 5.2', 'CEv 6.1', 'CEv 6.2', 'CEv 6.3', 'CEv 6.4'],
+                    datasets: [{
+                        label: 'Calificación por Criterio',
+                        data: [10, 10, 10, 10, 10, 10],
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                        borderColor: '#4f46e5',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 10,
+                            ticks: { stepSize: 2, display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('resumen');
+            selectSession(1);
+            initCharts();
+        });
+    </script>
+</body>
+</html>
