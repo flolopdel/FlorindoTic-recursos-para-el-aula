@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Didáctica - Computación y Robótica 1.º ESO (Andalucía)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #0d9488;
+            color: #0d9488;
+            font-weight: 700;
+        }
+        .modal-blur {
+            backdrop-filter: blur(4px);
+        }
+        .code-badge {
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .code-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            filter: brightness(0.95);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-100 selection:text-brand-900">
+
+    <!-- Chosen Palette: Warm Editorial Neutrals (Stone base, Teal primary accent, Indigo/Amber secondary accents) -->
+    <!-- Application Structure Plan:
+         Designed as a multi-functional Pedagogical Portal & Dashboard for LOMLOE Andalusian Curriculum.
+         Structure:
+         1. Header & Quick Metrics: Top summary of course capacity (48 sessions, 6 SdA, 6 CE, 12 CEv, 9 Saberes blocks).
+         2. Tab Navigation:
+            - Visión General / Dashboard: Global metrics, weight distribution chart, session allocation, interactive timeline.
+            - Explorador de SdA: Interactive card grid with full details (Justificación, Producto, Conexión Curricular, Secuenciación, DUA).
+            - Auditoría Curricular: Interactive matrix linking Criterios de Evaluación, CE, and Saberes Básicos with interactive modal descriptions.
+            - Perfil de Salida (Descriptores): Cross-reference of Key Competences and operational descriptors with official popup text.
+            - Cuaderno de Séneca: Criterion weighting tool and exportable configuration summary.
+         3. Interactive Popups / Modals:
+            - Any click on CEv, Saberes Básicos (CYR.1.x.y), or Perfil de Salida code opens an interactive detail modal with full normative text.
+    -->
+    <!-- Visualization & Content Choices:
+         - Chart 1: Donut/Bar Chart (Chart.js Canvas) for Session & Weight % Distribution per SdA.
+         - Chart 2: Radar / Stacked Bar Chart (Chart.js Canvas) for Competencias Específicas & Criterios coverage.
+         - Dynamic Interactive Popups: Clickable badges throughout the UI that display normative descriptions for CEvs, Saberes, and Descriptores.
+         - Interactive Filtering: Vanilla JS live search across criteria, descriptors, and Saberes Básicos.
+         - Visual Badges & Modal Dialogs: HTML/CSS styled elements (NO SVG) for clean rendering.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- TOP HEADER -->
+    <header class="bg-stone-900 text-stone-100 sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-brand-600 text-white text-xs px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">Andalucía LOMLOE</span>
+                    <span class="text-xs text-stone-400">1.º ESO | 48 Sesiones (6 Meses)</span>
+                </div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white mt-0.5">
+                    Computación y Robótica — Asesor Curricular
+                </h1>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+                <a href="#seneca" onclick="switchTab('seneca')" class="bg-stone-800 hover:bg-stone-700 text-stone-200 px-3 py-1.5 rounded-lg border border-stone-700 transition-colors flex items-center gap-1.5">
+                    <span>📋</span> Configurar Séneca
+                </a>
+                <a href="#sda" onclick="switchTab('sda')" class="bg-brand-600 hover:bg-brand-500 text-white font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+                    <span>🚀</span> Explorar 6 SdA
+                </a>
+            </div>
+        </div>
+
+        <!-- MAIN TAB NAVIGATION -->
+        <nav class="bg-stone-800 border-t border-stone-700/60 text-stone-300 text-sm overflow-x-auto">
+            <div class="max-w-7xl mx-auto px-4 flex gap-6 whitespace-nowrap">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active py-3 font-medium hover:text-white transition-colors">
+                    📊 Visión General y Cuadro de Mando
+                </button>
+                <button onclick="switchTab('sda')" id="tab-sda" class="tab-btn py-3 font-medium hover:text-white transition-colors">
+                    🎯 Explorador de Situaciones de Aprendizaje
+                </button>
+                <button onclick="switchTab('audit')" id="tab-audit" class="tab-btn py-3 font-medium hover:text-white transition-colors">
+                    🔍 Auditoría de Criterios y Saberes
+                </button>
+                <button onclick="switchTab('profile')" id="tab-profile" class="tab-btn py-3 font-medium hover:text-white transition-colors">
+                    🎓 Descriptores del Perfil de Salida
+                </button>
+                <button onclick="switchTab('seneca')" id="tab-seneca" class="tab-btn py-3 font-medium hover:text-white transition-colors">
+                    📋 Cuaderno de Séneca
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: DASHBOARD / VISIÓN GENERAL -->
+        <!-- ========================================== -->
+        <section id="sec-dashboard" class="space-y-6">
+            <!-- Introductory Context Paragraph -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-900 mb-1 flex items-center gap-2">
+                    <span>💡</span> Propósito de esta Programación Didáctica Integrada
+                </h2>
+                <p class="text-stone-600 text-sm leading-relaxed">
+                    Esta aplicación interactiva sirve como guía normativo-pedagógica para la materia de <strong>Computación y Robótica en 1.º de ESO</strong> en Andalucía. Permite explorar la transposición didáctica de los <strong>Criterios de Evaluación Competenciales (CEv)</strong>, los <strong>Saberes Básicos (CYR)</strong> y los <strong>Descriptores Operativos del Perfil de Salida</strong> organizados en <strong>6 Situaciones de Aprendizaje (SdA)</strong>. 
+                    <span class="inline-block mt-1 bg-amber-50 text-amber-900 px-2.5 py-1 rounded border border-amber-200 font-medium text-xs">
+                        💡 <strong>Novedad interactiva:</strong> Haga clic en cualquier código (<span class="font-mono text-amber-800 font-bold">CEv</span>, <span class="font-mono text-emerald-800 font-bold">CYR</span> o <span class="font-mono text-brand-800 font-bold">Descriptor</span>) en las tablas o fichas para abrir una ventana emergente con su descripción oficial completa.
+                    </span>
+                </p>
+            </div>
+
+            <!-- KPI Metric Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-brand-600">48</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Sesiones Totales</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-emerald-600">6</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Situaciones (SdA)</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-indigo-600">6</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Competencias Espec.</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-amber-600">15</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Criterios (CEv)</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-rose-600">38</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Saberes Básicos</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm text-center">
+                    <span class="block text-2xl font-black text-teal-600">100%</span>
+                    <span class="text-xs font-medium text-stone-500 uppercase tracking-wider">Cobertura Criterial</span>
+                </div>
+            </div>
+
+            <!-- CHARTS ROW -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart Container 1: Sessions & Weight Distribution -->
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-stone-900 text-base mb-1 flex items-center justify-between">
+                            <span>⏱️ Distribución Temporal y Pesos por SdA</span>
+                            <span class="text-xs font-normal text-stone-500">6 Meses (48 sesiones)</span>
+                        </h3>
+                        <p class="text-xs text-stone-500 mb-4">
+                            Proporción de tiempo lectivo y ponderación porcentual asignada a cada reto de aprendizaje.
+                        </p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sessionsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart Container 2: Competencias Específicas Coverage -->
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-stone-900 text-base mb-1 flex items-center justify-between">
+                            <span>🎯 Cobertura Transversal de Competencias</span>
+                            <span class="text-xs font-normal text-stone-500">CE 1 a CE 6</span>
+                        </h3>
+                        <p class="text-xs text-stone-500 mb-4">
+                            Frecuencia de evaluación de cada Competencia Específica en las distintas SdA del curso.
+                        </p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="competenciesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TIMELINE OVERVIEW -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h3 class="font-bold text-stone-900 text-base mb-3 flex items-center gap-2">
+                    <span>📅</span> Mapa Temporal Secuenciado (Cronograma de 6 Meses)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Timeline Card 1 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(1)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-brand-100 text-brand-800 rounded">SdA 1 • 6 Ses. (12.5%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 1</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Mi Identidad Digital y EVA</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Evaluación inicial, perfiles corporativos (iPasen, Moodle, Google), e-mail formal, Drive y Docs.</p>
+                        <div class="mt-3 text-xs text-brand-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+
+                    <!-- Timeline Card 2 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(2)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-indigo-100 text-indigo-800 rounded">SdA 2 • 8 Ses. (15.0%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 2</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Ciberciudadanía Crítica</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Seguridad activa/pasiva, 2FA, detección de Fake News, debate escolar e infografía digital.</p>
+                        <div class="mt-3 text-xs text-indigo-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+
+                    <!-- Timeline Card 3 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(3)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-800 rounded">SdA 3 • 10 Ses. (20.0%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 3</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Pensamiento Computacional & Scratch</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Algoritmos, estructuras de control y desarrollo de un videojuego sostenible sobre los ODS.</p>
+                        <div class="mt-3 text-xs text-emerald-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+
+                    <!-- Timeline Card 4 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(4)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded">SdA 4 • 10 Ses. (22.5%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 4</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Robótica con BBC micro:bit</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Computación física, sensores, actuadores y creación de un prototipo robótico para el centro.</p>
+                        <div class="mt-3 text-xs text-amber-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+
+                    <!-- Timeline Card 5 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(5)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-rose-100 text-rose-800 rounded">SdA 5 • 7 Ses. (15.0%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 5</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Inteligencia Artificial y Big Data</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Agentes inteligentes, Teachable Machine, ética en la IA y relanzamiento multimedia de producto.</p>
+                        <div class="mt-3 text-xs text-rose-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+
+                    <!-- Timeline Card 6 -->
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-brand-500 transition-all cursor-pointer" onclick="openSdaModal(6)">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-purple-100 text-purple-800 rounded">SdA 6 • 7 Ses. (15.0%)</span>
+                            <span class="text-xs font-medium text-stone-500">Mes 6</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 text-sm mb-1">Desarrollo Web & Apps con IA</h4>
+                        <p class="text-xs text-stone-600 line-clamp-2">Diseño web responsive, IDE por bloques móvil y desarrollo asistido con agentes IA generativos.</p>
+                        <div class="mt-3 text-xs text-purple-600 font-semibold hover:underline">Ver detalle y actividades →</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: EXPLORADOR DE SDA (SdA DETAILS) -->
+        <!-- ========================================== -->
+        <section id="sec-sda" class="hidden space-y-6">
+            <!-- Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-900 mb-1 flex items-center gap-2">
+                    <span>🎯</span> Catálogo Detallado de Situaciones de Aprendizaje
+                </h2>
+                <p class="text-stone-600 text-sm leading-relaxed">
+                    Esta sección permite inspeccionar minuciosamente cada una de las 6 Situaciones de Aprendizaje. Haga clic en cualquiera de las fichas para desplegar su ficha técnica completa. Puede pulsar sobre cualquier código de <strong>CEv</strong> o <strong>Saber Básico</strong> para abrir de forma instantánea su descripción oficial.
+                </p>
+                <!-- Quick Filter Buttons -->
+                <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                    <span class="font-semibold text-stone-700 py-1">Filtrar por bloque:</span>
+                    <button onclick="filterSdaCards('all')" class="sda-filter-btn px-2.5 py-1 rounded bg-stone-800 text-white font-medium">Todos (6)</button>
+                    <button onclick="filterSdaCards('programacion')" class="sda-filter-btn px-2.5 py-1 rounded bg-stone-100 hover:bg-stone-200 text-stone-700">Programación (SdA 3, 6)</button>
+                    <button onclick="filterSdaCards('robotica')" class="sda-filter-btn px-2.5 py-1 rounded bg-stone-100 hover:bg-stone-200 text-stone-700">Robótica/IoT (SdA 4)</button>
+                    <button onclick="filterSdaCards('ciber')" class="sda-filter-btn px-2.5 py-1 rounded bg-stone-100 hover:bg-stone-200 text-stone-700">Ciberseguridad/EVA (SdA 1, 2)</button>
+                    <button onclick="filterSdaCards('ia')" class="sda-filter-btn px-2.5 py-1 rounded bg-stone-100 hover:bg-stone-200 text-stone-700">IA & Big Data (SdA 5)</button>
+                </div>
+            </div>
+
+            <!-- SDA CARDS GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="sda-cards-grid">
+                <!-- Injected dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: AUDITORÍA CURRICULAR -->
+        <!-- ========================================== -->
+        <section id="sec-audit" class="hidden space-y-6">
+            <!-- Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-900 mb-1 flex items-center gap-2">
+                    <span>🔍</span> Matriz Integrada y Auditoría de Cobertura Curricular
+                </h2>
+                <p class="text-stone-600 text-sm leading-relaxed">
+                    Trazabilidad absoluta del currículo andaluz de 1.º de ESO. Haga clic sobre cualquiera de las etiquetas o siglas (<span class="font-mono text-brand-700 font-bold">CEv</span>, <span class="font-mono text-emerald-700 font-bold">CYR...</span> o <span class="font-mono text-indigo-700 font-bold">Descriptores</span>) para ver la descripción normativa en un desplegable emergente.
+                </p>
+                <!-- Search Box -->
+                <div class="mt-4 relative">
+                    <input type="text" id="audit-search" oninput="searchAuditTable()" placeholder="Escriba para filtrar por criterio, saber básico, concepto o SdA (ej: microbit, CEv 6.1, IA, CD4)..." class="w-full bg-stone-50 border border-stone-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none pl-10 transition-all">
+                    <span class="absolute left-3 top-3 text-stone-400">🔍</span>
+                </div>
+            </div>
+
+            <!-- AUDIT TABLE -->
+            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse" id="audit-table">
+                        <thead>
+                            <tr class="bg-stone-800 text-stone-200 text-xs uppercase tracking-wider">
+                                <th class="p-3 font-semibold">Competencia Específica</th>
+                                <th class="p-3 font-semibold">Criterio de Evaluación (CEv)</th>
+                                <th class="p-3 font-semibold">SdA de Aplicación</th>
+                                <th class="p-3 font-semibold">Saberes Básicos Movilizados</th>
+                                <th class="p-3 font-semibold">Perfil de Salida</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200 text-stone-700" id="audit-table-body">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 4: PERFIL DE SALIDA -->
+        <!-- ========================================== -->
+        <section id="sec-profile" class="hidden space-y-6">
+            <!-- Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-900 mb-1 flex items-center gap-2">
+                    <span>🎓</span> Descriptores Operativos del Perfil de Salida (LOMLOE)
+                </h2>
+                <p class="text-stone-600 text-sm leading-relaxed">
+                    La materia de Computación y Robótica contribuye a la adquisición de las Competencias Clave al término de la ESO. Esta sección recopila todos los Descriptores Operativos oficiales (CCL, CD, CC, CE, STEM, CPSAA, CP, CCEC). Haga clic sobre cualquier tarjeta de descriptor para desplegar su ficha emergente interactiva.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="descriptors-grid">
+                <!-- Injected by JS -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 5: CUADERNO DE SÉNECA -->
+        <!-- ========================================== -->
+        <section id="sec-seneca" class="hidden space-y-6">
+            <!-- Introductory Paragraph -->
+            <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-900 mb-1 flex items-center gap-2">
+                    <span>📋</span> Configurador para el Cuaderno de Séneca (iPasen)
+                </h2>
+                <p class="text-stone-600 text-sm leading-relaxed">
+                    En Andalucía <strong>solo se evalúan los Criterios de Evaluación (CEv)</strong>. Los Saberes Básicos son el vehículo conceptual. Utilice este simulador para configurar la ponderación de las Actividades Evaluables en Séneca. Haga clic en los códigos de los criterios para repasar sus descriptores.
+                </p>
+            </div>
+
+            <!-- Seneca Calculator Interactive Tool -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Criteria List & Weight Calculator -->
+                <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                    <h3 class="font-bold text-stone-900 text-base mb-3 flex items-center justify-between">
+                        <span>⚖️ Cálculo Automático de Ponderación Criterial</span>
+                        <span class="text-xs bg-brand-100 text-brand-800 font-bold px-2 py-0.5 rounded">Normativa Andaluza</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-stone-100 border-b border-stone-200 text-stone-700">
+                                    <th class="p-2">Criterio (CEv)</th>
+                                    <th class="p-2">SdA donde se evalúa</th>
+                                    <th class="p-2 text-center">Nº Evaluaciones</th>
+                                    <th class="p-2 text-right">Peso Calculado en Nota Final</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-200" id="seneca-weights-body">
+                                <!-- Injected JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Seneca Setup Guide & Export -->
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-stone-900 text-base mb-3 flex items-center gap-2">
+                            <span>🛠️</span> Pasos de Configuración en Séneca
+                        </h3>
+                        <ol class="space-y-3 text-xs text-stone-600 list-decimal pl-4 leading-relaxed">
+                            <li>Acceder a <strong>Alumnado &gt; Evaluación &gt; Currículum por competencias &gt; Cuaderno de clase</strong>.</li>
+                            <li>Crear una <strong>Actividad Evaluable</strong> por cada producto final de SdA.</li>
+                            <li>Asociar la actividad estrictamente a los <strong>Criterios de Evaluación (CEv)</strong> correspondientes.</li>
+                            <li>Calificar mediante las <strong>Rúbricas de Desempeño</strong> asociadas a cada CEv (1 a 10).</li>
+                            <li>Séneca agregará la calificación criterial aplicando evaluación continua y formativa.</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-stone-200">
+                        <button onclick="copySenecaSummary()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-medium py-2 px-4 rounded-lg text-xs transition-colors flex items-center justify-center gap-2">
+                            <span>📋</span> Copiar Esquema Séneca al Portapapeles
+                        </button>
+                        <p id="copy-feedback" class="text-center text-[10px] text-emerald-600 font-semibold mt-1 opacity-0 transition-opacity">¡Copiado con éxito!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 text-xs py-6 border-t border-stone-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Programación Didáctica e Integración Criterial — <strong>Computación y Robótica 1.º ESO</strong></p>
+            <p class="text-stone-500">Diseñado conforme al Decreto de Currículo de ESO en Andalucía y Ley Orgánica LOMLOE. Código e información en formato SPA autocontenido.</p>
+        </div>
+    </footer>
+
+    <!-- SdA DETAIL MODAL -->
+    <div id="sda-modal" class="fixed inset-0 bg-stone-900/60 modal-blur z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 flex flex-col">
+            <!-- Modal Header -->
+            <div class="p-6 bg-stone-900 text-white sticky top-0 z-10 flex justify-between items-start">
+                <div>
+                    <span id="modal-sda-tag" class="px-2 py-0.5 text-xs font-bold bg-brand-500 text-stone-900 rounded uppercase">SdA</span>
+                    <h3 id="modal-sda-title" class="text-xl font-bold mt-1">Título de la Situación de Aprendizaje</h3>
+                </div>
+                <button onclick="closeSdaModal()" class="text-stone-400 hover:text-white text-2xl font-bold leading-none">&times;</button>
+            </div>
+            <!-- Modal Content -->
+            <div class="p-6 space-y-6 text-sm text-stone-700" id="modal-sda-body">
+                <!-- Content injected dynamically -->
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-4 bg-stone-100 border-t border-stone-200 flex justify-end">
+                <button onclick="closeSdaModal()" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-white font-medium rounded-lg text-xs">Cerrar Ficha Técnico-Pedagógica</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CODE POPUP MODAL (CEv, Saberes, Descriptores) -->
+    <div id="code-popup-modal" class="fixed inset-0 bg-stone-900/60 modal-blur z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-stone-200 flex flex-col overflow-hidden animate-fade-in">
+            <div class="p-5 bg-stone-900 text-white flex justify-between items-start">
+                <div class="space-y-1">
+                    <span id="popup-type-badge" class="px-2 py-0.5 text-[10px] font-bold bg-amber-500 text-stone-900 rounded uppercase tracking-wider">Criterio de Evaluación</span>
+                    <h3 id="popup-code-title" class="text-lg font-bold font-mono text-amber-300">CEv 1.1</h3>
+                </div>
+                <button onclick="closeCodePopup()" class="text-stone-400 hover:text-white text-2xl font-bold leading-none">&times;</button>
+            </div>
+            <div class="p-6 space-y-4 text-stone-700 text-sm">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-stone-400 block mb-1">Nombre / Categoría</span>
+                    <p id="popup-name" class="font-bold text-stone-900 text-base">Comprender el funcionamiento de la computación física</p>
+                </div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-stone-400 block mb-1">Descripción Oficial Normativa</span>
+                    <div id="popup-desc" class="p-3.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-700 text-xs leading-relaxed font-sans">
+                        Descripción detallada...
+                    </div>
+                </div>
+                <div id="popup-context-box" class="p-3 bg-brand-50 border border-brand-200 rounded-lg text-xs text-brand-900 flex justify-between items-center">
+                    <span>Aparición en el Currículo:</span>
+                    <span id="popup-sda-links" class="font-bold">SdA 2, SdA 4</span>
+                </div>
+            </div>
+            <div class="p-4 bg-stone-100 border-t border-stone-200 flex justify-end">
+                <button onclick="closeCodePopup()" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-white font-medium rounded-lg text-xs">Aceptar y Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DICTIONARY 1: CRITERIOS DE EVALUACIÓN (CEv)
+        const cevDictionary = {
+            "CEv 1.1": {
+                name: "Sistemas de Computación Física e IoT",
+                desc: "Comprender el funcionamiento global de los sistemas de computación física, sus componentes y principales características en el contexto del transporte de datos en redes e IoT.",
+                sdas: "SdA 2, SdA 4"
+            },
+            "CEv 1.2": {
+                name: "Papel de la Robótica en la Sociedad",
+                desc: "Reconocer el papel de la robótica en nuestra sociedad, indicando el marco elemental de trabajo de los mismos y sus aplicaciones socioeconómicas.",
+                sdas: "SdA 4"
+            },
+            "CEv 1.3": {
+                name: "Estructura Básica de un Programa",
+                desc: "Entender la estructura básica de un programa informático, secuencias, instrucciones algorítmicas e iteraciones.",
+                sdas: "SdA 3"
+            },
+            "CEv 1.4": {
+                name: "Principios de Ingeniería en Robots",
+                desc: "Comprender los principios básicos de ingeniería, mecánica y estructura física en los que se basan los robots.",
+                sdas: "SdA 4"
+            },
+            "CEv 2.1": {
+                name: "Resolución de Problemas con Programación",
+                desc: "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.",
+                sdas: "SdA 3"
+            },
+            "CEv 2.2": {
+                name: "Desarrollo de Aplicaciones Móviles",
+                desc: "Conocer y resolver la variedad de problemas posibles desarrollando una aplicación móvil, particularizando las soluciones mediante programación por bloques.",
+                sdas: "SdA 6"
+            },
+            "CEv 3.1": {
+                name: "Construcción de Sistemas Robóticos del Mundo Real",
+                desc: "Ser capaz de construir un sistema de computación o robótico, promoviendo la interacción con el mundo físico en el contexto de un problema del mundo real, de forma sostenible.",
+                sdas: "SdA 4"
+            },
+            "CEv 4.1": {
+                name: "Análisis y Visualización de Datos Masivos",
+                desc: "Conocer la naturaleza de los distintos tipos de datos generados hoy en día, siendo capaces de analizarlos, visualizarlos y compararlos, empleando a su vez un espíritu crítico y científico.",
+                sdas: "SdA 5"
+            },
+            "CEv 4.2": {
+                name: "Principios Éticos de la IA y Aprendizaje Automático",
+                desc: "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la Inteligencia Artificial de forma ética y responsable.",
+                sdas: "SdA 5"
+            },
+            "CEv 5.1": {
+                name: "Construcción Responsable de Webs y Apps",
+                desc: "Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.",
+                sdas: "SdA 6"
+            },
+            "CEv 5.2": {
+                name: "Resolución de Problemas en Entornos Web",
+                desc: "Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.",
+                sdas: "SdA 6"
+            },
+            "CEv 6.1": {
+                name: "Protección Digital de la Persona",
+                desc: "Adoptar conductas y hábitos que permitan la protección del individuo en su interacción en la red.",
+                sdas: "SdA 1, SdA 2"
+            },
+            "CEv 6.2": {
+                name: "Uso Responsable de Servicios de Información",
+                desc: "Acceder a servicios de intercambio y publicación de información digital aplicando criterios básicos de seguridad y uso responsable.",
+                sdas: "SdA 1, SdA 2"
+            },
+            "CEv 6.3": {
+                name: "Propiedad Intelectual y Licencias Web",
+                desc: "Reconocer y comprender los derechos de los materiales alojados en la web (Creative Commons, copyright).",
+                sdas: "SdA 2"
+            },
+            "CEv 6.4": {
+                name: "Seguridad Activa y Pasiva en Datos",
+                desc: "Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información.",
+                sdas: "SdA 1, SdA 2"
+            }
+        };
+
+        // DICTIONARY 2: SABERES BÁSICOS (CYR.1.x.y)
+        const saberesDictionary = {
+            "CYR.1.A.1": { name: "Introducción al Pensamiento Computacional", desc: "Pensamiento computacional y resolución de problemas mediante algoritmos de la vida cotidiana.", sdas: "SdA 3" },
+            "CYR.1.A.2": { name: "Diagramación y Algoritmos", desc: "Diagramas de flujo e instrucciones secuenciales en programación visual.", sdas: "SdA 3" },
+            "CYR.1.A.3": { name: "Estructuras de Control", desc: "Bucle repetitivo, estructuras condicionales (si... entonces) e iteraciones.", sdas: "SdA 3" },
+            "CYR.1.A.4": { name: "Variables y Operadores", desc: "Uso de variables para almacenamiento de datos, puntuaciones, tiempo y operadores matemáticos/lógicos.", sdas: "SdA 3" },
+            "CYR.1.A.5": { name: "Eventos e Interacción en Scratch", desc: "Programación orientada a eventos, teclado, ratón y colisiones.", sdas: "SdA 3" },
+            "CYR.1.B.1": { name: "Fundamentos de IoT", desc: "Conceptos clave del Internet de las Cosas y sistemas digitales interconectados.", sdas: "SdA 2, SdA 4" },
+            "CYR.1.B.2": { name: "Sensores e Interconexión IoT", desc: "Transmisión de datos mediante sensores en redes de comunicación digital.", sdas: "SdA 4" },
+            "CYR.1.B.3": { name: "Seguridad en Redes e IoT", desc: "Intercambio seguro de paquetes de información entre dispositivos conectados.", sdas: "SdA 2, SdA 4" },
+            "CYR.1.B.4": { name: "Eficiencia en Entornos Conectados", desc: "Gestión de energía y consumo de datos en sistemas embebidos y web.", sdas: "SdA 4, SdA 6" },
+            "CYR.1.C.1": { name: "Componentes del Robot", desc: "Arquitectura de un robot: sensores (entradas), procesador y actuadores (salidas).", sdas: "SdA 4" },
+            "CYR.1.C.2": { name: "Robótica e Impacto Social", desc: "Aplicaciones de la robótica en la industria, medicina y vida cotidiana.", sdas: "SdA 4" },
+            "CYR.1.C.3": { name: "Estructuras y Mecánica", desc: "Principios de ingeniería, diseño de chasis y materiales sostenibles.", sdas: "SdA 4" },
+            "CYR.1.C.4": { name: "Programación de Robots", desc: "Control del movimiento, lectura de sensores y respuesta física automatizada.", sdas: "SdA 4" },
+            "CYR.1.C.5": { name: "Ética y Leyes de la Robótica", desc: "Leyes de la robótica, dilemas éticos y automatización del trabajo.", sdas: "SdA 4" },
+            "CYR.1.D.1": { name: "Arquitectura de Apps Móviles", desc: "Conceptos fundamentales de software en dispositivos móviles.", sdas: "SdA 6" },
+            "CYR.1.D.2": { name: "Diseño UI/UX para Móviles", desc: "Diseño de interfaz visual responsive para pantallas táctiles.", sdas: "SdA 6" },
+            "CYR.1.D.3": { name: "Programación en Entornos IDE Móvil", desc: "Uso de bloques de código para gestionar pantallas y eventos táctiles.", sdas: "SdA 6" },
+            "CYR.1.D.4": { name: "Sensores en Móviles", desc: "Aprovechamiento del acelerómetro, cámara y geolocalización en apps.", sdas: "SdA 6" },
+            "CYR.1.D.5": { name: "Compilación y Depuración de Apps", desc: "Generación del paquete de instalación y pruebas de usabilidad.", sdas: "SdA 6" },
+            "CYR.1.E.1": { name: "Fundamentos de la Web", desc: "Arquitectura cliente-servidor, navegador web y protocolo HTTP/HTTPS.", sdas: "SdA 6" },
+            "CYR.1.E.2": { name: "Maquetación Web Responsive", desc: "Estructura y diseño adaptable a ordenadores, tablets y teléfonos.", sdas: "SdA 6" },
+            "CYR.1.E.3": { name: "Multimedia e Interactividad Web", desc: "Inclusión de audio, vídeo, formularios y scripts sencillos.", sdas: "SdA 6" },
+            "CYR.1.E.4": { name: "Publicación y Accesibilidad Web", desc: "Alojamiento web, dominio y pautas de accesibilidad universal.", sdas: "SdA 6" },
+            "CYR.1.F.1": { name: "Placas de Computación Física", desc: "Características del hardware de BBC micro:bit y microcontroladores.", sdas: "SdA 4" },
+            "CYR.1.F.2": { name: "Entradas Digitales y Analógicas", desc: "Lectura de pulsadores, sensor de temperatura, luz y acelerómetro.", sdas: "SdA 4" },
+            "CYR.1.F.3": { name: "Salidas Digitales y Analógicas", desc: "Control de matriz LED, emisor de sonido zumbador y servomotores.", sdas: "SdA 4" },
+            "CYR.1.F.4": { name: "Seguridad Eléctrica y Cultura Maker", desc: "Conexión de pines, voltaje seguro y prototipado rápido en cartón.", sdas: "SdA 4" },
+            "CYR.1.G.1": { name: "Naturaleza del Big Data", desc: "Concepto de datos masivos, volumen, velocidad, variedad y metadatos.", sdas: "SdA 5" },
+            "CYR.1.G.2": { name: "Recolección y Depuración de Datos", desc: "Encuestas digitales, tablas de datos y limpieza de información.", sdas: "SdA 5" },
+            "CYR.1.G.3": { name: "Análisis y Visualización de Datos", desc: "Generación de gráficos interactivos e identificación de patrones.", sdas: "SdA 5" },
+            "CYR.1.G.4": { name: "Privacidad y Tratamiento de Datos", desc: "Reglamento de protección de datos y uso ético de grandes volúmenes.", sdas: "SdA 5" },
+            "CYR.1.H.1": { name: "Fundamentos de la IA", desc: "Agentes inteligentes y diferenciación con la programación tradicional.", sdas: "SdA 5" },
+            "CYR.1.H.2": { name: "Aprendizaje Automático (Machine Learning)", desc: "Modelos supervisados y no supervisados, entrenamiento con datos.", sdas: "SdA 5" },
+            "CYR.1.H.3": { name: "Reconocimiento de Patrones", desc: "Entrenamiento de clasificadores de imágenes, voz y texto.", sdas: "SdA 5" },
+            "CYR.1.H.4": { name: "IA Generativa y Prompts", desc: "Uso de modelos de lenguaje (LLM) como Gemini para creación asistida.", sdas: "SdA 5" },
+            "CYR.1.H.5": { name: "Ética y Sesgos en la IA", desc: "Detección de discriminación algorítmica, sesgos y uso responsable.", sdas: "SdA 5" },
+            "CYR.1.I.1": { name: "Identidad Digital y EVA", desc: "Configuración del Entorno Personal de Aprendizaje (iPasen, Moodle, Google).", sdas: "SdA 1, SdA 2" },
+            "CYR.1.I.2": { name: "Seguridad Activa y Pasiva", desc: "Contraseñas robustas, gestores de claves y doble factor (2FA).", sdas: "SdA 1, SdA 2" },
+            "CYR.1.I.3": { name: "Amenazas en la Red", desc: "Detección de phishing, suplantación de identidad, malware y spam.", sdas: "SdA 1, SdA 2" },
+            "CYR.1.I.4": { name: "Netiqueta y Correo Formal", desc: "Reglas de conducta digital, redacción formal y gestión de archivos.", sdas: "SdA 1, SdA 2" },
+            "CYR.1.I.5": { name: "Ciberciudadanía y Fake News", desc: "Verificación de noticias falsas, pensamiento crítico y licencias CC.", sdas: "SdA 2" }
+        };
+
+        // DICTIONARY 3: DESCRIPTORES OPERATIVOS DEL PERFIL DE SALIDA (Official Text from Decree)
+        const descriptorsDictionary = {
+            "CCL1": { domain: "Comunicación Lingüística", name: "Expresión oral, escrita y multimodal", desc: "Se expresa de forma oral, escrita, signada o multimodal con coherencia, corrección y adecuación a los diferentes contextos sociales, y participa en interacciones comunicativas con actitud cooperativa y respetuosa tanto para intercambiar información, crear conocimiento y transmitir opiniones, como para construir vínculos personales.", sdas: "Transversal" },
+            "CCL2": { domain: "Comunicación Lingüística", name: "Comprensión e interpretación crítica", desc: "Comprende, interpreta y valora con actitud crítica textos orales, escritos, signados o multimodales de los ámbitos personal, social, educativo y profesional para participar en diferentes contextos de manera activa e informada y para construir conocimiento.", sdas: "Transversal" },
+            "CCL3": { domain: "Comunicación Lingüística", name: "Búsqueda, selección y contraste de información", desc: "Localiza, selecciona y contrasta de manera progresivamente autónoma información procedente de diferentes fuentes evaluando su fiabilidad y pertinencia en función de los objetivos de lectura y evitando los riesgos de manipulación y desinformación, y la integra y transforma en conocimiento para comunicarla adoptando un punto de vista creativo, crítico y personal a la par que respetuoso con la propiedad intelectual.", sdas: "SdA 2" },
+            "CD1": { domain: "Competencia Digital", name: "Búsqueda crítica y archivo digital", desc: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos, para recuperarlos, referenciarlos y reutilizarlos, respetando la propiedad intelectual.", sdas: "SdA 2, SdA 5" },
+            "CD2": { domain: "Competencia Digital", name: "Gestión del Entorno Personal de Aprendizaje (PLE)", desc: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales, mediante estrategias de tratamiento de la información y el uso de diferentes herramientas digitales, seleccionando y configurando la más adecuada en función de la tarea y de sus necesidades de aprendizaje permanente.", sdas: "SdA 1" },
+            "CD3": { domain: "Competencia Digital", name: "Comunicación y colaboración ciudadana digital", desc: "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales, y gestiona de manera responsable sus acciones, presencia y visibilidad en la red, para ejercer una ciudadanía digital activa, cívica y reflexiva.", sdas: "SdA 1, SdA 2, SdA 3, SdA 4" },
+            "CD4": { domain: "Competencia Digital", name: "Ciberseguridad y protección de dispositivos", desc: "Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, los datos personales, la salud y el medioambiente, y para tomar conciencia de la importancia y necesidad de hacer un uso crítico, legal, seguro, saludable y sostenible de dichas tecnologías.", sdas: "SdA 1, SdA 2, SdA 4, SdA 5" },
+            "CD5": { domain: "Competencia Digital", name: "Desarrollo de software y soluciones tecnológicas", desc: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos o responder a retos propuestos, mostrando interés y curiosidad por la evolución de las tecnologías digitales y por su desarrollo sostenible y uso ético.", sdas: "SdA 3, SdA 4, SdA 6" },
+            "STEM1": { domain: "STEM", name: "Razonamiento matemático y resolución de problemas", desc: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona y emplea diferentes estrategias para resolver problemas analizando críticamente las soluciones y reformulando el procedimiento, si fuera necesario.", sdas: "SdA 3, SdA 6" },
+            "STEM2": { domain: "STEM", name: "Pensamiento científico e indagación", desc: "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, confiando en el conocimiento como motor de desarrollo, planteándose preguntas y comprobando hipótesis mediante la experimentación y la indagación, utilizando herramientas e instrumentos adecuados.", sdas: "SdA 4" },
+            "STEM3": { domain: "STEM", name: "Diseño y evaluación de prototipos en equipo", desc: "Plantea y desarrolla proyectos diseñando, fabricando y evaluando diferentes prototipos o modelos para generar o utilizar productos que den solución a una necesidad o problema de forma creativa y en equipo, procurando la participación de todo el grupo, resolviendo pacíficamente los conflictos y valorando la sostenibilidad.", sdas: "SdA 3, SdA 4, SdA 6" },
+            "STEM5": { domain: "STEM", name: "Uso ético, seguro y preservación del entorno", desc: "Emprende acciones fundamentadas científicamente para promover la salud física, mental y social, y preservar el medio ambiente y los seres vivos; y aplica principios de ética y seguridad en la realización de proyectos para transformar su entorno próximo de forma sostenible.", sdas: "SdA 4, SdA 5" },
+            "CPSAA1": { domain: "Personal, Social y Aprender a Aprender", name: "Regulación emocional y resiliencia", desc: "Regula y expresa sus emociones, fortaleciendo el optimismo, la resiliencia, la autoeficacia y la búsqueda de propósito y motivación hacia el aprendizaje, para gestionar los retos y cambios y armonizarlos con sus propios objetivos.", sdas: "SdA 4" },
+            "CPSAA2": { domain: "Personal, Social y Aprender a Aprender", name: "Estilos de vida saludables y convivencia", desc: "Comprende los riesgos para la salud relacionados con factores sociales, consolida estilos de vida saludable a nivel físico y mental, reconoce conductas contrarias a la convivencia y aplica estrategias para abordarlas.", sdas: "SdA 1" },
+            "CPSAA3": { domain: "Personal, Social y Aprender a Aprender", name: "Trabajo cooperativo y empatía", desc: "Comprende proactivamente las perspectivas y las experiencias de las demás personas y las incorpora a su aprendizaje, para participar en el trabajo en grupo, distribuyendo y aceptando tareas y responsabilidades de manera equitativa y empleando estrategias cooperativas.", sdas: "SdA 2, SdA 3, SdA 6" },
+            "CPSAA4": { domain: "Personal, Social y Aprender a Aprender", name: "Autoevaluación y contraste de fuentes", desc: "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información y para obtener conclusiones relevantes.", sdas: "SdA 6" },
+            "CPSAA5": { domain: "Personal, Social y Aprender a Aprender", name: "Planificación a medio plazo y metacognición", desc: "Planea objetivos a medio plazo y desarrolla procesos metacognitivos de retroalimentación para aprender de sus errores en el proceso de construcción del conocimiento.", sdas: "SdA 5, SdA 6" },
+            "CC3": { domain: "Competencia Ciudadana", name: "Análisis ético de problemas contemporáneos", desc: "Comprende y analiza problemas éticos fundamentales y de actualidad, considerando críticamente los valores propios y ajenos, y desarrollando juicios propios para afrontar la controversia moral con actitud dialogante, argumentativa, respetuosa, y opuesta a cualquier tipo de discriminación o violencia.", sdas: "SdA 1, SdA 2, SdA 4, SdA 5, SdA 6" },
+            "CC4": { domain: "Competencia Ciudadana", name: "Sostenibilidad y compromiso ecosocial", desc: "Comprende las relaciones sistémicas de interdependencia, ecodependencia e interconexión entre actuaciones locales y globales, y adopta, de forma consciente y motivada, un estilo de vida sostenible y ecosocialmente responsable.", sdas: "SdA 4" },
+            "CE1": { domain: "Competencia Emprendedora", name: "Análisis de necesidades y soluciones innovadoras", desc: "Analiza necesidades y oportunidades y afronta retos con sentido crítico, haciendo balance de su sostenibilidad, valorando el impacto que puedan suponer en el entorno, para presentar ideas y soluciones innovadoras, éticas y sostenibles.", sdas: "SdA 4" },
+            "CE3": { domain: "Competencia Emprendedora", name: "Creación de prototipos y toma de decisiones", desc: "Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones, de manera razonada, utilizando estrategias ágiles de planificación y gestión, y reflexiona sobre el proceso realizado y el resultado obtenido, para llevar a término el proceso de creación de prototipos innovadores y de valor.", sdas: "SdA 3, SdA 4, SdA 6" },
+            "CCEC3": { domain: "Conciencia y Expresión Culturales", name: "Expresión creativa de ideas y opiniones", desc: "Expresa ideas, opiniones, sentimientos y emociones por medio de producciones culturales y artísticas, integrando su propio cuerpo y desarrollando la autoestima, la creatividad y el sentido del lugar que ocupa en la sociedad.", sdas: "SdA 3" },
+            "CCEC4": { domain: "Conciencia y Expresión Culturales", name: "Uso de medios y soportes audiovisuales", desc: "Conoce, selecciona y utiliza con creatividad diversos medios y soportes, así como técnicas plásticas, visuales, audiovisuales, sonoras o corporales, para la creación de productos artísticos y culturales, tanto de forma individual como colaborativa.", sdas: "SdA 2" }
+        };
+
+        // DATA STRUCTURE FOR SdA
+        const sdaData = [
+            {
+                id: 1,
+                num: "SdA 1",
+                title: "Mi Identidad Digital y Entorno Virtual de Aprendizaje (EVA)",
+                sessions: 6,
+                weight: 12.5,
+                category: "ciber",
+                ces: ["CE 6"],
+                cevs: ["CEv 6.1", "CEv 6.2", "CEv 6.4"],
+                saberes: ["CYR.1.I.1", "CYR.1.I.2", "CYR.1.I.3", "CYR.1.I.4"],
+                descriptors: ["CD2", "CD3", "CD4", "CPSAA2", "CC3"],
+                justification: "El alumnado inicia la etapa de ESO enfrentándose a nuevos entornos digitales institucionales (iPasen, Moodle Centros, Google Workspace g.educaand.es). Se propone un reto práctico: configurar su Entorno Personal de Aprendizaje (PLE) corporativo de forma segura y profesional.",
+                product: "Dossier digital de bienvenida en PDF que documente la configuración de sus cuentas, prueba de envío de correo formal con asunto/firma, y capturas organizadas en Google Drive con la estructura de carpetas del curso.",
+                phases: [
+                    { name: "Activación (Sesión 1)", desc: "Presentación del curso. Diagnóstico de competencias digitales. Primer acceso a iPasen y personalización respetuosa del perfil." },
+                    { name: "Desarrollo (Sesiones 2-4)", desc: "Configuración de Moodle Centros y g.educaand.es. Redacción de correos formales con Netiqueta, firmas y gestión de formatos (.jpg, .png, .pdf) en Google Drive." },
+                    { name: "Estructuración (Sesión 5)", desc: "Edición de un documento en Google Docs con sangrías, viñetas, imágenes y exportación a PDF." },
+                    { name: "Cierre (Sesión 6)", desc: "Subida del PDF a Moodle Centros como primera tarea formal evaluable y coevaluación en parejas mediante checklist." }
+                ],
+                dua: "Guías paso a paso con capturas visuales, opción de entregar explicativos en audio y plantillas con accesos directos de teclado."
+            },
+            {
+                id: 2,
+                num: "SdA 2",
+                title: "Ciberciudadanía Crítica: Seguridad, Fake News y Redes Sociales",
+                sessions: 8,
+                weight: 15.0,
+                category: "ciber",
+                ces: ["CE 1", "CE 6"],
+                cevs: ["CEv 1.1", "CEv 6.1", "CEv 6.2", "CEv 6.3", "CEv 6.4"],
+                saberes: ["CYR.1.B.1", "CYR.1.B.3", "CYR.1.I.1", "CYR.1.I.2", "CYR.1.I.3", "CYR.1.I.4", "CYR.1.I.5"],
+                descriptors: ["CCL3", "CD1", "CD3", "CD4", "CPSAA3", "CC3", "CCEC4"],
+                justification: "En una sociedad saturada de información y redes sociales, los adolescentes se exponen a riesgos como el phishing, la suplantación y la desinformación. Esta SdA desafía al alumnado a investigar sobre seguridad digital y detectar noticias falsas (Fake News).",
+                product: "Debate académico grabado o presentado en aula sobre el impacto de las redes sociales, acompañado de una 'Guía Interactiva de Ciberseguridad e Identidad Digital' en formato infográfico digital.",
+                phases: [
+                    { name: "Activación (Sesión 1)", desc: "Análisis de un caso real de filtración de datos y noticias falsas virales. Cuestionario interactivo previo sobre hábitos en redes." },
+                    { name: "Desarrollo (Sesiones 2-5)", desc: "Seguridad activa/pasiva: contraseñas seguras, 2FA, transporte de datos en IoT y licencias Creative Commons / derechos de autor." },
+                    { name: "Estructuración (Sesiones 6-7)", desc: "Preparación del debate ético (Fake News, algoritmos, privacidad) y elaboración colaborativa de la infografía." },
+                    { name: "Cierre (Sesión 8)", desc: "Celebración del debate en el aula, rúbrica de autoevaluación y publicación de las infografías en la web del centro." }
+                ],
+                dua: "Mapas conceptuales para 2FA y licencias CC, asignación de roles diferidos en el debate y dilemas éticos reales motivadores."
+            },
+            {
+                id: 3,
+                num: "SdA 3",
+                title: "Pensamiento Computacional y Videojuegos Sostenibles con Scratch",
+                sessions: 10,
+                weight: 20.0,
+                category: "programacion",
+                ces: ["CE 1", "CE 2"],
+                cevs: ["CEv 1.3", "CEv 2.1"],
+                saberes: ["CYR.1.A.1", "CYR.1.A.2", "CYR.1.A.3", "CYR.1.A.4", "CYR.1.A.5"],
+                descriptors: ["STEM1", "STEM3", "CD3", "CD5", "CPSAA3", "CE3", "CCEC3"],
+                justification: "Utilizando los Recursos Educativos Abiertos (REA) de la Junta de Andalucía, el alumnado aprenderá las bases de la programación por bloques. El reto consiste en programar un videojuego interactivo o animación concienciando sobre los ODS (Agenda 2030).",
+                product: "Videojuego interactivo desarrollado en Scratch funcional, con menú de inicio, sistema de puntos, niveles y código documentado.",
+                phases: [
+                    { name: "Activación (Sesiones 1-2)", desc: "Descomposición de algoritmos de la vida cotidiana. Exploración de proyectos Scratch de la comunidad REA Andalucía." },
+                    { name: "Desarrollo (Sesiones 3-6)", desc: "Programación de bucles repetitivos, condicionales (si... entonces), variables para puntos/tiempo e interacción por teclado/ratón." },
+                    { name: "Estructuración (Sesiones 7-9)", desc: "Programación por parejas (Pair Programming: conductor y navegante) para depuración e implementación de niveles." },
+                    { name: "Cierre (Sesión 10)", desc: "'Arcade Sostenible': Feria de videojuegos en el aula donde los compañeros testean y evalúan los juegos." }
+                ],
+                dua: "Código por bloques de colores, plantillas base para ritmos lentos, retos de ampliación y elección libre del tema de sostenibilidad."
+            },
+            {
+                id: 4,
+                num: "SdA 4",
+                title: "Robótica y Computación Física con BBC micro:bit para el Mundo Real",
+                sessions: 10,
+                weight: 22.5,
+                category: "robotica",
+                ces: ["CE 1", "CE 3"],
+                cevs: ["CEv 1.1", "CEv 1.2", "CEv 1.4", "CEv 3.1"],
+                saberes: ["CYR.1.B.1", "CYR.1.B.2", "CYR.1.B.3", "CYR.1.B.4", "CYR.1.C.1", "CYR.1.C.2", "CYR.1.C.3", "CYR.1.C.4", "CYR.1.C.5", "CYR.1.F.1", "CYR.1.F.2", "CYR.1.F.3", "CYR.1.F.4"],
+                descriptors: ["STEM2", "STEM3", "STEM5", "CD3", "CD4", "CD5", "CPSAA1", "CC3", "CC4", "CE1", "CE3"],
+                justification: "Los estudiantes deberán diseñar y construir un prototipo robótico sostenible utilizando la tarjeta BBC micro:bit para solventar un problema detectado en el centro educativo (ej. control de temperatura/luz, sistema de riego o alarma de acceso).",
+                product: "Prototipo robótico funcional impreso en cartón/material reciclado y automatizado con BBC micro:bit, con informe técnico de montaje y funcionamiento.",
+                phases: [
+                    { name: "Activación (Sesiones 1-2)", desc: "Diferencia entre robot y máquina. Leyes de la Robótica. Análisis del hardware de BBC micro:bit." },
+                    { name: "Desarrollo (Sesiones 3-6)", desc: "Identificación de sensores/actuadores, seguridad eléctrica básica, conexión de servomotores y programación en MakeCode." },
+                    { name: "Estructuración (Sesiones 7-9)", desc: "Fase Maker/Taller: Construcción física del prototipo en cartón/reciclado e integración con la placa micro:bit." },
+                    { name: "Cierre (Sesión 10)", desc: "Demostración pública en vivo ante el grupo-clase y evaluación con diana de autoevaluación de equipo." }
+                ],
+                dua: "Esquemas interactivos de patillaje (pinout), simulador virtual en pantalla antes de volcado a placa y roles Maker diversificados."
+            },
+            {
+                id: 5,
+                num: "SdA 5",
+                title: "Explorando la Inteligencia Artificial y Big Data: Recreando el Futuro",
+                sessions: 7,
+                weight: 15.0,
+                category: "ia",
+                ces: ["CE 4"],
+                cevs: ["CEv 4.1", "CEv 4.2"],
+                saberes: ["CYR.1.G.1", "CYR.1.G.2", "CYR.1.G.3", "CYR.1.G.4", "CYR.1.H.1", "CYR.1.H.2", "CYR.1.H.3", "CYR.1.H.4", "CYR.1.H.5"],
+                descriptors: ["STEM5", "CD1", "CD4", "CPSAA5", "CC3"],
+                justification: "El alumnado explorará los fundamentos de la IA, el aprendizaje automático (Machine Learning) y la generación de contenido con herramientas como Gemini, aplicando estos conocimientos al 'Relanzamiento Sostenible de un Producto'.",
+                product: "Campaña de comunicación multimedia e informe de rediseño de un producto cotidiano generado con asistencia de IA y fundamentado en el análisis de datos de mercado.",
+                phases: [
+                    { name: "Activación (Sesión 1)", desc: "Experimentación previa con Teachable Machine para entender el entrenamiento de modelos de visión/sonido." },
+                    { name: "Desarrollo (Sesiones 2-4)", desc: "Fundamentos de Big Data (metadatos, recolección), ética en la IA (sesgos algorítmicos) y prompts éticos en Gemini." },
+                    { name: "Estructuración (Sesiones 5-6)", desc: "Proyecto 'Relanzamiento de un Producto': encuestas digitales, análisis de datos con IA y generación de assets promocionales." },
+                    { name: "Cierre (Sesión 7)", desc: "Exposición oral con soporte digital y reflexión ética guiada sobre el uso responsable de la IA." }
+                ],
+                dua: "Analogías visuales sobre como aprenden las máquinas, libertad para entregar en presentación, podcast o vídeo corto."
+            },
+            {
+                id: 6,
+                num: "SdA 6",
+                title: "Desarrollo Web Responsive y Apps Móviles Asistidas por IA",
+                sessions: 7,
+                weight: 15.0,
+                category: "programacion",
+                ces: ["CE 2", "CE 5"],
+                cevs: ["CEv 2.2", "CEv 5.1", "CEv 5.2"],
+                saberes: ["CYR.1.B.4", "CYR.1.D.1", "CYR.1.D.2", "CYR.1.D.3", "CYR.1.D.4", "CYR.1.D.5", "CYR.1.E.1", "CYR.1.E.2", "CYR.1.E.3", "CYR.1.E.4"],
+                descriptors: ["STEM1", "STEM3", "CD5", "CPSAA3", "CPSAA4", "CPSAA5", "CC3", "CE3"],
+                justification: "Para cerrar el curso, el alumnado integrará sus aprendizajes creando una presencia digital completa (Web + App) sobre un tema de interés escolar o social utilizando entornos por bloques y asistentes IA para depurar errores.",
+                product: "Sitio web responsive en línea y prototipo de App móvil funcional que sirva de escaparate interactivo de los proyectos desarrollados a lo largo del curso.",
+                phases: [
+                    { name: "Activación (Sesión 1)", desc: "¿Cómo funciona la web? Concepto cliente-servidor, seguridad y análisis de webs adaptables (responsive)." },
+                    { name: "Desarrollo (Sesiones 2-4)", desc: "Maquetación web visual, programación de apps móviles por bloques orientada a eventos e integración de IA para hallar errores." },
+                    { name: "Estructuración (Sesiones 5-6)", desc: "Desarrollo del proyecto Web-App integrado y pruebas multitarea en ordenador, tablet y teléfono móvil." },
+                    { name: "Cierre (Sesión 7)", desc: "Publicación del espacio web, test de usabilidad entre pares y memoria de evaluación final." }
+                ],
+                dua: "Plantillas modulares con código de bloques preconstruido y libre elección entre desarrollo asistido por bloques o edición gráfica."
+            }
+        ];
+
+        const auditData = [
+            { ce: "CE 1 (P. Computacional)", cev: "CEv 1.1", sda: "SdA 2, SdA 4", saberes: ["CYR.1.B.1", "CYR.1.B.2", "CYR.1.B.3", "CYR.1.C.1", "CYR.1.C.2"], profile: ["CCL3", "STEM2", "STEM3", "CD1", "CD4", "CC4"] },
+            { ce: "CE 1 (P. Computacional)", cev: "CEv 1.2", sda: "SdA 4", saberes: ["CYR.1.C.1", "CYR.1.C.2", "CYR.1.C.3"], profile: ["STEM2", "STEM3", "CD4", "CE1"] },
+            { ce: "CE 1 (P. Computacional)", cev: "CEv 1.3", sda: "SdA 3", saberes: ["CYR.1.A.1", "CYR.1.A.3", "CYR.1.A.4"], profile: ["STEM1", "CD3", "CPSAA1"] },
+            { ce: "CE 1 (P. Computacional)", cev: "CEv 1.4", sda: "SdA 4", saberes: ["CYR.1.C.3", "CYR.1.C.4", "CYR.1.C.5"], profile: ["STEM2", "STEM3", "STEM5"] },
+            { ce: "CE 2 (Programación)", cev: "CEv 2.1", sda: "SdA 3", saberes: ["CYR.1.A.1", "CYR.1.A.2", "CYR.1.A.3", "CYR.1.A.4", "CYR.1.A.5"], profile: ["STEM1", "STEM3", "CD3", "CD5", "CE3"] },
+            { ce: "CE 2 (Programación)", cev: "CEv 2.2", sda: "SdA 6", saberes: ["CYR.1.D.1", "CYR.1.D.2", "CYR.1.D.3", "CYR.1.D.4", "CYR.1.D.5"], profile: ["STEM1", "CD5", "CPSAA3", "CE3"] },
+            { ce: "CE 3 (Robótica & IoT)", cev: "CEv 3.1", sda: "SdA 4", saberes: ["CYR.1.F.1", "CYR.1.F.2", "CYR.1.F.3", "CYR.1.F.4"], profile: ["STEM2", "STEM3", "STEM5", "CD3", "CD4", "CD5", "CC3", "CE3"] },
+            { ce: "CE 4 (IA & Big Data)", cev: "CEv 4.1", sda: "SdA 5", saberes: ["CYR.1.G.1", "CYR.1.G.2", "CYR.1.G.3", "CYR.1.G.4"], profile: ["STEM5", "CD1", "CD4", "CPSAA5", "CC3"] },
+            { ce: "CE 4 (IA & Big Data)", cev: "CEv 4.2", sda: "SdA 5", saberes: ["CYR.1.H.1", "CYR.1.H.2", "CYR.1.H.3", "CYR.1.H.4", "CYR.1.H.5"], profile: ["STEM5", "CD1", "CD4", "CPSAA5", "CC3"] },
+            { ce: "CE 5 (Desarrollo Web/App)", cev: "CEv 5.1", sda: "SdA 6", saberes: ["CYR.1.E.1", "CYR.1.E.2"], profile: ["STEM1", "STEM3", "CD5", "CPSAA4"] },
+            { ce: "CE 5 (Desarrollo Web/App)", cev: "CEv 5.2", sda: "SdA 6", saberes: ["CYR.1.E.3", "CYR.1.E.4"], profile: ["STEM1", "STEM3", "CD5", "CE3"] },
+            { ce: "CE 6 (Ciberseguridad)", cev: "CEv 6.1", sda: "SdA 1, SdA 2", saberes: ["CYR.1.I.1", "CYR.1.I.2", "CYR.1.I.3"], profile: ["CD2", "CD3", "CD4", "CPSAA2", "CC3"] },
+            { ce: "CE 6 (Ciberseguridad)", cev: "CEv 6.2", sda: "SdA 1, SdA 2", saberes: ["CYR.1.I.2", "CYR.1.I.4"], profile: ["CD2", "CD3", "CD4", "CC3"] },
+            { ce: "CE 6 (Ciberseguridad)", cev: "CEv 6.3", sda: "SdA 2", saberes: ["CYR.1.I.5"], profile: ["CCL3", "CD1", "CCEC4"] },
+            { ce: "CE 6 (Ciberseguridad)", cev: "CEv 6.4", sda: "SdA 1, SdA 2", saberes: ["CYR.1.I.1", "CYR.1.I.3", "CYR.1.I.4"], profile: ["CD2", "CD4", "CPSAA2"] }
+        ];
+
+        // INITIALIZATION AND EVENT LISTENERS
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderSdaCards('all');
+            renderAuditTable(auditData);
+            renderDescriptorsGrid();
+            renderSenecaTable();
+        });
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabId) {
+            const sections = ['dashboard', 'sda', 'audit', 'profile', 'seneca'];
+            sections.forEach(s => {
+                const secEl = document.getElementById(`sec-${s}`);
+                const tabBtn = document.getElementById(`tab-${s}`);
+                if (s === tabId) {
+                    secEl.classList.remove('hidden');
+                    tabBtn.classList.add('active');
+                } else {
+                    secEl.classList.add('hidden');
+                    tabBtn.classList.remove('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // CHARTS IMPLEMENTATION (Chart.js)
+        function initCharts() {
+            // Chart 1: Sessions & Weights
+            const ctx1 = document.getElementById('sessionsChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['SdA 1 (EVA)', 'SdA 2 (Ciber)', 'SdA 3 (Scratch)', 'SdA 4 (micro:bit)', 'SdA 5 (IA)', 'SdA 6 (Web/App)'],
+                    datasets: [
+                        {
+                            label: 'Sesiones Lectivas',
+                            data: [6, 8, 10, 10, 7, 7],
+                            backgroundColor: '#0d9488',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Peso % en Nota Final',
+                            data: [12.5, 15.0, 20.0, 22.5, 15.0, 15.0],
+                            backgroundColor: '#4f46e5',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 2: Competencies Coverage Radar
+            const ctx2 = document.getElementById('competenciesChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'CE 1 (P. Computacional)',
+                        'CE 2 (Programación)',
+                        'CE 3 (Robótica/IoT)',
+                        'CE 4 (IA & Big Data)',
+                        'CE 5 (Web & App)',
+                        'CE 6 (Ciberseguridad)'
+                    ],
+                    datasets: [{
+                        label: 'Número de SdA donde se evalúa',
+                        data: [3, 2, 1, 1, 1, 2],
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: '#0d9488',
+                        pointBackgroundColor: '#0f766e',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            suggestedMin: 0,
+                            suggestedMax: 4,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // RENDER SDA CARDS GRID
+        function renderSdaCards(filter) {
+            const container = document.getElementById('sda-cards-grid');
+            container.innerHTML = '';
+
+            const filteredData = filter === 'all' 
+                ? sdaData 
+                : sdaData.filter(item => item.category === filter);
+
+            filteredData.forEach(sda => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col justify-between hover:border-brand-500 transition-all";
+                card.innerHTML = `
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold bg-brand-100 text-brand-800 rounded">${sda.num}</span>
+                            <span class="text-xs font-semibold text-stone-500">${sda.sessions} Sesiones (${sda.weight}%)</span>
+                        </div>
+                        <h3 class="font-bold text-stone-900 text-base mb-2">${sda.title}</h3>
+                        <p class="text-xs text-stone-600 line-clamp-3 mb-4">${sda.justification}</p>
+                        
+                        <div class="space-y-2 text-xs border-t border-stone-100 pt-3">
+                            <div>
+                                <span class="font-semibold text-stone-700 block mb-1">Criterios Evaluables (haz clic):</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${sda.cevs.map(c => `<span onclick="showCodeDetail('${c}')" class="code-badge bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">${c} ℹ️</span>`).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-semibold text-stone-700 block mb-1">Producto Final:</span>
+                                <p class="text-stone-600 italic mt-0.5">${sda.product}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-stone-50 border-t border-stone-100 flex justify-end">
+                        <button onclick="openSdaModal(${sda.id})" class="text-xs text-brand-600 font-bold hover:text-brand-800 transition-colors flex items-center gap-1">
+                            Ver Ficha Completa →
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterSdaCards(cat) {
+            renderSdaCards(cat);
+            const buttons = document.querySelectorAll('.sda-filter-btn');
+            buttons.forEach(btn => {
+                btn.className = "sda-filter-btn px-2.5 py-1 rounded bg-stone-100 hover:bg-stone-200 text-stone-700";
+            });
+            event.target.className = "sda-filter-btn px-2.5 py-1 rounded bg-stone-800 text-white font-medium";
+        }
+
+        // SDA MODAL HANDLER
+        function openSdaModal(id) {
+            const sda = sdaData.find(item => item.id === id);
+            if (!sda) return;
+
+            document.getElementById('modal-sda-tag').innerText = `${sda.num} • ${sda.sessions} Sesiones (${sda.weight}%)`;
+            document.getElementById('modal-sda-title').innerText = sda.title;
+
+            const modalBody = document.getElementById('modal-sda-body');
+            modalBody.innerHTML = `
+                <div>
+                    <h4 class="font-bold text-stone-900 text-sm mb-1">1. Justificación Pedagógica y Reto</h4>
+                    <p class="text-stone-600 leading-relaxed text-xs">${sda.justification}</p>
+                </div>
+
+                <div class="p-3 bg-brand-50 border border-brand-200 rounded-lg">
+                    <h4 class="font-bold text-brand-900 text-sm mb-1">🎁 Producto Final Tangible</h4>
+                    <p class="text-brand-800 text-xs">${sda.product}</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-stone-900 text-sm mb-2">2. Conexión Curricular Oficial (Haga clic para ver descripciones)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div class="p-2.5 bg-stone-50 rounded border border-stone-200">
+                            <span class="font-bold text-stone-800 block mb-1.5">Criterios de Evaluación (CEv):</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${sda.cevs.map(cev => `<span onclick="showCodeDetail('${cev}')" class="code-badge bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-mono font-bold">${cev} ℹ️</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="p-2.5 bg-stone-50 rounded border border-stone-200">
+                            <span class="font-bold text-stone-800 block mb-1.5">Saberes Básicos Movilizados:</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${sda.saberes.map(sab => `<span onclick="showCodeDetail('${sab}')" class="code-badge bg-emerald-100 text-emerald-900 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">${sab} ℹ️</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-stone-900 text-sm mb-2">3. Secuenciación Didáctica (Fases de Aprendizaje)</h4>
+                    <div class="space-y-2">
+                        ${sda.phases.map(p => `
+                            <div class="p-2.5 bg-stone-50 rounded border border-stone-200">
+                                <span class="font-bold text-stone-800 text-xs block">${p.name}</span>
+                                <span class="text-stone-600 text-xs">${p.desc}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-stone-900 text-sm mb-1">4. Medidas de Inclusión (DUA)</h4>
+                    <p class="text-stone-600 text-xs">${sda.dua}</p>
+                </div>
+            `;
+
+            document.getElementById('sda-modal').classList.remove('hidden');
+        }
+
+        function closeSdaModal() {
+            document.getElementById('sda-modal').classList.add('hidden');
+        }
+
+        // AUDIT TABLE RENDER & SEARCH
+        function renderAuditTable(data) {
+            const tbody = document.getElementById('audit-table-body');
+            tbody.innerHTML = '';
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-stone-50 transition-colors";
+
+                const saberesBadges = row.saberes.map(s => 
+                    `<span onclick="showCodeDetail('${s}')" class="code-badge bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-medium text-[11px] mr-1 mb-1">${s}</span>`
+                ).join('');
+
+                const profileBadges = row.profile.map(p => 
+                    `<span onclick="showCodeDetail('${p}')" class="code-badge bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 px-1.5 py-0.5 rounded font-mono font-medium text-[11px] mr-1 mb-1">${p}</span>`
+                ).join('');
+
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-stone-900 text-xs">${row.ce}</td>
+                    <td class="p-3 text-xs">
+                        <span onclick="showCodeDetail('${row.cev}')" class="code-badge bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-2 py-1 rounded font-mono font-bold">${row.cev} ℹ️</span>
+                    </td>
+                    <td class="p-3 font-medium text-stone-800 text-xs">${row.sda}</td>
+                    <td class="p-3 text-xs flex flex-wrap">${saberesBadges}</td>
+                    <td class="p-3 text-xs">${profileBadges}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function searchAuditTable() {
+            const query = document.getElementById('audit-search').value.toLowerCase();
+            const filtered = auditData.filter(item => 
+                item.ce.toLowerCase().includes(query) ||
+                item.cev.toLowerCase().includes(query) ||
+                item.sda.toLowerCase().includes(query) ||
+                item.saberes.some(s => s.toLowerCase().includes(query)) ||
+                item.profile.some(p => p.toLowerCase().includes(query))
+            );
+            renderAuditTable(filtered);
+        }
+
+        // DESCRIPTORS GRID RENDER
+        function renderDescriptorsGrid() {
+            const container = document.getElementById('descriptors-grid');
+            container.innerHTML = '';
+            Object.keys(descriptorsDictionary).forEach(code => {
+                const d = descriptorsDictionary[code];
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-stone-200 shadow-sm space-y-2 hover:border-brand-500 transition-all cursor-pointer";
+                card.onclick = () => showCodeDetail(code);
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono font-bold text-brand-800 bg-brand-100 border border-brand-200 px-2 py-0.5 rounded text-xs flex items-center gap-1">${code} ℹ️</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-500 bg-stone-100 px-1.5 py-0.5 rounded">${d.domain}</span>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-xs">${d.name}</h4>
+                    <p class="text-xs text-stone-600 line-clamp-3 leading-relaxed">${d.desc}</p>
+                    <div class="pt-2 border-t border-stone-100 flex justify-between text-[11px] text-stone-500">
+                        <span>Evaluado en:</span>
+                        <span class="font-semibold text-stone-800">${d.sdas}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // SENECA WEIGHT CALCULATOR
+        function renderSenecaTable() {
+            const tbody = document.getElementById('seneca-weights-body');
+            tbody.innerHTML = '';
+
+            const criteriaWeights = {};
+            auditData.forEach(item => {
+                const cev = item.cev;
+                if (!criteriaWeights[cev]) {
+                    criteriaWeights[cev] = { code: cev, ce: item.ce, sdas: [], weightSum: 0 };
+                }
+                sdaData.forEach(s => {
+                    if (s.cevs.includes(cev) && !criteriaWeights[cev].sdas.includes(s.num)) {
+                        criteriaWeights[cev].sdas.push(s.num);
+                        criteriaWeights[cev].weightSum += s.weight;
+                    }
+                });
+            });
+
+            let totalRaw = 0;
+            Object.values(criteriaWeights).forEach(c => totalRaw += c.weightSum);
+
+            Object.values(criteriaWeights).forEach(c => {
+                const normalizedWeight = ((c.weightSum / totalRaw) * 100).toFixed(1);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 text-xs">
+                        <span onclick="showCodeDetail('${c.code}')" class="code-badge bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-2 py-0.5 rounded font-mono font-bold">${c.code} ℹ️</span>
+                    </td>
+                    <td class="p-2 text-stone-600">${c.sdas.join(', ')}</td>
+                    <td class="p-2 text-center font-bold text-stone-800">${c.sdas.length}</td>
+                    <td class="p-2 text-right font-mono font-bold text-emerald-600">${normalizedWeight}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // CODE DETAIL POPUP SYSTEM (CEv, Saberes, Descriptores)
+        function showCodeDetail(code) {
+            let item = null;
+            let typeName = "";
+            let badgeBg = "";
+
+            if (cevDictionary[code]) {
+                item = cevDictionary[code];
+                typeName = "Criterio de Evaluación Criterial";
+                badgeBg = "bg-amber-500 text-stone-900";
+            } else if (saberesDictionary[code]) {
+                item = saberesDictionary[code];
+                typeName = "Saber Básico (Currículo Andalucía)";
+                badgeBg = "bg-emerald-600 text-white";
+            } else if (descriptorsDictionary[code]) {
+                item = descriptorsDictionary[code];
+                typeName = `Descriptor Operativo (${item.domain})`;
+                badgeBg = "bg-indigo-600 text-white";
+            }
+
+            if (!item) return;
+
+            document.getElementById('popup-type-badge').innerText = typeName;
+            document.getElementById('popup-type-badge').className = `px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider ${badgeBg}`;
+            document.getElementById('popup-code-title').innerText = code;
+            document.getElementById('popup-name').innerText = item.name;
+            document.getElementById('popup-desc').innerText = item.desc;
+            document.getElementById('popup-sda-links').innerText = item.sdas || "Transversal";
+
+            document.getElementById('code-popup-modal').classList.remove('hidden');
+        }
+
+        function closeCodePopup() {
+            document.getElementById('code-popup-modal').classList.add('hidden');
+        }
+
+        function copySenecaSummary() {
+            const text = "CONFIGURACIÓN SÉNECA — COMPUTACIÓN Y ROBÓTICA 1º ESO\n" +
+                         "--------------------------------------------------\n" +
+                         "SdA 1: 3 Criterios (6.1, 6.2, 6.4) -> Peso: 12.5%\n" +
+                         "SdA 2: 5 Criterios (1.1, 6.1, 6.2, 6.3, 6.4) -> Peso: 15.0%\n" +
+                         "SdA 3: 2 Criterios (1.3, 2.1) -> Peso: 20.0%\n" +
+                         "SdA 4: 4 Criterios (1.1, 1.2, 1.4, 3.1) -> Peso: 22.5%\n" +
+                         "SdA 5: 2 Criterios (4.1, 4.2) -> Peso: 15.0%\n" +
+                         "SdA 6: 3 Criterios (2.2, 5.1, 5.2) -> Peso: 15.0%\n" +
+                         "--------------------------------------------------\n" +
+                         "Evaluación criterial continua 100% adaptada a LOMLOE Junta de Andalucía.";
+            navigator.clipboard.writeText(text).then(() => {
+                const feedback = document.getElementById('copy-feedback');
+                feedback.classList.remove('opacity-0');
+                setTimeout(() => feedback.classList.add('opacity-0'), 2500);
+            });
+        }
+    </script>
+</body>
+</html>
