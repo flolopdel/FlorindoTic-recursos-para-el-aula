@@ -3,241 +3,772 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SdA 1: Mi Identidad Digital y Pasaporte Virtual</title>
-    <!-- Tailwind CSS desde CDN para estilos limpios y modernos dentro de Moodle -->
+    <title>Guía de Trabajo Autónomo: Pasaporte Digital</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome para iconos -->
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Webfont Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        .badge-shadow { filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1)); }
-        .tab-active { border-bottom: 3px solid #059669; color: #059669; font-weight: bold; }
+        /* Custom chart container requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans p-2 md:p-6 text-gray-800">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- CONTENEDOR PRINCIPAL EMBEBIBLE EN MOODLE -->
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
-        
-        <!-- CABECERA DE LA SdA -->
-        <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 p-6 text-white relative">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <!-- Chosen Palette: Slate & Emerald Harmony (Background: #f8fafc, Cards: #ffffff, Accent: #059669, Secondary: #0284c7, Neutral: #334155) -->
+    <!-- Application Structure Plan: The SPA is structured as an interactive 5-stage learning dashboard for autonomous student work spanning 2 weeks. It features a progress tracker, session navigation tabs, rich action cards with step-by-step instructions, interactive learning tools (Passphrase Evaluator and Drive Folder Visualizer), a self-assessment interactive checklist that updates a live Chart.js visualization, and a searchable FAQ accordion. This structure transforms a static guide into a self-paced, gamified learning experience where students can track their own progress without teacher intervention. -->
+    <!-- Visualization & Content Choices: 
+       - 5-Session Timeline -> Interactive Stepper Tabs -> Allows non-linear and step-by-step exploration of each lesson module.
+       - Progress Chart -> Chart.js Doughnut/Radar Chart in wrapped responsive container -> Visualizes student overall competence and task completion status dynamically.
+       - Passphrase Interactive Tool -> Custom Vanilla JS Widget -> Helps students practice creating strong passphrases during Session 2.
+       - Folder Hierarchy Visualizer -> Structured HTML/CSS tree view -> Clarifies folder nomenclature for Session 3 without SVG/Mermaid.
+       - Interactive Checklist -> HTML Checkboxes + LocalStorage -> Tracks real-time completion status and triggers final completion badge.
+       - NO SVG graphics or Mermaid JS used; Chart.js canvas rendering for data visualization. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="bg-emerald-500 text-slate-900 font-bold px-2.5 py-1 rounded text-sm tracking-wide">
+                    <i class="fa-solid fa-passport mr-1"></i> PASAPORTE DIGITAL
+                </span>
+                <h1 class="text-lg sm:text-xl font-bold truncate">Guía de Trabajo Autónomo</h1>
+            </div>
+            
+            <!-- Overall Progress Widget in Header -->
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-xs text-slate-400">Progreso Global</div>
+                    <div id="header-progress-text" class="text-sm font-bold text-emerald-400">0% Completado</div>
+                </div>
+                <div class="w-32 bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+                    <div id="header-progress-bar" class="bg-emerald-500 h-full transition-all duration-500 w-0"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Welcome Banner & Quick Rules -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="space-y-2 lg:max-w-2xl">
+                    <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-calendar-days"></i> Plan de Trabajo de 2 Semanas (5 Sesiones)
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900">Misión: Acredita tu Identidad Digital y Pasaporte Virtual</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Durante las próximas 2 semanas vas a trabajar de manera autónoma para construir tu Pasaporte Digital corporativo. Completa cada una de las 5 sesiones a tu ritmo, consulta los tutoriales interactivos y verifica tus logros en la lista de calidad.
+                    </p>
+                </div>
+
+                <!-- Quick Action Cards (Capturas & Drive) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-[300px]">
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-start space-x-3">
+                        <div class="bg-indigo-100 text-indigo-600 p-2.5 rounded-lg text-lg flex-shrink-0">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-900 uppercase">Capturas en Win 11</h3>
+                            <p class="text-xs text-slate-600 mt-0.5">Pulsa <kbd class="bg-white border px-1 py-0.5 rounded text-slate-700 shadow-sm">Win</kbd> + <kbd class="bg-white border px-1 py-0.5 rounded text-slate-700 shadow-sm">Mayús</kbd> + <kbd class="bg-white border px-1 py-0.5 rounded text-slate-700 shadow-sm">S</kbd> y pega con <kbd class="bg-white border px-1 py-0.5 rounded text-slate-700 shadow-sm">Ctrl+V</kbd>.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-start space-x-3">
+                        <div class="bg-emerald-100 text-emerald-600 p-2.5 rounded-lg text-lg flex-shrink-0">
+                            <i class="fa-solid fa-folder-closed"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-900 uppercase">Guardado Seguro</h3>
+                            <p class="text-xs text-slate-600 mt-0.5">Guarda todas las evidencias en tu carpeta asignada de Google Drive desde el primer día.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Timeline Stepper Navigation -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Mapa de Ruta por Sesiones</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="session-tabs">
+                <!-- Session 1 Tab -->
+                <button onclick="switchSession(1)" id="tab-btn-1" class="session-tab-btn text-left p-3 rounded-lg border border-indigo-500 bg-indigo-50/50 transition duration-200 focus:outline-none">
+                    <div class="flex items-center justify-between text-xs text-indigo-700 font-semibold mb-1">
+                        <span>SEMANA 1</span>
+                        <span class="bg-indigo-200 text-indigo-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">S1</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 truncate">1. Acceso y Moodle</div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-flag-checkered text-indigo-500"></i> Hito 1: Moodle</div>
+                </button>
+
+                <!-- Session 2 Tab -->
+                <button onclick="switchSession(2)" id="tab-btn-2" class="session-tab-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50/50 transition duration-200 focus:outline-none">
+                    <div class="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                        <span>SEMANA 1</span>
+                        <span class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">S2</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 truncate">2. Ciberseguridad</div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-flag-checkered text-slate-400"></i> Hito 2: Perfil</div>
+                </button>
+
+                <!-- Session 3 Tab -->
+                <button onclick="switchSession(3)" id="tab-btn-3" class="session-tab-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50/50 transition duration-200 focus:outline-none">
+                    <div class="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                        <span>SEMANA 1</span>
+                        <span class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">S3</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 truncate">3. Carpetas Drive</div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-flag-checkered text-slate-400"></i> Hito 3: Árbol Drive</div>
+                </button>
+
+                <!-- Session 4 Tab -->
+                <button onclick="switchSession(4)" id="tab-btn-4" class="session-tab-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50/50 transition duration-200 focus:outline-none">
+                    <div class="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                        <span>SEMANA 2</span>
+                        <span class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">S4</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 truncate">4. Pasaporte PDF</div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-flag-checkered text-slate-400"></i> Hito 4: Documento</div>
+                </button>
+
+                <!-- Session 5 Tab -->
+                <button onclick="switchSession(5)" id="tab-btn-5" class="session-tab-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50/50 transition duration-200 focus:outline-none col-span-2 sm:col-span-1">
+                    <div class="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                        <span>SEMANA 2</span>
+                        <span class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">S5</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 truncate">5. Correo & Moodle</div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-flag-checkered text-slate-400"></i> Hito 5: Entrega</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Grid Layout: Session Content + Checklist Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Left 2 Columns: Detailed Session Cards & Tools -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Dynamic Session Card Display -->
+                <div id="session-card-container" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                    <!-- Session content injected dynamically via JS -->
+                </div>
+
+                <!-- Interactive Workshop Tools Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Herramientas Interactivas de Aprendizaje
+                        </h3>
+                        <span class="text-xs text-slate-400 font-medium">Asistentes de Tarea</span>
+                    </div>
+
+                    <!-- Tool 1: Passphrase Evaluator (Session 2 helper) -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-key text-indigo-600"></i> Comprobador de Frase de Paso (Passphrase) - Sesión 2
+                            </label>
+                            <span id="passphrase-badge" class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-bold">Esperando entrada...</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Prueba tu frase de paso corporativa. Debe tener palabras combinadas, mayúsculas, números y símbolos (ej: <code class="bg-slate-200 px-1 rounded">MiPerroComePan!2026</code>).</p>
+                        <div class="relative">
+                            <input type="text" id="passphrase-input" oninput="evaluatePassphrase()" placeholder="Escribe aquí tu frase de paso de prueba..." class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <div class="absolute right-3 top-2.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div id="passphrase-bar" class="h-full w-0 bg-red-500 transition-all duration-300"></div>
+                        </div>
+                        <p id="passphrase-feedback" class="text-xs text-slate-600 italic">Combina más de 3 palabras sin espacios sencillos e incluye caracteres especiales.</p>
+                    </div>
+
+                    <!-- Tool 2: Drive Folder Hierarchy Visualizer (Session 3 helper) -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-sitemap text-emerald-600"></i> Simulador de Estructura en Google Drive - Sesión 3
+                            </h4>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Vista de Árbol</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Comprueba exactamente cómo debe quedar tu árbol de carpetas en Google Drive antes de hacer la captura:</p>
+                        
+                        <!-- Structured Folder Tree (HTML/CSS) -->
+                        <div class="bg-slate-900 text-slate-200 p-4 rounded-lg text-xs font-mono space-y-2 overflow-x-auto">
+                            <div class="flex items-center text-amber-400 font-bold">
+                                <i class="fa-solid fa-folder-open mr-2 text-amber-400"></i> Mi_Carpeta_Apellidos_Nombre/
+                                <span class="ml-2 text-[10px] text-emerald-400 border border-emerald-500/30 px-1 rounded">Permiso: Restringido / @g.educaand.es</span>
+                            </div>
+                            <div class="pl-4 space-y-1.5 border-l border-slate-700 ml-2">
+                                <div class="flex items-center text-blue-300">
+                                    <span class="text-slate-500 mr-2">├──</span>
+                                    <i class="fa-solid fa-folder text-blue-400 mr-2"></i> 01_Pasaporte_Digital/
+                                    <span class="ml-2 text-[10px] text-slate-400">(Capturas S1, S2, S3 y PDF final)</span>
+                                </div>
+                                <div class="flex items-center text-slate-300">
+                                    <span class="text-slate-500 mr-2">├──</span>
+                                    <i class="fa-solid fa-folder text-slate-400 mr-2"></i> 02_Proyectos_y_Trabajos/
+                                </div>
+                                <div class="flex items-center text-slate-300">
+                                    <span class="text-slate-500 mr-2">└──</span>
+                                    <i class="fa-solid fa-folder text-slate-400 mr-2"></i> 03_Ciberseguridad_y_Recursos/
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right Column: Interactive Checklist & Chart Dashboard -->
+            <div class="space-y-6">
+
+                <!-- Interactive Checklist Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Lista de Verificación</h3>
+                            <p class="text-xs text-slate-500">Autoevaluación de Calidad</p>
+                        </div>
+                        <button onclick="resetChecklist()" class="text-xs text-slate-400 hover:text-red-500 transition" title="Reiniciar lista">
+                            <i class="fa-solid fa-rotate-right"></i> Reset
+                        </button>
+                    </div>
+
+                    <div class="space-y-2 text-xs" id="checklist-items">
+                        <!-- Checklist items dynamically rendered -->
+                    </div>
+                </div>
+
+                <!-- Competence & Progress Chart.js Container -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-slate-900">Estado de Acreditación</h3>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded">Gráfico en Vivo</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Visualización en tiempo real del cumplimiento de tus evidencias y criterios.</p>
+                    
+                    <!-- Chart Container wrapping Canvas -->
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+
+                    <!-- Motivational Status Badge -->
+                    <div id="status-badge-container" class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
+                        <div id="status-title" class="text-xs font-bold text-slate-800">En progreso...</div>
+                        <div id="status-sub" class="text-[11px] text-slate-500 mt-0.5">Marca las casillas conforme completes cada hito.</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FAQ & Troubleshooting Section -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-100">
                 <div>
-                    <span class="bg-emerald-500 text-white text-xs font-bold uppercase px-3 py-1 rounded-full tracking-wide">
-                        1º ESO • Computación y Robótica
-                    </span>
-                    <h1 class="text-2xl md:text-3xl font-extrabold mt-2">
-                        SdA 1: Mi Identidad Digital y Pasaporte Virtual
-                    </h1>
-                    <p class="text-emerald-100 text-sm mt-1">
-                        Acredita tus competencias digitales corporativas en iPasen, Moodle y Google Workspace
-                    </p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl text-center border border-white/20">
-                    <span class="block text-xs uppercase tracking-wider text-emerald-200">Ponderación SdA</span>
-                    <span class="text-2xl font-black text-white">10%</span>
-                    <span class="block text-[10px] text-emerald-200">5 Sesiones</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- BARRA NAVEGADORA DE SECCIONES (TABS) -->
-        <div class="bg-white border-b border-gray-200 flex overflow-x-auto text-sm font-medium text-gray-600">
-            <button onclick="switchTab('tab-instrucciones')" id="btn-tab-instrucciones" class="tab-btn px-5 py-4 flex items-center gap-2 tab-active hover:text-emerald-600 transition">
-                <i class="fa-solid fa-compass text-emerald-600"></i> Reto y Pasos
-            </button>
-            <button onclick="switchTab('tab-puntos')" id="btn-tab-puntos" class="tab-btn px-5 py-4 flex items-center gap-2 hover:text-emerald-600 transition">
-                <i class="fa-solid fa-list-check text-emerald-600"></i> Puntos de Control (Checklist)
-            </button>
-            <button onclick="switchTab('tab-correo')" id="btn-tab-correo" class="tab-btn px-5 py-4 flex items-center gap-2 hover:text-emerald-600 transition">
-                <i class="fa-solid fa-envelope text-emerald-600"></i> Guía de Correo Formal
-            </button>
-            <button onclick="switchTab('tab-entregas')" id="btn-tab-entregas" class="tab-btn px-5 py-4 flex items-center gap-2 hover:text-emerald-600 transition">
-                <i class="fa-solid fa-upload text-emerald-600"></i> Tareas y Entregas Moodle
-            </button>
-        </div>
-
-        <!-- CONTENIDO DE LAS PESTAÑAS -->
-        <div class="p-6">
-
-            <!-- PESTAÑA 1: RETO Y PASOS -->
-            <div id="tab-instrucciones" class="tab-content block space-y-6">
-                <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-r-lg">
-                    <h3 class="font-bold text-emerald-900 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-flag-checkered"></i> El Objetivo de la SdA
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-indigo-600"></i> Preguntas Frecuentes y Bloqueos (Troubleshooting)
                     </h3>
-                    <p class="text-sm text-emerald-800 mt-1">
-                        Bienvenido/a a la materia. En esta Situación de Aprendizaje vas a configurar tu Entorno Personal de Aprendizaje (PLE). Al finalizar, habrás obtenido tu <strong>Pasaporte Digital de Aula</strong> en formato PDF y habrás realizado tu primera comunicación oficial con el profesorado usando la cuenta <code>@g.educaand.es</code>.
-                    </p>
+                    <p class="text-xs text-slate-500">¿Tienes dudas o algún problema técnico? Encuentra la solución inmediata aquí.</p>
                 </div>
-
-                <h3 class="font-bold text-gray-800 text-lg border-b pb-2">Mapa de la Ruta (5 Sesiones)</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <!-- Sesión 1 -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl relative hover:border-emerald-500 transition">
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Sesión 1</span>
-                        <h4 class="font-bold text-sm text-gray-800 mt-2">Plataformas</h4>
-                        <p class="text-xs text-gray-600 mt-1">Acceso a iPasen y bienvenida a Moodle Centros.</p>
-                    </div>
-                    <!-- Sesión 2 -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl relative hover:border-emerald-500 transition">
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Sesión 2</span>
-                        <h4 class="font-bold text-sm text-gray-800 mt-2">Identidad</h4>
-                        <p class="text-xs text-gray-600 mt-1">Cuenta @g.educaand.es, foto adecuada y contraseña.</p>
-                    </div>
-                    <!-- Sesión 3 -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl relative hover:border-emerald-500 transition">
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Sesión 3</span>
-                        <h4 class="font-bold text-sm text-gray-800 mt-2">Google Drive</h4>
-                        <p class="text-xs text-gray-600 mt-1">Estructura de carpetas y gestión de extensiones.</p>
-                    </div>
-                    <!-- Sesión 4 -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl relative hover:border-emerald-500 transition">
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Sesión 4</span>
-                        <h4 class="font-bold text-sm text-gray-800 mt-2">El Pasaporte</h4>
-                        <p class="text-xs text-gray-600 mt-1">Maquetación en Google Docs y descarga en PDF.</p>
-                    </div>
-                    <!-- Sesión 5 -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl relative hover:border-emerald-500 transition">
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Sesión 5</span>
-                        <h4 class="font-bold text-sm text-gray-800 mt-2">Envío Formal</h4>
-                        <p class="text-xs text-gray-600 mt-1">Correo formal con firma + Entrega Moodle.</p>
-                    </div>
+                <!-- FAQ Search Filter -->
+                <div class="relative min-w-[240px]">
+                    <input type="text" id="faq-search" oninput="filterFAQ()" placeholder="Buscar duda o error..." class="w-full text-xs border border-slate-300 rounded-lg pl-8 pr-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
                 </div>
             </div>
 
-            <!-- PESTAÑA 2: CHECKLIST DE PUNTOS DE CONTROL -->
-            <div id="tab-puntos" class="tab-content hidden space-y-4">
-                <h3 class="font-bold text-gray-800 text-lg">Comprueba tu Progreso (Puntos de Control)</h3>
-                <p class="text-xs text-gray-500">Marca las casillas conforme completes cada requisito práctico:</p>
-
-                <div class="space-y-3">
-                    <label class="flex items-start gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-emerald-50 transition">
-                        <input type="checkbox" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 rounded">
-                        <div>
-                            <span class="font-bold text-sm text-gray-800">Punto de Control 1: Acceso a Moodle Centros</span>
-                            <p class="text-xs text-gray-600">Entrada verificada con usuario iPasen y captura del curso reservada.</p>
-                        </div>
-                    </label>
-
-                    <label class="flex items-start gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-emerald-50 transition">
-                        <input type="checkbox" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 rounded">
-                        <div>
-                            <span class="font-bold text-sm text-gray-800">Punto de Control 2: Activación @g.educaand.es</span>
-                            <p class="text-xs text-gray-600">Foto de perfil formal subida, contraseña segura guardada y login verificado.</p>
-                        </div>
-                    </label>
-
-                    <label class="flex items-start gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-emerald-50 transition">
-                        <input type="checkbox" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 rounded">
-                        <div>
-                            <span class="font-bold text-sm text-gray-800">Punto de Control 3: Árbol de Carpetas en Drive</span>
-                            <p class="text-xs text-gray-600">Carpeta principal <code>CyR_1ESO_Nombre_Apellidos</code> con subcarpetas creadas.</p>
-                        </div>
-                    </label>
-
-                    <label class="flex items-start gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-emerald-50 transition">
-                        <input type="checkbox" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 rounded">
-                        <div>
-                            <span class="font-bold text-sm text-gray-800">Punto de Control 4: Maquetación y PDF Exportado</span>
-                            <p class="text-xs text-gray-600">Documento en Google Docs completado y exportado a formato `.pdf` sin errores.</p>
-                        </div>
-                    </label>
-
-                    <label class="flex items-start gap-3 p-3 bg-gray-50 border rounded-lg cursor-pointer hover:bg-emerald-50 transition">
-                        <input type="checkbox" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 rounded">
-                        <div>
-                            <span class="font-bold text-sm text-gray-800">Punto de Control 5: Envío Formal de Correo</span>
-                            <p class="text-xs text-gray-600">Mensaje enviado desde Gmail corporativo con asunto estandarizado, firma e itinerario adjunto.</p>
-                        </div>
-                    </label>
-                </div>
+            <!-- FAQ Accordion Container -->
+            <div id="faq-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- FAQs dynamically injected -->
             </div>
+        </section>
 
-            <!-- PESTAÑA 3: GUÍA DE CORREO FORMAL -->
-            <div id="tab-correo" class="tab-content hidden space-y-4">
-                <h3 class="font-bold text-gray-800 text-lg">Modelo Estándar de Comunicación Formal</h3>
-                <p class="text-sm text-gray-600">Usa esta plantilla como referencia obligatoria al enviar tu correo en la Sesión 5:</p>
+    </main>
 
-                <div class="bg-gray-900 text-gray-100 p-5 rounded-xl text-xs md:text-sm font-mono space-y-3 shadow-inner">
-                    <p><span class="text-emerald-400 font-bold">PARA:</span> profesor_cyr@g.educaand.es</p>
-                    <p><span class="text-emerald-400 font-bold">ASUNTO:</span> [CyR 1ºESO] Pasaporte Digital - [Tu Nombre y Apellidos]</p>
-                    <hr class="border-gray-700">
-                    <p>Estimado/a profesor/a [Apellido del Profesor/a],</p>
-                    <p class="pl-4">Le escribo para hacerle entrega de mi Pasaporte Digital de Aula correspondiente a la SdA 1 de Computación y Robótica. Adjunto a este correo encontrará el archivo en formato PDF con la acreditación de mis entornos virtuales.</p>
-                    <p class="pl-4">Aprovecho para confirmarle que he configurado correctamente mi cuenta corporativa, la firma institucional y la estructura de trabajo en Google Drive.</p>
-                    <p>Atentamente,</p>
-                    <hr class="border-gray-700">
-                    <div class="text-gray-400 italic">
-                        <p><strong>[Tu Nombre Completo]</strong></p>
-                        <p>Alumno/a de 1º ESO - Grupo [Tu Grupo]</p>
-                        <p>Materia: Computación y Robótica | IES [Nombre de tu Centro]</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PESTAÑA 4: TAREAS Y ENTREGAS MOODLE -->
-            <div id="tab-entregas" class="tab-content hidden space-y-4">
-                <h3 class="font-bold text-gray-800 text-lg">Buzón de Entregas Moodle</h3>
-                <p class="text-xs text-gray-600">Haz clic en los siguientes botones para acceder directamente a las tareas donde debes realizar la entrega:</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <!-- Tarea Principal PDF -->
-                    <div class="border border-emerald-200 bg-emerald-50/50 p-4 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <span class="text-xs font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">ENTREGABLE PRINCIPAL</span>
-                            <h4 class="font-bold text-gray-800 mt-2">SdA 1: Pasaporte Digital (PDF)</h4>
-                            <p class="text-xs text-gray-600 mt-1">Sube el archivo PDF generado en la Sesión 4. Calificación por Rúbrica (CEv 5.1, CEv 6.1, CEv 6.4).</p>
-                        </div>
-                        <a href="#mod-assign-pasaporte" class="mt-4 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg transition">
-                            <i class="fa-solid fa-file-pdf"></i> Ir a la Tarea Moodle
-                        </a>
-                    </div>
-
-                    <!-- Tarea Verificación Correo -->
-                    <div class="border border-blue-200 bg-blue-50/50 p-4 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <span class="text-xs font-bold bg-blue-600 text-white px-2 py-0.5 rounded">VERIFICACIÓN</span>
-                            <h4 class="font-bold text-gray-800 mt-2">Confirmación de Envío de Correo Formal</h4>
-                            <p class="text-xs text-gray-600 mt-1">Registra la confirmación del correo formal enviado a tu docente (CEv 6.2).</p>
-                        </div>
-                        <a href="#mod-assign-correo" class="mt-4 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 rounded-lg transition">
-                            <i class="fa-solid fa-paper-plane"></i> Ir al Registro de Envío
-                        </a>
-                    </div>
-                </div>
-            </div>
-
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-medium text-slate-300">Entorno de Aprendizaje Autónomo - Identidad Digital Corporativa</p>
+            <p class="text-slate-500">Recuerda consultar con tu tutor o docente una vez finalizado el periodo de trabajo autónomo de 2 semanas.</p>
         </div>
+    </footer>
 
-        <!-- PIE DE PÁGINA INSTITUCIONAL -->
-        <div class="bg-gray-100 p-4 text-center text-xs text-gray-500 border-t flex flex-col md:flex-row justify-between items-center gap-2">
-            <span>Junta de Andalucía • Consejería de Desarrollo Educativo y Formación Profesional</span>
-            <span class="font-semibold text-emerald-700">Computación y Robótica 1º ESO • LOMLOE</span>
-        </div>
-
-    </div>
-
-    <!-- SCRIPT DE INTERACCIÓN DE PESTAÑAS -->
+    <!-- JavaScript Application Logic -->
     <script>
-        function switchTab(tabId) {
-            // Ocultar todos los contenidos de pestañas
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
-                content.classList.remove('block');
+        // Session Data Definition
+        const sessionsData = [
+            {
+                id: 1,
+                week: "SEMANA 1",
+                title: "SESIÓN 1: Acceso y Exploración del Entorno Virtual",
+                hito: "Hito 1: Captura Área Personal Moodle",
+                icon: "fa-door-open",
+                color: "indigo",
+                objetivo: "Familiarizaros con el ecosistema digital institucional (iPasen y Moodle Centros) y comprobar que vuestro acceso a la plataforma de trabajo funciona correctamente.",
+                instrucciones: [
+                    "Entrad a <strong>Moodle Centros</strong> utilizando vuestras credenciales oficiales de iPasen / PASEN.",
+                    "Una vez dentro, localizad vuestro <strong>Área Personal</strong> y comprobad que tenéis acceso al aula virtual de esta materia.",
+                    "Realizad el <strong>cuestionario inicial sobre hábitos de seguridad</strong> y fortaleza de claves disponible en la portada del aula virtual.",
+                    "Realizad una captura de pantalla con <kbd class='bg-slate-100 border border-slate-300 px-1 rounded text-slate-700'>Win + Shift + S</kbd> donde se vea claramente vuestro nombre en el perfil y el aula virtual de la asignatura visible."
+                ],
+                recursos: ["Credenciales de iPasen", "Navegador web (Chrome/Firefox/Edge)", "Acceso a Moodle Centros"],
+                entregable: "Imagen de la captura de pantalla del Área Personal almacenada temporalmente en vuestro equipo."
+            },
+            {
+                id: 2,
+                week: "SEMANA 1",
+                title: "SESIÓN 2: Identidad Corporativa y Ciberseguridad",
+                hito: "Hito 2: Captura Perfil @g.educaand.es",
+                icon: "fa-user-shield",
+                color: "blue",
+                objetivo: "Activar vuestra cuenta de correo corporativo @g.educaand.es, configurar una contraseña robusta (passphrase) y proteger vuestra identidad e imagen online.",
+                instrucciones: [
+                    "Iniciad sesión en Google Workspace con vuestra cuenta corporativa (<code>@g.educaand.es</code>).",
+                    "Actualizad vuestra contraseña creando una <strong>frase de paso o <em>passphrase</em></strong> segura (combina palabras, mayúsculas, números y símbolos especiales, ej: <code>MiPerroComePan!2026</code>). Podéis usar la herramienta interactiva de abajo para probarla.",
+                    "Personalizad la imagen de perfil utilizando un <strong>avatar institucional neutro o una fotografía formal respetuosa</strong>. Evitad exponer fotos personales inapropiadas.",
+                    "Haced una captura de pantalla del panel de configuración de vuestra cuenta donde se aprecie vuestro correo corporativo y vuestra nueva foto de perfil/avatar."
+                ],
+                recursos: ["Cuenta @g.educaand.es", "Gestor de cuentas de Google", "Generador/Comprobador interactivo de frases de paso"],
+                entregable: "Captura de pantalla del perfil activo de la cuenta corporativa."
+            },
+            {
+                id: 3,
+                week: "SEMANA 1",
+                title: "SESIÓN 3: Estructuración y Gestión de Archivos en la Nube",
+                hito: "Hito 3: Captura Árbol de Carpetas Drive",
+                icon: "fa-folder-tree",
+                color: "emerald",
+                objetivo: "Crear un sistema organizativo claro en Google Drive con permisos de acceso seguros para proteger vuestros archivos personales y académicos.",
+                instrucciones: [
+                    "Entrad en vuestro <strong>Google Drive</strong> institucional.",
+                    "Cread la estructura jerárquica exacta respetando la nomenclatura exigida (ver simulador visual abajo): <code>Mi_Carpeta_Apellidos_Nombre/</code> con subcarpetas <code>01_Pasaporte_Digital</code>, <code>02_Proyectos_y_Trabajos</code> y <code>03_Ciberseguridad_y_Recursos</code>.",
+                    "Ajustad los permisos de la carpeta principal: configurad el acceso como <strong>Restringido</strong> o limitado exclusivamente a usuarios del dominio <code>@g.educaand.es</code>.",
+                    "Moved las capturas de pantalla obtenidas en las Sesiones 1 y 2 dentro de la subcarpeta <code>01_Pasaporte_Digital</code>.",
+                    "Haced una captura de pantalla del árbol de carpetas con sus nombres y los ajustes de privacidad/permisos visibles."
+                ],
+                recursos: ["Google Drive institucional", "Capturas guardadas en las sesiones 1 y 2"],
+                entregable: "Captura del árbol de carpetas en Google Drive y almacenamiento de todas las evidencias en la subcarpeta correspondiente."
+            },
+            {
+                id: 4,
+                week: "SEMANA 2",
+                title: "SESIÓN 4: Elaboración del Pasaporte Digital",
+                hito: "Hito 4: Documento PDF del Pasaporte",
+                icon: "fa-file-pdf",
+                color: "amber",
+                objetivo: "Redactar, estructurar y maquetar vuestro documento oficial 'Pasaporte Digital' en Google Docs utilizando estilos formales, e exportarlo a un archivo PDF interactivo.",
+                instrucciones: [
+                    "Entrad en Google Drive, id a la carpeta <code>01_Pasaporte_Digital</code> y cread un documento llamado <code>Pasaporte_Digital_Apellidos_Nombre</code>.",
+                    "<strong>Encabezado institucional:</strong> Escribid en la parte superior vuestro nombre completo, curso, grupo y materia.",
+                    "<strong>Estructura por Secciones:</strong> Utilizad los estilos de texto (<em>Título 1, Título 2, Texto normal</em>) para organizar 3 bloques: 1. Plataformas Educativas (Moodle), 2. Identidad Digital (@g.educaand.es), y 3. Organización en la Nube (Drive). Insertad las capturas de cada sesión.",
+                    "<strong>Reflexión personal:</strong> Añadid al final un texto de 3-4 líneas argumentando por qué es crucial proteger nuestros datos personales y mantener contraseñas seguras.",
+                    "<strong>Exportación a PDF:</strong> Id al menú <code>Archivo</code> ➔ <code>Descargar</code> ➔ <code>Documento PDF (.pdf)</code>. Subid este PDF a vuestra carpeta <code>01_Pasaporte_Digital</code> de Drive."
+                ],
+                recursos: ["Google Docs", "Capturas previas organizadas en Drive"],
+                entregable: "Archivo descargado en formato <code>.pdf</code> con la nomenclatura <code>Pasaporte_Digital_Apellidos_Nombre.pdf</code>."
+            },
+            {
+                id: 5,
+                week: "SEMANA 2",
+                title: "SESIÓN 5: Comunicación Formal y Entrega Final",
+                hito: "Hito 5: Correo Enviado + Entrega en Moodle",
+                icon: "fa-paper-plane",
+                color: "rose",
+                objetivo: "Configurar una firma institucional en Gmail, redactar un correo formal siguiendo estándares profesionales y realizar la entrega definitiva en Moodle Centros.",
+                instrucciones: [
+                    "<strong>Firma en Gmail:</strong> Entrad a ajustes de Gmail y configurad una firma automática: <em>Nombre y Apellidos | Alumnado de Educación Secundaria | Nombre de la Materia</em>.",
+                    "<strong>Envío de Correo Formal:</strong> Redactad un correo al docente con el asunto <code>[Pasaporte Digital] - Apellidos, Nombre</code>, un saludo formal, cuerpo explicativo, despedida educada y adjuntad el archivo <code>Pasaporte_Digital_Apellidos_Nombre.pdf</code>.",
+                    "<strong>Entrega en Moodle Centros:</strong> Acceded al aula virtual, localizad la tarea <em>'Entrega Final: Pasaporte Digital de Aula'</em> y subid vuestro archivo PDF.",
+                    "Completad el cuestionario de autoevaluación final disponible en Moodle para revisar vuestro proceso."
+                ],
+                recursos: ["Gmail corporativo", "Moodle Centros", "Archivo PDF final elaborado en la Sesión 4"],
+                entregable: "Correo electrónico formal enviado con el PDF adjunto y confirmación de entrega registrada en Moodle Centros."
+            }
+        ];
+
+        // Checklist Items Definition
+        const checklistItems = [
+            { id: "c1", label: "Acceso a Moodle Centros comprobado y cuestionario inicial realizado.", weight: 1 },
+            { id: "c2", label: "Captura de pantalla del Área Personal de Moodle efectuada.", weight: 1 },
+            { id: "c3", label: "Cuenta @g.educaand.es activada con nueva clave/passphrase robusta.", weight: 1 },
+            { id: "c4", label: "Avatar o foto de perfil corporativa formal y respetuosa configurada.", weight: 1 },
+            { id: "c5", label: "Estructura de 3 subcarpetas en Google Drive creada con nomenclatura correcta.", weight: 1 },
+            { id: "c6", label: "Permisos de acceso a la carpeta de Drive restringidos al dominio institucional.", weight: 1 },
+            { id: "c7", label: "Documento en Google Docs maquetado con títulos jerárquicos (Título 1, Título 2).", weight: 1 },
+            { id: "c8", label: "Las 3 capturas de pantalla integradas adecuadamente dentro del documento.", weight: 1 },
+            { id: "c9", label: "Reflexión final de 3-4 líneas sobre ciberseguridad incluida.", weight: 1 },
+            { id: "c10", label: "Documento exportado correctamente a formato .pdf (sin imprimir pantalla).", weight: 1 },
+            { id: "c11", label: "Firma automática configurada en Gmail y correo formal enviado con PDF adjunto.", weight: 1 }
+        ];
+
+        // FAQs Definition
+        const faqData = [
+            {
+                q: "¿Qué hago si no recuerdo mi contraseña de iPasen / Moodle?",
+                a: "Solución: Contacta con la jefatura de estudios o el equipo de transformación digital de tu centro para restaurar tus credenciales iniciales."
+            },
+            {
+                q: "¿Cómo hago la captura si no funciona la tecla Windows + Shift + S?",
+                a: "Solución: Abre la aplicación 'Herramienta Recortes' buscándola en el menú Inicio de Windows, o pulsa la tecla Impr Pant (PrtScn) y pega la imagen directamente con Ctrl + V."
+            },
+            {
+                q: "¿Por qué Google Docs no me deja descargar directamente como PDF?",
+                a: "Solución: Asegúrate de ir al menú superior izquierdo: Archivo ➔ Descargar ➔ Documento PDF (.pdf). No utilices la opción de 'Imprimir en PDF' a menos que la descarga falle."
+            },
+            {
+                q: "¿Qué pasa si me equivoco en el nombre de las carpetas o archivos?",
+                a: "Solución: Haz clic derecho sobre el archivo o carpeta en Google Drive/Docs y selecciona 'Cambiar nombre'. Asegúrate de mantener siempre el esquema Apellidos_Nombre."
+            },
+            {
+                q: "¿Puedo entregar el trabajo enviando solo un enlace compartible de Drive?",
+                a: "Solución: No. La entrega oficial exige descargar e adjuntar el archivo físico en formato .pdf tanto en el correo electrónico formal como en la tarea de Moodle Centros."
+            }
+        ];
+
+        // Application State Management
+        let currentSessionId = 1;
+        let checkedState = {};
+        let myChart = null;
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedState();
+            renderSessionCard(currentSessionId);
+            renderChecklist();
+            renderFAQs(faqData);
+            initChart();
+            updateProgress();
+        });
+
+        // Load State from LocalStorage
+        function loadSavedState() {
+            const saved = localStorage.getItem('pasaporte_digital_checklist');
+            if (saved) {
+                try {
+                    checkedState = JSON.parse(saved);
+                } catch(e) {
+                    checkedState = {};
+                }
+            }
+        }
+
+        // Save State to LocalStorage
+        function saveState() {
+            localStorage.setItem('pasaporte_digital_checklist', JSON.stringify(checkedState));
+        }
+
+        // Switch Session Tab Logic
+        function switchSession(id) {
+            currentSessionId = id;
+            
+            // Update Tab Button Styles
+            document.querySelectorAll('.session-tab-btn').forEach((btn, index) => {
+                const sId = index + 1;
+                if (sId === id) {
+                    btn.className = "session-tab-btn text-left p-3 rounded-lg border border-indigo-500 bg-indigo-50/50 transition duration-200 focus:outline-none shadow-sm";
+                    btn.querySelector('.fa-flag-checkered').className = "fa-solid fa-flag-checkered text-indigo-500";
+                } else {
+                    btn.className = "session-tab-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50/50 transition duration-200 focus:outline-none";
+                    btn.querySelector('.fa-flag-checkered').className = "fa-solid fa-flag-checkered text-slate-400";
+                }
             });
 
-            // Remover clase activa de todos los botones
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-active');
+            renderSessionCard(id);
+        }
+
+        // Render Active Session Card
+        function renderSessionCard(id) {
+            const data = sessionsData.find(s => s.id === id);
+            const container = document.getElementById('session-card-container');
+
+            const instructionsList = data.instrucciones.map(inst => `
+                <li class="flex items-start space-x-2 text-xs text-slate-700 leading-relaxed">
+                    <span class="text-indigo-500 font-bold mt-0.5">•</span>
+                    <span>${inst}</span>
+                </li>
+            `).join('');
+
+            const recursosList = data.recursos.map(rec => `
+                <span class="inline-flex items-center gap-1 text-[11px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+                    <i class="fa-solid fa-screwdriver-wrench text-slate-400"></i> ${rec}
+                </span>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-100">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                            ${data.week}
+                        </span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">${data.title}</h2>
+                    </div>
+                    <div class="inline-flex items-center gap-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+                        <i class="fa-solid fa-bullseye"></i> ${data.hito}
+                    </div>
+                </div>
+
+                <!-- Objetivo -->
+                <div class="bg-indigo-50/60 border border-indigo-100 rounded-lg p-4 space-y-1">
+                    <h4 class="text-xs font-bold text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                        <i class="fa-solid fa-compass text-indigo-600"></i> Objetivo de la Tarea
+                    </h4>
+                    <p class="text-xs text-indigo-950 leading-relaxed">${data.objetivo}</p>
+                </div>
+
+                <!-- Instrucciones -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-indigo-600"></i> Instrucciones Detalladas Paso a Paso
+                    </h4>
+                    <ul class="space-y-2 pl-1">
+                        ${instructionsList}
+                    </ul>
+                </div>
+
+                <!-- Recursos y Entregable Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-box-open text-amber-500"></i> Recursos Necesarios
+                        </h4>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${recursosList}
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-circle-check text-emerald-600"></i> Entregable o Evidencia
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${data.entregable}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Interactive Checklist
+        function renderChecklist() {
+            const container = document.getElementById('checklist-items');
+            container.innerHTML = checklistItems.map(item => {
+                const isChecked = !!checkedState[item.id];
+                return `
+                    <label class="flex items-start space-x-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition border border-transparent hover:border-slate-200">
+                        <input type="checkbox" onchange="toggleCheck('${item.id}')" ${isChecked ? 'checked' : ''} class="mt-0.5 h-4 w-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                        <span class="${isChecked ? 'line-through text-slate-400' : 'text-slate-700'} leading-tight">${item.label}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        // Toggle Checklist Item State
+        function toggleCheck(id) {
+            checkedState[id] = !checkedState[id];
+            saveState();
+            renderChecklist();
+            updateProgress();
+        }
+
+        // Reset Checklist
+        function resetChecklist() {
+            if (confirm("¿Quieres reiniciar todas las casillas marcadas?")) {
+                checkedState = {};
+                saveState();
+                renderChecklist();
+                updateProgress();
+            }
+        }
+
+        // Update Overall Progress Indicators and Chart
+        function updateProgress() {
+            const total = checklistItems.length;
+            const completed = Object.keys(checkedState).filter(k => checkedState[k]).length;
+            const percentage = Math.round((completed / total) * 100);
+
+            // Update Header Progress Text & Bar
+            document.getElementById('header-progress-text').innerText = `${percentage}% Completado`;
+            document.getElementById('header-progress-bar').style.width = `${percentage}%`;
+
+            // Update Status Badge below chart
+            const statusTitle = document.getElementById('status-title');
+            const statusSub = document.getElementById('status-sub');
+            
+            if (percentage === 0) {
+                statusTitle.innerText = "¡Preparado para Empezar!";
+                statusTitle.className = "text-xs font-bold text-slate-800";
+                statusSub.innerText = "Selecciona la Sesión 1 y comienza tu camino.";
+            } else if (percentage < 50) {
+                statusTitle.innerText = "¡Buen Comienzo! (Fase Inicial)";
+                statusTitle.className = "text-xs font-bold text-indigo-600";
+                statusSub.innerText = "Sigue avanzando en las sesiones de la Semana 1.";
+            } else if (percentage < 100) {
+                statusTitle.innerText = "¡Casi Acreditado! (Fase Avanzada)";
+                statusTitle.className = "text-xs font-bold text-amber-600";
+                statusSub.innerText = "Estás maquetando tu documento o preparando la entrega final.";
+            } else {
+                statusTitle.innerText = "🎉 ¡PASAPORTE DIGITAL ACREDITADO!";
+                statusTitle.className = "text-xs font-bold text-emerald-600";
+                statusSub.innerText = "Has completado los 11 requisitos. Correo y Moodle listos.";
+            }
+
+            // Update Chart.js Data
+            if (myChart) {
+                myChart.data.datasets[0].data = [completed, total - completed];
+                myChart.update();
+            }
+        }
+
+        // Initialize Chart.js Doughnut Visualization
+        function initChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Required labels with 16-char max wrapping
+            const labels = ["Evidencias Listas", "Pendientes"];
+
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: [0, checklistItems.length],
+                        backgroundColor: ['#10b981', '#e2e8f0'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 11
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} tareas`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
             });
+        }
 
-            // Mostrar el contenido seleccionado
-            document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById(tabId).classList.add('block');
+        // Passphrase Strength Checker (Session 2 helper)
+        function evaluatePassphrase() {
+            const val = document.getElementById('passphrase-input').value;
+            const bar = document.getElementById('passphrase-bar');
+            const badge = document.getElementById('passphrase-badge');
+            const feedback = document.getElementById('passphrase-feedback');
 
-            // Activar el botón correspondiente
-            document.getElementById('btn-' + tabId).classList.add('tab-active');
+            if (!val) {
+                bar.style.width = '0%';
+                bar.className = 'h-full w-0 bg-red-500 transition-all duration-300';
+                badge.innerText = 'Esperando entrada...';
+                badge.className = 'text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-bold';
+                feedback.innerText = 'Combina más de 3 palabras sin espacios sencillos e incluye caracteres especiales.';
+                return;
+            }
+
+            let score = 0;
+            if (val.length >= 8) score += 20;
+            if (val.length >= 14) score += 20;
+            if (/[A-Z]/.test(val)) score += 20;
+            if (/[0-9]/.test(val)) score += 20;
+            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val)) score += 20;
+
+            bar.style.width = `${score}%`;
+
+            if (score < 50) {
+                bar.className = 'h-full bg-red-500 transition-all duration-300';
+                badge.innerText = 'Débil ❌';
+                badge.className = 'text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold';
+                feedback.innerText = 'Consejo: Añade más palabras, una mayúscula y un número (ej: MiGatoGordo?2026).';
+            } else if (score < 80) {
+                bar.className = 'h-full bg-amber-500 transition-all duration-300';
+                badge.innerText = 'Aceptable ⚠️';
+                badge.className = 'text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold';
+                feedback.innerText = '¡Casi lista! Añade algún símbolo especial como ! u ? para mayor fortaleza.';
+            } else {
+                bar.className = 'h-full bg-emerald-500 transition-all duration-300';
+                badge.innerText = '¡Excelente Frase! 🛡️';
+                badge.className = 'text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold';
+                feedback.innerText = '¡Contraseña ultra segura! Cumple todos los requisitos de ciberseguridad corporativa.';
+            }
+        }
+
+        // Render FAQs
+        function renderFAQs(items) {
+            const container = document.getElementById('faq-container');
+            if (items.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center text-xs text-slate-400 py-4">No se encontraron preguntas coincidentes.</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                    <h4 class="text-xs font-bold text-slate-900 flex items-start gap-2">
+                        <span class="text-indigo-600 font-extrabold">Q:</span>
+                        <span>${item.q}</span>
+                    </h4>
+                    <p class="text-xs text-slate-600 pl-5 leading-relaxed">${item.a}</p>
+                </div>
+            `).join('');
+        }
+
+        // Filter FAQs on search
+        function filterFAQ() {
+            const term = document.getElementById('faq-search').value.toLowerCase();
+            const filtered = faqData.filter(item => 
+                item.q.toLowerCase().includes(term) || item.a.toLowerCase().includes(term)
+            );
+            renderFAQs(filtered);
         }
     </script>
 </body>
