@@ -59,7 +59,7 @@ Genera un archivo HTML5 único (Single-File) que incluya:
 VARIABLES DE ENTRADA DE LA SDA A GENERAR:
 ----------------------------------------------------------------------
 - [TÍTULO_SDA]: "RESOLVIENDO PROBLEMAS"
-- [DESCRIPCIÓN]: "Al iniciar 4º de la ESO, el alumnado necesita configurar su Entorno Personal de Aprendizaje (PLE) corporativo de forma autónoma, segura y organizada para afrontar el curso. El reto consiste en resolver la "Puesta a Punto Digital", acreditando que dominan sus credenciales, sus herramientas de trabajo cooperativo, la comunicación institucional y la gestión adecuada de archivos e identidad digital."
+- [DESCRIPCIÓN]: "Esta situación de aprendizaje aborda la resolución de retos reales mediante el proceso tecnológico completo. A través del análisis de un problema de su entorno, el alumnado investigará y diseñará una respuesta creativa que posteriormente materializará mediante la construcción de un prototipo o producto final funcional."
 - [CONTENIDOS_BLOQUES]: "
 Esta situación de aprendizaje aborda la resolución de retos reales mediante el proceso tecnológico completo. A través del análisis de un problema de su entorno, el alumnado investigará y diseñará una respuesta creativa que posteriormente materializará mediante la construcción de un prototipo o producto final funcional. 
 SECUENCIACIÓN DIDÁCTICA
