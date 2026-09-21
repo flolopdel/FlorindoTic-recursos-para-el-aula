@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva: Del Reto Social al Prototipo Maker 3D</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .diana-grid { background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, rgba(37,99,235,0.05) 50%, transparent 70%); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- TOP NAV BAR -->
+    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <i data-lucide="box" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Prototipo Maker 3D</h1>
+                    <p class="text-xs text-slate-400">Tecnología y Digitalización • 3º ESO</p>
+                </div>
+            </div>
+
+            <!-- Global Progress Bar Header -->
+            <div class="hidden md:flex items-center space-x-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700">
+                <span class="text-xs font-semibold text-slate-300">Progreso del Proyecto:</span>
+                <div class="w-32 bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                    <div id="header-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+                <span id="header-progress-text" class="text-xs font-bold text-emerald-400">0%</span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="resetAllProgress()" class="text-xs text-slate-400 hover:text-red-400 px-3 py-1 rounded border border-slate-700 hover:border-red-500/50 transition">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 inline mr-1"></i> Reiniciar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO & OVERVIEW SECTION -->
+    <section class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white py-8 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                <div class="lg:col-span-2 space-y-3">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Guía Interactiva del Alumnado
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                        Resolviendo Problemas: Del Reto Social al Prototipo Maker 3D
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed max-w-2xl">
+                        Supera los 6 hitos del proyecto para transformar una necesidad real en un prototipo físico funcional, modelado en 3D, documentado e impulsado con un Elevator Pitch.
+                    </p>
+                </div>
+
+                <!-- Deliverables Cards -->
+                <div class="bg-slate-800/60 backdrop-blur border border-slate-700/60 p-4 rounded-xl space-y-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i data-lucide="package-check" class="w-4 h-4 text-emerald-400"></i> Entregables Finales
+                    </h3>
+                    <ul class="text-xs space-y-1.5 text-slate-300">
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400 shrink-0"></i> Prototipo Físico Funcional (Taller)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i> Modelo CAD 3D (.STL / Cotas Tinkercad)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i> Presentación Digital Nube + Licencia CC
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400 shrink-0"></i> Defensoría en Pitch Oral + Coevaluación
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM ROLES BANNER -->
+    <section class="bg-white border-b border-slate-200 py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="users" class="w-4 h-4 text-blue-600"></i> Organización Cooperativa del Equipo
+                </h3>
+                <span class="text-xs text-slate-500">Selecciona un rol para ver sus funciones clave:</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <button onclick="showRole('coordinacion')" class="role-btn p-3 rounded-lg border border-slate-200 hover:border-blue-500 text-left transition hover:shadow-sm bg-slate-50" id="role-btn-coordinacion">
+                    <div class="flex items-center gap-2 font-bold text-slate-800 text-xs">
+                        <i data-lucide="compass" class="w-4 h-4 text-blue-600"></i> Coordinación
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">Guía tiempos y reparte turnos</p>
+                </button>
+                <button onclick="showRole('secretaria')" class="role-btn p-3 rounded-lg border border-slate-200 hover:border-blue-500 text-left transition hover:shadow-sm bg-slate-50" id="role-btn-secretaria">
+                    <div class="flex items-center gap-2 font-bold text-slate-800 text-xs">
+                        <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i> Secretaría
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">Documenta y sube evidencias</p>
+                </button>
+                <button onclick="showRole('calidad')" class="role-btn p-3 rounded-lg border border-slate-200 hover:border-blue-500 text-left transition hover:shadow-sm bg-slate-50" id="role-btn-calidad">
+                    <div class="flex items-center gap-2 font-bold text-slate-800 text-xs">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i> Calidad / Prevención
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">Supervisa normas y acabados</p>
+                </button>
+                <button onclick="showRole('portavoz')" class="role-btn p-3 rounded-lg border border-slate-200 hover:border-blue-500 text-left transition hover:shadow-sm bg-slate-50" id="role-btn-portavoz">
+                    <div class="flex items-center gap-2 font-bold text-slate-800 text-xs">
+                        <i data-lucide="mic" class="w-4 h-4 text-purple-600"></i> Portavoz
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">Lidera el Pitch y dudas al profe</p>
+                </button>
+            </div>
+            <!-- Role Detail Modal / Alert -->
+            <div id="role-detail-box" class="hidden mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-900 flex justify-between items-start">
+                <div id="role-detail-text"></div>
+                <button onclick="document.getElementById('role-detail-box').classList.add('hidden')" class="text-blue-500 hover:text-blue-700">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN NAVIGATION TABS FOR SESSIONS -->
+    <nav class="bg-white border-b border-slate-200 sticky top-16 z-40 shadow-xs overflow-x-auto">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-1 sm:space-x-4 min-w-max">
+            <button onclick="switchTab('sesion1')" id="tab-sesion1" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5 tab-active">
+                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center">1</span>
+                S1: Def. Reto
+            </button>
+            <button onclick="switchTab('sesion2')" id="tab-sesion2" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">2</span>
+                S2: Ideación & Boceto
+            </button>
+            <button onclick="switchTab('sesion3')" id="tab-sesion3" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">3</span>
+                S3: Modelado CAD 3D
+            </button>
+            <button onclick="switchTab('sesion4')" id="tab-sesion4" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">4</span>
+                S4: Taller & Prototipo
+            </button>
+            <button onclick="switchTab('sesion5')" id="tab-sesion5" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">5</span>
+                S5: Doc. & Licencias
+            </button>
+            <button onclick="switchTab('sesion6')" id="tab-sesion6" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-blue-600 text-slate-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">6</span>
+                S6: Pitch & Coeval.
+            </button>
+            <button onclick="switchTab('checklist')" id="tab-checklist" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent hover:text-emerald-600 text-emerald-700 flex items-center gap-1.5">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                Control Calidad
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- ================= SESIÓN 1 ================= -->
+        <div id="content-sesion1" class="tab-content space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 1 • Investigando Necesidades</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">El Desafío Maker: Detectando Necesidades Reales</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito1-check" onchange="toggleHito('hito1')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito1-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 1: Ficha de Definición del Reto
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Steps and Glossary Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <!-- Left: Step by Step Checklist -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-4 h-4 text-blue-600"></i> Paso a Paso para tu Equipo
+                        </h3>
+
+                        <div class="space-y-3">
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">1</span>
+                                <div class="text-xs">
+                                    <strong class="text-slate-900 block font-semibold mb-0.5">Organización del Equipo (10 min)</strong>
+                                    Asignad los 4 roles cooperativos (Coordinación, Secretaría, Calidad y Portavoz) usando el panel superior.
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">2</span>
+                                <div class="text-xs">
+                                    <strong class="text-slate-900 block font-semibold mb-0.5">Visionado Activador (10 min)</strong>
+                                    Observad el vídeo de inspiración sobre proyectos maker juveniles para captar ideas de innovación social.
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">3</span>
+                                <div class="text-xs">
+                                    <strong class="text-slate-900 block font-semibold mb-0.5">Diagnóstico KWL (10 min)</strong>
+                                    Rellenad la sección "¿Qué sabemos?" y "¿Qué queremos averiguar?" en vuestro espacio de trabajo.
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3">
+                                <span class="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">4</span>
+                                <div class="text-xs">
+                                    <strong class="text-slate-900 block font-semibold mb-0.5">Búsqueda e Investigación Crítica (20 min)</strong>
+                                    Buscad soluciones previas en repositorios libres, contrastad al menos 2 fuentes fiables y redactad la definición final de vuestro problema.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Tool: Form Generator Hito 1 -->
+                        <div class="mt-6 border border-blue-200 bg-blue-50/50 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-blue-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="edit-3" class="w-4 h-4 text-blue-600"></i> Herramienta Interactiva: Ficha de Definición del Reto (Hito 1)
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">¿Qué problema ocurre exactamente?</label>
+                                    <input type="text" id="s1-problema" placeholder="Ej: Falta de papeleras de reciclaje ordenadas en el patio" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">¿A quién afecta principalmente?</label>
+                                    <input type="text" id="s1-afectados" placeholder="Ej: Alumnado y personal de limpieza del centro" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-slate-700 font-medium mb-1">¿Por qué es importante solucionarlo?</label>
+                                    <textarea id="s1-importancia" rows="2" placeholder="Ej: Reduce la contaminación plástica y fomenta hábitos sostenibles..." class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">Fuente Fiable 1 (URL/Nombre)</label>
+                                    <input type="text" id="s1-f1" placeholder="Ej: Proyecto Instructables sobre papeleras modulables" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">Fuente Fiable 2 (URL/Nombre)</label>
+                                    <input type="text" id="s1-f2" placeholder="Ej: Artículo Wikifactory de diseño abierto" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            <button onclick="saveS1Draft()" class="text-xs bg-blue-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-blue-700 transition flex items-center gap-1.5">
+                                <i data-lucide="save" class="w-3.5 h-3.5"></i> Guardar Ficha Hito 1
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Key Concepts & External Links -->
+                    <div class="space-y-4">
+                        <!-- Concept Card -->
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>Design Thinking:</strong> Metodología de innovación en la que nos ponemos en el lugar del usuario para resolver problemas reales mediante el prototipado iterativo.</p>
+                                <p><strong>Licencias Abiertas (Creative Commons):</strong> Permisos legales que permiten compartir y reutilizar proyectos respetando la autoría.</p>
+                            </div>
+                        </div>
+
+                        <!-- Resources & External Links -->
+                        <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="external-link" class="w-4 h-4 text-indigo-600"></i> Recursos y Repositorios Maker
+                            </h4>
+                            <p class="text-xs text-indigo-950">Consulta proyectos existentes y busca inspiración libre:</p>
+                            <div class="space-y-2 text-xs">
+                                <a href="https://www.youtube.com/watch?v=jaXZVjYPRsQ" target="_blank" class="flex items-center justify-between p-2 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-indigo-700 font-medium">
+                                    <span class="flex items-center gap-1.5"><i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> Vídeo: Cultura MAKER en las aulas</span>
+                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                </a>
+                                <a href="https://wikifactory.com/" target="_blank" class="flex items-center justify-between p-2 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-slate-700 font-medium">
+                                    <span class="flex items-center gap-1.5"><i data-lucide="folder" class="w-4 h-4 text-blue-500"></i> Wikifactory (Hardware Abierto)</span>
+                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                </a>
+                                <a href="https://www.instructables.com/" target="_blank" class="flex items-center justify-between p-2 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-slate-700 font-medium">
+                                    <span class="flex items-center gap-1.5"><i data-lucide="wrench" class="w-4 h-4 text-amber-500"></i> Instructables (Tutoriales Paso a Paso)</span>
+                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                </a>
+                                <a href="https://www.thingiverse.com/" target="_blank" class="flex items-center justify-between p-2 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-slate-700 font-medium">
+                                    <span class="flex items-center gap-1.5"><i data-lucide="box" class="w-4 h-4 text-teal-500"></i> Thingiverse (Repositorio Modelos 3D)</span>
+                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SESIÓN 2 ================= -->
+        <div id="content-sesion2" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 2 • Lluvia de Ideas y Selección</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Ideación Sostenible y Elección de la Propuesta</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito2-check" onchange="toggleHito('hito2')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito2-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 2: Matriz de Selección + Boceto Acotado
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Step Checklist -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <span class="font-bold text-blue-700 block mb-1">1. Lluvia de Ideas SCAMPER</span>
+                                Plantead al menos 3 alternativas usando Sustituir, Combinar, Adaptar, Modificar, etc.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <span class="font-bold text-blue-700 block mb-1">2. Sostenibilidad</span>
+                                Priorizad materiales reciclados (cartón prensado, plástico reciclado, componentes en desuso).
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <span class="font-bold text-blue-700 block mb-1">3. Matriz de Selección</span>
+                                Evaluad de 1 a 5 cada opción en Viabilidad, Coste, Originalidad e Impacto.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <span class="font-bold text-blue-700 block mb-1">4. Bocetado Técnico</span>
+                                Dibujad un croquis claro a mano alzada indicando cotas en milímetros ($mm$).
+                            </div>
+                        </div>
+
+                        <!-- Interactive SCAMPER & Decision Matrix Tool -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-slate-50/50 space-y-4">
+                            <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="calculator" class="w-4 h-4 text-blue-600"></i> Matriz de Decisión Automatizada (Puntuación 1 a 5)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs text-left text-slate-700 border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-200 text-slate-800">
+                                            <th class="p-2 border border-slate-300">Criterio (1-5)</th>
+                                            <th class="p-2 border border-slate-300">Opción A</th>
+                                            <th class="p-2 border border-slate-300">Opción B</th>
+                                            <th class="p-2 border border-slate-300">Opción C</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="p-2 border border-slate-300 font-medium">Nombre Idea</td>
+                                            <td class="p-2 border border-slate-300"><input type="text" id="op-a-name" value="Idea 1" class="w-full p-1 border rounded text-xs"></td>
+                                            <td class="p-2 border border-slate-300"><input type="text" id="op-b-name" value="Idea 2" class="w-full p-1 border rounded text-xs"></td>
+                                            <td class="p-2 border border-slate-300"><input type="text" id="op-c-name" value="Idea 3" class="w-full p-1 border rounded text-xs"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 border border-slate-300">Viabilidad Técnica</td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="v-a" value="3" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="v-b" value="4" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="v-c" value="2" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 border border-slate-300">Económico / Coste</td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="c-a" value="4" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="c-b" value="3" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="c-c" value="5" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 border border-slate-300">Originalidad</td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="o-a" value="3" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="o-b" value="5" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="o-c" value="3" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 border border-slate-300">Impacto Sostenible</td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="s-a" value="4" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="s-b" value="4" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                            <td class="p-2 border border-slate-300"><input type="number" min="1" max="5" id="s-c" value="3" onchange="calcMatrix()" class="w-16 p-1 border rounded"></td>
+                                        </tr>
+                                        <tr class="bg-blue-100 font-bold text-blue-900">
+                                            <td class="p-2 border border-slate-300">PUNTUACIÓN TOTAL</td>
+                                            <td class="p-2 border border-slate-300" id="tot-a">14 ptos</td>
+                                            <td class="p-2 border border-slate-300 text-emerald-700" id="tot-b">16 ptos (Ganadora)</td>
+                                            <td class="p-2 border border-slate-300" id="tot-c">13 ptos</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>Técnica SCAMPER:</strong> Lista de preguntas detonantes (Sustituir, Combinar, Adaptar, Modificar, Poner otros usos, Eliminar, Reorganizar) para innovar.</p>
+                                <p><strong>Acotación Básica:</strong> Indicación formal de dimensiones (largo, ancho, alto) sobre el dibujo usando líneas y números en $mm$.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="video" class="w-4 h-4 text-indigo-600"></i> Tutorial de Acotación Técnica
+                            </h4>
+                            <a href="https://www.youtube.com/watch?v=sgvhrVJMt3k" target="_blank" class="block p-3 bg-white border border-indigo-200 rounded-lg hover:shadow-sm transition">
+                                <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                                    <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> Principios Básicos de Acotación
+                                </div>
+                                <p class="text-[11px] text-slate-500">Aprende a indicar cotas, flechas y medidas correctamente para 3º ESO.</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SESIÓN 3 ================= -->
+        <div id="content-sesion3" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 3 • Modelado Virtual</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Diseño y Modelado Virtual 3D (CAD) en Tinkercad</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito3-check" onchange="toggleHito('hito3')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito3-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 3: Archivo 3D (.stl) / Captura Acotada
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">1. Píldora CAD (10 min)</strong>
+                                Revisa el tutorial interactivo sobre herramientas de modelado 3D.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">2. Acceso Tinkercad (5 min)</strong>
+                                Entra con la cuenta escolar proporcionada por el profesorado.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">3. Operaciones Booleanas (25 min)</strong>
+                                Crea formas sólidas y combínalas con "huecos" para taladrar vacíos exactos.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">4. Revisión y Exportación (10 min)</strong>
+                                Comprueba encajes y exporta el archivo con extensión <code>.STL</code>.
+                            </div>
+                        </div>
+
+                        <!-- Interactive Tool: 3D Printing Fit / Tolerance Calculator -->
+                        <div class="bg-indigo-50/60 border border-indigo-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="sliders" class="w-4 h-4 text-indigo-600"></i> Calculadora de Tolerancias para Encajes en 3D
+                            </h4>
+                            <p class="text-xs text-indigo-950">Para que dos piezas impresas encajen bien sin forzar, añade una pequeña holgura de tolerancia:</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">Eje Sólido ($mm$)</label>
+                                    <input type="number" id="eje-val" value="10.0" step="0.1" oninput="calcTolerance()" class="w-full p-2 border border-slate-300 rounded">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-700 font-medium mb-1">Tipo de Encaje</label>
+                                    <select id="fit-type" onchange="calcTolerance()" class="w-full p-2 border border-slate-300 rounded">
+                                        <option value="0.2">Ajustado (+0.2 mm)</option>
+                                        <option value="0.4" selected>Estándar (+0.4 mm)</option>
+                                        <option value="0.6">Holgado (+0.6 mm)</option>
+                                    </select>
+                                </div>
+                                <div class="bg-white p-2.5 rounded border border-indigo-200">
+                                    <span class="block text-[11px] text-slate-500 font-semibold">Diámetro Hueco Recomendado:</span>
+                                    <span id="tol-result" class="text-base font-bold text-indigo-700">10.4 mm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>CAD:</strong> Computer-Aided Design (Diseño Asistido por Ordenador).</p>
+                                <p><strong>Operaciones Booleanas:</strong> Unir (sumar volúmenes) o Agrupar con Hueco (restar o taladrar volúmenes).</p>
+                                <p><strong>Formato .STL:</strong> Estándar internacional para enviar diseños 3D a impresoras o visores digitalizados.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="link-2" class="w-4 h-4 text-indigo-600"></i> Enlaces y Tutoriales CAD
+                            </h4>
+                            <a href="https://www.tinkercad.com/" target="_blank" class="flex items-center justify-between p-2.5 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-indigo-700 font-bold text-xs">
+                                <span><i data-lucide="box" class="w-4 h-4 inline mr-1 text-blue-600"></i> Acceder a Tinkercad Web</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=csvBRWfgf1I" target="_blank" class="flex items-center justify-between p-2.5 bg-white border border-indigo-200 rounded hover:bg-indigo-100 transition text-slate-700 text-xs">
+                                <span><i data-lucide="youtube" class="w-4 h-4 inline mr-1 text-red-500"></i> Tutorial: Primeros pasos Tinkercad</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SESIÓN 4 ================= -->
+        <div id="content-sesion4" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 4 • Trabajo en Taller</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Construcción y Ensamble del Prototipo Físico</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito4-check" onchange="toggleHito('hito4')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito4-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 4: Prototipo Físico Funcional Montado
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Safety Rules Box -->
+                        <div class="bg-red-50 border border-red-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-red-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="shield-alert" class="w-4 h-4 text-red-600"></i> Decálogo de Seguridad y Prevención en Taller
+                            </h4>
+                            <ul class="text-xs text-red-950 space-y-1 list-disc pl-4">
+                                <li>Uso obligatorio de gafas de protección durante operaciones de corte y lijado.</li>
+                                <li>Manejo del cúter de seguridad siempre sobre tabla de corte y cortando en dirección opuesta a la mano.</li>
+                                <li>Precaución con pistolas de silicona caliente y adhesivos de contacto (mantener zona limpia).</li>
+                            </ul>
+                        </div>
+
+                        <!-- Steps -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">1. Trazado</strong>
+                                Trasladad cotas exactas ($mm$) del boceto al material con regla y escuadra.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">2. Corte y Ensamble</strong>
+                                Cortad piezas con precisión y unid estructurando correctamente los acabados.
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <strong class="text-slate-900 block mb-1">3. Testeo & Debugging</strong>
+                                Si algo no encaja, analizad el fallo, ajustad el diseño y volved a probar.
+                            </div>
+                        </div>
+
+                        <!-- Interactive Debugging Log -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-slate-50/50 space-y-3">
+                            <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="bug" class="w-4 h-4 text-amber-600"></i> Registro de Depuración Maker (Debugging Log)
+                            </h4>
+                            <p class="text-xs text-slate-600">¿Qué fallo o desajuste habéis detectado en las pruebas y cómo lo habéis resuelto?</p>
+                            <textarea id="s4-debug" rows="2" placeholder="Ej: La pieza de unión quedaba demasiado suelta; añadimos una pestaña de 1mm de cartón para ajustar la tolerancia..." class="w-full p-2 border border-slate-300 rounded text-xs"></textarea>
+                            <button onclick="localStorage.setItem('s4_debug', document.getElementById('s4-debug').value); alert('¡Registro de depuración guardado!');" class="text-xs bg-slate-800 text-white font-semibold px-3 py-1.5 rounded hover:bg-slate-700 transition">
+                                Guardar Registro
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>Cultura Maker & Debugging:</strong> Entender el fallo o la rotura no como un fracaso, sino como una valiosa fuente de aprendizaje e iteración.</p>
+                                <p><strong>Tolerancia Mecánica:</strong> Margen de holgura necesario al unir dos piezas para que no queden sueltas ni demasiado forzadas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SESIÓN 5 ================= -->
+        <div id="content-sesion5" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 5 • Comunicación Digital</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Documentación Técnica y Presentación Multimedia</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito5-check" onchange="toggleHito('hito5')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito5-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 5: Enlace a Presentación en Nube + Licencia
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Slide Deck Structure -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-slate-50 space-y-3">
+                            <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="presentation" class="w-4 h-4 text-purple-600"></i> Estructura Obligatoria de la Presentación (3-4 Diapositivas)
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <strong class="text-purple-700 block mb-1">Diapositiva 1</strong>
+                                    Título del Proyecto, Integrantes del Equipo y Reto abordado.
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <strong class="text-purple-700 block mb-1">Diapositiva 2</strong>
+                                    Solución Técnica (Captura CAD 3D + Foto Prototipo Taller).
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <strong class="text-purple-700 block mb-1">Diapositiva 3</strong>
+                                    Impacto Social/Sostenible, Materiales Reutilizados y Sello CC BY-NC-SA.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CC BY-NC-SA Generator Tool -->
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-emerald-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="copyright" class="w-4 h-4 text-emerald-600"></i> Generador de Licencia Abierta Creative Commons (CC BY-NC-SA)
+                            </h4>
+                            <p class="text-xs text-emerald-950">Añade este sello formal en la diapositiva final de tu presentación:</p>
+                            <div class="bg-white p-3 rounded border border-emerald-300 text-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono bg-emerald-100 text-emerald-900 font-bold px-2 py-1 rounded">CC BY-NC-SA 4.0</span>
+                                    <span class="text-slate-600 text-[11px]">Reconocimiento - NoComercial - CompartirIgual</span>
+                                </div>
+                                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" class="text-emerald-700 font-bold hover:underline text-xs flex items-center gap-1">
+                                    Ver detalles <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>Elevator Pitch:</strong> Exposición oral hiperconcentrada (2-3 minutos) para convencer con entusiasmo de la validez de un proyecto.</p>
+                                <p><strong>Netiqueta & Permisos:</strong> Configurar el acceso a la carpeta en la nube como "Cualquier persona del dominio escolar con el enlace".</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="video" class="w-4 h-4 text-indigo-600"></i> Tutorial de Elevator Pitch
+                            </h4>
+                            <a href="https://www.youtube.com/watch?v=2b3xG_YjgvI" target="_blank" class="block p-3 bg-white border border-indigo-200 rounded-lg hover:shadow-sm transition">
+                                <div class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
+                                    <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> Elevator Pitch: Tienes 20 segundos (eduCaixa)
+                                </div>
+                                <p class="text-[11px] text-slate-500">Aprende la estructura efectiva para presentar tu prototipo en público.</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SESIÓN 6 ================= -->
+        <div id="content-sesion6" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600">Sesión 6 • Feria Tech & Evaluación</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Pitch Oral, Coevaluación y Metacognición</h2>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <input type="checkbox" id="hito6-check" onchange="toggleHito('hito6')" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="hito6-check" class="text-xs font-bold text-blue-900 cursor-pointer">
+                            HITO 6: Pitch Realizado + Coevaluación & Diario
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        
+                        <!-- PITCH TIMER TOOL -->
+                        <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="space-y-1 text-center sm:text-left">
+                                <span class="text-xs font-bold uppercase tracking-wide text-amber-400 flex items-center justify-center sm:justify-start gap-1">
+                                    <i data-lucide="timer" class="w-4 h-4"></i> Cronómetro Oficial del Pitch Oral
+                                </span>
+                                <p class="text-xs text-slate-300">Cada equipo dispone de máximo 3 minutos para presentar.</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span id="pitch-timer-display" class="font-mono text-3xl font-extrabold text-amber-400">03:00</span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="startPitchTimer()" class="p-2 bg-emerald-600 text-white rounded hover:bg-emerald-500 transition">
+                                        <i data-lucide="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="pausePitchTimer()" class="p-2 bg-amber-600 text-white rounded hover:bg-amber-500 transition">
+                                        <i data-lucide="pause" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="resetPitchTimer()" class="p-2 bg-slate-700 text-slate-300 rounded hover:bg-slate-600 transition">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- METACOGNITION JOURNAL FORM -->
+                        <div class="border border-slate-200 bg-slate-50 p-4 rounded-xl space-y-4">
+                            <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="brain" class="w-4 h-4 text-blue-600"></i> Diario Metacognitivo Individual (Cuestionario de Cierre)
+                            </h4>
+
+                            <div class="space-y-3 text-xs">
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">1. ¿Qué parte del diseño del prototipo funcionó mejor y por qué?</label>
+                                    <textarea id="meta-q1" rows="2" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Escribe aquí tu reflexión..."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">2. ¿Qué problema técnico encontramos en el taller o CAD y cómo lo superamos?</label>
+                                    <textarea id="meta-q2" rows="2" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Escribe aquí tu reflexión..."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">3. ¿Cómo ha mejorado mi manejo del trabajo cooperativo y herramientas digitales?</label>
+                                    <textarea id="meta-q3" rows="2" class="w-full p-2 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500" placeholder="Escribe aquí tu reflexión..."></textarea>
+                                </div>
+                            </div>
+
+                            <button onclick="exportMetacognitionReport()" class="text-xs bg-emerald-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-emerald-700 transition flex items-center gap-1.5">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar Diario y Resumen del Proyecto
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i> Conceptos Clave
+                            </h4>
+                            <div class="text-xs space-y-2 text-amber-950">
+                                <p><strong>Coevaluación:</strong> Valoración constructiva entre iguales apoyándose en criterios transparentes.</p>
+                                <p><strong>Metacognición:</strong> Capacidad de reflexionar sobre el propio aprendizaje, identificando qué hemos aprendido y cómo hemos superado dificultades.</p>
+                            </div>
+                        </div>
+
+                        <!-- Diana Coevaluación Preview -->
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl space-y-2">
+                            <h4 class="font-bold text-xs text-blue-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <i data-lucide="target" class="w-4 h-4 text-blue-600"></i> Diana de Coevaluación
+                            </h4>
+                            <p class="text-xs text-blue-950">Evalúa a los demás equipos durante sus presentaciones atendiendo a 4 ejes:</p>
+                            <ul class="text-xs text-blue-900 space-y-1 list-disc pl-4">
+                                <li>Originalidad del Reto Social</li>
+                                <li>Calidad del Modelo 3D CAD</li>
+                                <li>Funcionalidad del Prototipo Taller</li>
+                                <li>Claridad y Entusiasmo en el Pitch</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= CHECKLIST / CONTROL DE CALIDAD ================= -->
+        <div id="content-checklist" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wide text-emerald-600">Control Final del Proyecto</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Checklist de Control de Calidad y Autoevaluación</h2>
+                    </div>
+                    <span id="final-status-badge" class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-200">
+                        En curso (0/6 Hitos)
+                    </span>
+                </div>
+
+                <p class="text-xs text-slate-600 mt-4 mb-6">
+                    Antes de dar por finalizado el proyecto, el equipo debe verificar que se hayan completado todos los entregables requeridos:
+                </p>
+
+                <div class="space-y-3 text-xs">
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-1" onchange="syncChecklist('hito1', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 1: Ficha de reto completada con 2 fuentes contrastadas.</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 1</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-2" onchange="syncChecklist('hito2', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 2: Matriz de decisión rellenada y boceto a mano alzada acotado ($mm$).</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 2</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-3" onchange="syncChecklist('hito3', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 3: Modelo 3D diseñado en CAD y exportado (.stl o imagen técnica acotada).</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 3</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-4" onchange="syncChecklist('hito4', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 4: Prototipo físico fabricado con materiales sostenibles y probado en taller.</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 4</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-5" onchange="syncChecklist('hito5', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 5: Diapositivas en la nube escolar con licencia Creative Commons y permisos.</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 5</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="chk-6" onchange="syncChecklist('hito6', this.checked)" class="w-5 h-5 text-emerald-600 rounded">
+                            <span class="font-semibold text-slate-800">Hito 6: Exposición oral Pitch realizada, coevaluación entregada y diario rellenado.</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Sesión 6</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-200 flex justify-end">
+                    <button onclick="window.print()" class="text-xs bg-slate-900 text-white font-bold px-4 py-2 rounded flex items-center gap-2 hover:bg-slate-800 transition">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Imprimir o Guardar como PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>Guía Didáctica Interactiva • Tecnología y Digitalización 3º ESO</p>
+            <p class="flex items-center gap-1 text-slate-500">
+                Licencia Abierta CC BY-NC-SA 4.0 • Proyecto Maker Social 3D
+            </p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        // State Management
+        const hitosState = {
+            hito1: false,
+            hito2: false,
+            hito3: false,
+            hito4: false,
+            hito5: false,
+            hito6: false
+        };
+
+        const rolesInfo = {
+            coordinacion: "<strong>Coordinación:</strong> Asigna turnos de palabra, vigila que el grupo cumpla los tiempos en cada sesión y mantiene motivado al equipo.",
+            secretaria: "<strong>Secretaría:</strong> Rellena la documentación, gestiona la carpeta en la nube escolar y sube los entregables (.stl, presentación).",
+            calidad: "<strong>Calidad y Prevención:</strong> Supervisa el cumplimiento de las normas del taller (gafas, cúter), acabado de piezas y comprobación del checklist.",
+            portavoz: "<strong>Portavoz:</strong> Representa al equipo para consultar dudas al profesorado y lidera la exposición oral del Pitch de 3 minutos."
+        };
+
+        function showRole(roleKey) {
+            const box = document.getElementById('role-detail-box');
+            const text = document.getElementById('role-detail-text');
+            text.innerHTML = rolesInfo[roleKey];
+            box.classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.remove('border-blue-600', 'text-blue-600');
+            });
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.add('tab-active');
+        }
+
+        function toggleHito(hitoKey) {
+            const checkbox = document.getElementById(hitoKey + '-check');
+            hitosState[hitoKey] = checkbox.checked;
+            
+            // Sync with checklist tab
+            const num = hitoKey.replace('hito', '');
+            document.getElementById('chk-' + num).checked = checkbox.checked;
+
+            updateGlobalProgress();
+        }
+
+        function syncChecklist(hitoKey, isChecked) {
+            hitosState[hitoKey] = isChecked;
+            document.getElementById(hitoKey + '-check').checked = isChecked;
+            updateGlobalProgress();
+        }
+
+        function updateGlobalProgress() {
+            const total = Object.keys(hitosState).length;
+            const completed = Object.values(hitosState).filter(Boolean).length;
+            const percentage = Math.round((completed / total) * 100);
+
+            const bar = document.getElementById('header-progress-bar');
+            const text = document.getElementById('header-progress-text');
+            const badge = document.getElementById('final-status-badge');
+
+            bar.style.width = percentage + '%';
+            text.textContent = percentage + '%';
+
+            if(completed === total) {
+                badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300";
+                badge.textContent = "¡Proyecto Completado! (6/6 Hitos)";
+            } else {
+                badge.className = "px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-200";
+                badge.textContent = `En curso (${completed}/6 Hitos)`;
+            }
+
+            localStorage.setItem('maker_hitos_state', JSON.stringify(hitosState));
+        }
+
+        // SCAMPER Matrix Calculator
+        function calcMatrix() {
+            const getVal = id => parseInt(document.getElementById(id).value) || 0;
+
+            const totA = getVal('v-a') + getVal('c-a') + getVal('o-a') + getVal('s-a');
+            const totB = getVal('v-b') + getVal('c-b') + getVal('o-b') + getVal('s-b');
+            const totC = getVal('v-c') + getVal('c-c') + getVal('o-c') + getVal('s-c');
+
+            document.getElementById('tot-a').textContent = totA + ' ptos';
+            document.getElementById('tot-b').textContent = totB + ' ptos';
+            document.getElementById('tot-c').textContent = totC + ' ptos';
+        }
+
+        // 3D Tolerance Calculator
+        function calcTolerance() {
+            const eje = parseFloat(document.getElementById('eje-val').value) || 0;
+            const tol = parseFloat(document.getElementById('fit-type').value) || 0;
+            const res = (eje + tol).toFixed(2);
+            document.getElementById('tol-result').textContent = res + ' mm';
+        }
+
+        // Pitch Timer Logic
+        let timerInterval = null;
+        let timerSeconds = 180;
+
+        function startPitchTimer() {
+            if(timerInterval) return;
+            timerInterval = setInterval(() => {
+                if(timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    alert('¡Tiempo agotado! Fin del Pitch (3 min).');
+                    return;
+                }
+                timerSeconds--;
+                displayTimer();
+            }, 1000);
+        }
+
+        function pausePitchTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetPitchTimer() {
+            pausePitchTimer();
+            timerSeconds = 180;
+            displayTimer();
+        }
+
+        function displayTimer() {
+            const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+            const s = String(timerSeconds % 60).padStart(2, '0');
+            document.getElementById('pitch-timer-display').textContent = `${m}:${s}`;
+        }
+
+        // Save S1 Draft
+        function saveS1Draft() {
+            const data = {
+                problema: document.getElementById('s1-problema').value,
+                afectados: document.getElementById('s1-afectados').value,
+                importancia: document.getElementById('s1-importancia').value,
+                f1: document.getElementById('s1-f1').value,
+                f2: document.getElementById('s1-f2').value
+            };
+            localStorage.setItem('maker_s1_draft', JSON.stringify(data));
+            alert('¡Ficha del Hito 1 guardada correctamente!');
+        }
+
+        // Export Metacognition & Final Summary
+        function exportMetacognitionReport() {
+            const q1 = document.getElementById('meta-q1').value;
+            const q2 = document.getElementById('meta-q2').value;
+            const q3 = document.getElementById('meta-q3').value;
+
+            const content = `================================================
+REPORTE DE PROYECTO: DEL RETO SOCIAL AL PROTOTIPO MAKER 3D
+Materia: Tecnología y Digitalización 3º ESO
+================================================
+
+[DIARIO METACOGNITIVO INDIVIDUAL]
+1. ¿Qué parte del diseño funcionó mejor y por qué?
+R: ${q1 || 'Sin respuesta'}
+
+2. ¿Qué problema técnico encontramos en el taller/CAD y cómo lo superamos?
+R: ${q2 || 'Sin respuesta'}
+
+3. ¿Cómo ha mejorado mi trabajo en equipo y habilidades digitales?
+R: ${q3 || 'Sin respuesta'}
+
+================================================
+Estado de los Hitos:
+${Object.entries(hitosState).map(([k, v]) => `- ${k.toUpperCase()}: ${v ? 'COMPLETADO' : 'PENDIENTE'}`).join('\n')}
+================================================
+Generado desde la Guía Interactiva Maker 3D.
+`;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Diario_Metacognitivo_Maker3D.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetAllProgress() {
+            if(confirm('¿Estás seguro de reiniciar todo el progreso y datos guardados?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Load saved hitos
+            const saved = localStorage.getItem('maker_hitos_state');
+            if(saved) {
+                const parsed = JSON.parse(saved);
+                Object.keys(parsed).forEach(k => {
+                    hitosState[k] = parsed[k];
+                    const cb = document.getElementById(k + '-check');
+                    if(cb) cb.checked = parsed[k];
+                    const chkNum = k.replace('hito', '');
+                    const chkEl = document.getElementById('chk-' + chkNum);
+                    if(chkEl) chkEl.checked = parsed[k];
+                });
+                updateGlobalProgress();
+            }
+
+            // Load draft S1
+            const draft = localStorage.getItem('maker_s1_draft');
+            if(draft) {
+                const d = JSON.parse(draft);
+                if(d.problema) document.getElementById('s1-problema').value = d.problema;
+                if(d.afectados) document.getElementById('s1-afectados').value = d.afectados;
+                if(d.importancia) document.getElementById('s1-importancia').value = d.importancia;
+                if(d.f1) document.getElementById('s1-f1').value = d.f1;
+                if(d.f2) document.getElementById('s1-f2').value = d.f2;
+            }
+
+            // Load debug log
+            const debugLog = localStorage.getItem('s4_debug');
+            if(debugLog) {
+                document.getElementById('s4-debug').value = debugLog;
+            }
+
+            calcMatrix();
+        });
+    </script>
+</body>
+</html>
