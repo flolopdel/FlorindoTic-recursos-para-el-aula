@@ -35,7 +35,11 @@ REGLAS DE ACTUACIÓN Y RIGOR CURRICULAR (JUNTA DE ANDALUCÍA):
 
 5. LENGUAJE INCLUSIVO: Usa un lenguaje inclusivo, usando alumnado para abordar los dos géneros por ejemplo.
 
-4. POP UP PARA LAS SIGLAS DE LOS ELEMENTOS CURRICULARES
+
+6. Usa definiciones fáciles para alumnado adolescente, intenta evitar palabras en inglés a no ser que sean muy conocidas o evidentes, usa vocabulario en español y en caso de usar palabras técnicas, que sean fáciles de entender
+
+
+7. POP UP PARA LAS SIGLAS DE LOS ELEMENTOS CURRICULARES
    Si por espacio no se describen los elementso curriculares, cada uno de ellos, saberes básicos, criterios de evaluación, competencias específicas, compentencias claves y descriptores deben tener un popup con su contenido para facilitar la ayuda.
 
 ----------------------------------------------------------------------
@@ -54,24 +58,19 @@ Genera un archivo HTML5 único (Single-File) que incluya:
 ----------------------------------------------------------------------
 VARIABLES DE ENTRADA DE LA SDA A GENERAR:
 ----------------------------------------------------------------------
-- [TÍTULO_SDA]: "Puesta a punto digital"
+- [TÍTULO_SDA]: "RESOLVIENDO PROBLEMAS"
 - [DESCRIPCIÓN]: "Al iniciar 4º de la ESO, el alumnado necesita configurar su Entorno Personal de Aprendizaje (PLE) corporativo de forma autónoma, segura y organizada para afrontar el curso. El reto consiste en resolver la "Puesta a Punto Digital", acreditando que dominan sus credenciales, sus herramientas de trabajo cooperativo, la comunicación institucional y la gestión adecuada de archivos e identidad digital."
 - [CONTENIDOS_BLOQUES]: "
-   - Activación de perfiles y foto de perfil.
-   - iPasen.
-   - Moodle Centros.
-   - Google (`g.educaand.es`).
-   - Correo electrónico con asunto y firma.
-   - Google Calendar.
-   - Tipos de archivo: JPG, PNG, GIF, etc.
-   - Capturas de pantalla.
-   - Google Drive.
-   - Google Docs: interlineado, viñetas, etc.
-   - Guardar documentos en PDF.
-   - Crear un documento con capturas y guardarlo en PDF.
-   - Crear presentaciones en Canva, Genially o Google Slides."
+Esta situación de aprendizaje aborda la resolución de retos reales mediante el proceso tecnológico completo. A través del análisis de un problema de su entorno, el alumnado investigará y diseñará una respuesta creativa que posteriormente materializará mediante la construcción de un prototipo o producto final funcional. 
+SECUENCIACIÓN DIDÁCTICA
+CE 1.1., 2.1., 4.1., 6.2.
+Saberes TYD.3.A.2.,TYD.3.A.5.,TYD.3.C.3.,TYD.3.B.2.,TYD.3.B.3.,TYD.3.D.3.
+Tarea/Reto
+
+Reto_ Diseño de productos
+En esta actividad se propone que el alumnado identifique un problema o necesidad en su entorno cercano y plantee una posible solución tecnológica. Para ello, se sigue un proceso que incluye la toma de contacto, la definición del problema, la investigación de soluciones existentes con inclusión de referencias e imágenes inspiradoras, el planteamiento y selección de la mejor propuesta, el diseño del boceto (con ayuda de herramientas digitales 3D), la construcción del prototipo con materiales reutilizados, la evaluación y finalmente, la presentación del producto al grupo, destacando su funcionalidad y la manera en que resuelve eficazmente el problema detectado.
+
 - [DURACIÓN_SESIONES]: "6 Sesiones de 50 minutos."
-- [PRODUCTO_FINAL]: "Guía Interactiva en en pdf con evidencia de los contenidos aboradados"
+- [PRODUCTO_FINAL]: "Prototipo de un producto y presentación en público"
 - [CONTEXTO_DUA]: "Garantizar accesibilidad con videotutoriales breves, temporalizaciones adaptadas y plantillas con andamiaje para alumnado que requieran apoyo."
 
-Por favor, entrega directamente el código HTML5 ejecutable completo (desde <!DOCTYPE html> hasta </html>) sin recortar ni dejar secciones a la mitad.
