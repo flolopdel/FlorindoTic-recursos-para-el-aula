@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 1: Mi Identidad Digital y Pasaporte Virtual</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px) scale(0.99);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            height: 100%;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-hover {
+            transition: all 0.25s ease;
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.3); }
+            100% { box-shadow: 0 0 35px rgba(37, 99, 235, 0.7); }
+        }
+
+        /* Estilo para barra de progreso */
+        .progress-bar-fill {
+            transition: width 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="h-full select-none flex flex-col justify-between">
+
+    <!-- Barra Superior / Header -->
+    <header class="w-full bg-slate-900/90 border-b border-slate-800 px-4 py-3 flex items-center justify-between z-20">
+        <div class="flex items-center space-x-3">
+            <span class="bg-blue-600 text-white font-bold text-xs px-2.5 py-1 rounded-full uppercase tracking-wider">
+                1º ESO • CyR
+            </span>
+            <h1 class="text-sm md:text-base font-semibold text-slate-200 truncate hidden sm:block">
+                SdA 1: Mi Identidad Digital y Pasaporte Virtual
+            </h1>
+        </div>
+
+        <!-- Contador de diapositivas e indicadores -->
+        <div class="flex items-center space-x-4">
+            <span id="slide-counter" class="text-xs md:text-sm font-medium text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+                Diapositiva <span id="current-slide-num" class="text-blue-400 font-bold">1</span> de <span id="total-slides-num">5</span>
+            </span>
+            
+            <button id="fullscreen-btn" onclick="toggleFullscreen()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition" title="Pantalla completa">
+                <i class="fa-solid fa-expand text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Barra de Progreso Superior -->
+    <div class="w-full bg-slate-800 h-1.5 z-20">
+        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-full progress-bar-fill" style="width: 20%;"></div>
+    </div>
+
+    <!-- ÁREA PRINCIPAL DE DIAPOSITIVAS -->
+    <main class="flex-1 relative overflow-y-auto overflow-x-hidden p-4 md:p-8 flex items-center justify-center">
+
+        <!-- DIAPOSITIVA 1: PORTADA E IMPACTO -->
+        <section class="slide active flex-col justify-center items-center text-center max-w-4xl mx-auto w-full">
+            <div class="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs md:text-sm font-medium px-4 py-1.5 rounded-full mb-6 animate-pulse">
+                <i class="fa-solid fa-rocket"></i>
+                <span>¡Comenzamos el Curso de Computación y Robótica!</span>
+            </div>
+
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                Mi Identidad Digital y <br class="hidden md:block"/>
+                <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
+                    Pasaporte Virtual
+                </span>
+            </h1>
+
+            <p class="text-base md:text-xl text-slate-300 max-w-2xl mb-8 font-normal leading-relaxed">
+                Aprende a navegar de forma segura, protege tu privacidad en internet y domina tus herramientas del colegio como un auténtico profesional digital.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl mb-8">
+                <div class="glass-card p-4 rounded-xl border border-slate-700/60 flex flex-col items-center">
+                    <i class="fa-solid fa-shield-halved text-2xl text-blue-400 mb-2"></i>
+                    <span class="text-xs text-slate-400 uppercase tracking-wide font-bold">Objetivo 1</span>
+                    <span class="text-sm font-semibold text-slate-200 mt-1">Ciberseguridad Activa</span>
+                </div>
+                <div class="glass-card p-4 rounded-xl border border-slate-700/60 flex flex-col items-center">
+                    <i class="fa-solid fa-id-card text-2xl text-emerald-400 mb-2"></i>
+                    <span class="text-xs text-slate-400 uppercase tracking-wide font-bold">Objetivo 2</span>
+                    <span class="text-sm font-semibold text-slate-200 mt-1">Perfil Oficial Escolar</span>
+                </div>
+                <div class="glass-card p-4 rounded-xl border border-slate-700/60 flex flex-col items-center">
+                    <i class="fa-solid fa-cloud text-2xl text-indigo-400 mb-2"></i>
+                    <span class="text-xs text-slate-400 uppercase tracking-wide font-bold">Objetivo 3</span>
+                    <span class="text-sm font-semibold text-slate-200 mt-1">Nube Ordenada</span>
+                </div>
+            </div>
+
+            <button onclick="nextSlide()" class="pulse-glow bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition duration-200 flex items-center space-x-3 text-lg cursor-pointer">
+                <span>Descubrir el Reto</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- DIAPOSITIVA 2: ¿EN QUÉ CONSISTE LA SDA Y EL PRODUCTO FINAL? -->
+        <section class="slide flex-col justify-center max-w-5xl mx-auto w-full">
+            <div class="text-center mb-6">
+                <span class="text-blue-400 font-bold text-xs uppercase tracking-widest">Introducción General</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">¿En qué consiste esta Unidad de Aprendizaje?</h2>
+                <p class="text-slate-400 text-sm md:text-base mt-2 max-w-2xl mx-auto">
+                    Aprenderemos la diferencia entre tu vida en redes sociales y tu <strong>Identidad Digital Escolar</strong>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                <!-- Tarjeta 1: La Idea Clave -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between border-l-4 border-l-blue-500">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">
+                                1
+                            </div>
+                            <h3 class="text-xl font-bold text-white">Tu Huella en Internet</h3>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Cada vez que entras a una web o usas un servicio dejas un rastro. En el instituto usamos un entorno protegido y oficial (<span class="text-blue-300 font-semibold">@g.educaand.es</span>).
+                        </p>
+                        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+                            <div class="text-xs text-slate-400 font-bold uppercase">Diferencia Clave:</div>
+                            <div class="text-xs text-slate-300 mt-1">
+                                🔒 <strong>Identidad Oficial:</strong> Para aprender, entregar trabajos y comunicarte de forma seria.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: El Producto Final / Reto -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between border-l-4 border-l-emerald-500 bg-gradient-to-br from-slate-800/80 to-slate-900/90">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-trophy text-base"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">El Gran Reto Final</h3>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Al finalizar las 5 sesiones, habrás conseguido acreditarte como <strong>Ciudadano Digital Seguro</strong> consiguiendo tu:
+                        </p>
+
+                        <div class="space-y-2">
+                            <div class="flex items-start space-x-3 bg-slate-800/90 p-3 rounded-lg border border-slate-700/60">
+                                <i class="fa-solid fa-file-pdf text-red-400 text-lg mt-0.5"></i>
+                                <div>
+                                    <div class="text-sm font-semibold text-slate-200">1. Documento "Pasaporte Digital"</div>
+                                    <div class="text-xs text-slate-400">Un archivo PDF ordenado con las capturas de tus accesos configurados.</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-3 bg-slate-800/90 p-3 rounded-lg border border-slate-700/60">
+                                <i class="fa-solid fa-envelope text-blue-400 text-lg mt-0.5"></i>
+                                <div>
+                                    <div class="text-sm font-semibold text-slate-200">2. Envío de Correo Oficial</div>
+                                    <div class="text-xs text-slate-400">Un mensaje formal redactado al profesor con tu firma oficial.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 3: LO QUE VAS A APRENDER (OBJETIVOS) -->
+        <section class="slide flex-col justify-center max-w-5xl mx-auto w-full">
+            <div class="text-center mb-6">
+                <span class="text-emerald-400 font-bold text-xs uppercase tracking-widest">Tus Aprendizajes Clave</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">¿Qué vas a aprender en esta unidad?</h2>
+                <p class="text-slate-400 text-sm md:text-base mt-1">Haz clic en cada tarjeta para conocer los detalles fáciles</p>
+            </div>
+
+            <!-- Grid de Tarjetas Interactivas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Aprendizaje 1 -->
+                <div class="glass-card glass-card-hover p-5 rounded-xl cursor-pointer border border-slate-700/60" onclick="toggleCardDetail(this)">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">1. Claves Secretas Robustas</h3>
+                            <span class="text-xs text-blue-400 font-medium">Uso de "Frases de paso"</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-xs mt-3 leading-relaxed">
+                        Aprenderás a crear contraseñas imposibles de adivinar combinando palabras, números y símbolos sin olvidarlas jamás.
+                    </p>
+                </div>
+
+                <!-- Aprendizaje 2 -->
+                <div class="glass-card glass-card-hover p-5 rounded-xl cursor-pointer border border-slate-700/60" onclick="toggleCardDetail(this)">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">2. Protección de tu Privacidad</h3>
+                            <span class="text-xs text-emerald-400 font-medium">Cuida tu imagen e información</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-xs mt-3 leading-relaxed">
+                        Ajustarás tu perfil oficial usando imágenes respetuosas y protegiendo tu vida personal ante cualquier riesgo en la red.
+                    </p>
+                </div>
+
+                <!-- Aprendizaje 3 -->
+                <div class="glass-card glass-card-hover p-5 rounded-xl cursor-pointer border border-slate-700/60" onclick="toggleCardDetail(this)">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-folder-tree"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">3. Orden en la Nube</h3>
+                            <span class="text-xs text-purple-400 font-medium">Google Drive y Permisos</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-xs mt-3 leading-relaxed">
+                        Aprenderás a estructurar carpetas del curso de forma limpia y a compartir archivos de forma segura restringiendo quién los ve.
+                    </p>
+                </div>
+
+                <!-- Aprendizaje 4 -->
+                <div class="glass-card glass-card-hover p-5 rounded-xl cursor-pointer border border-slate-700/60" onclick="toggleCardDetail(this)">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">4. Comunicación Formal</h3>
+                            <span class="text-xs text-amber-400 font-medium">Redacción de Correos Oficiales</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-xs mt-3 leading-relaxed">
+                        Aprenderás a escribir correos serios y educativos, usando asuntos correctos, adjuntando archivos y configurando tu firma.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 4: LAS 5 TAREAS DE LA UNIDAD (PLAN DE VIAJE) -->
+        <section class="slide flex-col justify-center max-w-5xl mx-auto w-full">
+            <div class="text-center mb-6">
+                <span class="text-indigo-400 font-bold text-xs uppercase tracking-widest">Línea de Tiempo</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">El Plan de Viaje: 5 Sesiones</h2>
+                <p class="text-slate-400 text-sm md:text-base mt-1">Así trabajaremos durante las próximas 2 semanas y media</p>
+            </div>
+
+            <!-- Pasos en formato lista horizontal/vertical según pantalla -->
+            <div class="space-y-3">
+                <!-- Sesión 1 -->
+                <div class="glass-card p-3 md:p-4 rounded-xl flex items-center justify-between border-l-4 border-l-blue-500">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-lg text-sm">Sesión 1</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">Las Puertas Digitales del Cole</h4>
+                            <p class="text-xs text-slate-400">Entrar a Moodle Centros e iPasen, comprobar acceso y hacer el cuestionario inicial.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs bg-slate-800 text-blue-300 px-2.5 py-1 rounded border border-slate-700 hidden sm:inline-block">¡HOY!</span>
+                </div>
+
+                <!-- Sesión 2 -->
+                <div class="glass-card p-3 md:p-4 rounded-xl flex items-center justify-between border-l-4 border-l-cyan-500 opacity-90">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-cyan-500/20 text-cyan-400 font-bold px-3 py-1 rounded-lg text-sm">Sesión 2</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">Identidad Corporativa y Claves</h4>
+                            <p class="text-xs text-slate-400">Activar cuenta @g.educaand.es, cambiar contraseña a clave fuerte y foto formal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesión 3 -->
+                <div class="glass-card p-3 md:p-4 rounded-xl flex items-center justify-between border-l-4 border-l-purple-500 opacity-90">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-purple-500/20 text-purple-400 font-bold px-3 py-1 rounded-lg text-sm">Sesión 3</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">Organización de la Nube</h4>
+                            <p class="text-xs text-slate-400">Crear carpetas en Google Drive con nombres correctos y ajustar los permisos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesión 4 -->
+                <div class="glass-card p-3 md:p-4 rounded-xl flex items-center justify-between border-l-4 border-l-amber-500 opacity-90">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-amber-500/20 text-amber-400 font-bold px-3 py-1 rounded-lg text-sm">Sesión 4</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">Creación del Pasaporte Digital</h4>
+                            <p class="text-xs text-slate-400">Maquetar las evidencias en un Documento de Google y descargarlo como PDF.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesión 5 -->
+                <div class="glass-card p-3 md:p-4 rounded-xl flex items-center justify-between border-l-4 border-l-emerald-500 opacity-90">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-emerald-500/20 text-emerald-400 font-bold px-3 py-1 rounded-lg text-sm">Sesión 5</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">Envío Oficial y Cierre</h4>
+                            <p class="text-xs text-slate-400">Enviar correo formal con la firma configurada y adjuntar el PDF en Moodle Centros.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIAPOSITIVA 5: ACCIÓN EN LA SESIÓN 1 Y EVALUACIÓN -->
+        <section class="slide flex-col justify-center max-w-5xl mx-auto w-full">
+            <div class="text-center mb-6">
+                <span class="text-blue-400 font-bold text-xs uppercase tracking-widest">Primera Sesión • ¡A Trabajar!</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">¿Qué vamos a hacer HOY en clase?</h2>
+                <p class="text-slate-400 text-sm md:text-base mt-1">Checklist de inicio rápido para completar en esta 1ª hora</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Columna Checklist -->
+                <div class="md:col-span-2 glass-card p-6 rounded-2xl border border-slate-700">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-blue-400"></i>
+                        <span>Lista de tareas para hoy:</span>
+                    </h3>
+
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-slate-800/80 border border-slate-700/60 cursor-pointer hover:bg-slate-800 transition">
+                            <input type="checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-600 bg-slate-700">
+                            <span class="text-sm text-slate-200">1. Escuchar la explicación general del reto (¡Hecho! <i class="fa-solid fa-check text-emerald-400 text-xs"></i>)</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-slate-800/80 border border-slate-700/60 cursor-pointer hover:bg-slate-800 transition">
+                            <input type="checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-600 bg-slate-700">
+                            <span class="text-sm text-slate-200">2. Acceder a <strong>Moodle Centros</strong> con tus claves de iPasen.</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-slate-800/80 border border-slate-700/60 cursor-pointer hover:bg-slate-800 transition">
+                            <input type="checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-600 bg-slate-700">
+                            <span class="text-sm text-slate-200">3. Entrar a la asignatura <strong>Computación y Robótica (1º ESO)</strong>.</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-slate-800/80 border border-slate-700/60 cursor-pointer hover:bg-slate-800 transition">
+                            <input type="checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-600 bg-slate-700">
+                            <span class="text-sm text-slate-200">4. Responder el pequeño <strong>Cuestionario Inicial de Seguridad</strong>.</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-slate-800/80 border border-slate-700/60 cursor-pointer hover:bg-slate-800 transition">
+                            <input type="checkbox" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-600 bg-slate-700">
+                            <span class="text-sm text-slate-200">5. Guardar una captura de tu Área Personal en Moodle.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Columna Nota / Evaluación Fácil -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-700 flex flex-col justify-between bg-slate-800/50">
+                    <div>
+                        <div class="text-xs font-bold uppercase text-emerald-400 tracking-wider mb-2">Evaluación Transparente</div>
+                        <h4 class="text-lg font-bold text-white mb-2">¿Cómo se nota esta SdA?</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            Esta unidad equivale al <strong>10% de la nota global</strong> del curso.
+                        </p>
+
+                        <ul class="text-xs text-slate-300 space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                                <span>Pasaporte bien maquetado en PDF</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                                <span>Correo enviado con tono formal</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                                <span>Carpetas en Drive ordenadas</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                                <span>Perfil seguro y clave fuerte</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-700/80 text-center">
+                        <span class="text-xs text-slate-400 block mb-1">¿Dudas antes de empezar?</span>
+                        <span class="text-sm font-bold text-blue-400">¡Manos a la obra en Moodle!</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BARRA INFERIOR / CONTROLES DE NAVEGACIÓN -->
+    <footer class="w-full bg-slate-900/90 border-t border-slate-800 px-6 py-4 flex items-center justify-between z-20">
+        <button id="prev-btn" onclick="prevSlide()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold text-sm transition flex items-center space-x-2 disabled:opacity-30 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Anterior</span>
+        </button>
+
+        <!-- Indicadores de bolitas -->
+        <div id="dots-container" class="flex items-center space-x-2">
+            <!-- JS generará las bolitas aquí -->
+        </div>
+
+        <button id="next-btn" onclick="nextSlide()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition flex items-center space-x-2">
+            <span>Siguiente</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </footer>
+
+    <script>
+        // Lógica de control de la presentación
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        const currentSlideNumEl = document.getElementById('current-slide-num');
+        const totalSlidesNumEl = document.getElementById('total-slides-num');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const dotsContainer = document.getElementById('dots-container');
+
+        // Inicializar indicadores
+        function init() {
+            totalSlidesNumEl.textContent = totalSlides;
+            createDots();
+            updateSlideUI();
+
+            // Atajos de teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+
+            // Soporte para gestos táctiles (swipe)
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    nextSlide(); // Deslizar a la izquierda -> Siguiente
+                }
+                if (touchEndX > touchStartX + 50) {
+                    prevSlide(); // Deslizar a la derecha -> Anterior
+                }
+            }
+        }
+
+        function createDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-blue-500 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
+                dot.setAttribute('aria-label', `Ir a diapositiva ${i + 1}`);
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateSlideUI() {
+            // Mostrar u ocultar diapositivas
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Actualizar número
+            currentSlideNumEl.textContent = currentSlide + 1;
+
+            // Actualizar barra de progreso
+            const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            // Actualizar estado de botones
+            prevBtn.disabled = currentSlide === 0;
+
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.innerHTML = '<span>¡Empezar Tareas!</span> <i class="fa-solid fa-check"></i>';
+                nextBtn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+                nextBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+            } else {
+                nextBtn.innerHTML = '<span>Siguiente</span> <i class="fa-solid fa-arrow-right"></i>';
+                nextBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                nextBtn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+            }
+
+            // Actualizar puntos
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentSlide) {
+                    dots[i].className = 'w-6 h-3 rounded-full bg-blue-500 transition-all duration-300';
+                } else {
+                    dots[i].className = 'w-3 h-3 rounded-full bg-slate-700 hover:bg-slate-500 transition-all duration-300';
+                }
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlideUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideUI();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlideUI();
+        }
+
+        function toggleCardDetail(card) {
+            card.classList.toggle('ring-2');
+            card.classList.toggle('ring-blue-500');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch((err) => {
+                    console.log(`Error al activar pantalla completa: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Ejecutar inicialización al cargar
+        window.onload = init;
+    </script>
+</body>
+</html>
