@@ -1,0 +1,1 @@
+Genera una guia paso a paso para que el alumnado sea capaz de alcanzar el producto final, en esta guía debe quedar bastante claro al alumnado lo que tiene que hacer y los hitos que tiene que ir alcanzando enc ada sesión,  Indica además ideas de contenidos multimedia como videos, otros conceptos para aclarar o tutoriales de recursos necesarios en esta sda

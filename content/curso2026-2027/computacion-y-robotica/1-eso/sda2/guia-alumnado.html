@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva del Alumnado: Código en Acción</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for Self-Assessment Target -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        scratch: {
+                            orange: '#FFAB19',
+                            blue: '#4C97FF',
+                            purple: '#9966FF',
+                            green: '#5CB85C',
+                            dark: '#1E293B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scratch-block {
+            border-left: 6px solid;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .scratch-event { border-color: #FFBF00; background-color: #FFFBEB; }
+        .scratch-motion { border-color: #4C97FF; background-color: #EFF6FF; }
+        .scratch-control { border-color: #FFAB19; background-color: #FFF7ED; }
+        .scratch-sensing { border-color: #5CB1D6; background-color: #F0FDFA; }
+        .scratch-variable { border-color: #FF8C1A; background-color: #FEF2F2; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-emerald-200">
+
+    <!-- Top Header / Banner -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg text-slate-900">
+                    <i data-lucide="gamepad-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800">
+                        Computación y Robótica — 1º ESO
+                    </span>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Código en Acción: Videojuegos Sostenibles</h1>
+                </div>
+            </div>
+
+            <!-- Global Progress Bar Widget -->
+            <div class="flex items-center space-x-4 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700">
+                <div class="text-right">
+                    <div class="text-xs text-slate-400 font-medium">Progreso del Proyecto</div>
+                    <div id="progress-text" class="text-sm font-bold text-emerald-400">0% Completado</div>
+                </div>
+                <div class="w-28 bg-slate-700 h-3 rounded-full overflow-hidden border border-slate-600">
+                    <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-500 w-0"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-slate-800/90 border-t border-slate-700/60 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto no-scrollbar py-2">
+                <button onclick="switchTab('tab-ruta')" id="nav-tab-ruta" class="nav-btn active px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 bg-emerald-600 text-white">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                    <span>Ruta de Sesiones</span>
+                </button>
+                <button onclick="switchTab('tab-equipo')" id="nav-tab-equipo" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Equipo y Roles</span>
+                </button>
+                <button onclick="switchTab('tab-scratch')" id="nav-tab-scratch" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                    <i data-lucide="code-2" class="w-4 h-4"></i>
+                    <span>Bloques y Debugging</span>
+                </button>
+                <button onclick="switchTab('tab-recursos')" id="nav-tab-recursos" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                    <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+                    <span>Recursos y Licencias</span>
+                </button>
+                <button onclick="switchTab('tab-evaluacion')" id="nav-tab-evaluacion" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                    <i data-lucide="award" class="w-4 h-4"></i>
+                    <span>Evaluación y Diana</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- TAB 1: RUTA DE SESIONES -->
+        <section id="tab-ruta" class="tab-content space-y-6">
+            <!-- Reto Header Card -->
+            <div class="bg-gradient-to-br from-emerald-900 via-slate-900 to-teal-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative overflow-hidden border border-emerald-500/20">
+                <div class="absolute right-0 top-0 translate-x-12 -translate-y-8 opacity-10 pointer-events-none">
+                    <i data-lucide="leaf" class="w-96 h-96"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl space-y-3">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30">
+                        <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                        <span>El Gran Reto Ecosocial ODS</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">¿Cómo concientizar sobre la sostenibilidad mediante un videojuego?</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Crea en equipo un videojuego o historia interactiva en <strong>Scratch</strong> enfocado en reciclaje, ahorro energético, agua o huella digital. Utiliza recursos libres (Creative Commons), publica en el Estudio Virtual y presenta tu solución en la <strong>Feria de Videojuegos Sostenibles</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Phase Filters -->
+            <div class="flex flex-wrap gap-2 items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-2 text-sm text-slate-600 font-semibold">
+                    <i data-lucide="filter" class="w-4 h-4 text-emerald-600"></i>
+                    <span>Filtrar por Fase:</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterPhase('all')" class="phase-filter-btn active-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">Todas (14 Sesiones)</button>
+                    <button onclick="filterPhase('fase1')" class="phase-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Fase 1: Propuesta y Algoritmos (S1-S3)</button>
+                    <button onclick="filterPhase('fase2')" class="phase-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Fase 2: Programación Scratch (S4-S11)</button>
+                    <button onclick="filterPhase('fase3')" class="phase-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Fase 3: Publicación y Feria (S12-S14)</button>
+                </div>
+            </div>
+
+            <!-- Sessions Accordion / Grid -->
+            <div id="sessions-container" class="space-y-4">
+                <!-- Session 1 -->
+                <div class="session-card fase1 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-indigo-100 text-indigo-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">01</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Fase 1 · Propuesta</span>
+                                <h3 class="text-lg font-bold text-slate-800">"El Robot Humano" y Análisis de Videojuegos</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3 | Saber: CYR.1.A.3 | Descriptores: STEM1, CPSAA1</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s1')" id="chk-s1" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-indigo-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Dinámica "El Robot Humano": Dar instrucciones literales e inequívocas a un autómata.</li>
+                                    <li>Completar las columnas 1 y 2 de la Ficha KWL (¿Qué sé? / ¿Qué quiero saber?).</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Entrega individual del registro diagnóstico KWL inicial completado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 2 -->
+                <div class="session-card fase1 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-indigo-100 text-indigo-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">02</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Fase 1 · Pensamiento Algorítmico</span>
+                                <h3 class="text-lg font-bold text-slate-800">Pensamiento Computacional "Desconectado" (Unplugged)</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3 | Saber: CYR.1.A.3 | Descriptores: STEM1, CD5</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s2')" id="chk-s2" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-indigo-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Diseñar el flujo lógico de vuestro juego en papel, sin tocar aún el ordenador.</li>
+                                    <li>Dibujar un Diagrama de Flujo con decisiones ecológicas.</li>
+                                    <li>Validar el algoritmo intercambiando el papel con otra pareja (Traza de código).</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Diagrama de flujo validado en papel sobre la lógica del juego.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 3 -->
+                <div class="session-card fase1 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-indigo-100 text-indigo-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">03</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Fase 1 · Diseño</span>
+                                <h3 class="text-lg font-bold text-slate-800">Constitución del Equipo y Storyboard</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 2.1 | Saber: CYR.1.A.1 | Descriptores: STEM3, CPSAA3, CE3</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s3')" id="chk-s3" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-indigo-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Formar la pareja/trío de trabajo y firmar el Contrato Cooperativo.</li>
+                                    <li>Asignar roles: Programador/a Principal y Diseñador/a-Guionista.</li>
+                                    <li>Rellenar la Ficha de Storyboard: ODS, personaje, victoria/derrota.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Contrato cooperativo de equipo firmado y Ficha de Storyboard entregada.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 4 -->
+                <div class="session-card fase2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-100 text-emerald-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">04</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fase 2 · Programación Scratch</span>
+                                <h3 class="text-lg font-bold text-slate-800">Entorno Scratch y Control de Movimiento (Eje X-Y)</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3, CEv 2.1 | Saberes: CYR.1.A.1, CYR.1.A.2 | Descriptores: CD5, STEM1</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s4')" id="chk-s4" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-emerald-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Iniciar sesión en Scratch y explorar Escenario, Objetos y Bloques.</li>
+                                    <li>Programar al personaje para moverse en X e Y con las flechas del teclado.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Proyecto Scratch base con personaje respondiendo a las 4 direcciones del teclado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions 5 & 6 -->
+                <div class="session-card fase2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-100 text-emerald-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">5-6</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fase 2 · Programación Scratch</span>
+                                <h3 class="text-lg font-bold text-slate-800">Bucles y Animaciones en Segundo Plano</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3, CEv 2.1 | Saber: CYR.1.A.4 | Descriptores: STEM1, CD5</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s5_6')" id="chk-s5_6" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-emerald-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Usar el bloque <code>por siempre</code> para alternar disfraces del personaje.</li>
+                                    <li>Programar objetos secundarios autónomos (residuos o gotas) con caída y X aleatorio.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Animación fluida del personaje y caída autónoma continua de objetos ecológicos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions 7 & 8 -->
+                <div class="session-card fase2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-100 text-emerald-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">7-8</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fase 2 · Programación Scratch</span>
+                                <h3 class="text-lg font-bold text-slate-800">Toma de Decisiones y Detección de Colisiones</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3, CEv 2.1 | Saberes: CYR.1.A.4, CYR.1.A.5 | Descriptores: STEM1, CD5</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s7_8')" id="chk-s7_8" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-emerald-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Aplicar condicionales <code>si ... entonces</code> con sensores de contacto.</li>
+                                    <li>Programar efectos: sonido positivo al reciclar bien, advertencia al chocar con contaminación.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Mecánica funcional de detección de colisiones e interacción entre objetos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 9 -->
+                <div class="session-card fase2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-100 text-emerald-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">09</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Fase 2 · Ética Digital</span>
+                                <h3 class="text-lg font-bold text-slate-800">Derechos de Autor, Licencias CC y Fuentes Libres</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 6.3 | Saber: CYR.1.I.5 | Descriptores: CD1, CCEC3</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s9')" id="chk-s9" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-amber-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Aprender las diferencias entre Copyright, Creative Commons y Dominio Público.</li>
+                                    <li>Buscar sonidos e imágenes libres en Freesound, Openclipart y REA Andalucía.</li>
+                                    <li>Rellenar la Ficha de Créditos y Licencias del proyecto.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Ficha de Créditos completada acreditando la autoría de todos los recursos externos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions 10 & 11 -->
+                <div class="session-card fase2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-100 text-emerald-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">10-11</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fase 2 · Programación Scratch</span>
+                                <h3 class="text-lg font-bold text-slate-800">Variables (Puntos/Tiempo) y Depuración (Debugging)</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3, CEv 2.1 | Saberes: CYR.1.A.4, CYR.1.A.5 | Descriptores: STEM1, STEM3, CD5</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s10_11')" id="chk-s10_11" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-emerald-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Crear las variables <code>Puntos</code> y <code>Tiempo</code> (cuenta atrás de 30 s).</li>
+                                    <li>Taller de Debugging: probar repetidamente y corregir errores típicos (reiniciar marcador).</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Versión Alfa del videojuego terminada, jugable y libre de errores críticos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 12 -->
+                <div class="session-card fase3 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-purple-100 text-purple-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">12</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Fase 3 · Publicación y Coevaluación</span>
+                                <h3 class="text-lg font-bold text-slate-800">Publicación y Testeo de Juego (Game Testers 2+1)</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 2.1, CEv 6.3 | Saberes: CYR.1.A.5, CYR.1.I.5 | Descriptores: CD3, CPSAA3</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s12')" id="chk-s12" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-purple-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Publicar en el Estudio Virtual de Scratch del Aula con instrucciones claras.</li>
+                                    <li>Actuar como Game Testers: Probar el juego de otra pareja y rellenar la Ficha de Feedback 2+1.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Enlace publicado en el estudio virtual y Ficha de Coevaluación intercambiada.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions 13 & 14 -->
+                <div class="session-card fase3 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-purple-100 text-purple-700 font-extrabold text-sm px-3 py-2 rounded-xl flex flex-col items-center justify-center min-w-[60px]">
+                                <span>SESIÓN</span>
+                                <span class="text-xl">13-14</span>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Fase 3 · Feria y Metacognición</span>
+                                <h3 class="text-lg font-bold text-slate-800">Feria de Videojuegos Sostenibles y Evaluación Final</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">CEv 1.3, CEv 2.1, CEv 6.3 | Descriptores: STEM4, CD3, CPSAA5, CCEC3</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="flex items-center space-x-2 bg-slate-50 hover:bg-emerald-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" onchange="toggleSession('s13_14')" id="chk-s13_14" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-slate-700">Hito Completado</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-slate-50/50 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200/80">
+                                <span class="font-bold text-slate-700 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-purple-500"></i>
+                                    <span>¿Qué vais a hacer hoy?</span>
+                                </span>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                                    <li>Exposición Elevator Pitch (2 min) justificando el ODS y la programación realizada.</li>
+                                    <li>Demostración en directo ante la clase.</li>
+                                    <li>Completar la Diana de Autoevaluación y cerrar la Ficha KWL (¿Qué he aprendido?).</li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50/80 p-3.5 rounded-lg border border-emerald-200/80">
+                                <span class="font-bold text-emerald-900 block mb-1 flex items-center space-x-1.5">
+                                    <i data-lucide="flag" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>🚩 Hito Entregable</span>
+                                </span>
+                                <p class="text-xs text-emerald-800 font-medium">Exposición oral realizada, Diana de Autoevaluación entregada y KWL finalizado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: EQUIPO Y ROLES -->
+        <section id="tab-equipo" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
+                        <i data-lucide="users-round" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Organizador del Equipo Cooperativo</h2>
+                        <p class="text-xs text-slate-500">Definid los roles de vuestra pareja/trío y formalizad el Contrato de Equipo.</p>
+                    </div>
+                </div>
+
+                <!-- Roles Description Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <!-- Role 1 -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-indigo-700 font-bold">
+                            <i data-lucide="terminal" class="w-5 h-5"></i>
+                            <span>Rol 1: Programador/a Principal</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Es responsable de la coherencia de la lógica de bloques, el flujo condicional, las variables (puntos, tiempo), la integración de sensores y el proceso de depuración de fallos (debugging).
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                            <span class="font-semibold text-indigo-900 block">Compromiso Clave:</span>
+                            <p>"Asegurar que el código no contenga fallos y esté ordenado con comentarios claros."</p>
+                        </div>
+                    </div>
+
+                    <!-- Role 2 -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-teal-700 font-bold">
+                            <i data-lucide="palette" class="w-5 h-5"></i>
+                            <span>Rol 2: Diseñador/a y Guionista</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Es responsable del aspecto estético, los disfraces y escenarios en Scratch, la búsqueda y cita de audios con licencias libres (Creative Commons) y la redacción de instrucciones de juego.
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                            <span class="font-semibold text-teal-900 block">Compromiso Clave:</span>
+                            <p>"Garantizar el respeto a la propiedad intelectual y la calidad visual/sonora."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Team Contract Form -->
+                <div class="mt-6 border-t border-slate-200 pt-6 space-y-4">
+                    <h3 class="text-md font-bold text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="file-signature" class="w-4 h-4 text-indigo-600"></i>
+                        <span>Generador del Contrato Cooperativo</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de la Pareja / Equipo</label>
+                            <input type="text" id="team-name" placeholder="Ej: EcoCoders 1ºA" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Reto ODS Seleccionado</label>
+                            <select id="team-ods" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <option>ODS 12: Reciclaje y Clasificación de Residuos</option>
+                                <option>ODS 13: Acción por el Clima / Ahorro de Energía</option>
+                                <option>ODS 6: Cuidado del Agua y Ríos</option>
+                                <option>ODS 15: Biodiversidad Marina y Bosques</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Programador/a Principal</label>
+                            <input type="text" id="member-programmer" placeholder="Nombre completo del alumno/a" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Diseñador/a y Guionista</label>
+                            <input type="text" id="member-designer" placeholder="Nombre completo del alumno/a" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-2">
+                        <span class="font-bold flex items-center space-x-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
+                            <span>Compromiso de Trabajo en Equipo</span>
+                        </span>
+                        <p>
+                            Nos comprometemos a ayudarnos mutuamente, escuchar las sugerencias con respeto, repartir el trabajo de forma equitativa y resolver los bloqueos mediante el diálogo antes de acudir al profesorado.
+                        </p>
+                    </div>
+
+                    <button onclick="generateContract()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition flex items-center space-x-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Generar y Copiar Resumen del Contrato</span>
+                    </button>
+                    <div id="contract-output" class="hidden p-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl overflow-x-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: BLOQUES Y DEBUGGING -->
+        <section id="tab-scratch" class="tab-content hidden space-y-6">
+            <!-- Scratch Blocks Reference -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
+                        <i data-lucide="blocks" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Glosario de Bloques Esenciales Scratch</h2>
+                        <p class="text-xs text-slate-500">Consulta la sintaxis visual utilizada en el proyecto.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                    <!-- Events -->
+                    <div class="scratch-block scratch-event p-4 rounded-r-xl space-y-1">
+                        <span class="font-bold text-amber-900 uppercase text-[10px] tracking-wider block">Eventos</span>
+                        <div class="font-mono text-amber-950 font-semibold">al presionar 🏁</div>
+                        <p class="text-slate-600">Punto de partida de la ejecución del juego al pulsar la bandera verde.</p>
+                    </div>
+
+                    <!-- Motion -->
+                    <div class="scratch-block scratch-motion p-4 rounded-r-xl space-y-1">
+                        <span class="font-bold text-blue-900 uppercase text-[10px] tracking-wider block">Movimiento</span>
+                        <div class="font-mono text-blue-950 font-semibold">cambiar x por (10) / cambiar y por (10)</div>
+                        <p class="text-slate-600">Desplaza el objeto horizontalmente (X) o verticalmente (Y).</p>
+                    </div>
+
+                    <!-- Control -->
+                    <div class="scratch-block scratch-control p-4 rounded-r-xl space-y-1">
+                        <span class="font-bold text-amber-900 uppercase text-[10px] tracking-wider block">Control</span>
+                        <div class="font-mono text-amber-950 font-semibold">por siempre [ ... ] / si &lt; &gt; entonces</div>
+                        <p class="text-slate-600">Estructuras de repetición continua y condicionales lógicos.</p>
+                    </div>
+
+                    <!-- Sensing -->
+                    <div class="scratch-block scratch-sensing p-4 rounded-r-xl space-y-1">
+                        <span class="font-bold text-teal-900 uppercase text-[10px] tracking-wider block">Sensores</span>
+                        <div class="font-mono text-teal-950 font-semibold">¿tocando [Objeto]?</div>
+                        <p class="text-slate-600">Detecta colisiones o contacto entre el personaje y otros elementos.</p>
+                    </div>
+
+                    <!-- Variables -->
+                    <div class="scratch-block scratch-variable p-4 rounded-r-xl space-y-1">
+                        <span class="font-bold text-red-900 uppercase text-[10px] tracking-wider block">Variables</span>
+                        <div class="font-mono text-red-950 font-semibold">sumar a [Puntos] (1) / fijar [Tiempo] a (30)</div>
+                        <p class="text-slate-600">Contenedores de información que cambia durante la partida.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debugging Helper Tool -->
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-red-500/20 text-red-400 rounded-xl border border-red-500/30">
+                        <i data-lucide="bug" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">Asistente de Depuración Rápida (Debugging)</h2>
+                        <p class="text-xs text-slate-400">¿Tu código no funciona como esperas? Selecciona el síntoma para ver la solución en Scratch.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-2">
+                    <label class="block text-xs font-semibold text-slate-300">Selecciona el problema detectado:</label>
+                    <select id="bug-selector" onchange="solveBug()" class="w-full text-xs p-3 bg-slate-800 text-white border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">-- Elige un fallo habitual --</option>
+                        <option value="b1">1. El personaje no vuelve al inicio al pulsar la bandera verde.</option>
+                        <option value="b2">2. Los puntos se acumulan de la partida anterior.</option>
+                        <option value="b3">3. El personaje se mueve pero no cambia de aspecto/caminata.</option>
+                        <option value="b4">4. El objeto no detecta la colisión o solo la detecta una vez al principio.</option>
+                    </select>
+
+                    <div id="bug-solution" class="hidden bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-3">
+                        <div class="flex items-center space-x-2 text-emerald-400 text-xs font-bold">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            <span>Causa habitual y Solución en Scratch</span>
+                        </div>
+                        <div id="bug-text" class="text-xs text-slate-300 leading-relaxed font-mono"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: RECURSOS Y LICENCIAS -->
+        <section id="tab-recursos" class="tab-content hidden space-y-6">
+            <!-- Licencias Guide -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-teal-100 text-teal-700 rounded-xl">
+                        <i data-lucide="shield" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Guía de Licencias y Derechos de Autor</h2>
+                        <p class="text-xs text-slate-500">Aprende a reutilizar imágenes y audios legalmente en tu proyecto.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="font-bold text-red-600 block flex items-center space-x-1">
+                            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                            <span>Copyright (©)</span>
+                        </span>
+                        <p class="text-slate-600">Todos los derechos reservados. No puedes usar estos audios ni imágenes en Scratch sin permiso explícito del autor.</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="font-bold text-emerald-600 block flex items-center space-x-1">
+                            <i data-lucide="creative-commons" class="w-3.5 h-3.5"></i>
+                            <span>Creative Commons (CC)</span>
+                        </span>
+                        <p class="text-slate-600">Puedes utilizarlos libremente siempre que reconozcas la autoría original en tu Ficha de Créditos.</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="font-bold text-blue-600 block flex items-center space-x-1">
+                            <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                            <span>Dominio Público (CC0)</span>
+                        </span>
+                        <p class="text-slate-600">Obras libres de derechos que se pueden usar, modificar y publicar sin ninguna restricción legal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multimedia Links Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Repositories Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center space-x-2 text-sm">
+                        <i data-lucide="music-2" class="w-4 h-4 text-teal-600"></i>
+                        <span>Repositorios Multimedia Autorizados</span>
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <a href="https://freesound.org" target="_blank" class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Freesound.org</span>
+                                <span class="text-slate-500">Efectos de sonido y audio ambiental (Filtra por CC0).</span>
+                            </div>
+                            <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+                        </a>
+                        <a href="https://commons.wikimedia.org" target="_blank" class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Wikimedia Commons</span>
+                                <span class="text-slate-500">Imágenes y gráficos de uso educativo libre.</span>
+                            </div>
+                            <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+                        </a>
+                        <a href="https://openclipart.org" target="_blank" class="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition">
+                            <div>
+                                <span class="font-bold text-slate-800 block">Openclipart</span>
+                                <span class="text-slate-500">Vectores e iconos recortados sin fondo para personajes.</span>
+                            </div>
+                            <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Video Tutorials Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center space-x-2 text-sm">
+                        <i data-lucide="youtube" class="w-4 h-4 text-red-600"></i>
+                        <span>Videotutoriales Recomendados</span>
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                            <span class="font-bold text-slate-800 block">1. Movimiento Cartesiano X-Y</span>
+                            <p class="text-slate-500">Cómo programar las 4 direcciones del teclado de forma precisa.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                            <span class="font-bold text-slate-800 block">2. Creación de Variables y Cronómetros</span>
+                            <p class="text-slate-500">Gestión de contadores de puntos y cuenta atrás de 30 segundos.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                            <span class="font-bold text-slate-800 block">3. Detección de Colisiones y Clonación</span>
+                            <p class="text-slate-500">Uso de sensores de contacto y respuesta sonora.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: EVALUACIÓN Y DIANA -->
+        <section id="tab-evaluacion" class="tab-content hidden space-y-6">
+            <!-- Final Checklist Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-emerald-100 text-emerald-700 rounded-xl">
+                            <i data-lucide="check-square" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Lista de Chequeo de Calidad (Checklist Final)</h2>
+                            <p class="text-xs text-slate-500">Verifica estos puntos antes de la entrega final.</p>
+                        </div>
+                    </div>
+                    <span id="checklist-counter" class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">0/8 Cumplidos</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-2">
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">El juego aborda un reto claro de sostenibilidad (ODS).</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">El personaje responde al teclado/ratón sin fallos.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Hay objetos autónomos animados mediante bucles.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Se detectan colisiones con condicionales y sensores.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Variables Puntos y Tiempo funcionando y reiniciables.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Imágenes y audios tienen licencias CC citadas en créditos.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Publicado en el Estudio Virtual con instrucciones explícitas.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="final-chk w-4 h-4 text-emerald-600 rounded">
+                        <span class="text-slate-700">Roles del contrato cumplidos de forma equitativa.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Interactive Radar Chart (Diana de Autoevaluación) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Sliders -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-indigo-600"></i>
+                        <span>Valora tu Desempeño (Diana de Autoevaluación)</span>
+                    </h3>
+
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                                <span>1. Pensamiento Algorítmico (CEv 1.3)</span>
+                                <span id="lbl-c1" class="text-indigo-600">8/10</span>
+                            </div>
+                            <input type="range" min="1" max="10" value="8" id="sld-c1" oninput="updateChart()" class="w-full accent-indigo-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                                <span>2. Programación Scratch (CEv 2.1)</span>
+                                <span id="lbl-c2" class="text-indigo-600">7/10</span>
+                            </div>
+                            <input type="range" min="1" max="10" value="7" id="sld-c2" oninput="updateChart()" class="w-full accent-indigo-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                                <span>3. Trabajo en Equipo Cooperativo</span>
+                                <span id="lbl-c3" class="text-indigo-600">9/10</span>
+                            </div>
+                            <input type="range" min="1" max="10" value="9" id="sld-c3" oninput="updateChart()" class="w-full accent-indigo-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                                <span>4. Ética y Licencias Digitales (CEv 6.3)</span>
+                                <span id="lbl-c4" class="text-indigo-600">8/10</span>
+                            </div>
+                            <input type="range" min="1" max="10" value="8" id="sld-c4" oninput="updateChart()" class="w-full accent-indigo-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                                <span>5. Comunicación Oral (Elevator Pitch)</span>
+                                <span id="lbl-c5" class="text-indigo-600">8/10</span>
+                            </div>
+                            <input type="range" min="1" max="10" value="8" id="sld-c5" oninput="updateChart()" class="w-full accent-indigo-600">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radar Canvas -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">Tu Diana de Aprendizaje</h3>
+                    <div class="w-full max-w-[320px] aspect-square">
+                        <canvas id="dianaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KWL Interactive Notebook -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i>
+                    <span>Diario Metacognitivo (Cuaderno KWL)</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 block">K (Know): ¿Qué sé?</label>
+                        <textarea id="kwl-k" rows="4" placeholder="Conceptos previos sobre programación, videojuegos o reciclaje..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 block">W (Want): ¿Qué quiero saber?</label>
+                        <textarea id="kwl-w" rows="4" placeholder="Mis objetivos de aprendizaje para este proyecto..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 block">L (Learned): ¿Qué he aprendido?</label>
+                        <textarea id="kwl-l" rows="4" placeholder="Reflexión final tras completar las 14 sesiones..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+                <button onclick="saveKWL()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                    Guardar Diario KWL
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
+            <p>Situación de Aprendizaje: <strong>Código en Acción: Videojuegos e Historias Interactivas Sostenibles</strong></p>
+            <p>Computación y Robótica — 1º ESO (Andalucía LOMLOE) | CEv 1.3, CEv 2.1, CEv 6.3</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Total Sessions count for calculation
+        const TOTAL_SESSIONS = 8; // Key checklist/session milestones
+        let dianaChartInstance = null;
+
+        window.onload = function() {
+            lucide.createIcons();
+            initChart();
+            loadSavedData();
+            updateProgress();
+        };
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'active');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-700');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('bg-emerald-600', 'text-white', 'active');
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-700');
+        }
+
+        // Phase Filter
+        function filterPhase(phaseClass) {
+            document.querySelectorAll('.phase-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-100', 'text-emerald-800', 'border-emerald-300');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            event.target.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-300');
+
+            const cards = document.querySelectorAll('.session-card');
+            cards.forEach(card => {
+                if (phaseClass === 'all' || card.classList.contains(phaseClass)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Session Toggle Checkbox Handler
+        function toggleSession(sessionId) {
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('#tab-ruta input[type="checkbox"]');
+            let checked = 0;
+            checkboxes.forEach(chk => { if(chk.checked) checked++; });
+
+            const percentage = Math.round((checked / checkboxes.length) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = percentage + '% Completado';
+        }
+
+        // Contract Generator
+        function generateContract() {
+            const team = document.getElementById('team-name').value || 'Sin Nombre';
+            const ods = document.getElementById('team-ods').value;
+            const programmer = document.getElementById('member-programmer').value || 'Por asignar';
+            const designer = document.getElementById('member-designer').value || 'Por asignar';
+
+            const summary = `=== CONTRATO COOPERATIVO DE EQUIPO ===\nEquipo: ${team}\nReto: ${ods}\nProgramador/a Principal: ${programmer}\nDiseñador/a y Guionista: ${designer}\nCompromiso: Ayuda mutua y resolución dialogada de conflictos.\n====================================`;
+
+            const outputDiv = document.getElementById('contract-output');
+            outputDiv.innerText = summary;
+            outputDiv.classList.remove('hidden');
+
+            // Copy to clipboard
+            const tempInput = document.createElement("textarea");
+            tempInput.value = summary;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showNotification('¡Contrato copiado al portapapeles!');
+        }
+
+        // Debugging Solutions Database
+        function solveBug() {
+            const bug = document.getElementById('bug-selector').value;
+            const solDiv = document.getElementById('bug-solution');
+            const textDiv = document.getElementById('bug-text');
+
+            const solutions = {
+                'b1': 'CAUSA: Falta fijar la posición inicial X, Y al iniciar.\nSOLUCIÓN: Añade al inicio del objeto:\n[al presionar 🏁] -> [ir a x: (0) y: (-100)]',
+                'b2': 'CAUSA: La variable Puntos conserva el valor de la partida previa.\nSOLUCIÓN: Reinicia el contador en el escenario o personaje:\n[al presionar 🏁] -> [fijar [Puntos] a (0)]',
+                'b3': 'CAUSA: No está alternando disfraces dentro de una secuencia continua.\nSOLUCIÓN: Coloca en el personaje:\n[por siempre] { [siguiente disfraz] -> [esperar (0.1) segundos] }',
+                'b4': 'CAUSA: La condición "si" se evalúa una sola vez al hacer clic en la bandera.\nSOLUCIÓN: Envuelve la condición dentro de un bucle "por siempre":\n[por siempre] { [si <¿tocando [Residuo]? font=> entonces [sumar a [Puntos] (1)] ] }'
+            };
+
+            if (bug && solutions[bug]) {
+                textDiv.innerText = solutions[bug];
+                solDiv.classList.remove('hidden');
+            } else {
+                solDiv.classList.add('hidden');
+            }
+        }
+
+        // Checklist Updates
+        function updateChecklist() {
+            const chks = document.querySelectorAll('.final-chk');
+            let count = 0;
+            chks.forEach(c => { if(c.checked) count++; });
+            document.getElementById('checklist-counter').innerText = `${count}/${chks.length} Cumplidos`;
+        }
+
+        // Chart.js Radar Initialization
+        function initChart() {
+            const ctx = document.getElementById('dianaChart').getContext('2d');
+            dianaChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Algoritmos', 'Programación', 'Trabajo Equipo', 'Ética/Licencias', 'Exposición'],
+                    datasets: [{
+                        label: 'Nivel de Nivel (1-10)',
+                        data: [8, 7, 9, 8, 8],
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(16, 185, 129, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            ticks: { stepSize: 2 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            const c1 = parseInt(document.getElementById('sld-c1').value);
+            const c2 = parseInt(document.getElementById('sld-c2').value);
+            const c3 = parseInt(document.getElementById('sld-c3').value);
+            const c4 = parseInt(document.getElementById('sld-c4').value);
+            const c5 = parseInt(document.getElementById('sld-c5').value);
+
+            document.getElementById('lbl-c1').innerText = c1 + '/10';
+            document.getElementById('lbl-c2').innerText = c2 + '/10';
+            document.getElementById('lbl-c3').innerText = c3 + '/10';
+            document.getElementById('lbl-c4').innerText = c4 + '/10';
+            document.getElementById('lbl-c5').innerText = c5 + '/10';
+
+            if (dianaChartInstance) {
+                dianaChartInstance.data.datasets[0].data = [c1, c2, c3, c4, c5];
+                dianaChartInstance.update();
+            }
+        }
+
+        // KWL Notebook Local Storage
+        function saveKWL() {
+            const kwlData = {
+                k: document.getElementById('kwl-k').value,
+                w: document.getElementById('kwl-w').value,
+                l: document.getElementById('kwl-l').value
+            };
+            try {
+                localStorage.setItem('kwl_student_data', JSON.stringify(kwlData));
+                showNotification('¡Diario KWL guardado correctamente!');
+            } catch(e) {
+                showNotification('Diario KWL actualizado');
+            }
+        }
+
+        function loadSavedData() {
+            try {
+                const saved = localStorage.getItem('kwl_student_data');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.k) document.getElementById('kwl-k').value = parsed.k;
+                    if (parsed.w) document.getElementById('kwl-w').value = parsed.w;
+                    if (parsed.l) document.getElementById('kwl-l').value = parsed.l;
+                }
+            } catch(e) {}
+        }
+
+        // Custom Notification Box (No alert)
+        function showNotification(msg) {
+            const box = document.createElement('div');
+            box.className = 'fixed bottom-4 right-4 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center space-x-2 border border-emerald-500/50';
+            box.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-emerald-400"></i><span>${msg}</span>`;
+            document.body.appendChild(box);
+            lucide.createIcons();
+            setTimeout(() => box.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

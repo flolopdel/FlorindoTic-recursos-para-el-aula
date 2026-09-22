@@ -73,7 +73,3 @@ En esta actividad se propone que el alumnado identifique un problema o necesidad
 - [DURACIÓN_SESIONES]: "6 Sesiones de 50 minutos."
 - [PRODUCTO_FINAL]: "Prototipo de un producto y presentación en público"
 - [CONTEXTO_DUA]: "Garantizar accesibilidad con videotutoriales breves, temporalizaciones adaptadas y plantillas con andamiaje para alumnado que requieran apoyo."
-
---------------------------------
-
-Genera una guia paso a paso para que el alumnado sea capaz de alcanzar el producto final, en esta guía debe quedar bastante claro al alumnado lo que tiene que hacer y los hitos que tiene que ir alcanzando enc ada sesión,  Indica además ideas de contenidos multimedia como videos, otros conceptos para aclarar o tutoriales de recursos necesarios en esta sda
