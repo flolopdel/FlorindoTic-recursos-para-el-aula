@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación SdA: Del Reto Social al Prototipo Maker 3D</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .slide-container {
+            perspective: 1000px;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-hover {
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-3px);
+            border-color: rgba(20, 184, 166, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(20, 184, 166, 0.15);
+        }
+
+        /* Custom Scrollbar for slide content if needed */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0d9488;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden select-none">
+
+    <!-- Top Navigation Bar -->
+    <header class="h-16 px-4 md:px-8 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 backdrop-blur z-20 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                <i data-lucide="box" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="text-sm md:text-base font-bold text-white tracking-wide flex items-center gap-2">
+                    Del Reto Social al Prototipo Maker 3D
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500 border border-brand-500/20">3º ESO</span>
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Tecnología y Digitalización · Presentación de la SdA</p>
+            </div>
+        </div>
+
+        <!-- Controls / Overview Button -->
+        <div class="flex items-center gap-2">
+            <button id="btn-index" onclick="toggleIndexModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5 border border-slate-700">
+                <i data-lucide="grid" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Índice</span>
+            </button>
+            <button id="btn-fullscreen" onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition border border-slate-700" title="Pantalla Completa">
+                <i data-lucide="maximize" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Presentation Area -->
+    <main class="flex-1 relative overflow-hidden flex items-center justify-center p-4 md:p-8 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+
+        <div class="w-full max-w-6xl h-full max-h-[820px] flex flex-col justify-between slide-container relative">
+
+            <!-- SLIDE 1: Cover & Challenge -->
+            <section class="slide active flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden border border-slate-800">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Sesión 1: Presentación General
+                    </span>
+                    <span class="text-xs text-slate-400 bg-slate-800/60 px-3 py-1 rounded-full">Situación de Aprendizaje #2</span>
+                </div>
+
+                <div class="my-auto space-y-6">
+                    <div class="inline-block px-3 py-1 bg-brand-500/10 border border-brand-500/30 text-brand-500 rounded-lg text-xs font-bold uppercase tracking-wider">
+                        ¿Aceptas el Desafío?
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                        Del Reto Social al <br class="hidden sm:inline"/>
+                        <span class="bg-gradient-to-r from-brand-500 via-teal-300 to-indigo-400 bg-clip-text text-transparent">Prototipo Maker 3D</span>
+                    </h2>
+                    <p class="text-base sm:text-lg text-slate-300 max-w-2xl font-light leading-relaxed">
+                        Transforma una necesidad o problema real de tu entorno en un objeto funcional diseñado por ti. Desde la primera idea en papel hasta la fabricación real.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                        <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-start space-x-3">
+                            <div class="p-2 bg-brand-500/20 text-brand-500 rounded-lg mt-0.5">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">En Equipo</h4>
+                                <p class="text-xs text-slate-400">4 roles cooperativos para ayudarse y avanzar juntos.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-start space-x-3">
+                            <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg mt-0.5">
+                                <i data-lucide="cpu" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">Diseño 3D</h4>
+                                <p class="text-xs text-slate-400">Aprenderás a modelar tus piezas por ordenador.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-start space-x-3">
+                            <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg mt-0.5">
+                                <i data-lucide="hammer" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">Construcción Real</h4>
+                                <p class="text-xs text-slate-400">Fabricación y pruebas físicas en el taller escolar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                    <span>Materia: Tecnología y Digitalización (3º ESO)</span>
+                    <span class="flex items-center gap-1 text-brand-500 font-medium">Haz clic en Siguiente <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: What will you learn? -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4"></i> Objetivos Claros
+                    </span>
+                    <span class="text-xs text-slate-400">¿Qué aprenderás en este proyecto?</span>
+                </div>
+
+                <div class="my-auto space-y-4">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Lo que vas a aprender y entrenar</h2>
+                    <p class="text-sm text-slate-300">En esta unidad no solo memorizamos teoría: creamos soluciones reales siguiendo los pasos de los inventores e ingenieros.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="glass-card-hover bg-slate-800/40 p-4 rounded-xl border border-slate-700/60 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0 font-bold text-lg">1</div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">Detectar y Resolver Necesidades</h3>
+                                <p class="text-xs text-slate-300 mt-1">Identificar problemas reales en tu instituto o comunidad y buscar soluciones usando fuentes fiables de información.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass-card-hover bg-slate-800/40 p-4 rounded-xl border border-slate-700/60 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 font-bold text-lg">2</div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">Dibujar y Modelar en 3D</h3>
+                                <p class="text-xs text-slate-300 mt-1">Crear croquis acotados a mano alzada y diseñar piezas en 3D con el ordenador utilizando el programa Tinkercad.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass-card-hover bg-slate-800/40 p-4 rounded-xl border border-slate-700/60 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 font-bold text-lg">3</div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">Fabricar con Criterio Sostenible</h3>
+                                <p class="text-xs text-slate-300 mt-1">Construir en el taller utilizando materiales reciclados o reutilizables, aplicando normas de seguridad e higiene.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass-card-hover bg-slate-800/40 p-4 rounded-xl border border-slate-700/60 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 font-bold text-lg">4</div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">Comunicar y Compartir</h3>
+                                <p class="text-xs text-slate-300 mt-1">Presentar tu proyecto en público en solo 3 minutos y compartir tus diseños en la nube respetando licencias libres.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Aprender haciendo (Metodología Maker)</span>
+                    <span class="text-slate-500">2 de 7</span>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: The 6-Session Roadmap -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> Hoja de Ruta
+                    </span>
+                    <span class="text-xs text-slate-400">Las 6 sesiones del proyecto</span>
+                </div>
+
+                <div class="my-auto space-y-4">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Los 6 Hitos del Proyecto</h2>
+                            <p class="text-xs sm:text-sm text-slate-300">Cada sesión tiene un objetivo y un producto entredable súper claro:</p>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap steps -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                        <div class="bg-brand-500/10 border border-brand-500/40 rounded-xl p-3.5 relative">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-brand-400 uppercase tracking-wide">Sesión 1 (Hoy)</span>
+                                <span class="p-1 bg-brand-500/20 text-brand-400 rounded-md"><i data-lucide="search" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Ficha del Reto</h4>
+                            <p class="text-xs text-slate-300 mt-1">Elegir un problema real, investigar soluciones y definir la necesidad.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Sesión 2</span>
+                                <span class="p-1 bg-slate-700 text-slate-300 rounded-md"><i data-lucide="pen-tool" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Elección y Boceto</h4>
+                            <p class="text-xs text-slate-400 mt-1">Elegir la mejor solución y dibujarla a mano alzada con sus medidas ($mm$).</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Sesión 3</span>
+                                <span class="p-1 bg-slate-700 text-slate-300 rounded-md"><i data-lucide="box" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Modelo Digital 3D</h4>
+                            <p class="text-xs text-slate-400 mt-1">Diseñar la pieza clave en la computadora con Tinkercad y guardarla.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Sesión 4</span>
+                                <span class="p-1 bg-slate-700 text-slate-300 rounded-md"><i data-lucide="wrench" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Construcción en Taller</h4>
+                            <p class="text-xs text-slate-400 mt-1">Cortar, ensamblar y probar el prototipo físico usando materiales reciclados.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Sesión 5</span>
+                                <span class="p-1 bg-slate-700 text-slate-300 rounded-md"><i data-lucide="presentation" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Diapositivas y Nube</h4>
+                            <p class="text-xs text-slate-400 mt-1">Crear la presentación digital y subir los archivos a la carpeta compartida.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wide">Sesión 6</span>
+                                <span class="p-1 bg-slate-700 text-slate-300 rounded-md"><i data-lucide="award" class="w-3.5 h-3.5"></i></span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Feria Tech e Exposición</h4>
+                            <p class="text-xs text-slate-400 mt-1">Presentar en 3 min ante la clase, evaluar a los compañeros y reflexionar.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Avance sesión a sesión acumulativo</span>
+                    <span class="text-slate-500">3 de 7</span>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: Final Deliverables -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="package" class="w-4 h-4"></i> Entregables Finales
+                    </span>
+                    <span class="text-xs text-slate-400">¿Qué evaluación tendrá el grupo?</span>
+                </div>
+
+                <div class="my-auto space-y-4">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">¿Qué tenemos que entregar al final?</h2>
+                    <p class="text-sm text-slate-300">Al terminar la SdA, cada equipo habrá construido un lote completo de resultados:</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/80 flex items-start gap-3">
+                            <div class="p-3 bg-brand-500/20 text-brand-400 rounded-xl">
+                                <i data-lucide="layers" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">1. Prototipo Físico Funcional</h3>
+                                <p class="text-xs text-slate-300 mt-1">Un objeto real construido en el taller escolar que resuelve o alivia el problema planteado.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/80 flex items-start gap-3">
+                            <div class="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl">
+                                <i data-lucide="laptop" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">2. Modelo 3D Digital</h3>
+                                <p class="text-xs text-slate-300 mt-1">El archivo informático de la pieza principal diseñada por ordenador con dimensiones exactas.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/80 flex items-start gap-3">
+                            <div class="p-3 bg-teal-500/20 text-teal-400 rounded-xl">
+                                <i data-lucide="share-2" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">3. Presentación Digital y Nube</h3>
+                                <p class="text-xs text-slate-300 mt-1">Diapositivas resumiendo el trabajo con enlace guardado en la nube escolar y licencia libre.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/80 flex items-start gap-3">
+                            <div class="p-3 bg-purple-500/20 text-purple-400 rounded-xl">
+                                <i data-lucide="mic" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-base">4. Exposición Oral Rápida</h3>
+                                <p class="text-xs text-slate-300 mt-1">Exposición oral de 2-3 minutos explicando el proyecto con el prototipo funcionando ante la clase.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Evaluación continua y por evidencias</span>
+                    <span class="text-slate-500">4 de 7</span>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: Today's Action Plan (Session 1) -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="play-circle" class="w-4 h-4"></i> ¿Qué hacemos Hoy? (Sesión 1)
+                    </span>
+                    <span class="text-xs text-slate-400">Plan de trabajo de la sesión actual</span>
+                </div>
+
+                <div class="my-auto space-y-4">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Sesión 1: Detectando Necesidades Reales</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">Hoy nos organizamos y definimos exactamente qué problema queremos resolver.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700 flex gap-3 items-center">
+                            <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-sm shrink-0">10m</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">1. Organización del Equipo</h4>
+                                <p class="text-xs text-slate-400">Repartir los 4 roles: Coordinación, Secretaría, Calidad y Portavoz.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700 flex gap-3 items-center">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm shrink-0">10m</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">2. Vídeo e Ideas Iniciales</h4>
+                                <p class="text-xs text-slate-400">Ver proyectos de jóvenes inventores y anotar qué sabemos sobre el reto.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700 flex gap-3 items-center">
+                            <div class="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm shrink-0">20m</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">3. Investigación en la Red</h4>
+                                <p class="text-xs text-slate-400">Buscar soluciones existentes y comprobar al menos 2 fuentes fiables.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700 flex gap-3 items-center border-l-4 border-l-brand-500">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">10m</div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">4. Entregar Ficha del Reto</h4>
+                                <p class="text-xs text-slate-300">Rellenar y entregar el <strong>Hito 1</strong> redactando el problema claramente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roles Callout -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 flex flex-wrap justify-between items-center text-xs text-slate-300 gap-2">
+                        <span class="font-bold text-brand-400 flex items-center gap-1">
+                            <i data-lucide="users" class="w-4 h-4"></i> Roles del Equipo:
+                        </span>
+                        <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">👑 Coordinación</span>
+                        <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">📝 Secretaría</span>
+                        <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">🔍 Calidad</span>
+                        <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">📢 Portavoz</span>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Hito 1: Ficha de Definición del Reto</span>
+                    <span class="text-slate-500">5 de 7</span>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: Easy Concepts Glossary -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Diccionario Fácil
+                    </span>
+                    <span class="text-xs text-slate-400">Conceptos clave explicados sin complicaciones</span>
+                </div>
+
+                <div class="my-auto space-y-4">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Palabras Clave explicadas de forma sencilla</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">Términos que usaremos a lo largo de este proyecto:</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                        <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/60">
+                            <h4 class="text-sm font-bold text-brand-400 flex items-center gap-1.5">
+                                <i data-lucide="heart-handshake" class="w-4 h-4"></i> Pensamiento de Diseño
+                            </h4>
+                            <p class="text-xs text-slate-300 mt-1">Forma de trabajar donde nos ponemos primero en el lugar de la persona con el problema antes de lanzarnos a construir nada.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/60">
+                            <h4 class="text-sm font-bold text-indigo-400 flex items-center gap-1.5">
+                                <i data-lucide="monitor" class="w-4 h-4"></i> Diseñar por Ordenador (CAD)
+                            </h4>
+                            <p class="text-xs text-slate-300 mt-1">Usar programas de ordenador para dibujar y medir piezas en 3D con máxima precisión antes de imprimirlas o construirlas.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/60">
+                            <h4 class="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Depuración (Aprender del Error)
+                            </h4>
+                            <p class="text-xs text-slate-300 mt-1">Si algo falla o no encaja, ¡no pasa nada! Analizamos por qué ha fallado, corregimos el diseño y lo volvemos a probar.</p>
+                        </div>
+
+                        <div class="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/60">
+                            <h4 class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
+                                <i data-lucide="unlock" class="w-4 h-4"></i> Licencias Abiertas
+                            </h4>
+                            <p class="text-xs text-slate-300 mt-1">Permisos legales para compartir tus ideas y usar las de otras personas de forma gratuita y respetando quién las creó.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Sin vocabulario rebuscado: lenguaje claro para el aula</span>
+                    <span class="text-slate-500">6 de 7</span>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: Checklist & Getting Started -->
+            <section class="slide flex-col justify-between h-full w-full glass-card rounded-2xl p-6 md:p-10 shadow-2xl relative border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-500 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-4 h-4"></i> Lista de Control de Hoy
+                    </span>
+                    <span class="text-xs text-slate-400">Comprueba tu trabajo antes de terminar la clase</span>
+                </div>
+
+                <div class="my-auto space-y-5">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">¡Manos a la Obra! Lista de Control Sesión 1</h2>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">Haz clic en cada casilla cuando tu equipo haya completado cada paso:</p>
+                    </div>
+
+                    <div id="checklist-container" class="space-y-2.5 max-w-3xl">
+                        <label class="flex items-center p-3 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-brand-500/50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateProgress()" class="w-5 h-5 accent-teal-500 rounded cursor-pointer">
+                            <span class="ml-3 text-xs sm:text-sm text-slate-200">1. Hemos repartido los 4 roles del equipo y cada uno sabe su función.</span>
+                        </label>
+
+                        <label class="flex items-center p-3 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-brand-500/50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateProgress()" class="w-5 h-5 accent-teal-500 rounded cursor-pointer">
+                            <span class="ml-3 text-xs sm:text-sm text-slate-200">2. Hemos visto el vídeo de inspiración y comentado posibles problemas reales.</span>
+                        </label>
+
+                        <label class="flex items-center p-3 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-brand-500/50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateProgress()" class="w-5 h-5 accent-teal-500 rounded cursor-pointer">
+                            <span class="ml-3 text-xs sm:text-sm text-slate-200">3. Hemos buscado en internet soluciones existentes y consultado al menos 2 fuentes fiables.</span>
+                        </label>
+
+                        <label class="flex items-center p-3 rounded-xl bg-slate-800/60 border border-slate-700 hover:border-brand-500/50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateProgress()" class="w-5 h-5 accent-teal-500 rounded cursor-pointer">
+                            <span class="ml-3 text-xs sm:text-sm text-slate-200 font-semibold text-teal-300">4. Hemos completado y entregado la Ficha de Definición del Reto (Hito 1).</span>
+                        </label>
+                    </div>
+
+                    <!-- Interactive Progress Bar -->
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="w-full sm:w-2/3">
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Progreso del Hito 1</span>
+                                <span id="progress-percent" class="font-bold text-brand-400">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div id="progress-bar" class="bg-gradient-to-r from-brand-500 to-emerald-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="status-badge" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                            Pendiente de completar
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 border-t border-slate-800/80 pt-3 flex justify-between">
+                    <span>Cultura Maker: ¡Crear, probar, aprender y mejorar!</span>
+                    <span class="text-slate-500">7 de 7</span>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Bottom Controls Footer -->
+    <footer class="h-16 px-4 md:px-8 border-t border-slate-800 flex items-center justify-between bg-slate-900/90 backdrop-blur shrink-0">
+        <!-- Progress dots -->
+        <div class="flex items-center space-x-1.5" id="dots-container">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Slide Counter -->
+        <div class="text-xs font-semibold text-slate-400">
+            Diapositiva <span id="current-slide-num" class="text-white font-bold">1</span> de <span id="total-slides-num">7</span>
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="flex items-center space-x-2">
+            <button id="btn-prev" onclick="prevSlide()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 border border-slate-700">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior
+            </button>
+            <button id="btn-next" onclick="nextSlide()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white text-xs font-semibold transition shadow-lg shadow-brand-500/20 flex items-center gap-1">
+                Siguiente <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Index Modal -->
+    <div id="index-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-2xl w-full shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="grid" class="w-5 h-5 text-brand-500"></i> Índice de Diapositivas
+                </h3>
+                <button onclick="toggleIndexModal()" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="index-list">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slide Deck Controller Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        const slideTitles = [
+            "1. Portada y Presentación del Reto",
+            "2. ¿Qué vas a aprender?",
+            "3. La Hoja de Ruta (6 Sesiones)",
+            "4. Los Entregables Finales",
+            "5. Plan de Trabajo de Hoy (Sesión 1)",
+            "6. Diccionario Fácil de Términos",
+            "7. Lista de Control de Hoy (Hito 1)"
+        ];
+
+        /* Initialize icons and controls */
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            document.getElementById('total-slides-num').textContent = totalSlides;
+            createDots();
+            populateIndexModal();
+            updateSlideView();
+
+            // Keyboard navigation listener
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'Escape') {
+                    closeIndexModal();
+                }
+            });
+        });
+
+        function createDots() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-brand-500 w-6' : 'bg-slate-700 hover:bg-slate-600'}`;
+                dot.setAttribute('aria-label', `Ir a diapositiva ${i + 1}`);
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+
+        function populateIndexModal() {
+            const listContainer = document.getElementById('index-list');
+            listContainer.innerHTML = '';
+            slideTitles.forEach((title, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'text-left p-3 rounded-xl bg-slate-800/60 hover:bg-brand-500/10 hover:border-brand-500/30 border border-slate-700/60 text-xs font-medium text-slate-200 transition flex items-center justify-between group';
+                btn.innerHTML = `
+                    <span>${title}</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500 group-hover:text-brand-400 transition"></i>
+                `;
+                btn.onclick = () => {
+                    goToSlide(index);
+                    toggleIndexModal();
+                };
+                listContainer.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function updateSlideView() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            document.getElementById('current-slide-num').textContent = currentSlide + 1;
+            document.getElementById('btn-prev').disabled = currentSlide === 0;
+
+            const nextBtn = document.getElementById('btn-next');
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.innerHTML = `Finalizar <i data-lucide="check" class="w-4 h-4"></i>`;
+            } else {
+                nextBtn.innerHTML = `Siguiente <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+            }
+
+            createDots();
+            lucide.createIcons();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlideView();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideView();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                currentSlide = index;
+                updateSlideView();
+            }
+        }
+
+        function toggleIndexModal() {
+            const modal = document.getElementById('index-modal');
+            const isOpen = !modal.classList.contains('opacity-0');
+            if (isOpen) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function closeIndexModal() {
+            const modal = document.getElementById('index-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('#checklist-container input[type="checkbox"]');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const percent = Math.round((checkedCount / checkboxes.length) * 100);
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-percent').textContent = percent + '%';
+
+            const badge = document.getElementById('status-badge');
+            if (percent === 100) {
+                badge.className = "text-xs px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold";
+                badge.textContent = "¡Hito 1 Completado!";
+            } else if (percent > 0) {
+                badge.className = "text-xs px-3 py-1.5 rounded-lg bg-brand-500/20 text-brand-300 border border-brand-500/30 font-medium";
+                badge.textContent = "En progreso (" + checkedCount + "/" + checkboxes.length + ")";
+            } else {
+                badge.className = "text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium";
+                badge.textContent = "Pendiente de completar";
+            }
+        }
+    </script>
+</body>
+</html>
