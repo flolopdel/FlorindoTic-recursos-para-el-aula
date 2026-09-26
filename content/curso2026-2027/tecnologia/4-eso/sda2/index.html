@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Relanzamos Productos - Tecnología 4º ESO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            border-bottom-color: #4f46e5;
+            color: #4f46e5;
+            background-color: #f5f3ff;
+            font-weight: 600;
+        }
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+        }
+        .badge-code {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .badge-code:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased">
+
+    <!-- HEADER / HERO -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="bg-amber-400 text-slate-950 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                            Junta de Andalucía • LOMLOE
+                        </span>
+                        <span class="bg-indigo-800 text-indigo-100 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Tecnología • 4º ESO
+                        </span>
+                        <span class="bg-emerald-800 text-emerald-100 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            8 Sesiones (50 min)
+                        </span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+                        SdA 2: RELANZAMOS PRODUCTOS
+                    </h1>
+                    <p class="text-indigo-200 text-sm sm:text-base mt-1 max-w-3xl">
+                        Análisis del ciclo de vida, innovación tecnológica mediante técnicas de ideación y estrategia de comunicación para revivir un producto en declive.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl backdrop-blur-md border border-white/10 self-start md:self-auto">
+                    <div class="p-2.5 bg-indigo-600 rounded-lg text-white">
+                        <i class="fa-solid fa-rocket text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase text-indigo-200 font-semibold tracking-wider">Producto Final</div>
+                        <div class="text-sm font-bold text-white">Prototipo Digital + Pitch publicitario</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="bg-white border-b border-slate-200 shadow-sm overflow-x-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 min-w-max">
+                <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn active py-3.5 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-compass"></i> 1. Visión General
+                </button>
+                <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn py-3.5 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-list-check"></i> 2. Secuenciación Didáctica
+                </button>
+                <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn py-3.5 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-sitemap"></i> 3. Mapeo Curricular
+                </button>
+                <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn py-3.5 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-universal-access"></i> 4. Medidas DUA
+                </button>
+                <button onclick="switchTab('tab5')" id="btn-tab5" class="tab-btn py-3.5 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-square-check"></i> 5. Evaluación Criterial
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: VISIÓN GENERAL Y JUSTIFICACIÓN -->
+        <section id="tab1" class="space-y-6">
+            <!-- Context and Challenge Banner -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 mb-4 text-indigo-700">
+                    <i class="fa-solid fa-lightbulb text-xl"></i>
+                    <h2 class="text-xl font-bold">Justificación Pedagógica y Gancho Motivador</h2>
+                </div>
+                <p class="text-slate-700 leading-relaxed mb-4">
+                    ¿Por qué algunos productos tecnológicos o de consumo que causaban furor entre nuestros padres (o en TikTok hace un par de años) de repente desaparecen? Esta Situación de Aprendizaje conecta con la cultura actual de tendencias urbanas, el fenómeno <em>retro-gaming</em> y la nostalgia pop para invitar al alumnado de 4º de ESO a ponerse en la piel de un **Agencia Creativa de Rediseño**.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-100">
+                        <div class="font-bold text-indigo-900 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-amber-500"></i> El Gancho Motivador
+                        </div>
+                        <p class="text-xs text-slate-600">
+                            Analizar productos en declive (reproductores MP3, cámaras desechables, Tamagotchis, videoconsolas portátiles antiguas) e imaginar su regreso tecnológico tipo "TikTok Rebrand Trend".
+                        </p>
+                    </div>
+                    <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-100">
+                        <div class="font-bold text-emerald-900 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-emerald-600"></i> El Reto del Alumnado
+                        </div>
+                        <p class="text-xs text-slate-600">
+                            Diagnosticar por qué cayó las ventas el producto, aplicar técnicas de ideación para rediseñarlo (añadiendo sensores, conectividad IoT o materiales sostenibles) y crear un prototipo digital interactivo.
+                        </p>
+                    </div>
+                    <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-100">
+                        <div class="font-bold text-amber-900 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-amber-600"></i> El Producto Final
+                        </div>
+                        <p class="text-xs text-slate-600">
+                            Presentación pública tipo <em>"Elevator Pitch"</em> (discurso rápido ante posibles inversores) mostrando el prototipo digital 3D/2D y un anuncio publicitario inclusivo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curriculum Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Competencias Específicas</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span onclick="showModal('CE 1')" class="badge-code bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-md">CE 1</span>
+                        <span onclick="showModal('CE 2')" class="badge-code bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-md">CE 2</span>
+                        <span onclick="showModal('CE 3')" class="badge-code bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-md">CE 3</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Identificación de problemas, innovación técnica y comunicación inclusiva.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Criterios de Evaluación</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span onclick="showModal('CEv 1.3')" class="badge-code bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md">CEv 1.3</span>
+                        <span onclick="showModal('CEv 2.1')" class="badge-code bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md">CEv 2.1</span>
+                        <span onclick="showModal('CEv 3.2')" class="badge-code bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md">CEv 3.2</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Únicos elementos calificables del aprendizaje según la normativa LOMLOE.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Saberes Básicos (Medios)</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span onclick="showModal('TEC.4.A.1.1')" class="badge-code bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">TEC.4.A.1.1</span>
+                        <span onclick="showModal('TEC.4.A.1.3')" class="badge-code bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">TEC.4.A.1.3</span>
+                        <span onclick="showModal('TEC.4.A.1.4')" class="badge-code bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">TEC.4.A.1.4</span>
+                        <span onclick="showModal('TEC.4.A.2.1')" class="badge-code bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">TEC.4.A.2.1</span>
+                        <span onclick="showModal('TEC.4.A.4.1')" class="badge-code bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">TEC.4.A.4.1</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Bloque A: Proceso de resolución de problemas.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Descriptores Perfil Salida</div>
+                    <div class="flex flex-wrap gap-1">
+                        <span onclick="showModal('STEM1')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">STEM1</span>
+                        <span onclick="showModal('STEM2')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">STEM2</span>
+                        <span onclick="showModal('CD1')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CD1</span>
+                        <span onclick="showModal('CD2')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CD2</span>
+                        <span onclick="showModal('CD3')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CD3</span>
+                        <span onclick="showModal('CE1')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CE1</span>
+                        <span onclick="showModal('CE3')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CE3</span>
+                        <span onclick="showModal('CCL1')" class="badge-code bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded">CCL1</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Conexión con Competencias Clave al finalizar la etapa.</p>
+                </div>
+            </div>
+
+            <!-- Key Methodologies and Vocabulary -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Metodologías Activas Implicadas
+                    </h3>
+                    <ul class="space-y-2.5 text-sm text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                            <span><strong>Aprendizaje Basado en Proyectos (ABP):</strong> Organización por roles cooperativos y entrega iterativa de productos intermediarios.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                            <span><strong>Design Thinking / Pensamiento de Diseño:</strong> Empatizar, Definir, Idear, Prototipar y Evaluar la solución técnica.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                            <span><strong>Cultura Maker y Prototipado Digital:</strong> Uso de herramientas de diseño asistido para crear representaciones 2D/3D accesibles.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-indigo-600"></i> Vocabulario Clave para el Alumnado
+                    </h3>
+                    <div class="space-y-2 text-xs sm:text-sm text-slate-600">
+                        <p><strong>• Ciclo de vida de un producto:</strong> El camino por el que pasa un objeto desde que se inventa y vende mucho, hasta que envejece y deja de usarse.</p>
+                        <p><strong>• Ideación:</strong> Proceso para soltar ideas creativas sin miedo a equivocarse, buscando respuestas originales a un problema.</p>
+                        <p><strong>• Prototipo digital:</strong> Una maqueta o modelo visual hecho en ordenador antes de fabricarlo en serie.</p>
+                        <p><strong>• Elevator Pitch:</strong> Un discurso súper rápido y convincente de 1 minuto para explicar tu proyecto a otra persona o inversor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SECUENCIACIÓN DIDÁCTICA -->
+        <section id="tab2" class="hidden space-y-6">
+            <!-- Filter toolbar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
+                    <i class="fa-solid fa-filter text-indigo-600"></i> Filtrar Sesiones por Fase:
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterSessions('all')" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition">Todas (8)</button>
+                    <button onclick="filterSessions('inicio')" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Fase 1: Inicio (Ses. 1-2)</button>
+                    <button onclick="filterSessions('desarrollo')" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Fase 2: Desarrollo (Ses. 3-6)</button>
+                    <button onclick="filterSessions('cierre')" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Fase 3: Cierre (Ses. 7-8)</button>
+                </div>
+            </div>
+
+            <!-- Sessions timeline -->
+            <div class="space-y-4">
+
+                <!-- SESIÓN 1 -->
+                <div class="session-card phase-inicio bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 1</span>
+                            <h3 class="font-bold text-slate-900 text-base">Fase 1: El Diagnóstico Retro - ¿Por qué mueren los productos?</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-medium">Fase de Inicio</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Gancho audiovisual mostrando la evolución de productos icónicos de los años 90/2000 (ej. walkman vs Spotify, cámaras de carrete vs Instagram). Dinámica KWL (Qué sé, Qué quiero saber, Qué he aprendido) en mural interactivo sobre la fase de madurez y declive.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Aprendizaje Inductivo y Diagnóstico Participativo.</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 2.1')" class="badge-code text-indigo-600 font-bold">CEv 2.1</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.2.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.2.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Cuestionario KWL en plantilla digital o papel.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 2 -->
+                <div class="session-card phase-inicio bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 2</span>
+                            <h3 class="font-bold text-slate-900 text-base">Constitución de Agencias y Elección del Reto</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-medium">Fase de Inicio</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Formación de equipos cooperativos de 4 personas asignando roles técnicos (Coordinador/a, Diseñador/a, Responsable de Sostenibilidad, Portavoz). Cada equipo elige un producto en declive del "Catálogo Retro" para relanzar y redacta su compromiso de equipo.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Aprendizaje Cooperativo (Técnica de Roles Adaptados).</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 1.3')" class="badge-code text-indigo-600 font-bold">CEv 1.3</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.1.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.1.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Acta de constitución del equipo y elección de producto.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 3 -->
+                <div class="session-card phase-desarrollo bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 3</span>
+                            <h3 class="font-bold text-slate-900 text-base">Fase 2: Tormenta de Ideas y Técnicas de Ideación SCAMPER</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-medium">Fase de Desarrollo</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Aplicación de la técnica SCAMPER (Sustituir, Combinar, Adaptar, Modificar, Poner en otros usos, Eliminar, Reorganizar) para proponer mejoras al producto. Uso de tableros virtuales gráficos compartidos.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Design Thinking (Fase de Ideación).</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 1.3')" class="badge-code text-indigo-600 font-bold">CEv 1.3</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.1.3')" class="badge-code text-blue-600 font-bold">TEC.4.A.1.3</span>, <span onclick="showModal('TEC.4.A.1.4')" class="badge-code text-blue-600 font-bold">TEC.4.A.1.4</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Matriz SCAMPER de mejoras seleccionadas.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 4 -->
+                <div class="session-card phase-desarrollo bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 4</span>
+                            <h3 class="font-bold text-slate-900 text-base">Rediseño del Ciclo de Vida y Materiales Sostenibles</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-medium">Fase de Desarrollo</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Análisis del impacto ambiental del producto original frente al nuevo modelo rediseñado. Elección de materiales reciclables o de bajo consumo energético para el nuevo prototipo, integrando mejoras en su reparabilidad.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Análisis Técnico y Ecodiseño.</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 2.1')" class="badge-code text-indigo-600 font-bold">CEv 2.1</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.2.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.2.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Ficha técnica de sostenibilidad y ciclo de vida.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 5 -->
+                <div class="session-card phase-desarrollo bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 5</span>
+                            <h3 class="font-bold text-slate-900 text-base">Prototipado Digital I - Modelado 2D/3D del Producto</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-medium">Fase de Desarrollo</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Creación del boceto y modelo digital interactivo del nuevo producto mediante herramientas de diseño asistido por ordenador accesibles (ej. Tinkercad / Canva CAD). Incorporación de elementos ergonómicos e interfaz visual.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Prototipado Asistido por Ordenador (Cultura Maker).</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 2.1')" class="badge-code text-indigo-600 font-bold">CEv 2.1</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.1.4')" class="badge-code text-blue-600 font-bold">TEC.4.A.1.4</span>, <span onclick="showModal('TEC.4.A.2.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.2.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Archivo o enlace del boceto/prototipo 3D digital.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 6 -->
+                <div class="session-card phase-desarrollo bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 6</span>
+                            <h3 class="font-bold text-slate-900 text-base">Estrategia Publicitaria e Impacto Visual Inclusivo</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-medium">Fase de Desarrollo</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Diseño del cartel publicitario o borrador de video promocional para redes sociales. Revisión del lenguaje usado para garantizar un tono inclusivo, libre de estereotipos de género y accesible a todo el público.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Transmitir y Comunicar con Enfoque Coeducativo.</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 3.2')" class="badge-code text-indigo-600 font-bold">CEv 3.2</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.4.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.4.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Poster/Anuncio publicitario con checklist inclusivo.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 7 -->
+                <div class="session-card phase-cierre bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 7</span>
+                            <h3 class="font-bold text-slate-900 text-base">Fase 3: Ensayo y Técnica de Comunicación "Elevator Pitch"</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-purple-50 text-purple-800 border border-purple-200 px-2 py-0.5 rounded font-medium">Fase de Cierre</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Ensayo general de las presentaciones orales de 3 minutos por equipo. Pautas prácticas de comunicación no verbal, entonación, control del tiempo y uso de soportes visuales atractivos.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Feedback entre iguales y Coevaluación Formativa.</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 3.2')" class="badge-code text-indigo-600 font-bold">CEv 3.2</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.4.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.4.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Guion técnico de la presentación con reparto de tiempos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SESIÓN 8 -->
+                <div class="session-card phase-cierre bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-300 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Sesión 8</span>
+                            <h3 class="font-bold text-slate-900 text-base">Evento Final "Shark Tank Tecnológico" y Metacognición</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-purple-50 text-purple-800 border border-purple-200 px-2 py-0.5 rounded font-medium">Fase de Cierre</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="lg:col-span-2 space-y-2">
+                            <p class="text-sm text-slate-700"><strong>Actividades:</strong> Exposición pública de los proyectos simulando una ronda de inversores. Coevaluación mediante diana de aprendizaje entre equipos y diana de autoevaluación metacognitiva personal sobre el trabajo en equipo.</p>
+                            <p class="text-xs text-slate-500"><strong>Metodología:</strong> Difusión Pública y Metacognición Integrada.</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-100 text-xs">
+                            <div><strong class="text-slate-700">Criterio:</strong> <span onclick="showModal('CEv 1.3')" class="badge-code text-indigo-600 font-bold">CEv 1.3</span>, <span onclick="showModal('CEv 3.2')" class="badge-code text-indigo-600 font-bold">CEv 3.2</span></div>
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="showModal('TEC.4.A.4.1')" class="badge-code text-blue-600 font-bold">TEC.4.A.4.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Diana de evaluación y registro final del prototipo.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: MAPEO CURRICULAR -->
+        <section id="tab3" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Matriz de Concreción Curricular LOMLOE (Junta de Andalucía)</h2>
+                        <p class="text-xs text-slate-500">Haz clic en cualquier código para desplegar la descripción oficial completa.</p>
+                    </div>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-100">
+                        Alineación Normativa 100%
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 uppercase tracking-wider">
+                                <th class="p-3 font-bold">Competencia Específica</th>
+                                <th class="p-3 font-bold">Criterio de Evaluación (Calificable)</th>
+                                <th class="p-3 font-bold">Saberes Básicos (Medios)</th>
+                                <th class="p-3 font-bold">Descriptores Perfil Salida</th>
+                                <th class="p-3 font-bold">Actividades Asociadas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-slate-700">
+                            <!-- Fila 1 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3">
+                                    <span onclick="showModal('CE 1')" class="badge-code bg-indigo-100 text-indigo-900 font-bold px-2 py-1 rounded inline-block">CE 1</span>
+                                    <p class="text-xs text-slate-500 mt-1">Ideación e investigación colaborativa</p>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="showModal('CEv 1.3')" class="badge-code bg-emerald-100 text-emerald-900 font-bold px-2 py-1 rounded inline-block">CEv 1.3</span>
+                                    <p class="text-xs text-slate-600 mt-1">Gestión de emociones y funciones en el equipo.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="showModal('TEC.4.A.1.1')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.1.1</span>
+                                    <span onclick="showModal('TEC.4.A.1.3')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.1.3</span>
+                                    <span onclick="showModal('TEC.4.A.1.4')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.1.4</span>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span onclick="showModal('STEM1')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">STEM1</span>
+                                        <span onclick="showModal('CD1')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CD1</span>
+                                        <span onclick="showModal('CPSAA3')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CPSAA3</span>
+                                        <span onclick="showModal('CE3')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CE3</span>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-xs">Sesiones 2, 3 y 8 (Trabajo en equipo, SCAMPER y metacognición).</td>
+                            </tr>
+
+                            <!-- Fila 2 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3">
+                                    <span onclick="showModal('CE 2')" class="badge-code bg-indigo-100 text-indigo-900 font-bold px-2 py-1 rounded inline-block">CE 2</span>
+                                    <p class="text-xs text-slate-500 mt-1">Fabricación y análisis del ciclo de vida</p>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="showModal('CEv 2.1')" class="badge-code bg-emerald-100 text-emerald-900 font-bold px-2 py-1 rounded inline-block">CEv 2.1</span>
+                                    <p class="text-xs text-slate-600 mt-1">Diseño y construcción analizando ciclo de vida y eficiencia.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="showModal('TEC.4.A.2.1')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.2.1</span>
+                                    <span onclick="showModal('TEC.4.A.1.4')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.1.4</span>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span onclick="showModal('STEM2')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">STEM2</span>
+                                        <span onclick="showModal('CD2')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CD2</span>
+                                        <span onclick="showModal('CPSAA4')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CPSAA4</span>
+                                        <span onclick="showModal('CC4')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CC4</span>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-xs">Sesiones 1, 4 y 5 (Diagnóstico, ecodiseño y modelado 2D/3D).</td>
+                            </tr>
+
+                            <!-- Fila 3 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3">
+                                    <span onclick="showModal('CE 3')" class="badge-code bg-indigo-100 text-indigo-900 font-bold px-2 py-1 rounded inline-block">CE 3</span>
+                                    <p class="text-xs text-slate-500 mt-1">Comunicación e impacto visual inclusivo</p>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="showModal('CEv 3.2')" class="badge-code bg-emerald-100 text-emerald-900 font-bold px-2 py-1 rounded inline-block">CEv 3.2</span>
+                                    <p class="text-xs text-slate-600 mt-1">Presentar y difundir con impacto visual y lenguaje no sexista.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="showModal('TEC.4.A.4.1')" class="badge-code bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded block w-max">TEC.4.A.4.1</span>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span onclick="showModal('CCL1')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CCL1</span>
+                                        <span onclick="showModal('STEM4')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">STEM4</span>
+                                        <span onclick="showModal('CD3')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CD3</span>
+                                        <span onclick="showModal('CCEC3')" class="badge-code bg-slate-100 text-slate-800 text-xs px-1.5 py-0.5 rounded">CCEC3</span>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-xs">Sesiones 6, 7 y 8 (Campaña, ensayo del pitch y Shark Tank).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: MEDIDAS DUA Y ATENCIÓN A LA DIVERSIDAD -->
+        <section id="tab4" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-3 mb-4 text-indigo-700">
+                    <i class="fa-solid fa-universal-access text-2xl"></i>
+                    <div>
+                        <h2 class="text-xl font-bold">Diseño Universal para el Aprendizaje (DUA) y Accesibilidad</h2>
+                        <p class="text-xs text-slate-500">Estrategias inclusivas aplicadas para garantizar la participación de todo el alumnado.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <!-- Principio 1 -->
+                    <div class="border border-slate-200 p-5 rounded-xl bg-slate-50/50">
+                        <div class="flex items-center gap-2 font-bold text-slate-900 mb-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
+                            Múltiples formas de Representación
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Video-tutoriales breves subtitulados con paso a paso para el uso de software de prototipado 3D.
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Infografías explicativas simplificadas sobre las fases del ciclo de vida de un producto.
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Glosario conceptual técnico con vocabulario visual e iconos intuitivos.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Principio 2 -->
+                    <div class="border border-slate-200 p-5 rounded-xl bg-slate-50/50">
+                        <div class="flex items-center gap-2 font-bold text-slate-900 mb-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
+                            Múltiples formas de Expresión
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Elección del formato de prototipo: boceto 2D digital enriquecido, prototipo 3D simplificado o maqueta física de cartón.
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Opción de apoyo en la presentación oral con tarjetas de apoyo visual o grabación previa en vídeo si existe ansiedad social.
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Plantillas redactadas con andamiaje (guiones de frases incompletas para la técnica SCAMPER).
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Principio 3 -->
+                    <div class="border border-slate-200 p-5 rounded-xl bg-slate-50/50">
+                        <div class="flex items-center gap-2 font-bold text-slate-900 mb-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
+                            Múltiples formas de Compromiso
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Libertad de elección del objeto a relanzar dentro de sus intereses (música, videojuegos, fotografía, moda).
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Roles de grupo rotativos para que cada estudiante ejerza el rol donde sienta mayor fortaleza personal.
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>
+                                Feedback continuo en pequeños pasos sin esperar a la calificación final sumativa.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-indigo-50/80 rounded-xl border border-indigo-100 flex items-start gap-3">
+                    <i class="fa-solid fa-hand-holding-heart text-indigo-600 text-lg mt-0.5"></i>
+                    <div class="text-xs text-indigo-950">
+                        <strong>Andamiaje Adaptativo:</strong> Para el alumnado con necesidades de apoyo educativo, se facilitan plantillas de SCAMPER pre-rellenadas en un 30% y cronogramas visuales simplificados, garantizando su participación en el mismo reto común que sus compañeros.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: EVALUACIÓN CRITERIAL -->
+        <section id="tab5" class="hidden space-y-6">
+            <!-- Alert remember box -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm flex items-start gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
+                <div>
+                    <h3 class="font-bold text-amber-900 text-sm">Recordatorio de Rigor Criterial LOMLOE Andalucía</h3>
+                    <p class="text-xs text-amber-800 mt-0.5">
+                        En la normativa LOMLOE **únicamente se evalúan los Criterios de Evaluación** (<span onclick="showModal('CEv 1.3')" class="underline cursor-pointer font-bold">1.3</span>, <span onclick="showModal('CEv 2.1')" class="underline cursor-pointer font-bold">2.1</span>, <span onclick="showModal('CEv 3.2')" class="underline cursor-pointer font-bold">3.2</span>). Los Saberes Básicos son solo los conocimientos o herramientas para alcanzarlos, nunca el objeto directo de calificación.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Checklist / Lista de Cotejo del Docente -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Lista de Cotejo de Desempeño (Seguimiento Continuo)</h2>
+                        <p class="text-xs text-slate-500">Marca los indicadores observados durante la SdA para realizar un cálculo orientativo de avance criterial.</p>
+                    </div>
+                    <div class="bg-slate-100 p-2.5 rounded-xl text-center self-start sm:self-auto min-w-[140px]">
+                        <span class="text-xs text-slate-500 font-bold uppercase block">Avance Criterial</span>
+                        <span id="progress-percent" class="text-xl font-extrabold text-indigo-600">0%</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3" id="checklist-container">
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-indigo-900">[CEv 1.3]</span> Muestra empatía y respeto aceptando las funciones asignadas en el equipo cooperativo y resolviendo desacuerdos constructivamente.
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-indigo-900">[CEv 1.3]</span> Participa activamente en la toma de decisiones compartidas mediante la técnica SCAMPER.
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-emerald-900">[CEv 2.1]</span> Identifica correctamente las causas de la fase de declive en el producto seleccionado.
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-emerald-900">[CEv 2.1]</span> Diseña un prototipo digital que incorpora materiales o procesos con criterios de sostenibilidad.
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-blue-900">[CEv 3.2]</span> Presenta la solución mediante la técnica Elevator Pitch respetando el tiempo estipulado.
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="font-bold text-blue-900">[CEv 3.2]</span> Emplea un lenguaje inclusivo y no sexista tanto en la campaña como en la exposición oral.
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Rubric Table -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <h2 class="text-lg font-bold text-slate-900 mb-4">Rúbrica de Evaluación por Niveles de Logro</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th class="p-3 font-bold w-1/5">Criterio</th>
+                                <th class="p-3 font-bold text-red-700 bg-red-50/50">Nivel 1: En Inicio (1-4)</th>
+                                <th class="p-3 font-bold text-amber-700 bg-amber-50/50">Nivel 2: En Proceso (5-6)</th>
+                                <th class="p-3 font-bold text-blue-700 bg-blue-50/50">Nivel 3: Notable (7-8)</th>
+                                <th class="p-3 font-bold text-emerald-700 bg-emerald-50/50">Nivel 4: Sobresaliente (9-10)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50">
+                                    <span onclick="showModal('CEv 1.3')" class="badge-code text-indigo-700">CEv 1.3</span>
+                                    <p class="font-normal text-slate-500 mt-0.5">Gestión de equipo y emociones</p>
+                                </td>
+                                <td class="p-3 text-slate-600">Muestra dificultad para trabajar en equipo y asumir roles, requiriendo mediación constante.</td>
+                                <td class="p-3 text-slate-600">Acepta su rol en el equipo pero presenta conflictos puntuales en la toma de decisiones.</td>
+                                <td class="p-3 text-slate-600">Participa activamente en la gestión del equipo y respeta las funciones de cada miembro.</td>
+                                <td class="p-3 text-slate-600">Lidera con empatía, facilita la resolución pacífica de desacuerdos y optimiza el trabajo del grupo.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50">
+                                    <span onclick="showModal('CEv 2.1')" class="badge-code text-indigo-700">CEv 2.1</span>
+                                    <p class="font-normal text-slate-500 mt-0.5">Diseño, prototipado y ciclo de vida</p>
+                                </td>
+                                <td class="p-3 text-slate-600">No analiza las fases del ciclo de vida y genera un prototipo incompleto sin criterios sostenibles.</td>
+                                <td class="p-3 text-slate-600">Analiza superficialmente el ciclo de vida y diseña un prototipo básico con pocas mejoras.</td>
+                                <td class="p-3 text-slate-600">Diseña un prototipo digital funcional analizando adecuadamente su ciclo de vida y materiales.</td>
+                                <td class="p-3 text-slate-600">Crea un prototipo digital innovador y accesible, con un análisis riguroso de sostenibilidad y ecodiseño.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50">
+                                    <span onclick="showModal('CEv 3.2')" class="badge-code text-indigo-700">CEv 3.2</span>
+                                    <p class="font-normal text-slate-500 mt-0.5">Difusión pública e impacto inclusivo</p>
+                                </td>
+                                <td class="p-3 text-slate-600">Presenta con inseguridad, excediendo el tiempo y utilizando estereotipos en el discurso.</td>
+                                <td class="p-3 text-slate-600">Presenta el producto de forma aceptable aunque con un soporte visual poco cuidado.</td>
+                                <td class="p-3 text-slate-600">Expone eficazmente cuidando la entonación y empleando un lenguaje inclusivo y claro.</td>
+                                <td class="p-3 text-slate-600">Realiza un Elevator Pitch cautivador con gran impacto visual, dominio del tiempo y lenguaje totalmente inclusivo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Programación Didáctica adaptada a la Orden del 30 de mayo de 2023 por la que se desarrolla el currículo de la ESO en Andalucía (LOMLOE).</p>
+            <p class="text-slate-600">Materia: Tecnología • 4º de Educación Secundaria Obligatoria • Diseñado para Asesoría Pedagógica</p>
+        </div>
+    </footer>
+
+    <!-- MODAL FOR CURRICULAR DEFINITIONS -->
+    <div id="modal-curricular" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <span id="modal-category" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded">Categoría</span>
+                    <h3 id="modal-code" class="text-lg font-extrabold text-slate-900">CÓDIGO</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="py-4">
+                <p id="modal-description" class="text-sm text-slate-700 leading-relaxed">Descripción del elemento curricular...</p>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT NATIVO -->
+    <script>
+        const CURRICULAR_DATA = {
+            // Competencias Específicas
+            "CE 1": {
+                cat: "Competencia Específica",
+                desc: "Identificar y proponer problemas tecnológicos con iniciativa y creatividad, estudiando las necesidades de su entorno próximo y aplicando estrategias y procesos colaborativos e iterativos relativos a proyectos, para idear y planificar soluciones de manera eficiente, accesible, sostenible e innovadora."
+            },
+            "CE 2": {
+                cat: "Competencia Específica",
+                desc: "Aplicar de forma apropiada y segura distintas técnicas y conocimientos interdisciplinares, utilizando procedimientos y recursos tecnológicos y analizando el ciclo de vida de productos para fabricar soluciones tecnológicas accesibles y sostenibles que den respuesta a necesidades planteadas."
+            },
+            "CE 3": {
+                cat: "Competencia Específica",
+                desc: "Expresar, comunicar y difundir ideas, propuestas o soluciones tecnológicas en diferentes foros de manera efectiva, usando un lenguaje inclusivo y no sexista, empleando los recursos disponibles y aplicando los elementos y técnicas necesarias, para intercambiar la información de manera responsable y fomentar el trabajo en equipo."
+            },
+
+            // Criterios de Evaluación
+            "CEv 1.3": {
+                cat: "Criterio de Evaluación (Calificable)",
+                desc: "Mostrar interés en procesos de toma de decisiones, gestionando las emociones de forma adecuada, respetando las estructuras de gestión del grupo y la función de cada miembro para favorecer el éxito del proyecto en equipo."
+            },
+            "CEv 2.1": {
+                cat: "Criterio de Evaluación (Calificable)",
+                desc: "Diseñar y construir un producto que responda a una necesidad detectada, mediante la integración de operadores mecánicos, electrónicos o neumáticos, analizando su ciclo de vida y utilizando materiales y procesos eficientes."
+            },
+            "CEv 3.2": {
+                cat: "Criterio de Evaluación (Calificable)",
+                desc: "Presentar y difundir las propuestas y soluciones tecnológicas de manera efectiva, cuidando la entonación, expresión, gestión del tiempo y adaptación al contexto, con lenguaje inclusivo, no sexista e impacto visual positivo."
+            },
+
+            // Saberes Básicos
+            "TEC.4.A.1.1": {
+                cat: "Saber Básico (Bloque A)",
+                desc: "Estrategias de gestión de proyectos colaborativos y técnicas de resolución de problemas iterativas."
+            },
+            "TEC.4.A.1.3": {
+                cat: "Saber Básico (Bloque A)",
+                desc: "Técnicas de ideación (ej. SCAMPER, tormenta de ideas, mapas de empatía)."
+            },
+            "TEC.4.A.1.4": {
+                cat: "Saber Básico (Bloque A)",
+                desc: "Emprendimiento, perseverancia y creatividad en la resolución de problemas desde una perspectiva interdisciplinar de la actividad tecnológica y satisfacción e interés por el trabajo y la calidad del mismo."
+            },
+            "TEC.4.A.2.1": {
+                cat: "Saber Básico (Bloque A)",
+                desc: "Ciclo de vida de un producto y sus fases (extracción, fabricación, distribución, uso y fin de vida/reciclaje). Análisis sencillos."
+            },
+            "TEC.4.A.4.1": {
+                cat: "Saber Básico (Bloque A)",
+                desc: "Presentación y difusión del proyecto. Elementos, técnicas y herramientas. Comunicación efectiva de entonación, expresión, gestión del tiempo, adaptación del discurso y uso de un lenguaje inclusivo, libre de estereotipos sexistas."
+            },
+
+            // Descriptores Operativos
+            "STEM1": { cat: "Descriptor Perfil Salida", desc: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona estrategias para resolver problemas." },
+            "STEM2": { cat: "Descriptor Perfil Salida", desc: "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, planteándose preguntas y comprobando hipótesis." },
+            "STEM4": { cat: "Descriptor Perfil Salida", desc: "Interpreta y transmite los elementos más relevantes de procesos y resultados tecnológicos de forma clara y precisa en diferentes formatos." },
+            "CD1": { cat: "Descriptor Perfil Salida", desc: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad de la información." },
+            "CD2": { cat: "Descriptor Perfil Salida", desc: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales." },
+            "CD3": { cat: "Descriptor Perfil Salida", desc: "Se comunica, participa y colabora compartiendo contenidos mediante plataformas virtuales con actitud cívica." },
+            "CPSAA3": { cat: "Descriptor Perfil Salida", desc: "Comprende proactivamente las perspectivas de los demás para participar en el trabajo en grupo distribuyendo responsabilidades." },
+            "CPSAA4": { cat: "Descriptor Perfil Salida", desc: "Realiza autoevaluaciones sobre su proceso de aprendizaje para obtener conclusiones relevantes." },
+            "CE1": { cat: "Descriptor Perfil Salida", desc: "Analiza necesidades y oportunidades para presentar ideas y soluciones innovadoras, éticas y sostenibles." },
+            "CE3": { cat: "Descriptor Perfil Salida", desc: "Desarrolla el proceso de creación de soluciones valiosas utilizando estrategias ágiles y prototipos innovadores." },
+            "CCL1": { cat: "Descriptor Perfil Salida", desc: "Se expresa de forma oral, escrita o multimodal con coherencia y adecuación participando con actitud cooperativa." },
+            "CCEC3": { cat: "Descriptor Perfil Salida", desc: "Expresa ideas, opiniones y emociones por medio de producciones culturales y artísticas." },
+            "CC4": { cat: "Descriptor Perfil Salida", desc: "Comprende las relaciones de interdependencia y adopta un estilo de vida sostenible y ecosocialmente responsable." }
+        };
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const contents = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5'];
+            contents.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Deactivate all tab buttons
+            const buttons = ['btn-tab1', 'btn-tab2', 'btn-tab3', 'btn-tab4', 'btn-tab5'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.classList.remove('active');
+            });
+
+            // Show selected tab content & active button
+            const activeContent = document.getElementById(tabId);
+            if (activeContent) activeContent.classList.remove('hidden');
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        function filterSessions(phase) {
+            const cards = document.querySelectorAll('.session-card');
+            cards.forEach(card => {
+                if (phase === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (card.classList.contains('phase-' + phase)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function showModal(code) {
+            const modal = document.getElementById('modal-curricular');
+            const catEl = document.getElementById('modal-category');
+            const codeEl = document.getElementById('modal-code');
+            const descEl = document.getElementById('modal-description');
+
+            const item = CURRICULAR_DATA[code];
+            if (item) {
+                catEl.textContent = item.cat;
+                codeEl.textContent = code;
+                descEl.textContent = item.desc;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-curricular').classList.add('hidden');
+        }
+
+        /* Close modal on backdrop click */
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-curricular');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        function updateChecklist() {
+            const checkboxes = document.querySelectorAll('.chk-item');
+            let checkedCount = 0;
+            checkboxes.forEach(chk => {
+                if (chk.checked) checkedCount++;
+            });
+            const percent = Math.round((checkedCount / checkboxes.length) * 100);
+            const progressEl = document.getElementById('progress-percent');
+            if (progressEl) {
+                progressEl.textContent = percent + '%';
+            }
+        }
+    </script>
+</body>
+</html>

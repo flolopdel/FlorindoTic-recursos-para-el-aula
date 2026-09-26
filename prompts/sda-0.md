@@ -58,18 +58,25 @@ Genera un archivo HTML5 único (Single-File) que incluya:
 ----------------------------------------------------------------------
 VARIABLES DE ENTRADA DE LA SDA A GENERAR:
 ----------------------------------------------------------------------
-- [TÍTULO_SDA]: "RESOLVIENDO PROBLEMAS"
-- [DESCRIPCIÓN]: "Esta situación de aprendizaje aborda la resolución de retos reales mediante el proceso tecnológico completo. A través del análisis de un problema de su entorno, el alumnado investigará y diseñará una respuesta creativa que posteriormente materializará mediante la construcción de un prototipo o producto final funcional."
+- [TÍTULO_SDA]: "SdA 2:  RELANZAMOS PRODUCTOS"
+- [DESCRIPCIÓN]: "Esta situación de aprendizaje busca que el alumnado analice las etapas del ciclo de vida de un producto que se encuentre en fase de madurez o declive. Posteriormente, mediante el uso de técnicas de ideación, el alumnado propondrá mejoras o alternativas más creativas para relanzar el producto. Finalmente, la presentación y difusión del proyecto permitirá comunicar los resultados de forma clara y colaborativa, potenciando competencias digitales y comunicativas."
 - [CONTENIDOS_BLOQUES]: "
-Esta situación de aprendizaje aborda la resolución de retos reales mediante el proceso tecnológico completo. A través del análisis de un problema de su entorno, el alumnado investigará y diseñará una respuesta creativa que posteriormente materializará mediante la construcción de un prototipo o producto final funcional. 
 SECUENCIACIÓN DIDÁCTICA
-CE 1.1., 2.1., 4.1., 6.2.
-Saberes TYD.3.A.2.,TYD.3.A.5.,TYD.3.C.3.,TYD.3.B.2.,TYD.3.B.3.,TYD.3.D.3.
+CE 1.3.,2.1.,3.2.
+
+Saberes
+TEC.4.A.1.1.
+TEC.4.A.1.3.
+TEC.4.A.1.4.
+TEC.4.A.2.1.
+TEC.4.A.4.1.
+
 Tarea/Reto
 
-Reto_ Diseño de productos
-En esta actividad se propone que el alumnado identifique un problema o necesidad en su entorno cercano y plantee una posible solución tecnológica. Para ello, se sigue un proceso que incluye la toma de contacto, la definición del problema, la investigación de soluciones existentes con inclusión de referencias e imágenes inspiradoras, el planteamiento y selección de la mejor propuesta, el diseño del boceto (con ayuda de herramientas digitales 3D), la construcción del prototipo con materiales reutilizados, la evaluación y finalmente, la presentación del producto al grupo, destacando su funcionalidad y la manera en que resuelve eficazmente el problema detectado.
+Reto_Relanzamos productos
+Este proyecto plantea el reto de rediseñar y relanzar al mercado un producto en fase de madurez o declive. Para ello, en primer lugar, el alumnado analizará el ciclo de vida del producto seleccionado, evaluando sus ventas, competencia y los motivos de su pérdida de popularidad. En segundo lugar, desarrollará propuestas innovadoras y creará un prototipo digital de la solución elegida. Por último, diseñará una campaña publicitaria con estrategias reales de marketing y presentará la propuesta ante la clase asumiendo el rol de un equipo creativo frente a posibles inversores.
 
-- [DURACIÓN_SESIONES]: "6 Sesiones de 50 minutos."
-- [PRODUCTO_FINAL]: "Prototipo de un producto y presentación en público"
+
+- [DURACIÓN_SESIONES]: "8 Sesiones de 50 minutos."
+- [PRODUCTO_FINAL]: "Prototipo del rediseño del producto y presentación en público"
 - [CONTEXTO_DUA]: "Garantizar accesibilidad con videotutoriales breves, temporalizaciones adaptadas y plantillas con andamiaje para alumnado que requieran apoyo."

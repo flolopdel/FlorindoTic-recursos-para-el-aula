@@ -2,4 +2,6 @@ Crea una presentación para presentar en clase la sda, la idea es en la primera 
 
 La presentación debe de estar bien resumida entre 4-6 slides máximo
 
-Usa definiciones fáciles, evitando las definiciones en inglés, la salida debe de ser un html interactivo.
+Usa definiciones fáciles, evitando las definiciones en inglés, la salida debe de ser un html5 interactivo.
+
+La SdA está adjunta como pdf

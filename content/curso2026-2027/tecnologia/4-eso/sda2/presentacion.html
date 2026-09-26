@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Relanzamos Productos - Presentación en Aula</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        tech: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px) scale(0.99);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbars for card contents if needed */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between select-none bg-slate-950 text-slate-100">
+
+    <!-- Top Header -->
+    <header class="w-full px-6 py-4 flex items-center justify-between glass-panel z-20 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-r from-emerald-500 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-emerald-500/20">
+                <i data-lucide="recycle" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-sm md:text-base font-bold bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
+                    Relanzamos Productos
+                </h1>
+                <p class="text-xs text-slate-400">Tecnología 4º ESO • Situación de Aprendizaje</p>
+            </div>
+        </div>
+
+        <!-- Slide Indicators / Counter -->
+        <div class="flex items-center space-x-4">
+            <div class="hidden md:flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800 text-xs text-slate-300">
+                <span id="current-slide-num" class="font-bold text-emerald-400">1</span>
+                <span>/</span>
+                <span id="total-slides-num">6</span>
+            </div>
+            <button id="btn-fullscreen" onclick="toggleFullScreen()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Pantalla completa">
+                <i data-lucide="maximize" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-900 h-1.5 relative overflow-hidden">
+        <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 h-full w-1/6 transition-all duration-300"></div>
+    </div>
+
+    <!-- MAIN SLIDES CONTAINER -->
+    <main class="flex-1 relative w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-center overflow-hidden">
+
+        <!-- SLIDE 1: Presentación y Reto -->
+        <section id="slide-1" class="slide active w-full flex-col justify-center items-center text-center max-w-4xl mx-auto space-y-6">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>¡Bienvenidos a vuestra nueva Agencia Creativa!</span>
+            </div>
+
+            <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Relanzamos Productos:<br>
+                <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
+                    Del Declive a la Innovación Sostenible
+                </span>
+            </h2>
+
+            <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
+                Muchos objetos tecnológicos del pasado molaban mucho, pero han quedado en el olvido.
+                Vuestra misión será <strong class="text-emerald-400">resucitarlos</strong> y convertirlos en productos inteligentes, ecológicos e inclusivos.
+            </p>
+
+            <!-- Retro vs Modern Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full pt-4">
+                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-3">
+                        <i data-lucide="radio" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-sm">1. El Objeto "Retro"</h3>
+                    <p class="text-xs text-slate-400 mt-1">Elegiréis un aparato antiguo que haya caído en desuso (Walkman, cámara de carrete, Tamagotchi...).</p>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
+                        <i data-lucide="leaf" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-sm">2. Rediseño Ecológico</h3>
+                    <p class="text-xs text-slate-400 mt-1">Aplicaréis materiales sostenibles, energías limpias y facilidad para repararlo.</p>
+                </div>
+
+                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3">
+                        <i data-lucide="box" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-sm">3. Prototipo Digital</h3>
+                    <p class="text-xs text-slate-400 mt-1">Diseñaréis el nuevo modelo en 2D/3D por ordenador y prepararéis su anuncio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: ¿Qué vais a aprender? -->
+        <section id="slide-2" class="slide w-full flex-col justify-center space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Objetivos Clave</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Qué vais a aprender en esta unidad?</h2>
+                <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">Cuatro conocimientos y habilidades prácticas que dominaréis al finalizar:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Learning 1 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl shrink-0">
+                        <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Ciclo de Vida de los Productos</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                            Aprenderéis qué pasa con un objeto desde que se extraen sus materiales hasta que se recicla o se tira. Entenderéis la causa de la obsolescencia.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Learning 2 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
+                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl shrink-0">
+                        <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Técnicas Creativas de Innovación</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                            Utilizaremos preguntas clave para reinventar el producto: <span class="text-indigo-300 font-medium">Sustituir piezas, Combinar funciones o Adaptar para personas con discapacidad.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Learning 3 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
+                    <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl shrink-0">
+                        <i data-lucide="monitor" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Diseño Digital 2D y 3D</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                            Aprenderéis a usar programas de ordenador (como Tinkercad o Canva) para crear el boceto y la maqueta virtual tridimensional de vuestra invención.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Learning 4 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
+                    <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl shrink-0">
+                        <i data-lucide="mega-phone" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Comunicación Express e Inclusiva</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                            Aprenderéis a presentar vuestras ideas de forma clara y convincente en solo 3 minutos, creando además anuncios libres de estereotipos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Plan de Trabajo (8 Sesiones) -->
+        <section id="slide-3" class="slide w-full flex-col justify-center space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Paso a Paso</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">El Camino del Proyecto (8 Sesiones)</h2>
+                <p class="text-xs sm:text-sm text-slate-400">Trabajaremos durante aproximadamente 3 semanas organizados en 3 fases clave:</p>
+            </div>
+
+            <!-- Timeline Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Phase 1 -->
+                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-emerald-500 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-md">FASE 1</span>
+                            <span class="text-xs text-slate-400">Sesiones 1 - 2</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Inicio y Diagnóstico</h3>
+                        <ul class="text-xs text-slate-300 space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                                <span>Ver productos icónicos del pasado.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                                <span>Formar equipos de 4 personas y reparto de roles.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                                <span>Elegir el producto retro a relanzar.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-indigo-500 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded-md">FASE 2</span>
+                            <span class="text-xs text-slate-400">Sesiones 3 - 6</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Desarrollo y Diseño</h3>
+                        <ul class="text-xs text-slate-300 space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                                <span>Lluvia de ideas y mejoras ecológicas.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                                <span>Modelado del prototipo en 2D / 3D.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                                <span>Creación del cartel o anuncio publicitario.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-purple-500 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-purple-500/20 text-purple-300 rounded-md">FASE 3</span>
+                            <span class="text-xs text-slate-400">Sesiones 7 - 8</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-2">Presentación y Cierre</h3>
+                        <ul class="text-xs text-slate-300 space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
+                                <span>Ensayo de la presentación breve (3 min).</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
+                                <span><strong>Evento Final:</strong> Presentación ante la clase.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
+                                <span>Evaluación entre compañeros y reflexión.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Entregables y Roles de Equipo -->
+        <section id="slide-4" class="slide w-full flex-col justify-center space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-cyan-400">Trabajo en Equipo</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Qué debemos entregar y qué rol tendrás?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Deliverables -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wide flex items-center space-x-2">
+                        <i data-lucide="folder-check" class="w-4 h-4"></i>
+                        <span>Los 3 Productos Finales</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-200">1. Prototipo Digital (2D o 3D)</span>
+                            <span class="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded">Tinkercad / Canva</span>
+                        </div>
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-200">2. Ficha de Sostenibilidad</span>
+                            <span class="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded">Materiales y Reciclaje</span>
+                        </div>
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-200">3. Presentación Oral + Anuncio Inclusivo</span>
+                            <span class="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded">3 min. en clase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wide flex items-center space-x-2">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Los 4 Roles de la Agencia (4 Alumnos)</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
+                            <p class="font-bold text-amber-400">Coordinación</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Controla los tiempos y el plan de trabajo.</p>
+                        </div>
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
+                            <p class="font-bold text-cyan-400">Diseño e Innovación</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Lidera el diseño 2D/3D del prototipo.</p>
+                        </div>
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
+                            <p class="font-bold text-emerald-400">Sostenibilidad</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Supervisa los materiales ecológicos.</p>
+                        </div>
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
+                            <p class="font-bold text-purple-400">Comunicación</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Dirige la presentación oral y el cartel.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Evaluation Breakdown -->
+        <section id="slide-5" class="slide w-full flex-col justify-center space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Criterios Claros</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Cómo se evaluará tu nota?</h2>
+                <p class="text-xs sm:text-sm text-slate-400">La evaluación es transparente y valora tanto el resultado como el trabajo diario:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Card 1 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-extrabold text-xl border border-emerald-500/30">
+                        40%
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Prototipo y Ecodiseño</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            Diseño digital 2D/3D bien elaborado, selección de materiales sostenibles y mejoras innovadoras aplicadas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-extrabold text-xl border border-indigo-500/30">
+                        30%
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Trabajo en Equipo</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            Respeto por las funciones asignadas, resolución dialogada de dudas y apoyo entre compañeros.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center font-extrabold text-xl border border-purple-500/30">
+                        30%
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Presentación y Anuncio</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            Claridad al hablar, ajuste al tiempo (3 minutos) y uso de un lenguaje gráfico inclusivo sin estereotipos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1 text-indigo-400"></i>
+                También contarás con autoevaluación y evaluación entre equipos para valorar el esfuerzo de todos.
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Misión de la Sesión 1 -->
+        <section id="slide-6" class="slide w-full flex-col justify-center space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">¡Manos a la Obra!</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Tu Misión para Hoy (Sesión 1)</h2>
+                <p class="text-xs sm:text-sm text-slate-400">Pasos prácticos para completar antes de terminar la clase:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Step 1 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm">
+                        1
+                    </div>
+                    <h3 class="font-bold text-white text-sm">Formar el Equipo</h3>
+                    <p class="text-xs text-slate-400">Agrupaos en parejas o equipos de 4 personas y elegid las funciones iniciales.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 font-bold flex items-center justify-center text-sm">
+                        2
+                    </div>
+                    <h3 class="font-bold text-white text-sm">Elegir Objeto Retro</h3>
+                    <p class="text-xs text-slate-400">Seleccionad un producto en desuso (Walkman, Cámara analógica, Tamagotchi, Radio antigua...).</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center text-sm">
+                        3
+                    </div>
+                    <h3 class="font-bold text-white text-sm">Mural de Ideas Iniciales</h3>
+                    <p class="text-xs text-slate-400">Responded en grupo: ¿Qué sabemos sobre por qué dejó de usarse y qué queremos mejorar?</p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="text-center pt-2">
+                <button onclick="launchCelebration()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition transform active:scale-95 inline-flex items-center space-x-2 text-sm">
+                    <i data-lucide="rocket" class="w-4 h-4"></i>
+                    <span>¡Comenzar el Proyecto!</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Footer Controls -->
+    <footer class="w-full px-6 py-4 glass-panel z-20 border-t border-slate-800 flex items-center justify-between">
+        <button id="btn-prev" onclick="prevSlide()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold rounded-xl border border-slate-700 transition flex items-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <span>Anterior</span>
+        </button>
+
+        <!-- Slide Dots -->
+        <div id="dots-container" class="flex items-center space-x-2">
+            <!-- Dots dynamically highlighted by JS -->
+        </div>
+
+        <button id="btn-next" onclick="nextSlide()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold rounded-xl transition flex items-center space-x-2 shadow-lg shadow-emerald-600/20">
+            <span>Siguiente</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+    </footer>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        const currentNumElem = document.getElementById('current-slide-num');
+        const totalNumElem = document.getElementById('total-slides-num');
+        const progressBar = document.getElementById('progress-bar');
+        const dotsContainer = document.getElementById('dots-container');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function initDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-emerald-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
+                dot.onclick = () => goToSlide(i);
+                dot.title = `Ir a la diapositiva ${i}`;
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateUI() {
+            // Update slide visibility
+            for (let i = 1; i <= totalSlides; i++) {
+                const slideElem = document.getElementById(`slide-${i}`);
+                if (i === currentSlide) {
+                    slideElem.classList.add('active');
+                } else {
+                    slideElem.classList.remove('active');
+                }
+            }
+
+            // Update numbers and progress
+            currentNumElem.textContent = currentSlide;
+            totalNumElem.textContent = totalSlides;
+            const progressPercent = (currentSlide / totalSlides) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            // Update buttons state
+            btnPrev.disabled = currentSlide === 1;
+            if (currentSlide === totalSlides) {
+                btnNext.innerHTML = `<span>Finalizar</span> <i data-lucide="check" class="w-4 h-4"></i>`;
+                btnNext.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                btnNext.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+            } else {
+                btnNext.innerHTML = `<span>Siguiente</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+                btnNext.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+                btnNext.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+            }
+
+            initDots();
+            lucide.createIcons();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateUI();
+            } else {
+                launchCelebration();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            if (slideIndex >= 1 && slideIndex <= totalSlides) {
+                currentSlide = slideIndex;
+                updateUI();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch Swipe Navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                prevSlide();
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function launchCelebration() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Initialize icons and UI on startup
+        window.onload = function() {
+            lucide.createIcons();
+            updateUI();
+        };
+    </script>
+</body>
+</html>

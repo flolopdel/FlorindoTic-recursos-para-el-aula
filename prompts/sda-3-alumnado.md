@@ -1,0 +1,1 @@
+Genera un gogole documento con los detalles de esta guía interactiva
