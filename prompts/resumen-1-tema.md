@@ -6,15 +6,15 @@ Por favor, realiza un proceso de OCR (reconocimiento óptico de caracteres) para
 
 A partir del texto extraído y teniendo en cuenta los siguientes datos de contexto:
 
-- TÍTULO DEL TEMA: Fabricación y diseño de objetos
+- TÍTULO DEL TEMA: Construcción y análisis de objetos
 - APARTADOS PRINCIPALES A DESARROLLAR:
   1. El diseño
-  2. El proceso de diseño
-  3. Ciclo de vida de un producto
-  4. La obsolencia
-  5. Modelos de producción sostenible
-  6. Materiales
-  7. Técnicas de Fabricación
+  2. La construcción y el análisis de un objeto
+  3. El taller de tecnlogía
+  4. Las herramientas
+  5. Máquinas y medidas de seguridad
+  6. Trabajo con la madera, papel y cartón
+  7. Trabajo con metal
 
   ...
 

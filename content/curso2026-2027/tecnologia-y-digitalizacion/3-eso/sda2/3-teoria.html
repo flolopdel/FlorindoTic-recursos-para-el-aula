@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construcción y Análisis de Objetos - Tecnología 3º ESO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        tech: {
+                            wood: '#d97706',
+                            metal: '#475569',
+                            plastic: '#059669',
+                            danger: '#dc2626',
+                            warning: '#d97706',
+                            safety: '#16a34a',
+                            info: '#2563eb'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0f172a 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans min-h-screen flex flex-col">
+
+    <!-- Barra de progreso superior -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-slate-200 z-50 no-print">
+        <div id="progress-bar" class="h-full bg-brand-500 w-0 transition-all duration-150"></div>
+    </div>
+
+    <!-- Navegación Principal -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-compass-drafting"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-lg sm:text-xl leading-tight">TecnoAula 3º ESO</h1>
+                    <p class="text-xs text-brand-600 font-medium">Construcción y Análisis de Objetos</p>
+                </div>
+            </div>
+
+            <!-- Menú de Navegación Escritorio -->
+            <nav class="hidden lg:flex items-center space-x-1 text-sm font-medium text-slate-600">
+                <a href="#diseno" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">1. El Diseño</a>
+                <a href="#construccion" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">2. Proceso</a>
+                <a href="#taller" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">3. El Taller</a>
+                <a href="#herramientas" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">4. Herramientas</a>
+                <a href="#maquinas" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">5. Máquinas</a>
+                <a href="#materiales" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-600 transition">6. Materiales</a>
+                <a href="#practica" class="px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-semibold hover:bg-brand-100 transition">7. Practica</a>
+            </nav>
+
+            <!-- Botones de Acción -->
+            <div class="flex items-center space-x-2">
+                <button onclick="window.print()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition" title="Imprimir o guardar PDF">
+                    <i class="fa-solid fa-print text-lg"></i>
+                </button>
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
+            <a href="#diseno" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">1. El Diseño del Producto</a>
+            <a href="#construccion" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">2. Proceso de Construcción</a>
+            <a href="#taller" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">3. El Taller de Tecnología</a>
+            <a href="#herramientas" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">4. Las Herramientas</a>
+            <a href="#maquinas" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">5. Máquinas e Higiene</a>
+            <a href="#materiales" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">6. Trabajo con Materiales</a>
+            <a href="#practica" class="block px-3 py-2 rounded-md text-base font-medium bg-brand-50 text-brand-700">7. Autoevaluación y Retos</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-header text-white py-12 px-4 sm:px-6 lg:px-8 shadow-inner no-print">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-4 max-w-2xl">
+                <span class="inline-block bg-white/20 text-brand-100 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider backdrop-blur-sm">
+                    Asignatura: Tecnología y Digitalización • 3º ESO
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    Construcción y Análisis de Objetos
+                </h2>
+                <p class="text-slate-200 text-base sm:text-lg leading-relaxed">
+                    Guía de estudio interactiva diseñada para el alumnado. Descubre cómo se idean, representan y fabrican los objetos cotidianos mediante un aprendizaje práctico, inclusivo y seguro.
+                </p>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="#practica" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-gamepad"></i> Ir a los Retos e Interactive Quiz
+                    </a>
+                    <a href="#cuaderno" class="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2.5 rounded-xl border border-white/20 transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-pen-to-square"></i> Mi Rincón de Apuntes
+                    </a>
+                </div>
+            </div>
+            <div class="bg-white/10 p-6 rounded-2xl border border-white/20 backdrop-blur-md w-full md:w-80 space-y-3">
+                <h3 class="font-bold text-sm text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i> Objetivos del Tema
+                </h3>
+                <ul class="text-xs text-slate-200 space-y-2">
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-0.5"></i> Interrelacionar Morfología, Tecnología y Sociología.</li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-0.5"></i> Conocer las fases desde la idea hasta el prototipo.</li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-0.5"></i> Utilizar con seguridad herramientas y máquinas.</li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-0.5"></i> Identificar normas de higiene y prevención de riesgos.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- APARTADO 1: El diseño del producto -->
+        <section id="diseno" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-xl font-bold">
+                    1
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">El Diseño del Producto</h2>
+                    <p class="text-sm text-slate-500">¿Cómo nacen los objetos que utilizamos día a día?</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            El **diseño industrial** busca resolver necesidades humanas creando productos funcionales, cómodos de usar (ergonómicos), estéticos y respetuosos con el medio ambiente, equilibrando la forma, la técnica y la sociedad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">
+                        <i class="fa-solid fa-shapes"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-2">1. Área Morfológica</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Se enfoca en la **aspecto formal y estética**: la forma, el color, la textura y las sensaciones visuales o táctiles que transmite el producto al alumnado o usuario.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold mb-3">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-2">2. Área Tecnológica</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Se encarga del **proceso técnico**: selección de materiales, estudio de sus propiedades, método de fabricación, mantenimiento y su posterior reciclaje.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
+                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold mb-3">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-2">3. Área Sociológica</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Analiza el **entorno y las necesidades**: investiga las preferencias de la sociedad, modas, impacto ambiental, economía y formas de comercialización responsable.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Caso práctico con imagen del libro -->
+            <div class="bg-sky-50/60 rounded-xl p-5 border border-sky-100 flex flex-col md:flex-row gap-6 items-center">
+                <div class="md:w-1/2 space-y-3">
+                    <span class="bg-brand-600 text-white text-xs font-bold px-2.5 py-1 rounded-md uppercase">Ejemplo de Análisis</span>
+                    <h3 class="text-lg font-bold text-slate-900">Análisis Didáctico de un Teléfono Móvil</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Un smartphone es el ejemplo perfecto de cómo conviven las tres áreas. Su carcasa y pantalla corresponden a la **morfología**; los circuitos, cobre, oro y batería a la **tecnología**; y las preferencias de uso de la juventud y la sociedad corresponden a la **sociología**.
+                    </p>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="image_3ecefd.jpg" alt="Análisis del teléfono móvil en las tres áreas del diseño" class="rounded-lg shadow-md max-h-64 object-contain bg-white p-2 border border-slate-200">
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 2: La construcción y el análisis de un objeto -->
+        <section id="construccion" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
+                    2
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">La Construcción y el Análisis de Objetos</h2>
+                    <p class="text-sm text-slate-500">Pasos ordenados para transformar una idea en un producto real</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            Proyectar un objeto requiere un método riguroso que abarca desde la **definición del problema** hasta la **producción**, pasando por la evaluación de ideas y la elaboración de dibujos técnicos normalizados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infografía de Fases con Imagen incorporada -->
+            <div class="mb-8">
+                <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-diagram-project text-brand-500"></i> Las 5 Fases del Proceso Tecnológico
+                </h3>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4 flex justify-center">
+                    <img src="image_3ecec2.png" alt="Fases del diseño industrial: Definición del problema, Diseño industrial, Validación, Diseño final y Producción" class="rounded-lg max-h-48 object-contain">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+                    <div class="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                        <span class="font-bold text-orange-800 block mb-1">1. Problema</span>
+                        <p class="text-slate-600">Se identifica la necesidad y se plantean preguntas clave (presupuesto, normas ISO/CE).</p>
+                    </div>
+                    <div class="p-3 bg-lime-50 border border-lime-200 rounded-lg">
+                        <span class="font-bold text-lime-800 block mb-1">2. Diseño Industrial</span>
+                        <p class="text-slate-600">Lluvia de ideas, bocetos y exploración creativa de soluciones.</p>
+                    </div>
+                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <span class="font-bold text-purple-800 block mb-1">3. Validación</span>
+                        <p class="text-slate-600">Comprobación técnica, pruebas de resistencia y viabilidad.</p>
+                    </div>
+                    <div class="p-3 bg-sky-50 border border-sky-200 rounded-lg">
+                        <span class="font-bold text-sky-800 block mb-1">4. Diseño Final</span>
+                        <p class="text-slate-600">Planos detallados acotados con despiece y materiales (CAD/DAO).</p>
+                    </div>
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <span class="font-bold text-amber-800 block mb-1">5. Producción</span>
+                        <p class="text-slate-600">Fabricación del objeto o prototipo final en taller o industria.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Métodos de Evaluación y Niveles de Dibujo -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Métodos -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-600"></i> Métodos para Evaluar Ideas
+                    </h4>
+                    <ul class="space-y-2 text-xs text-slate-700">
+                        <li class="bg-white p-2.5 rounded-lg border border-slate-200"><strong class="text-slate-900">Análisis Morfológico:</strong> Estudia variaciones de forma, tamaño y acabado.</li>
+                        <li class="bg-white p-2.5 rounded-lg border border-slate-200"><strong class="text-slate-900">Técnica de las 6 W:</strong> Responde a <i>¿Qué?, ¿Dónde?, ¿Cuándo?, ¿Cómo?, ¿Por qué? y ¿Quién?</i></li>
+                        <li class="bg-white p-2.5 rounded-lg border border-slate-200"><strong class="text-slate-900">Mapa Mental:</strong> Organiza visualmente los conceptos clave.</li>
+                        <li class="bg-white p-2.5 rounded-lg border border-slate-200"><strong class="text-slate-900">Condicionantes:</strong> Fija límites infranqueables (ej. coste máximo, peso).</li>
+                    </ul>
+                </div>
+
+                <!-- Niveles de Dibujo -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-3 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-pencil text-brand-600"></i> Niveles de Dibujo Técnico
+                    </h4>
+                    <div class="space-y-2 text-xs">
+                        <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                            <span class="font-bold text-brand-600">Dibujo Conceptual (Boceto):</span>
+                            <p class="text-slate-600">Lluvia de ideas inicial mediante trazos abstractos y rápidos sin medidas exactas.</p>
+                        </div>
+                        <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                            <span class="font-bold text-brand-600">Dibujo Preliminar (Croquis):</span>
+                            <p class="text-slate-600">Dibujo a mano alzada pero acotado (con medidas orientativas) de la idea elegida.</p>
+                        </div>
+                        <div class="p-2.5 bg-white rounded-lg border border-slate-200">
+                            <span class="font-bold text-brand-600">Dibujo Detallado (Plano):</span>
+                            <p class="text-slate-600">Planos de despiece normalizados con escala, vistas completas y especificaciones de montaje.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 3: El taller de tecnología -->
+        <section id="taller" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                    3
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">El Taller de Tecnología</h2>
+                    <p class="text-sm text-slate-500">Un espacio de trabajo ordenado, limpio y seguro para el aprendizaje</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            El aula-taller requiere el cumplimiento estricto de normas de organización, distribución ergonómica y señalización normalizada para evitar accidentes y facilitar el trabajo en equipo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distribución y Requisitos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
+                    <i class="fa-solid fa-ruler-combined text-emerald-600 text-xl"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Dimensiones Recomendadas</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Mínimo de **80 m²** totales o al menos **5 m² por estudiante** para trabajar con holgura y comodidad.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-2">
+                    <i class="fa-solid fa-[#0284c7] text-brand-600 text-xl"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Mobiliario y Suministros</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Mesas altas adaptadas para trabajar de pie o en taburete (ergonomía), tomas de electricidad protegidas, ventilación y lavabo.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-100 space-y-2">
+                    <i class="fa-solid fa-boxes-packing text-amber-600 text-xl"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Zonas de Almacén</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Armarios cerrados para herramientas de riesgo, panel porta-herramientas y zona de proyectos del alumnado.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Señales de Seguridad en el Taller -->
+            <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-[#16a34a] text-tech-safety"></i> Señalización Normalizada de Seguridad
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="p-4 rounded-xl border border-red-200 bg-red-50/50 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-900 text-sm">Prohibición</h4>
+                        <p class="text-xs text-slate-600 mt-1">Forma circular, borde y banda roja sobre fondo blanco. Ej: Prohibido tocar.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-glasses"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-blue-900 text-sm">Obligación</h4>
+                        <p class="text-xs text-slate-600 mt-1">Forma circular, fondo azul con símbolo blanco. Ej: Uso obligatorio de gafas.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-none border-b-8 border-amber-500 bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-lg shrink-0" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); width:38 h-38;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm">Advertencia</h4>
+                        <p class="text-xs text-slate-600 mt-1">Triangular, borde negro sobre fondo amarillo. Ej: Riesgo eléctrico.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-kit-medical"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 text-sm">Salvamento</h4>
+                        <p class="text-xs text-slate-600 mt-1">Cuadrada o rectangular, fondo verde con dibujo blanco. Ej: Botiquín / Salida.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactivo: Medidor de Sonido / Decibelios (dB) -->
+            <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Herramienta Interactiva</span>
+                        <h4 class="text-lg font-bold">Simulador de Riesgo Acústico en el Taller (dB)</h4>
+                    </div>
+                    <span id="db-badge" class="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                        40 dB - Zona Confortable
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <input type="range" id="db-slider" min="30" max="120" value="40" step="5" class="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">Nivel de Sonido:</span>
+                            <span id="db-value" class="text-2xl font-extrabold text-amber-400">40 dB</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">Ejemplo en la vida real:</span>
+                            <span id="db-example" class="font-semibold text-slate-200">Conversación tranquila / Aula en calma</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">Medida de Seguridad:</span>
+                            <span id="db-safety" class="font-semibold text-emerald-400">Sin riesgo. Exposición normal.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 4: Las Herramientas -->
+        <section id="herramientas" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl font-bold">
+                    4
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Las Herramientas del Taller</h2>
+                    <p class="text-sm text-slate-500">Clasificación según la operación mecánica que realizan</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            Las herramientas manuales se dividen en **familias** según su función. Emplear la herramienta correcta para cada trabajo garantiza la precisión y evita accidentes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtro e Interactivo de Herramientas -->
+            <div class="mb-6">
+                <div class="flex flex-wrap gap-2 mb-4" id="tool-category-buttons">
+                    <button onclick="filterTools('all')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-sm">Todas</button>
+                    <button onclick="filterTools('percusion')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Percusión</button>
+                    <button onclick="filterTools('corte')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Corte</button>
+                    <button onclick="filterTools('punzante')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Punzantes</button>
+                    <button onclick="filterTools('sujecion')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Sujeción</button>
+                    <button onclick="filterTools('desgaste')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Desgaste/Pulido</button>
+                    <button onclick="filterTools('torsion')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Torsión</button>
+                    <button onclick="filterTools('medida')" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Medición</button>
+                </div>
+
+                <!-- Grid de Tarjetas de Herramientas -->
+                <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Tarjeta Martillo -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="percusion">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-hammer text-amber-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Martillos y Mazas</h4>
+                        </div>
+                        <span class="inline-block bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">PERCUSIÓN</span>
+                        <p class="text-xs text-slate-600">Golpean o deforman materiales mediante impacto directos. Ejemplos: Martillo de bola, maza de nylon.</p>
+                    </div>
+
+                    <!-- Tarjeta Sierra / Segueta -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="corte">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-scissors text-red-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Sierras, Tijeras y Cúter</h4>
+                        </div>
+                        <span class="inline-block bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">CORTE</span>
+                        <p class="text-xs text-slate-600">Seccionan o dividen materiales. Ejemplos: Sierra de marquetería, tijeras de chapa, serrucho.</p>
+                    </div>
+
+                    <!-- Tarjeta Barrena -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="punzante">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-bore-hole text-purple-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Barrenas y Punzones</h4>
+                        </div>
+                        <span class="inline-block bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">PUNZANTES</span>
+                        <p class="text-xs text-slate-600">Penetran o realizan agujeros guía de forma manual sobre madera o plástico blando.</p>
+                    </div>
+
+                    <!-- Tarjeta Sargento -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="sujecion">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-paperclip text-blue-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Sargento / Tornillo Banco</h4>
+                        </div>
+                        <span class="inline-block bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">SUJECIÓN</span>
+                        <p class="text-xs text-slate-600">Inmovilizan las piezas firmemente a la mesa para serrar, taladrar o encolar con seguridad.</p>
+                    </div>
+
+                    <!-- Tarjeta Escofina -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="desgaste">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-brush text-emerald-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Escofinas y Limas</h4>
+                        </div>
+                        <span class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">DESGASTE / PULIDO</span>
+                        <p class="text-xs text-slate-600">Erosionan y suavezan irregularidades. Escofina para madera; lima para metales.</p>
+                    </div>
+
+                    <!-- Tarjeta Destornillador -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="torsion">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-screwdriver text-indigo-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Destornilladores y Llaves</h4>
+                        </div>
+                        <span class="inline-block bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">TORSIÓN</span>
+                        <p class="text-xs text-slate-600">Aprietan o aflojan elementos roscados (tornillos, tuercas) transmitiendo fuerza giratoria.</p>
+                    </div>
+
+                    <!-- Tarjeta Calibre -->
+                    <div class="tool-card bg-slate-50 p-4 rounded-xl border border-slate-200" data-category="medida">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-ruler-horizontal text-sky-600 text-xl"></i>
+                            <h4 class="font-bold text-slate-900 text-sm">Calibre (Pie de Rey) y Regla</h4>
+                        </div>
+                        <span class="inline-block bg-sky-100 text-sky-800 text-[10px] font-bold px-2 py-0.5 rounded mb-2">MEDICIÓN Y TRAZADO</span>
+                        <p class="text-xs text-slate-600">Miden dimensiones con alta precisión (grosores, diámetros internos) y realizan marcados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 5: Máquinas y medidas de seguridad -->
+        <section id="maquinas" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xl font-bold">
+                    5
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Máquinas Herramienta e Higiene</h2>
+                    <p class="text-sm text-slate-500">Uso de máquinas eléctricas con el máximo rigor preventivo</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            Las máquinas herramienta incorporan un motor eléctrico que facilita el trabajo, pero exigen extremar las precauciones para evitar enganches, atrapamientos o lesiones.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clasificación de Máquinas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <i class="fa-solid fa-saw-blade text-red-500 text-2xl mb-2"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Corte Eléctrico</h4>
+                    <p class="text-xs text-slate-600 mt-1">Sierra de calar, sierra circular de disco.</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <i class="fa-solid fa-screwdriver-wrench text-amber-500 text-2xl mb-2"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Perforación</h4>
+                    <p class="text-xs text-slate-600 mt-1">Taladro portátil y taladro de columna o mesa.</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <i class="fa-solid fa-[#0284c7] text-brand-600 text-2xl mb-2"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Torsión Eléctrica</h4>
+                    <p class="text-xs text-slate-600 mt-1">Atornillador de batería con regulador de par.</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <i class="fa-solid fa-rug text-emerald-500 text-2xl mb-2"></i>
+                    <h4 class="font-bold text-slate-900 text-sm">Desgaste Eléctrico</h4>
+                    <p class="text-xs text-slate-600 mt-1">Lijadora y pulidora eléctrica de banda o mecedora.</p>
+                </div>
+            </div>
+
+            <!-- Decálogo de Seguridad interactivo con Checkbox -->
+            <div class="bg-red-50/50 border border-red-200 rounded-xl p-5">
+                <h3 class="font-bold text-red-900 text-base mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-red-600"></i> Checklist Didáctico: Reglas de Oro de Seguridad
+                </h3>
+                <p class="text-xs text-slate-600 mb-4">Haz clic en cada norma para confirmar que la comprendes antes de empezar la práctica en taller:</p>
+                
+                <div class="space-y-2.5 text-xs text-slate-800">
+                    <label class="flex items-center gap-3 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition">
+                        <input type="checkbox" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                        <span><strong>Protección Personal:</strong> Recoger pelo largo, no llevar bufandas, colgantes o ropa holgada.</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition">
+                        <input type="checkbox" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                        <span><strong>Manos Limpias y Secas:</strong> Asegurar que las manos están secas antes de tocar enchufes o máquinas.</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition">
+                        <input type="checkbox" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                        <span><strong>Gafas de Protección Ocular:</strong> Imprescindible al usar taladros, sierras o lijadoras para evitar esquirlas.</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition">
+                        <input type="checkbox" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                        <span><strong>Supervisión Docente:</strong> Consultar siempre con el profesor o profesora antes de poner en marcha cualquier máquina.</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 6: Trabajo con Madera, Metal y Plásticos -->
+        <section id="materiales" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-tech-wood/20 text-tech-wood flex items-center justify-center text-xl font-bold">
+                    6
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Trabajo con Madera, Metal y Plásticos</h2>
+                    <p class="text-sm text-slate-500">Propiedades mecánicas y técnicas específicas de transformación</p>
+                </div>
+            </div>
+
+            <!-- Takeaway Box -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                        <p class="text-slate-700 text-sm mt-1 leading-relaxed">
+                            Cada material requiere herramientas específicas adaptadas a su dureza y comportamiento. Trabajar con seguridad evita astillas en la madera, cortes con rebabas metálicas o quemaduras con plásticos termofusibles.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla Comparativa Didáctica -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-800 border-b border-slate-200">
+                            <th class="p-3 font-bold">Familia de Material</th>
+                            <th class="p-3 font-bold">Herramientas Recomendadas</th>
+                            <th class="p-3 font-bold">Riesgos Principales</th>
+                            <th class="p-3 font-bold">Medidas Preventivas</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-amber-50/30 transition">
+                            <td class="p-3 font-semibold text-amber-900 flex items-center gap-2">
+                                <i class="fa-solid fa-tree text-tech-wood text-sm"></i> Madera y Cartón
+                            </td>
+                            <td class="p-3 text-slate-600">Sierra de marquetería, escofina, papel de lija, cúter.</td>
+                            <td class="p-3 text-slate-600">Astillas, cortes y polvo en suspensión.</td>
+                            <td class="p-3 text-slate-600">Sujetar con sargento, lijar en el sentido de la veta, usar gafas.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-100/50 transition">
+                            <td class="p-3 font-semibold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-cubes-stacked text-tech-metal text-sm"></i> Metales
+                            </td>
+                            <td class="p-3 text-slate-600">Sierra de arco para metal, tijera de chapa, lima, soldador.</td>
+                            <td class="p-3 text-slate-600">Bordes cortantes (rebabas) y quemaduras.</td>
+                            <td class="p-3 text-slate-600">Usar guantes de cuero reforzado y limar las rebabas inmediatamente.</td>
+                        </tr>
+                        <tr class="hover:bg-emerald-50/30 transition">
+                            <td class="p-3 font-semibold text-emerald-900 flex items-center gap-2">
+                                <i class="fa-solid fa-bottle-water text-tech-plastic text-sm"></i> Plásticos
+                            </td>
+                            <td class="p-3 text-slate-600">Cúter, pistola de termofusión, broca con lubricación.</td>
+                            <td class="p-3 text-slate-600">Astillamiento frágil y quemaduras con cola caliente.</td>
+                            <td class="p-3 text-slate-600">No tocar la boquilla de la pistola termofusible y usar gafas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- APARTADO 7: Autoevaluación, Retos y Rincón de Apuntes -->
+        <section id="practica" class="scroll-mt-20 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
+                    7
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Zona de Autoevaluación y Aprendizaje Activo</h2>
+                    <p class="text-sm text-slate-500">Ponte a prueba con cuestionarios, juegos de asociación y toma tus notas</p>
+                </div>
+            </div>
+
+            <!-- Subsección A: Juego de Asociación -->
+            <div class="mb-10 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <h3 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-puzzle-piece text-brand-600"></i> Reto 1: Empareja la Herramienta con su Categoría
+                </h3>
+                <p class="text-xs text-slate-600 mb-4">Haz clic en la opción adecuada para cada herramienta:</p>
+
+                <div class="space-y-3 text-xs" id="matching-game">
+                    <!-- Fila 1 -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white rounded-lg border border-slate-200 gap-2">
+                        <span class="font-semibold text-slate-800">1. Escofina para madera</span>
+                        <select class="match-select border border-slate-300 rounded px-2 py-1 text-slate-700 bg-slate-50" data-correct="desgaste">
+                            <option value="">-- Selecciona Categoría --</option>
+                            <option value="percusion">Percusión</option>
+                            <option value="sujecion">Sujeción</option>
+                            <option value="desgaste">Desgaste y Pulido</option>
+                            <option value="punzante">Punzante</option>
+                        </select>
+                    </div>
+
+                    <!-- Fila 2 -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white rounded-lg border border-slate-200 gap-2">
+                        <span class="font-semibold text-slate-800">2. Sargento o Gato</span>
+                        <select class="match-select border border-slate-300 rounded px-2 py-1 text-slate-700 bg-slate-50" data-correct="sujecion">
+                            <option value="">-- Selecciona Categoría --</option>
+                            <option value="percusion">Percusión</option>
+                            <option value="sujecion">Sujeción</option>
+                            <option value="desgaste">Desgaste y Pulido</option>
+                            <option value="punzante">Punzante</option>
+                        </select>
+                    </div>
+
+                    <!-- Fila 3 -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white rounded-lg border border-slate-200 gap-2">
+                        <span class="font-semibold text-slate-800">3. Martillo de Maza</span>
+                        <select class="match-select border border-slate-300 rounded px-2 py-1 text-slate-700 bg-slate-50" data-correct="percusion">
+                            <option value="">-- Selecciona Categoría --</option>
+                            <option value="percusion">Percusión</option>
+                            <option value="sujecion">Sujeción</option>
+                            <option value="desgaste">Desgaste y Pulido</option>
+                            <option value="punzante">Punzante</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                    <button onclick="checkMatchingGame()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-lg text-xs transition">
+                        Comprobar Respuestas
+                    </button>
+                    <span id="match-feedback" class="text-xs font-bold"></span>
+                </div>
+            </div>
+
+            <!-- Subsección B: Cuestionario Interactivo Mini-Quiz -->
+            <div class="mb-10 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <h3 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-brand-600"></i> Reto 2: Mini-Quiz de Autoevaluación (10 Preguntas)
+                </h3>
+                <p class="text-xs text-slate-600 mb-6">Selecciona la respuesta que consideres correcta para evaluar lo aprendido:</p>
+
+                <form id="quiz-form" class="space-y-6 text-xs">
+                    <!-- Pregunta 1 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <p class="font-bold text-slate-900">1. ¿Cuáles son las tres áreas de conocimiento que interrelaciona el diseño de un producto?</p>
+                        <div class="space-y-1 text-slate-700">
+                            <label class="block"><input type="radio" name="q1" value="a" class="mr-2"> a) Física, Química y Dibujo.</label>
+                            <label class="block"><input type="radio" name="q1" value="b" class="mr-2"> b) Morfología, Tecnología y Sociología.</label>
+                            <label class="block"><input type="radio" name="q1" value="c" class="mr-2"> c) Matemáticas, Economía y Arte.</label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <p class="font-bold text-slate-900">2. ¿Qué superficie mínima por estudiante se recomienda en el taller de tecnología?</p>
+                        <div class="space-y-1 text-slate-700">
+                            <label class="block"><input type="radio" name="q2" value="a" class="mr-2"> a) 2 m² por estudiante.</label>
+                            <label class="block"><input type="radio" name="q2" value="b" class="mr-2"> b) 5 m² por estudiante (para un taller de al menos 80 m²).</label>
+                            <label class="block"><input type="radio" name="q2" value="c" class="mr-2"> c) 10 m² por estudiante.</label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <p class="font-bold text-slate-900">3. ¿Qué indica una señal circular con borde diagonal rojo sobre fondo blanco?</p>
+                        <div class="space-y-1 text-slate-700">
+                            <label class="block"><input type="radio" name="q3" value="a" class="mr-2"> a) Obligación.</label>
+                            <label class="block"><input type="radio" name="q3" value="b" class="mr-2"> b) Advertencia de peligro.</label>
+                            <label class="block"><input type="radio" name="q3" value="c" class="mr-2"> c) Prohibición.</label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 4 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <p class="font-bold text-slate-900">4. ¿A qué fase del dibujo corresponde un croquis acotado a mano alzada?</p>
+                        <div class="space-y-1 text-slate-700">
+                            <label class="block"><input type="radio" name="q4" value="a" class="mr-2"> a) Dibujo conceptual (Boceto).</label>
+                            <label class="block"><input type="radio" name="q4" value="b" class="mr-2"> b) Dibujo preliminar (Croquis).</label>
+                            <label class="block"><input type="radio" name="q4" value="c" class="mr-2"> c) Dibujo detallado (Plano CAD).</label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 5 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                        <p class="font-bold text-slate-900">5. ¿Para sujetar firmemente dos maderas antes de pegarlas se utiliza...?</p>
+                        <div class="space-y-1 text-slate-700">
+                            <label class="block"><input type="radio" name="q5" value="a" class="mr-2"> a) Un martillo de maza.</label>
+                            <label class="block"><input type="radio" name="q5" value="b" class="mr-2"> b) Un sargento o gato.</label>
+                            <label class="block"><input type="radio" name="q5" value="c" class="mr-2"> c) Un alicate de corte.</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between">
+                        <button type="button" onclick="evaluateQuiz()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow transition">
+                            Evaluar Cuestionario
+                        </button>
+                        <div id="quiz-result" class="text-sm font-extrabold"></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Subsección C: Rincón de Apuntes y Notas Personales -->
+            <div id="cuaderno" class="bg-amber-50/60 p-6 rounded-2xl border border-amber-200">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-amber-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-amber-600"></i> Mi Rincón de Apuntes y Dudas
+                    </h3>
+                    <span class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded font-medium">Guardado Automático Local</span>
+                </div>
+                <p class="text-xs text-slate-600 mb-3">
+                    Escribe aquí tus reflexiones, ideas de proyectos o dudas para preguntar a tu profesor/a durante la clase de taller:
+                </p>
+                
+                <textarea id="student-notes" rows="5" class="w-full p-3 text-xs bg-white border border-amber-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none placeholder:text-slate-400 text-slate-800" placeholder="Ejemplo: Para el prototipo de la maqueta de madera necesito comprobar la medida del grosor con el calibre antes de cortar con la segueta..."></textarea>
+                
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+                    <span id="save-status" class="text-[11px] text-slate-500 italic">Tus notas se guardan en tu navegador.</span>
+                    <div class="flex gap-2">
+                        <button onclick="copyNotes()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                            <i class="fa-solid fa-copy mr-1"></i> Copiar Notas
+                        </button>
+                        <button onclick="clearNotes()" class="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                            Borrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enlaces a Recursos y Vídeos Multimedias -->
+        <section class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 no-print">
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6">
+                <i class="fa-solid fa-photo-film text-amber-400 text-2xl"></i>
+                <div>
+                    <h3 class="text-xl font-bold">Recursos Complementarios y Vídeos Didácticos</h3>
+                    <p class="text-xs text-slate-400">Amplía tus conocimientos con enlaces educativos recomendados</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="https://www.youtube.com/results?search_query=herramientas+taller+tecnologia+3+eso" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition flex items-start gap-3">
+                    <i class="fa-brands fa-youtube text-red-500 text-2xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-100">Vídeos: Herramientas del Taller</h4>
+                        <p class="text-xs text-slate-400 mt-1">Demostraciones en vídeo sobre el uso correcto de la segueta, escofina y sargento.</p>
+                    </div>
+                </a>
+
+                <a href="https://www.juntadeandalucia.es/educacion/portals/web/ced" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition flex items-start gap-3">
+                    <i class="fa-solid fa-building-columns text-emerald-400 text-2xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-100">Portal Educativo Andalucía</h4>
+                        <p class="text-xs text-slate-400 mt-1">Recursos de la Consejería de Desarrollo Educativo de la Junta de Andalucía.</p>
+                    </div>
+                </a>
+
+                <a href="https://www.iso.org" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition flex items-start gap-3">
+                    <i class="fa-solid fa-shield-cat text-sky-400 text-2xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-100">Normalización y Seguridad ISO</h4>
+                        <p class="text-xs text-slate-400 mt-1">Información sobre simbología e higiene en entornos técnicos.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bg-white border-t border-slate-200 py-6 px-4 text-center text-xs text-slate-500 no-print">
+        <div class="max-w-7xl mx-auto space-y-2">
+            <p class="font-semibold text-slate-700">Asignatura de Tecnología y Digitalización • 3º de ESO</p>
+            <p>Material adaptado con lenguaje inclusivo e interactivo conforme al marco educativo de la Junta de Andalucía.</p>
+            <p class="text-[11px] text-slate-400">© TecnoAula - Diseñado para ser exportable a Google Docs e imprimible en formato A4.</p>
+        </div>
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Barra de progreso de lectura
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById('progress-bar').style.width = scrolled + '%';
+            });
+
+            // 2. Menú Móvil
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // 3. Medidor de Decibelios
+            const dbSlider = document.getElementById('db-slider');
+            const dbValue = document.getElementById('db-value');
+            const dbExample = document.getElementById('db-example');
+            const dbSafety = document.getElementById('db-safety');
+            const dbBadge = document.getElementById('db-badge');
+
+            if (dbSlider) {
+                dbSlider.addEventListener('input', (e) => {
+                    const val = parseInt(e.target.value);
+                    dbValue.textContent = val + ' dB';
+
+                    if (val <= 60) {
+                        dbBadge.textContent = val + ' dB - Zona Confortable';
+                        dbBadge.className = 'bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full';
+                        dbExample.textContent = 'Conversación normal o biblioteca';
+                        dbSafety.textContent = 'Sin riesgo para la salud auditiva.';
+                        dbSafety.className = 'font-semibold text-emerald-400';
+                    } else if (val <= 85) {
+                        dbBadge.textContent = val + ' dB - Nivel Moderado';
+                        dbBadge.className = 'bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full';
+                        dbExample.textContent = 'Tráfico de ciudad o taller en actividad suave';
+                        dbSafety.textContent = 'Precaución en exposiciones muy prolongadas.';
+                        dbSafety.className = 'font-semibold text-amber-400';
+                    } else {
+                        dbBadge.textContent = val + ' dB - Peligro Auditivo';
+                        dbBadge.className = 'bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full';
+                        dbExample.textContent = 'Sierras eléctricas, taladros o maquinaria pesada';
+                        dbSafety.textContent = '¡OBLIGATORIO usar cascos o tapones de protección!';
+                        dbSafety.className = 'font-semibold text-red-400 font-bold';
+                    }
+                });
+            }
+
+            // 4. LocalStorage para el Cuaderno de Apuntes del Alumnado
+            const notesArea = document.getElementById('student-notes');
+            const saveStatus = document.getElementById('save-status');
+
+            if (notesArea) {
+                // Cargar notas guardadas
+                const savedNotes = localStorage.getItem('tecno_3eso_notes');
+                if (savedNotes) {
+                    notesArea.value = savedNotes;
+                }
+
+                // Guardar al escribir
+                notesArea.addEventListener('input', () => {
+                    localStorage.setItem('tecno_3eso_notes', notesArea.value);
+                    saveStatus.textContent = 'Guardado en tiempo real...';
+                    setTimeout(() => {
+                        saveStatus.textContent = 'Tus notas se guardan en tu navegador.';
+                    }, 2000);
+                });
+            }
+        });
+
+        // Filtrado de Herramientas
+        function filterTools(category) {
+            const cards = document.querySelectorAll('.tool-card');
+            const buttons = document.querySelectorAll('.tool-btn');
+
+            buttons.forEach(btn => {
+                btn.className = 'tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
+            });
+
+            event.target.className = 'tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-sm';
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Comprobación del Juego de Asociación
+        function checkMatchingGame() {
+            const selects = document.querySelectorAll('.match-select');
+            let correctCount = 0;
+            const feedback = document.getElementById('match-feedback');
+
+            selects.forEach(select => {
+                const correct = select.getAttribute('data-correct');
+                if (select.value === correct) {
+                    correctCount++;
+                    select.classList.remove('border-red-500', 'bg-red-50');
+                    select.classList.add('border-emerald-500', 'bg-emerald-50');
+                } else {
+                    select.classList.remove('border-emerald-500', 'bg-emerald-50');
+                    select.classList.add('border-red-500', 'bg-red-50');
+                }
+            });
+
+            if (correctCount === selects.length) {
+                feedback.textContent = '¡Excelente! Todas las respuestas son correctas.';
+                feedback.className = 'text-xs font-bold text-emerald-600';
+            } else {
+                feedback.textContent = `Has acertado ${correctCount} de ${selects.length}. ¡Sigue intentándolo!`;
+                feedback.className = 'text-xs font-bold text-amber-600';
+            }
+        }
+
+        // Evaluación del Cuestionario Mini-Quiz
+        function evaluateQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'b',
+                q5: 'b'
+            };
+
+            let score = 0;
+            const total = 5;
+
+            for (let q in answers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q]) {
+                    score++;
+                }
+            }
+
+            const resultDiv = document.getElementById('quiz-result');
+            if (score === total) {
+                resultDiv.textContent = `¡Sobresaliente! ${score}/${total} respuestas correctas.`;
+                resultDiv.className = 'text-sm font-extrabold text-emerald-600';
+            } else if (score >= 3) {
+                resultDiv.textContent = `¡Buen trabajo! ${score}/${total} respuestas correctas.`;
+                resultDiv.className = 'text-sm font-extrabold text-brand-600';
+            } else {
+                resultDiv.textContent = `Puntuación: ${score}/${total}. Te recomendamos repasar el tema.`;
+                resultDiv.className = 'text-sm font-extrabold text-red-600';
+            }
+        }
+
+        // Función para copiar notas al portapapeles
+        function copyNotes() {
+            const notes = document.getElementById('student-notes').value;
+            if (!notes) return;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = notes;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const saveStatus = document.getElementById('save-status');
+            saveStatus.textContent = '¡Notas copiadas al portapapeles!';
+            setTimeout(() => {
+                saveStatus.textContent = 'Tus notas se guardan en tu navegador.';
+            }, 2500);
+        }
+
+        // Borrar notas
+        function clearNotes() {
+            if (confirm('¿Quieres borrar las notas guardadas?')) {
+                document.getElementById('student-notes').value = '';
+                localStorage.removeItem('tecno_3eso_notes');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -14,6 +14,8 @@ REGLAS DE ACTUACIÓN Y RIGOR CURRICULAR (JUNTA DE ANDALUCÍA):
 
 3. Añade enlaces a contenidos, videos multimedias y otros enlaces externos que puedan servir de ayuda
 
+4. Se aportan algunas imágenes para que se inserten en la página
+
 ----------------------------------------------------------------------
 REQUISITOS TÉCNICOS DEL CÓDIGO HTML A GENERAR:
 ----------------------------------------------------------------------
