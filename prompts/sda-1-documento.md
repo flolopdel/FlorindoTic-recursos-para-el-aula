@@ -1,1 +1,1 @@
-Genera un gogole documento con los detalles de esta situación de aprendizaje
+Genera un google documento con los detalles de esta situación de aprendizaje

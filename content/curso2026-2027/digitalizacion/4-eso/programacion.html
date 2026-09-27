@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitalización 4º ESO — Programación Didáctica Interactiva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        anda: {
+                            green: '#007a33',
+                            light: '#e6f4ea'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar and modal styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .badge-clickable {
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+        }
+        .badge-clickable:hover {
+            transform: translateY(-1px);
+            filter: brightness(0.95);
+        }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased flex flex-col bg-slate-50">
+
+    <!-- Top Header -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Title & Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr font-bold from-emerald-500 to-teal-400 text-slate-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-laptop-code text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LOMLOE • Andalucía</span>
+                            <span class="text-xs text-slate-400 font-medium">Orden 30 de mayo de 2023</span>
+                        </div>
+                        <h1 class="text-lg font-bold text-slate-100 leading-tight">Digitalización 4º ESO <span class="text-slate-400 font-normal text-sm">| Programación e Interactividad</span></h1>
+                    </div>
+                </div>
+
+                <!-- Mode Switcher & Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Mode Toggle (Alumnado / Profesorado) -->
+                    <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center">
+                        <button id="btn-mode-profesor" onclick="setAppMode('profesor')" class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center space-x-1.5 bg-brand-600 text-white shadow-sm">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span class="hidden sm:inline">Modo</span> Profesorado
+                        </button>
+                        <button id="btn-mode-alumno" onclick="setAppMode('alumno')" class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span class="hidden sm:inline">Modo</span> Alumnado
+                        </button>
+                    </div>
+
+                    <!-- Glossary Quick Button -->
+                    <button onclick="openGlossaryModal()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-700 transition" title="Diccionario y Curriculo Completo">
+                        <i class="fa-solid fa-book-bookmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 shrink-0 space-y-4">
+            <!-- Navigation Cards -->
+            <div class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80 space-y-1">
+                <button onclick="switchTab('overview')" id="nav-overview" class="nav-btn w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between bg-brand-50 text-brand-700 font-semibold">
+                    <span class="flex items-center space-x-3">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>Resumen General</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                </button>
+                <button onclick="switchTab('sdas')" id="nav-sdas" class="nav-btn w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <span class="flex items-center space-x-3">
+                        <i class="fa-solid fa-layer-group w-5 text-center"></i>
+                        <span>9 Situaciones (SdA)</span>
+                    </span>
+                    <span id="sda-badge-count" class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-full font-bold">9</span>
+                </button>
+                <button onclick="switchTab('matrix')" id="nav-matrix" class="nav-btn w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <span class="flex items-center space-x-3">
+                        <i class="fa-solid fa-table-cells w-5 text-center"></i>
+                        <span>Matriz Curricular</span>
+                    </span>
+                </button>
+                <button onclick="switchTab('glossary')" id="nav-glossary" class="nav-btn w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <span class="flex items-center space-x-3">
+                        <i class="fa-solid fa-spell-check w-5 text-center"></i>
+                        <span>Glosario y Siglas</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Global Search Box -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Buscador Curricular</label>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
+                    <input type="text" id="global-search-input" onkeyup="handleGlobalSearch()" placeholder="Buscar SdA, CE1.1, IoT..." class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Puedes buscar por código oficial (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-600">CE 2.3</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-600">DIG.4.A.1</code>) o por concepto.</p>
+            </div>
+
+            <!-- Progress Tracker Widget -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-md space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Avance del Curso</span>
+                    <i class="fa-solid fa-list-check text-slate-400 text-sm"></i>
+                </div>
+                <div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <span id="progress-percent" class="text-2xl font-extrabold text-white">0%</span>
+                        <span id="progress-count" class="text-xs text-slate-300">0 de 9 SdAs</span>
+                    </div>
+                    <div class="w-full bg-slate-700/80 rounded-full h-2 overflow-hidden">
+                        <div id="progress-bar-fill" class="bg-emerald-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-300 leading-normal">Marca cada SdA como completada a medida que avanza el curso académico.</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 space-y-6 min-w-0">
+
+            <!-- TAB 1: OVERVIEW -->
+            <section id="tab-overview" class="tab-content space-y-6">
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-brand-800 via-brand-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="relative z-10 space-y-3 max-w-2xl">
+                        <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-xs font-medium">
+                            <i class="fa-solid fa-school-flag text-emerald-300"></i>
+                            <span>4º ESO • Junta de Andalucía</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Programación Didáctica de Digitalización</h2>
+                        <p class="text-brand-100 text-sm sm:text-base leading-relaxed">
+                            Organización temporalizada en <strong>9 Situaciones de Aprendizaje (SdA)</strong> distribuida en <strong>76 sesiones lectivas (~24 semanas)</strong>. Cumple al 100% con las Competencias Específicas, Criterios de Evaluación y Saberes Básicos de la normativa andaluza.
+                        </p>
+                    </div>
+                    <i class="fa-solid fa-network-wired absolute -right-6 -bottom-8 text-9xl text-white/5 pointer-events-none"></i>
+                </div>
+
+                <!-- KPI Metric Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-bold uppercase tracking-wider">Sesiones Totales</span>
+                            <i class="fa-regular fa-clock text-brand-500 text-base"></i>
+                        </div>
+                        <div class="mt-2">
+                            <span class="text-3xl font-extrabold text-slate-800">76</span>
+                            <span class="text-xs text-slate-500 block">3 horas/semana</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-bold uppercase tracking-wider">Situaciones (SdA)</span>
+                            <i class="fa-solid fa-shapes text-teal-500 text-base"></i>
+                        </div>
+                        <div class="mt-2">
+                            <span class="text-3xl font-extrabold text-slate-800">9</span>
+                            <span class="text-xs text-slate-500 block">100% Cobertura Criterial</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-bold uppercase tracking-wider">Criterios Evaluativos</span>
+                            <i class="fa-solid fa-list-check text-indigo-500 text-base"></i>
+                        </div>
+                        <div class="mt-2">
+                            <span class="text-3xl font-extrabold text-slate-800">14</span>
+                            <span class="text-xs text-slate-500 block">CE 1.1 a 4.4</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-bold uppercase tracking-wider">Saberes Básicos</span>
+                            <i class="fa-solid fa-book text-amber-500 text-base"></i>
+                        </div>
+                        <div class="mt-2">
+                            <span class="text-3xl font-extrabold text-slate-800">18</span>
+                            <span class="text-xs text-slate-500 block">Bloques A, B, C y D</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Temporalization Visual Chart / Gantt -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Distribución Temporal y Ponderación (%)</h3>
+                            <p class="text-xs text-slate-500">Representación proporcional de las 9 Situaciones de Aprendizaje sobre el total de 76 sesiones.</p>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs">
+                            <span class="inline-flex items-center"><span class="w-3 h-3 rounded-full bg-brand-500 inline-block mr-1"></span> Trimestre 1</span>
+                            <span class="inline-flex items-center"><span class="w-3 h-3 rounded-full bg-teal-500 inline-block mr-1"></span> Trimestre 2</span>
+                            <span class="inline-flex items-center"><span class="w-3 h-3 rounded-full bg-indigo-500 inline-block mr-1"></span> Trimestre 3</span>
+                        </div>
+                    </div>
+
+                    <!-- Gantt-style Rows -->
+                    <div id="gantt-container" class="space-y-3 pt-2">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+
+                <!-- Competencias Específicas Quick Cards -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Competencias Específicas de la Materia</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ce-overview-cards">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SDAS LIST -->
+            <section id="tab-sdas" class="tab-content hidden space-y-6">
+                <!-- Filter Bar -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtrar por Bloque:</span>
+                        <select id="filter-block" onchange="filterSdas()" class="text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="all">Todos los Bloques</option>
+                            <option value="A">Bloque A: Dispositivos y Sistemas</option>
+                            <option value="B">Bloque B: PLE y Productividad</option>
+                            <option value="C">Bloque C: Seguridad y Bienestar</option>
+                            <option value="D">Bloque D: Ciudadanía Digital Crítica</option>
+                        </select>
+                    </div>
+
+                    <div class="text-xs text-slate-500">
+                        Mostrando <strong id="sda-visible-count" class="text-slate-800">9</strong> de 9 Situaciones
+                    </div>
+                </div>
+
+                <!-- SdA Cards Grid -->
+                <div id="sda-cards-grid" class="space-y-4">
+                    <!-- JS populated -->
+                </div>
+            </section>
+
+            <!-- TAB 3: CURRICULAR MATRIX -->
+            <section id="tab-matrix" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Matriz de Cobertura Criterial de Andalucía</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mt-1">
+                            Mapa de relaciones entre Criterios de Evaluación y las 9 Situaciones de Aprendizaje. Haz clic en cualquier código para desplegar su descripción completa y adaptación inclusiva.
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-slate-600 border-collapse">
+                            <thead class="text-xs uppercase bg-slate-100 text-slate-700">
+                                <tr>
+                                    <th class="p-3 border border-slate-200 font-bold">Criterio</th>
+                                    <th class="p-3 border border-slate-200 font-bold">Competencia</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 1</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 2</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 3</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 4</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 5</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 6</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 7</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 8</th>
+                                    <th class="p-3 border border-slate-200 font-bold text-center">SdA 9</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matrix-table-body">
+                                <!-- JS populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: GLOSSARY AND ACRONYMS -->
+            <section id="tab-glossary" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Glosario Curricular y Siglas Facilitadas</h3>
+                        <p class="text-xs text-slate-500 mt-1">Definiciones claras adaptadas para el alumnado y codificación oficial de la Junta de Andalucía.</p>
+                    </div>
+
+                    <!-- Glossary Filters -->
+                    <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-3">
+                        <button onclick="filterGlossary('all')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-brand-600 text-white">Todos</button>
+                        <button onclick="filterGlossary('CE')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Competencias Específicas</button>
+                        <button onclick="filterGlossary('CEv')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Criterios de Evaluación</button>
+                        <button onclick="filterGlossary('SABER')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Saberes Básicos</button>
+                        <button onclick="filterGlossary('DESCRIPTOR')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Descriptores Operativos</button>
+                        <button onclick="filterGlossary('SIGLA')" class="gloss-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Términos y Siglas</button>
+                    </div>
+
+                    <div id="glossary-items-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- GENERAL MODAL SYSTEM FOR ACRONYMS & CURRICULAR CODES -->
+    <div id="popup-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-200">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 space-y-4 transform transition-all relative">
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                    <span id="modal-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-100 text-brand-700">CÓDIGO</span>
+                    <h3 id="modal-title" class="text-xl font-bold text-slate-900">Título del Elemento</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Texto Oficial (Junta de Andalucía)</span>
+                    <p id="modal-official-text" class="text-slate-800 font-medium italic">Texto de la normativa...</p>
+                </div>
+
+                <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200/80 text-amber-900 space-y-1">
+                    <div class="flex items-center space-x-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                        <span>En Palabras Sencillas para el Alumnado</span>
+                    </div>
+                    <p id="modal-teen-text" class="text-sm leading-relaxed">Explicación facilitada y cercana...</p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 text-white font-medium text-xs rounded-xl hover:bg-slate-700 transition">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SDA DETAIL MODAL / DRAWER -->
+    <div id="sda-detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden">
+            <!-- Header -->
+            <div id="sda-detail-header" class="p-6 bg-slate-900 text-white flex items-start justify-between border-b border-slate-800">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span id="sda-detail-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">SdA 1</span>
+                        <span id="sda-detail-sessions" class="text-xs text-slate-400">4 Sesiones • 5%</span>
+                    </div>
+                    <h2 id="sda-detail-title" class="text-xl font-extrabold">Título de la SdA</h2>
+                </div>
+                <button onclick="closeSdaDetailModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Body Scrollable -->
+            <div id="sda-detail-body" class="p-6 space-y-6 overflow-y-auto flex-1 text-slate-700 text-sm">
+                <!-- JS populated -->
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="sda-detail-checkbox" onchange="toggleSdaFromModal()" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300">
+                    <span class="text-xs font-bold text-slate-700">Marcar esta SdA como completada</span>
+                </label>
+                <button onclick="closeSdaDetailModal()" class="px-4 py-2 bg-slate-800 text-white font-medium text-xs rounded-xl hover:bg-slate-700">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* CURRICULAR DATA STRUCTURES */
+
+        // Competencias Específicas
+        const COMPETENCIAS = {
+            "CE1": {
+                code: "CE 1",
+                title: "Hardware, Redes Domésticas y Mantenimiento Sostenible",
+                official: "Identificar y resolver problemas técnicos sencillos, conectar y configurar dispositivos a redes domésticas, aplicando los conocimientos de hardware y sistemas operativos, para gestionar de forma sostenible las herramientas e instalaciones informáticas y de comunicación de uso cotidiano.",
+                teen: "Aprender a conectar tus dispositivos a Internet, solucionar fallos en ordenadores o móviles, entender cómo funcionan por dentro y cuidarlos para que duren más tiempo sin contaminar el planeta.",
+                descriptores: ["STEM1", "STEM2", "CD4", "CD5", "CPSAA1", "CPSAA5", "CE3"]
+            },
+            "CE2": {
+                code: "CE 2",
+                title: "Entorno Personal de Aprendizaje (PLE) y Trabajo Colaborativo",
+                official: "Configurar el entorno personal de aprendizaje, interactuando y aprovechando los recursos del ámbito digital, para optimizar y gestionar el aprendizaje permanente.",
+                teen: "Organizar tus carpetas, archivos y aplicaciones digitales para estudiar mejor, buscar información fiable, trabajar en grupo online y crear proyectos digitales geniales.",
+                descriptores: ["CD1", "CD2", "CD3", "CPSAA1", "CPSAA4", "CPSAA5", "CE3"]
+            },
+            "CE3": {
+                code: "CE 3",
+                title: "Bienestar, Salud Digital y Protección de Datos",
+                official: "Desarrollar hábitos que fomenten el bienestar digital, aplicando medidas preventivas y correctivas, para proteger dispositivos, datos personales y la propia salud.",
+                teen: "Aprender a cuidar tu salud física y mental usando pantallas (evitar dolor de espalda o tecnoestrés), proteger tus contraseñas y tu privacidad en redes sociales, y saber qué hacer ante el ciberacoso.",
+                descriptores: ["CCL3", "STEM5", "CD1", "CD4", "CPSAA2", "CPSAA5", "CC2", "CC3"]
+            },
+            "CE4": {
+                code: "CE 4",
+                title: "Ciudadanía Digital Crítica, Ética e IA",
+                official: "Ejercer una ciudadanía digital crítica, conociendo las posibles acciones que realizar en la red, e identificando sus repercusiones, para hacer un uso activo, responsable y ético de la tecnología.",
+                teen: "Usar Internet de forma respetuosa y ética, saber detectar noticias falsas (fake news), conocer cómo funciona la Inteligencia Artificial y realizar trámites online de forma segura.",
+                descriptores: ["CD3", "CD4", "CPSAA1", "CC1", "CC2", "CC3", "CC4", "CE1"]
+            }
+        };
+
+        // Criterios de Evaluación
+        const CRITERIOS = {
+            "1.1": {
+                code: "CE 1.1",
+                ce: "CE1",
+                official: "Conectar dispositivos y gestionar redes locales aplicando los conocimientos y procesos asociados a sistemas de comunicación alámbrica e inalámbrica con una actitud proactiva.",
+                teen: "Montar y conectar ordenadores o dispositivos a redes Wi-Fi o mediante cables de red en tu casa o aula.",
+                saberes: ["DIG.4.A.3", "DIG.4.A.4"]
+            },
+            "1.2": {
+                code: "CE 1.2",
+                ce: "CE1",
+                official: "Instalar y mantener sistemas operativos, configurando sus características en función de sus necesidades personales, de forma sostenible.",
+                teen: "Instalar o configurar sistemas como Windows, Linux o Android, gestionando usuarios y almacenamiento para que funcionen rápidos y limpios.",
+                saberes: ["DIG.4.A.2"]
+            },
+            "1.3": {
+                code: "CE 1.3",
+                ce: "CE1",
+                official: "Identificar y resolver problemas técnicos sencillos, analizando componentes y funciones de los dispositivos digitales, evaluando las soluciones de manera crítica y reformulando el procedimiento, en caso necesario, fomentando un consumo y reposición de los sistemas digitales y/o tecnológicos de manera sostenible y responsable.",
+                teen: "Saber qué pieza o software falla cuando un equipo no funciona bien, arreglar problemas sencillos y decidir cuándo vale la pena reparar antes de comprar otro.",
+                saberes: ["DIG.4.A.1", "DIG.4.A.4"]
+            },
+            "2.1": {
+                code: "CE 2.1",
+                ce: "CE2",
+                official: "Gestionar el aprendizaje en el ámbito digital, configurando el entorno personal de aprendizaje mediante la integración de recursos digitales de manera autónoma.",
+                teen: "Organizar tus propias aplicaciones de estudio, correo escolar, carpetas en la nube y calendario digital sin depender de nadie.",
+                saberes: ["DIG.4.B.1", "DIG.4.D.1"]
+            },
+            "2.2": {
+                code: "CE 2.2",
+                ce: "CE2",
+                official: "Buscar, seleccionar y archivar información en función de sus necesidades haciendo uso de las herramientas del entorno personal de aprendizaje con sentido crítico y siguiendo normas básicas de seguridad en la red.",
+                teen: "Saber buscar datos verdaderos en Internet, guardar la información ordenada en la nube y saber qué sitios web son seguros.",
+                saberes: ["DIG.4.B.1", "DIG.4.C.2"]
+            },
+            "2.3": {
+                code: "CE 2.3",
+                ce: "CE2",
+                official: "Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas para generar nuevo conocimiento y contenidos digitales de manera creativa, respetando los derechos de autor y licencias de uso.",
+                teen: "Diseñar pósteres, vídeos, hojas de cálculo, juegos o código, trabajando en grupo y respetando los derechos de las imágenes o textos que uses.",
+                saberes: ["DIG.4.B.2", "DIG.4.B.4", "DIG.4.D.1"]
+            },
+            "2.4": {
+                code: "CE 2.4",
+                ce: "CE2",
+                official: "Interactuar en espacios virtuales de comunicación y plataformas de aprendizaje colaborativo, compartiendo y publicando información y datos, adaptándose a diferentes audiencias con una actitud participativa y respetuosa.",
+                teen: "Comunicarte educadamente en plataformas virtuales como Moodle o Google Classroom y compartir trabajos con tus compañeros y docentes.",
+                saberes: ["DIG.4.B.3", "DIG.4.D.5", "DIG.4.D.6"]
+            },
+            "3.1": {
+                code: "CE 3.1",
+                ce: "CE3",
+                official: "Proteger los datos personales y la huella digital generada en internet, configurando las condiciones de privacidad de las redes sociales y espacios virtuales de trabajo.",
+                teen: "Ajustar la privacidad de tus redes sociales y apps para que no roben tus datos ni muestren información privada a desconocidos.",
+                saberes: ["DIG.4.C.2"]
+            },
+            "3.2": {
+                code: "CE 3.2",
+                ce: "CE3",
+                official: "Configurar y actualizar contraseñas, sistemas operativos y antivirus de forma periódica en los distintos dispositivos digitales de uso habitual.",
+                teen: "Crear contraseñas seguras y mantener tu móvil y ordenador actualizados con antivirus para evitar virus y piratas informáticos.",
+                saberes: ["DIG.4.C.1"]
+            },
+            "3.3": {
+                code: "CE 3.3",
+                ce: "CE3",
+                official: "Identificar y saber reaccionar ante situaciones que representan una amenaza en la red, escogiendo la mejor solución entre diversas opciones, desarrollando prácticas saludables y seguras, y valorando el bienestar físico y mental, tanto personal como colectivo.",
+                teen: "Reconocer el ciberacoso o la adicción al móvil, saber cómo actuar para pedir ayuda y mantener posturas físicas saludables frente al ordenador.",
+                saberes: ["DIG.4.C.3"]
+            },
+            "4.1": {
+                code: "CE 4.1",
+                ce: "CE4",
+                official: "Hacer un uso ético de los datos y las herramientas digitales, aplicando las normas de etiqueta digital y respetando la privacidad y las licencias de uso y propiedad intelectual en la comunicación, colaboración y participación activa en la red, basadas en el respeto mutuo.",
+                teen: "Utilizar las redes e Internet con buena educación (netiqueta), respetando el trabajo de los demás y no compartiendo contenido hiriente.",
+                saberes: ["DIG.4.D.1", "DIG.4.D.5"]
+            },
+            "4.2": {
+                code: "CE 4.2",
+                ce: "CE4",
+                official: "Reconocer las aportaciones de las tecnologías digitales en las gestiones administrativas, y el comercio electrónico, siendo consciente de la brecha social de acceso, uso y aprovechamiento de dichas tecnologías para diversos colectivos.",
+                teen: "Entender cómo funcionan el Certificado Digital, las compras online seguras y reconocer las dificultades que tienen las personas mayores o con pocos recursos para usar la tecnología.",
+                saberes: ["DIG.4.D.3", "DIG.4.D.4"]
+            },
+            "4.3": {
+                code: "CE 4.3",
+                ce: "CE4",
+                official: "Valorar la importancia de la oportunidad, facilidad y libertad de expresión que suponen los medios digitales conectados, analizando de forma crítica los mensajes que se reciben y transmiten teniendo en cuenta su objetividad, ideología, intencionalidad, sesgos y caducidad.",
+                teen: "Aprender a detectar desinformación, fakes de Inteligencia Artificial y entender que no todo lo que sale en redes sociales es verdad.",
+                saberes: ["DIG.4.D.2", "DIG.4.D.6"]
+            },
+            "4.4": {
+                code: "CE 4.4",
+                ce: "CE4",
+                official: "Analizar la necesidad y los beneficios globales de un uso y desarrollo ecosocialmente responsable de las tecnologías digitales, teniendo en cuenta criterios de accesibilidad, sostenibilidad e impacto.",
+                teen: "Conocer el consumo eléctrico de las granjas de servidores o la Inteligencia Artificial y buscar formas de usar la tecnología contaminando lo menos posible.",
+                saberes: ["DIG.4.D.5"]
+            }
+        };
+
+        // Saberes Básicos
+        const SABERES = {
+            "DIG.4.A.1": { code: "DIG.4.A.1", block: "A", title: "Arquitectura de ordenadores", official: "Arquitectura de ordenadores: elementos, montaje, configuración y resolución de problemas.", teen: "Componentes físicos del ordenador (procesador, memoria RAM, disco duro) y cómo se conectan." },
+            "DIG.4.A.2": { code: "DIG.4.A.2", block: "A", title: "Sistemas operativos", official: "Sistemas operativos: instalación y configuración de usuario.", teen: "Sistemas como Windows, Linux o Android: cómo instalar programas y crear usuarios." },
+            "DIG.4.A.3": { code: "DIG.4.A.3", block: "A", title: "Sistemas de comunicación e internet", official: "Sistemas de comunicación e internet: dispositivos de red y funcionamiento. Procedimiento de configuración de una red doméstica y conexión de dispositivos.", teen: "Cómo funciona el router, el cable de red, la red Wi-Fi y la dirección IP." },
+            "DIG.4.A.4": { code: "DIG.4.A.4", block: "A", title: "Dispositivos conectados (IoT + Wearables)", official: "Dispositivos conectados (IoT + Wearables): configuración y conexión de dispositivos.", teen: "Objetos inteligentes como relojes, pulseras o bombillas conectadas a Internet." },
+            
+            "DIG.4.B.1": { code: "DIG.4.B.1", block: "B", title: "Búsqueda y gestión de información", official: "Búsqueda, administración, gestión, selección y archivo de información.", teen: "Técnicas avanzadas para buscar en Google y guardar archivos ordenados en la nube." },
+            "DIG.4.B.2": { code: "DIG.4.B.2", block: "B", title: "Edición y creación de contenidos", official: "Edición y creación de contenidos: aplicaciones de productividad, desarrollo de aplicaciones sencillas para dispositivos móviles y web, realidad virtual, aumentada y mixta.", teen: "Crear documentos, tablas, imágenes, vídeos, código de programas o modelos 3D." },
+            "DIG.4.B.3": { code: "DIG.4.B.3", block: "B", title: "Comunicación y colaboración en red", official: "Comunicación y colaboración en red.", teen: "Uso de herramientas como Google Drive o Moodle para trabajar juntos a distancia." },
+            "DIG.4.B.4": { code: "DIG.4.B.4", block: "B", title: "Publicación y difusión responsable", official: "Publicación y difusión responsable en redes.", teen: "Compartir trabajos en Internet respetando los derechos de autor y la imagen de las personas." },
+
+            "DIG.4.C.1": { code: "DIG.4.C.1", block: "C", title: "Seguridad de dispositivos", official: "Seguridad de dispositivos: medidas preventivas y correctivas para hacer frente a riesgos, amenazas y ataques a dispositivos.", teen: "Protección contra virus, malware, phishing y configuración de antivirus." },
+            "DIG.4.C.2": { code: "DIG.4.C.2", block: "C", title: "Seguridad y protección de datos", official: "Seguridad y protección de datos: identidad, reputación digital, privacidad y huella digital. Medidas preventivas en la configuración de redes sociales y la gestión de identidades virtuales.", teen: "Configuración de privacidad en redes sociales y control del rastro que dejas en Internet." },
+            "DIG.4.C.3": { code: "DIG.4.C.3", block: "C", title: "Salud física y mental en entornos digitales", official: "Seguridad en la salud física y mental. Riesgos y amenazas al bienestar personal. Opciones de respuesta y prácticas de uso saludable. Situaciones de violencia y de riesgo en la red.", teen: "Cuidado de la postura, la vista, prevención del ciberacoso y del enganche al móvil." },
+
+            "DIG.4.D.1": { code: "DIG.4.D.1", block: "D", title: "Interactividad, etiquetas y licencias", official: "Interactividad en la red: libertad de expresión, etiqueta digital, propiedad intelectual y licencias de uso.", teen: "Reglas de buena educación en Internet (netiqueta) y licencias Creative Commons." },
+            "DIG.4.D.2": { code: "DIG.4.D.2", block: "D", title: "Educación mediática y fake news", official: "Educación mediática: periodismo digital, blogosfera, estrategias comunicativas y uso crítico de la red. Herramientas para detectar noticias falsas y fraudes.", teen: "Trucos para saber si una noticia en TikTok o Internet es mentira o un estafa." },
+            "DIG.4.D.3": { code: "DIG.4.D.3", block: "D", title: "Gestiones administrativas telemáticas", official: "Gestiones administrativas: servicios públicos en línea, registros digitales y certificados oficiales.", teen: "Cómo usar el Certificado Digital o Cl@ve para hacer trámites sin hacer colas físicas." },
+            "DIG.4.D.4": { code: "DIG.4.D.4", block: "D", title: "Comercio electrónico y finanzas", official: "Comercio electrónico: facturas digitales, formas de pago y criptomonedas.", teen: "Pagos seguros con tarjeta, Bizum, facturas digitales y riesgos de las criptomonedas." },
+            "DIG.4.D.5": { code: "DIG.4.D.5", block: "D", title: "Ética en la IA y sostenibilidad digital", official: "Ética en el uso de datos y herramientas digitales: inteligencia artificial, sesgos algorítmicos e ideológicos, obsolescencia programada, soberanía tecnológica y digitalización sostenible.", teen: "Uso ético de la Inteligencia Artificial, sesgos que tiene la IA y contaminación de los datos." },
+            "DIG.4.D.6": { code: "DIG.4.D.6", block: "D", title: "Activismo en línea y software libre", official: "Activismo en línea: plataformas de iniciativa ciudadana y cibervoluntariado y comunidades de hardware y software libres.", teen: "Proyectos colaborativos como Wikipedia o programas libres como Linux o GIMP." }
+        };
+
+        // Descriptores Operativos
+        const DESCRIPTORES = {
+            "CD1": { code: "CD1", official: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad, archivándolos de manera crítica.", teen: "Saber buscar en Internet filtrando lo verdadero de lo falso y guardarlo ordenado." },
+            "CD2": { code: "CD2", official: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos.", teen: "Usar herramientas digitales para crear proyectos, resúmenes y presentaciones creativas." },
+            "CD3": { code: "CD3", official: "Se comunica, participa, colabora e interactúa compartiendo contenidos y datos de manera responsable.", teen: "Participar en redes o trabajos de clase online de manera educada y cívica." },
+            "CD4": { code: "CD4", official: "Identifica riesgos y adopta medidas preventivas para proteger dispositivos, datos, la salud y el medioambiente.", teen: "Cuidar tu salud corporal, la seguridad de tu equipo y evitar la contaminación tecnológica." },
+            "CD5": { code: "CD5", official: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas para resolver retos.", teen: "Crear código o soluciones con tecnología para arreglar problemas reales." },
+            "STEM1": { code: "STEM1", official: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático para resolver problemas.", teen: "Pensar con lógica para resolver dudas o problemas de forma organizada." },
+            "STEM2": { code: "STEM2", official: "Utiliza el pensamiento científico para entender y explicar fenómenos, comprobando hipótesis.", teen: "Usar la curiosidad y pruebas para ver por qué fallan o funcionan los experimentos." },
+            "STEM3": { code: "STEM3", official: "Plantea y desarrolla proyectos diseñando, fabricando y evaluando prototipos de forma colaborativa.", teen: "Crear proyectos en equipo diseñando prototipos sencillos." },
+            "STEM4": { code: "STEM4", official: "Interpreta y transmite procesos o resultados científicos mediante tablas, gráficos o lenguaje formal.", teen: "Mostrar datos e ideas usando gráficos de barras, tablas o diagramas visuales." },
+            "CPSAA1": { code: "CPSAA1", official: "Reconoce sus emociones y aprende de forma autónoma gestionando el tiempo y las tareas.", teen: "Saber organizarse el tiempo de estudio de forma independiente." },
+            "CPSAA2": { code: "CPSAA2", official: "Adopta estilos de vida saludables en el ámbito físico, emocional y social.", teen: "Cuidar la salud comiendo bien, haciendo ejercicio y descansando de las pantallas." },
+            "CPSAA4": { code: "CPSAA4", official: "Comprende la importancia de la cooperación y el aprendizaje en equipo.", teen: "Saber trabajar en equipo ayudando a tus compañeros." },
+            "CPSAA5": { code: "CPSAA5", official: "Planifica objetivos a largo plazo y persevera ante la incertidumbre o fallos.", teen: "No rendirse cuando algo no sale a la primera y seguir intentándolo." },
+            "CC1": { code: "CC1", official: "Analiza la dimensión social y ciudadana con empatía, equidad y respeto a las normas.", teen: "Ser buen ciudadano y respetar a todo el mundo por igual." },
+            "CC2": { code: "CC2", official: "Asume valores democráticos, los derechos humanos e igualdad de género.", teen: "Defender la paz, la igualdad de chicas y chicos y el medio ambiente." },
+            "CC3": { code: "CC3", official: "Comprende dilemas éticos y desarrolla juicios propios mediante el diálogo respetuoso.", teen: "Debatir con respeto sobre temas difíciles de Internet o la sociedad." },
+            "CC4": { code: "CC4", official: "Comprende las relaciones de interdependencia ecológica y adopta hábitos sostenibles.", teen: "Reciclar y gastar menos energía para cuidar el planeta." },
+            "CE1": { code: "CE1", official: "Analiza necesidades y propone soluciones innovadoras, éticas y sostenibles.", teen: "Tener buenas ideas para resolver problemas reales del entorno." },
+            "CE3": { code: "CE3", official: "Desarrolla el proceso de creación de ideas y prototipos valiosos aprendiendo del proceso.", teen: "Crear prototipos de inventos o proyectos aprendiendo de los errores." },
+            "CCL3": { code: "CCL3", official: "Localiza, selecciona y contrasta información de diferentes fuentes para transformarla en conocimiento.", teen: "Leer diferentes textos y noticias para formar tu propia opinión sin dejarte engañar." }
+        };
+
+        // Conceptos y Siglas
+        const SIGLAS = {
+            "PLE": { title: "Entorno Personal de Aprendizaje (PLE)", official: "Personal Learning Environment. Conjunto de fuentes de información, herramientas, conexiones y actividades que cada persona utiliza de forma asidua para aprender.", teen: "Tus herramientas favoritas para estudiar: Google Drive, Notion, Moodle, canales educativos y tu organizador." },
+            "SdA": { title: "Situación de Aprendizaje (SdA)", official: "Unidad didáctica programada que plantea un reto o problema del mundo real que el alumnado debe resolver movilizando competencias.", teen: "Un proyecto o reto práctico que realizamos en clase durante varias semanas." },
+            "DUA": { title: "Diseño Universal para el Aprendizaje (DUA)", official: "Modelo marco pedagógico que busca flexibilizar el currículo para responder a las necesidades de todo el alumnado sin exclusión.", teen: "Forma de enseñar que ofrece diferentes opciones (textos, vídeos, audio) para que todo el mundo aprenda sin barreras." },
+            "IoT": { title: "Internet de las Cosas (IoT)", official: "Red de objetos físicos (cosas) que llevan incorporados sensores o software para conectarse e intercambiar datos.", teen: "Aparatos de casa conectados a Internet, como relojes inteligentes, luces que controlas con el móvil o termostatos." },
+            "EXIF": { title: "Metadatos EXIF", official: "Exchangeable Image File Format. Información oculta guardada en archivos de imagen (ubicación GPS, cámara, hora).", teen: "Datos 'invisibles' que guarda tu móvil dentro de las fotos (dónde la hiciste, qué hora era, etc.)." },
+            "CPD": { title: "Centro de Procesamiento de Datos (CPD)", official: "Instalación de gran tamaño que alberga servidores e infraestructura informática que consume gran energía.", teen: "Granjas gigantescas de servidores donde se guardan las fotos de la nube y que gastan mucha luz y agua." }
+        };
+
+        // 9 SITUACIONES DE APRENDIZAJE (SdA) FULL DATA
+        const SDAS = [
+            {
+                id: 1,
+                title: "Identidad Digital y Puesta a Punto Educativa",
+                term: 1,
+                sessions: 4,
+                weight: 5,
+                ces: ["CE2", "CE3"],
+                cevs: ["2.1", "2.4", "3.1"],
+                saberes: ["DIG.4.B.1", "DIG.4.B.3", "DIG.4.C.2"],
+                descriptores: ["CD2", "CD3", "CD4", "CPSAA1"],
+                justification: "Al inicio del curso, el alumnado necesita configurar su Entorno Personal de Aprendizaje (PLE) en los servicios institucionales de la Junta de Andalucía (iPasen, Moodle Centros, Google Workspace @g.educaand.es), garantizando la protección de sus datos personales y la proyección adecuada de su imagen digital.",
+                teenGoal: "Aprenderás a configurar correctamente tus cuentas del instituto (@g.educaand.es y Moodle), poner a punto tu correo, proteger tus fotos de perfil y sincronizar tu calendario.",
+                product: "Portfolio inicial en PDF con capturas justificadas de las cuentas activadas, configuración de privacidad, firma formal de e-mail y calendario en Google Calendar.",
+                sequence: [
+                    { phase: "Activación (Sesión 1)", desc: "Configuración asistida de identidades corporativas (iPasen, Moodle, @g.educaand.es) y análisis de huella digital." },
+                    { phase: "Desarrollo (Sesiones 2-3)", desc: "Redacción de correos formales (asunto, cuerpo, firma automática) y organización de alertas en Google Calendar." },
+                    { phase: "Síntesis (Sesión 4)", desc: "Elaboración del documento comprobante en Google Docs, exportación a PDF y subida a Moodle." }
+                ],
+                dua: "Guías visuales paso a paso con capturas anotadas e hipervínculos directos. Opción de entrega en vídeo demostrativo grabado de pantalla sin voz."
+            },
+            {
+                id: 2,
+                title: "Creación del PLE y Productividad en la Nube",
+                term: 1,
+                sessions: 9,
+                weight: 15,
+                ces: ["CE2", "CE4"],
+                cevs: ["2.1", "2.2", "2.3", "2.4", "4.1"],
+                saberes: ["DIG.4.B.1", "DIG.4.B.2", "DIG.4.B.3", "DIG.4.B.4", "DIG.4.D.1"],
+                descriptores: ["CD1", "CD2", "CD3", "CPSAA4", "CE3"],
+                justification: "La gestión ágil de la información y la producción de documentos compartidos en la nube resultan esenciales para el trabajo colaborativo académico y futuro profesional.",
+                teenGoal: "Aprenderás a escribir súper rápido con el teclado, organizar tus carpetas compartidas en Drive y maquetar un documento impecable en equipo.",
+                product: "Documento técnico colaborativo en Google Docs con índice dinámico enlazado, tabla de horario maquetada y permisos finos en Drive.",
+                sequence: [
+                    { phase: "Entrenamiento Táctico (Sesiones 1-2)", desc: "Mecanografía con KeyHero y estructuración de árbol de carpetas en Google Drive." },
+                    { phase: "Edición Avanzada (Sesiones 3-6)", desc: "Trabajo colaborativo en Google Docs: estilos de encabezado, tablas complejas y saltos de página." },
+                    { phase: "Síntesis y Publicación (Sesiones 7-9)", desc: "Índice automático, revisión entre iguales en modo sugerencias y exportación a PDF." }
+                ],
+                dua: "Uso de dictado por voz para alumnado con dificultades de escritura. Elección de plantillas de alto contraste."
+            },
+            {
+                id: 3,
+                title: "Ética, Salud Digital y Sostenibilidad Ecosocial",
+                term: 1,
+                sessions: 12,
+                weight: 15,
+                ces: ["CE2", "CE3", "CE4"],
+                cevs: ["2.3", "3.3", "4.1", "4.4"],
+                saberes: ["DIG.4.B.2", "DIG.4.B.4", "DIG.4.C.3", "DIG.4.D.1", "DIG.4.D.5"],
+                descriptores: ["CCL3", "CD4", "CPSAA2", "CC3", "CC4"],
+                justification: "El uso masivo de las tecnologías conlleva implicaciones físicas, psicológicas y medioambientales (huella de carbono de los centros de datos e IA).",
+                teenGoal: "Crearás un cómic digital impresionante para concienciar sobre enfermedades del móvil (postura, vista) y la contaminación que generan los servidores de IA.",
+                product: "Cómic digital interactivo publicado en Canva o Genially abordando la ergonomía o contaminación ecosocial, más un debate en el aula.",
+                sequence: [
+                    { phase: "Investigación (Sesiones 1-3)", desc: "Análisis del impacto ambiental de las granjas de servidores e Inteligencia Artificial y licencias Creative Commons." },
+                    { phase: "Diseño Narrativo (Sesiones 4-8)", desc: "Storyboard y creación del cómic interactivo en Canva con imágenes libres de derechos." },
+                    { phase: "Debate Evaluativo (Sesiones 9-12)", desc: "Exposición pública de los cómics y debate estructurado sobre el uso responsable de la tecnología." }
+                ],
+                dua: "Uso de infografías dinámicas y asignación de roles diversificados (guionista, ilustrador, portavoz)."
+            },
+            {
+                id: 4,
+                title: "Arquitectura, Sistemas Operativos y Elección Consciente",
+                term: 2,
+                sessions: 9,
+                weight: 10,
+                ces: ["CE1", "CE4"],
+                cevs: ["1.2", "1.3", "4.4"],
+                saberes: ["DIG.4.A.1", "DIG.4.A.2", "DIG.4.D.5"],
+                descriptores: ["STEM1", "STEM2", "CD4", "CD5", "CE1"],
+                justification: "Para evitar la obsolescencia programada y tomar decisiones sostenibles, el alumnado debe comprender la arquitectura interna de los equipos informáticos.",
+                teenGoal: "Analizarás ordenadores reales por dentro y aprenderás a aconsejar qué portátil o smartphone comprar según un presupuesto real.",
+                product: "Informe comparativo y Estudio de Mercado en formato digital con la recomendación fundamentada de un equipo analizando su ciclo de vida.",
+                sequence: [
+                    { phase: "Fundamentos Físicos (Sesiones 1-3)", desc: "Estudio de la arquitectura Von Neumann comparándola analógicamente con el cuerpo humano (CPU-Cerebro, RAM-Memoria corta)." },
+                    { phase: "Sistemas Operativos (Sesiones 4-5)", desc: "Comparación e instalación conceptual de Windows, Linux y Android, usuarios y permisos." },
+                    { phase: "Estudio de Mercado (Sesiones 6-9)", desc: "Reto financiero: seleccionar componentes ajustados a un presupuesto fijo evaluando sostenibilidad y reparabilidad." }
+                ],
+                dua: "Manipulación de componentes de hardware reales en desuso (RAM, discos duros, placas) para aprendizaje práctico táctil."
+            },
+            {
+                id: 5,
+                title: "El Mundo de la Imagen, Edición y Transparencia Algorítmica",
+                term: 2,
+                sessions: 9,
+                weight: 10,
+                ces: ["CE2", "CE4"],
+                cevs: ["2.3", "4.1", "4.3"],
+                saberes: ["DIG.4.B.2", "DIG.4.D.1", "DIG.4.D.5"],
+                descriptores: ["CCL3", "CD2", "CD3", "CD5", "CCEC4"],
+                justification: "La cultura visual requiere capacitar en la edición técnica, respeto a la propiedad intelectual y comprensión crítica de la Inteligencia Artificial gráfica.",
+                teenGoal: "Diseñarás el cartel oficial para un evento del instituto mezclando edición de imagen en GIMP/Canva e imágenes creadas con Inteligencia Artificial.",
+                product: "Cartel publicitario e informativo para un evento escolar real, presentado oralmente, editado manualmente y con módulos de IA.",
+                sequence: [
+                    { phase: "Teoría de la Imagen (Sesiones 1-2)", desc: "Diferencia entre imagen vectorial y mapa de bits (.jpg, .png, .svg) y bancos de imágenes libres." },
+                    { phase: "Taller de Edición (Sesiones 3-5)", desc: "Uso técnico de GIMP (capas, selección) y eliminación de metadatos EXIF por privacidad." },
+                    { phase: "IA Gráfica y Exposición (Sesiones 6-9)", desc: "Pruebas con Teachable Machine e IA generativa, composición final del cartel y presentación oral." }
+                ],
+                dua: "Opción de exposición oral en directo o vídeo grabado previamente con voz en off y subtítulos."
+            },
+            {
+                id: 6,
+                title: "Gestión de Datos y Hoja de Cálculo Cooperativa",
+                term: 2,
+                sessions: 9,
+                weight: 10,
+                ces: ["CE2"],
+                cevs: ["2.1", "2.3", "2.4"],
+                saberes: ["DIG.4.B.1", "DIG.4.B.2", "DIG.4.B.3"],
+                descriptores: ["STEM4", "CD2", "CD3", "CPSAA3", "CE2"],
+                justification: "El tratamiento de datos cuantitativos mediante hojas de cálculo es una habilidad clave en el entorno académico y profesional.",
+                teenGoal: "Construirás por parejas una hoja de cálculo interactiva con fórmulas y gráficos para calcular presupuestos o controlar tus notas.",
+                product: "Hoja de cálculo funcional en Google Sheets con múltiples pestañas, fórmulas avanzadas (SUMA, PROMEDIO, CONTAR.SI) y gráficos interactivos.",
+                sequence: [
+                    { phase: "Estructura Básica (Sesiones 1-3)", desc: "Filas, columnas, rangos y fórmulas aritméticas simples con formatos visuales." },
+                    { phase: "Formulación Avanzada (Sesiones 4-6)", desc: "Trabajo en parejas: referencias absolutas ($A$1), fórmulas 3D entre pestañas y formato condicional." },
+                    { phase: "Visualización (Sesiones 7-9)", desc: "Generación e interpretación de gráficos (sectores, barras), protección de rangos de celdas." }
+                ],
+                dua: "Plantillas de hojas de cálculo con andamiaje (scaffolding) y tutoriales breves en vídeo."
+            },
+            {
+                id: 7,
+                title: "Programación, Pensamiento Computacional e IoT",
+                term: 3,
+                sessions: 15,
+                weight: 18,
+                ces: ["CE1", "CE2", "CE4"],
+                cevs: ["1.1", "1.3", "2.3", "4.1"],
+                saberes: ["DIG.4.A.4", "DIG.4.B.2", "DIG.4.D.6"],
+                descriptores: ["STEM1", "STEM3", "CD5", "CPSAA5", "CE3"],
+                justification: "La programación por bloques y el pensamiento computacional desarrollan el razonamiento lógico para resolver problemas del mundo real.",
+                teenGoal: "¡Crearás tu propio videojuego retro de 3 niveles con MakeCode Arcade con personajes, puntos, vidas y enemigos inteligentes!",
+                product: "Videojuego retro funcional de 3 niveles con mapa extendido ($32\\times16$), puntuación, enemigos y simulación de control IoT.",
+                sequence: [
+                    { phase: "Iniciación Arcade (Sesiones 1-4)", desc: "Mecánicas de sprites, eventos de control con botones, contadores de vida y score." },
+                    { phase: "Diseño Avanzado (Sesiones 5-10)", desc: "Mapas de azulejos (tilemaps) de 32x16, colisiones, 3 niveles de juego y enemigos con movimiento aleatorio." },
+                    { phase: "Código e IA (Sesiones 11-15)", desc: "Comparativa entre bloques y código escrito (JavaScript/Python) y depuración asistida por IA." }
+                ],
+                dua: "Plantillas de código base para alumnado que empiece de cero y retos de ampliación (jefes finales, música) para niveles avanzados."
+            },
+            {
+                id: 8,
+                title: "Ciberseguridad, Redes Domésticas y Prevención de Riesgos",
+                term: 3,
+                sessions: 9,
+                weight: 8,
+                ces: ["CE1", "CE3"],
+                cevs: ["1.1", "3.1", "3.2", "3.3"],
+                saberes: ["DIG.4.A.3", "DIG.4.C.1", "DIG.4.C.2", "DIG.4.C.3"],
+                descriptores: ["CD4", "CPSAA2", "CPSAA5", "CC2"],
+                justification: "La presencia constante en entornos digitales exige conocer la infraestructura técnica de las redes y defenderse de ciberamenazas.",
+                teenGoal: "Simularás una red de ordenadores en Cisco Packet Tracer y grabarás un vídeo animado con voz artificial para prevenir el Phishing y la estafa online.",
+                product: "Simulación de red doméstica en Cisco Packet Tracer + Vídeo animado en Powtoon con voz generada por IA sobre dos ciberriesgos.",
+                sequence: [
+                    { phase: "Simulación de Redes (Sesiones 1-3)", desc: "Montaje paso a paso en Cisco Packet Tracer: conectar router, PC, móviles, IPs y servidor Web." },
+                    { phase: "Investigación de Riesgos (Sesiones 4-6)", desc: "Análisis de casos reales de Phishing, Grooming, Ciberacoso y fraudes por código QR." },
+                    { phase: "Producción de Vídeo (Sesiones 7-9)", desc: "Guion, locución sintética con IA (ElevenLabs) y animación en Powtoon para concienciar a la comunidad escolar." }
+                ],
+                dua: "Automatización de subtítulos para accesibilidad auditiva y esquemas de red prepoblados."
+            },
+            {
+                id: 9,
+                title: "IA, Big Data, e-Administración y Comercio Electrónico",
+                term: 3,
+                sessions: 9,
+                weight: 9,
+                ces: ["CE2", "CE4"],
+                cevs: ["2.3", "4.2", "4.3", "4.4"],
+                saberes: ["DIG.4.D.2", "DIG.4.D.3", "DIG.4.D.4", "DIG.4.D.5"],
+                descriptores: ["CCL3", "CD3", "CD4", "CC1", "CC2", "CE1"],
+                justification: "La ciudadanía digital activa exige comprender la Inteligencia Artificial, el Big Data y las gestiones administrativas en línea.",
+                teenGoal: "Aprenderás a usar herramientas de IA avanzadas (NotebookLM/Gemini) para crear un sitio web HTML interactivo sobre trámites digitales y compras seguras.",
+                product: "Página web interactiva en HTML5 generada mediante el análisis de documentos con NotebookLM/Gemini sobre e-Administración y e-Commerce.",
+                sequence: [
+                    { phase: "Big Data e IA (Sesiones 1-3)", desc: "Las 'V' del Big Data, sesgos en Inteligencia Artificial y debate sobre soberanía tecnológica." },
+                    { phase: "Gestiones Telemáticas (Sesiones 4-6)", desc: "Análisis de Certificado Digital, Cl@ve PIN, pagos seguros en e-Commerce y lectura de facturas." },
+                    { phase: "Síntesis Web HTML (Sesiones 7-9)", desc: "Uso de NotebookLM para procesar información y publicación del artefacto HTML interactivo final." }
+                ],
+                dua: "Prompts facilitados de IA y opción de escuchar resúmenes en formato podcast de audio autogenerado."
+            }
+        ];
+
+        /* STATE MANAGEMENT */
+        let currentMode = 'profesor'; // 'profesor' | 'alumno'
+        let completedSdas = JSON.parse(localStorage.getItem('dig4_completed_sdas') || '[]');
+
+        /* INITIALIZATION */
+        window.onload = function() {
+            renderOverviewTab();
+            renderSdaCards();
+            renderMatrix();
+            renderGlossary('all');
+            updateProgressBar();
+        };
+
+        /* MODE SWITCHER */
+        function setAppMode(mode) {
+            currentMode = mode;
+            const btnProf = document.getElementById('btn-mode-profesor');
+            const btnAlum = document.getElementById('btn-mode-alumno');
+
+            if (mode === 'profesor') {
+                btnProf.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center space-x-1.5 bg-brand-600 text-white shadow-sm";
+                btnAlum.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 text-slate-400 hover:text-white";
+            } else {
+                btnAlum.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center space-x-1.5 bg-emerald-600 text-white shadow-sm";
+                btnProf.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 text-slate-400 hover:text-white";
+            }
+
+            // Re-render views according to mode
+            renderSdaCards();
+            renderOverviewTab();
+        }
+
+        /* TAB NAVIGATION */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-brand-50', 'text-brand-700', 'font-semibold');
+                el.classList.add('text-slate-600');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-brand-50', 'text-brand-700', 'font-semibold');
+                activeNav.classList.remove('text-slate-600');
+            }
+        }
+
+        /* RENDER OVERVIEW (GANTT & CE CARDS) */
+        function renderOverviewTab() {
+            const gantt = document.getElementById('gantt-container');
+            gantt.innerHTML = '';
+
+            SDAS.forEach(sda => {
+                const isChecked = completedSdas.includes(sda.id);
+                const colorBg = sda.term === 1 ? 'bg-brand-500' : sda.term === 2 ? 'bg-teal-500' : 'bg-indigo-500';
+                const percentWidth = Math.max(12, (sda.sessions / 76) * 100 * 2.2);
+
+                const row = document.createElement('div');
+                row.className = "flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-50 border border-slate-100 transition";
+                row.innerHTML = `
+                    <div class="w-8 shrink-0 text-center">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSdaProgress(${sda.id})" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300">
+                    </div>
+                    <div class="w-20 shrink-0 text-xs font-bold text-slate-700">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">SdA ${sda.id}</span>
+                    </div>
+                    <div class="flex-1 min-w-0 cursor-pointer" onclick="openSdaDetailModal(${sda.id})">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-slate-800 truncate">${sda.title}</span>
+                            <span class="text-xs text-slate-500 font-medium">${sda.sessions} ses. (${sda.weight}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="${colorBg} h-2 rounded-full" style="width: ${percentWidth}%"></div>
+                        </div>
+                    </div>
+                `;
+                gantt.appendChild(row);
+            });
+
+            // CE Cards Overview
+            const ceContainer = document.getElementById('ce-overview-cards');
+            ceContainer.innerHTML = '';
+            Object.keys(COMPETENCIAS).forEach(key => {
+                const ce = COMPETENCIAS[key];
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:shadow-sm transition space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span onclick="openCurricularModal('${ce.code}')" class="badge-clickable px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-100 text-brand-700 border border-brand-200">${ce.code}</span>
+                        <span class="text-xs text-slate-400 font-medium">${ce.descriptores.length} Descriptores</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-slate-800">${ce.title}</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">${currentMode === 'profesor' ? ce.official : ce.teen}</p>
+                `;
+                ceContainer.appendChild(card);
+            });
+        }
+
+        /* RENDER SDA CARDS GRID */
+        function renderSdaCards(filterBlock = 'all') {
+            const container = document.getElementById('sda-cards-grid');
+            container.innerHTML = '';
+
+            let count = 0;
+            SDAS.forEach(sda => {
+                if (filterBlock !== 'all') {
+                    const hasBlock = sda.saberes.some(s => SABERES[s] && SABERES[s].block === filterBlock);
+                    if (!hasBlock) return;
+                }
+                count++;
+
+                const isCompleted = completedSdas.includes(sda.id);
+                const termColor = sda.term === 1 ? 'border-l-brand-500' : sda.term === 2 ? 'border-l-teal-500' : 'border-l-indigo-500';
+
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 border-l-4 ${termColor} space-y-4 hover:shadow-md transition`;
+                
+                // Badges HTML
+                const ceBadges = sda.ces.map(c => `<span onclick="openCurricularModal('${c}')" class="badge-clickable px-2 py-0.5 text-xs font-bold bg-sky-100 text-sky-800 rounded-md border border-sky-200">${c}</span>`).join(' ');
+                const cevBadges = sda.cevs.map(c => `<span onclick="openCurricularModal('${c}')" class="badge-clickable px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-800 rounded-md border border-emerald-200">CE ${c}</span>`).join(' ');
+                const saberBadges = sda.saberes.map(s => `<span onclick="openCurricularModal('${s}')" class="badge-clickable px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 rounded-md border border-amber-200">${s}</span>`).join(' ');
+
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="toggleSdaProgress(${sda.id})" class="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-extrabold uppercase px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md">SdA ${sda.id}</span>
+                                    <span class="text-xs text-slate-400 font-medium">Trimestre ${sda.term}</span>
+                                </div>
+                                <h3 onclick="openSdaDetailModal(${sda.id})" class="text-base font-extrabold text-slate-800 hover:text-brand-600 cursor-pointer mt-0.5">${sda.title}</h3>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-xs font-bold text-slate-800 block">${sda.sessions} Sesiones</span>
+                            <span class="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">${sda.weight}% Peso</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong class="text-slate-800">${currentMode === 'profesor' ? 'Justificación:' : 'Objetivo para el alumnado:'}</strong>
+                            ${currentMode === 'profesor' ? sda.justification : sda.teenGoal}
+                        </p>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-xs text-slate-700">
+                            <strong class="text-slate-900 block mb-0.5"><i class="fa-solid fa-trophy text-amber-500 mr-1.5"></i>Producto Final / Artefacto:</strong>
+                            ${sda.product}
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5 items-center">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 mr-1">Elementos:</span>
+                        ${ceBadges}
+                        ${cevBadges}
+                        ${saberBadges}
+                    </div>
+
+                    <div class="flex justify-end pt-1">
+                        <button onclick="openSdaDetailModal(${sda.id})" class="text-xs text-brand-600 hover:text-brand-800 font-bold flex items-center space-x-1">
+                            <span>Ver Secuencia Didáctica & DUA</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('sda-visible-count').textContent = count;
+        }
+
+        function filterSdas() {
+            const block = document.getElementById('filter-block').value;
+            renderSdaCards(block);
+        }
+
+        /* RENDER MATRIX TABLE */
+        function renderMatrix() {
+            const tbody = document.getElementById('matrix-table-body');
+            tbody.innerHTML = '';
+
+            Object.keys(CRITERIOS).forEach(key => {
+                const crit = CRITERIOS[key];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-200/60";
+
+                let sdaCells = '';
+                for (let i = 1; i <= 9; i++) {
+                    const sda = SDAS.find(s => s.id === i);
+                    const evaluates = sda.cevs.includes(key);
+                    sdaCells += `
+                        <td class="p-2 border border-slate-200 text-center">
+                            ${evaluates ? `<span class="w-5 h-5 rounded-full bg-emerald-500 text-white font-bold text-[10px] inline-flex items-center justify-center shadow-xs" title="SdA ${i} evalúa CE ${key}">✓</span>` : '<span class="text-slate-300">-</span>'}
+                        </td>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td class="p-2.5 border border-slate-200">
+                        <span onclick="openCurricularModal('${key}')" class="badge-clickable font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200 inline-block">${crit.code}</span>
+                    </td>
+                    <td class="p-2.5 border border-slate-200">
+                        <span onclick="openCurricularModal('${crit.ce}')" class="badge-clickable font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">${crit.ce}</span>
+                    </td>
+                    ${sdaCells}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* RENDER GLOSSARY ITEMS */
+        function filterGlossary(category) {
+            document.querySelectorAll('.gloss-filter-btn').forEach(b => {
+                b.classList.remove('bg-brand-600', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            event.target.classList.add('bg-brand-600', 'text-white');
+            event.target.classList.remove('bg-slate-100', 'text-slate-600');
+
+            renderGlossary(category);
+        }
+
+        function renderGlossary(category = 'all') {
+            const container = document.getElementById('glossary-items-container');
+            container.innerHTML = '';
+
+            const list = [];
+
+            if (category === 'all' || category === 'CE') {
+                Object.keys(COMPETENCIAS).forEach(k => list.push({ type: 'CE', code: COMPETENCIAS[k].code, title: COMPETENCIAS[k].title, official: COMPETENCIAS[k].official, teen: COMPETENCIAS[k].teen }));
+            }
+            if (category === 'all' || category === 'CEv') {
+                Object.keys(CRITERIOS).forEach(k => list.push({ type: 'CEv', code: CRITERIOS[k].code, title: `Criterio de Evaluación ${k}`, official: CRITERIOS[k].official, teen: CRITERIOS[k].teen }));
+            }
+            if (category === 'all' || category === 'SABER') {
+                Object.keys(SABERES).forEach(k => list.push({ type: 'SABER', code: SABERES[k].code, title: SABERES[k].title, official: SABERES[k].official, teen: SABERES[k].teen }));
+            }
+            if (category === 'all' || category === 'DESCRIPTOR') {
+                Object.keys(DESCRIPTOR).forEach(k => list.push({ type: 'DESCRIPTOR', code: DESCRIPTOR[k].code, title: `Descriptor ${DESCRIPTOR[k].code}`, official: DESCRIPTOR[k].official, teen: DESCRIPTOR[k].teen }));
+            }
+            if (category === 'all' || category === 'SIGLA') {
+                Object.keys(SIGLAS).forEach(k => list.push({ type: 'SIGLA', code: k, title: SIGLAS[k].title, official: SIGLAS[k].official, teen: SIGLAS[k].teen }));
+            }
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-2xl border border-slate-200/80 bg-white shadow-xs space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.code}</span>
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${item.type}</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-slate-800">${item.title}</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">${item.official}</p>
+                    <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200/60 text-xs text-amber-900">
+                        <strong class="text-amber-800 font-bold block mb-0.5">💡 En lenguaje sencillo:</strong>
+                        ${item.teen}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /* POPUP MODAL ENGINE FOR ANY CURRICULAR CODE OR ACRONYM */
+        function openCurricularModal(codeKey) {
+            const modal = document.getElementById('popup-modal');
+            const badge = document.getElementById('modal-badge');
+            const title = document.getElementById('modal-title');
+            const official = document.getElementById('modal-official-text');
+            const teen = document.getElementById('modal-teen-text');
+
+            // Clean key input (e.g., 'CE 1.1' -> '1.1')
+            let cleanKey = codeKey.replace('CE ', '').trim();
+
+            if (COMPETENCIAS[codeKey] || COMPETENCIAS['CE' + cleanKey]) {
+                const item = COMPETENCIAS[codeKey] || COMPETENCIAS['CE' + cleanKey];
+                badge.textContent = "COMPETENCIA ESPECÍFICA";
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-100 text-sky-800";
+                title.textContent = `${item.code}: ${item.title}`;
+                official.textContent = item.official;
+                teen.textContent = item.teen;
+            } else if (CRITERIOS[cleanKey]) {
+                const item = CRITERIOS[cleanKey];
+                badge.textContent = "CRITERIO DE EVALUACIÓN";
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+                title.textContent = `${item.code} (Asociado a ${item.ce})`;
+                official.textContent = item.official;
+                teen.textContent = item.teen;
+            } else if (SABERES[codeKey]) {
+                const item = SABERES[codeKey];
+                badge.textContent = `SABER BÁSICO (BLOQUE ${item.block})`;
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-100 text-amber-800";
+                title.textContent = `${item.code}: ${item.title}`;
+                official.textContent = item.official;
+                teen.textContent = item.teen;
+            } else if (DESCRIPTOR[codeKey]) {
+                const item = DESCRIPTOR[codeKey];
+                badge.textContent = "DESCRIPTOR OPERATIVO";
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-800";
+                title.textContent = `Perfil de Salida: ${item.code}`;
+                official.textContent = item.official;
+                teen.textContent = item.teen;
+            } else if (SIGLAS[codeKey]) {
+                const item = SIGLAS[codeKey];
+                badge.textContent = "TÉRMINO / SIGLA";
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-800";
+                title.textContent = item.title;
+                official.textContent = item.official;
+                teen.textContent = item.teen;
+            } else {
+                badge.textContent = "ELEMENTO CURRICULAR";
+                badge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700";
+                title.textContent = codeKey;
+                official.textContent = "Definición curricular en el marco normativo de Andalucía (Orden 30 de mayo de 2023).";
+                teen.textContent = "Elemento clave de aprendizaje para la materia de Digitalización en 4º ESO.";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('popup-modal').classList.add('hidden');
+        }
+
+        /* SDA DETAIL MODAL / DRAWER */
+        let activeModalSdaId = null;
+
+        function openSdaDetailModal(sdaId) {
+            const sda = SDAS.find(s => s.id === sdaId);
+            if (!sda) return;
+
+            activeModalSdaId = sdaId;
+            const modal = document.getElementById('sda-detail-modal');
+            
+            document.getElementById('sda-detail-badge').textContent = `SdA ${sda.id} • Trimestre ${sda.term}`;
+            document.getElementById('sda-detail-sessions').textContent = `${sda.sessions} Sesiones Lectivas (${sda.weight}% Ponderación)`;
+            document.getElementById('sda-detail-title').textContent = sda.title;
+
+            // Checkbox sync
+            document.getElementById('sda-detail-checkbox').checked = completedSdas.includes(sdaId);
+
+            // Badges HTML
+            const ceBadges = sda.ces.map(c => `<span onclick="openCurricularModal('${c}')" class="badge-clickable px-2.5 py-1 text-xs font-bold bg-sky-100 text-sky-800 rounded-lg border border-sky-200 mr-1">${c}</span>`).join('');
+            const cevBadges = sda.cevs.map(c => `<span onclick="openCurricularModal('${c}')" class="badge-clickable px-2.5 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 rounded-lg border border-emerald-200 mr-1">CE ${c}</span>`).join('');
+            const saberBadges = sda.saberes.map(s => `<span onclick="openCurricularModal('${s}')" class="badge-clickable px-2.5 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-lg border border-amber-200 mr-1">${s}</span>`).join('');
+            const descBadges = sda.descriptores.map(d => `<span onclick="openCurricularModal('${d}')" class="badge-clickable px-2.5 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-lg border border-purple-200 mr-1">${d}</span>`).join('');
+
+            const seqHtml = sda.sequence.map((step, idx) => `
+                <div class="flex items-start space-x-3 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div class="w-6 h-6 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</div>
+                    <div>
+                        <h5 class="font-bold text-slate-800 text-xs">${step.phase}</h5>
+                        <p class="text-xs text-slate-600 mt-0.5">${step.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('sda-detail-body').innerHTML = `
+                <!-- Curricular Alignments -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Alineación Curricular Oficial</h4>
+                    <div class="space-y-2 text-xs">
+                        <div><strong class="text-slate-700 block mb-1">Competencias Específicas:</strong> ${ceBadges}</div>
+                        <div><strong class="text-slate-700 block mb-1">Criterios de Evaluación:</strong> ${cevBadges}</div>
+                        <div><strong class="text-slate-700 block mb-1">Saberes Básicos:</strong> ${saberBadges}</div>
+                        <div><strong class="text-slate-700 block mb-1">Descriptores del Perfil de Salida:</strong> ${descBadges}</div>
+                    </div>
+                </div>
+
+                <!-- Justification / Goal -->
+                <div class="space-y-2">
+                    <h4 class="text-sm font-bold text-slate-800">Justificación y Propósito Didáctico</h4>
+                    <p class="text-xs leading-relaxed text-slate-600">${sda.justification}</p>
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200/80 text-xs text-emerald-900">
+                        <strong class="text-emerald-800 block font-bold mb-0.5">🎯 Reto para el Alumnado:</strong>
+                        ${sda.teenGoal}
+                    </div>
+                </div>
+
+                <!-- Product -->
+                <div class="space-y-2">
+                    <h4 class="text-sm font-bold text-slate-800">Producto Final / Artefacto Evaluativo</h4>
+                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200/80 text-xs text-amber-900 font-medium">
+                        ${sda.product}
+                    </div>
+                </div>
+
+                <!-- Sequence -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800">Secuenciación Didáctica por Fases</h4>
+                    <div class="space-y-2">
+                        ${seqHtml}
+                    </div>
+                </div>
+
+                <!-- DUA -->
+                <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200/80 space-y-1 text-xs text-indigo-900">
+                    <div class="flex items-center space-x-2 font-bold text-indigo-800 uppercase tracking-wider text-[11px]">
+                        <i class="fa-solid fa-universal-access text-indigo-600"></i>
+                        <span>Atención a la Diversidad e Inclusión (DUA)</span>
+                    </div>
+                    <p class="leading-relaxed">${sda.dua}</p>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeSdaDetailModal() {
+            document.getElementById('sda-detail-modal').classList.add('hidden');
+        }
+
+        function toggleSdaFromModal() {
+            if (activeModalSdaId) {
+                toggleSdaProgress(activeModalSdaId);
+            }
+        }
+
+        /* PROGRESS TRACKER */
+        function toggleSdaProgress(sdaId) {
+            const index = completedSdas.indexOf(sdaId);
+            if (index > -1) {
+                completedSdas.splice(index, 1);
+            } else {
+                completedSdas.push(sdaId);
+            }
+
+            localStorage.setItem('dig4_completed_sdas', JSON.stringify(completedSdas));
+            updateProgressBar();
+            renderOverviewTab();
+            renderSdaCards(document.getElementById('filter-block').value);
+        }
+
+        function updateProgressBar() {
+            const total = SDAS.length;
+            const current = completedSdas.length;
+            const percent = Math.round((current / total) * 100);
+
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+            document.getElementById('progress-count').textContent = `${current} de ${total} SdAs`;
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+        }
+
+        /* SEARCH ENGINE */
+        function handleGlobalSearch() {
+            const query = document.getElementById('global-search-input').value.toLowerCase().trim();
+            if (!query) {
+                switchTab('overview');
+                return;
+            }
+
+            // If query matches a code, open popup directly or filter
+            switchTab('sdas');
+            const container = document.getElementById('sda-cards-grid');
+            container.innerHTML = '';
+
+            let matches = 0;
+            SDAS.forEach(sda => {
+                const textToSearch = [
+                    sda.title, sda.justification, sda.product, sda.teenGoal,
+                    ...sda.ces, ...sda.cevs, ...sda.saberes, ...sda.descriptores
+                ].join(' ').toLowerCase();
+
+                if (textToSearch.includes(query)) {
+                    matches++;
+                    // Render card dynamically
+                    const isCompleted = completedSdas.includes(sda.id);
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl p-5 shadow-sm border border-brand-200 space-y-3";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">SdA ${sda.id} • Trimestre ${sda.term}</span>
+                            <span class="text-xs text-slate-500">${sda.sessions} sesiones</span>
+                        </div>
+                        <h3 onclick="openSdaDetailModal(${sda.id})" class="text-base font-bold text-slate-800 hover:text-brand-600 cursor-pointer">${sda.title}</h3>
+                        <p class="text-xs text-slate-600">${sda.product}</p>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            document.getElementById('sda-visible-count').textContent = matches;
+        }
+
+        function openGlossaryModal() {
+            switchTab('glossary');
+        }
+    </script>
+</body>
+</html>

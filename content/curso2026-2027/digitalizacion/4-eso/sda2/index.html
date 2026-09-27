@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Creación del PLE y Productividad en la Nube | Digitalización 4º ESO</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        andujar: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .active-tab {
+            border-bottom-color: #0284c7;
+            color: #0369a1;
+            background-color: #f0f9ff;
+        }
+        .badge-pop {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .badge-pop:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.95);
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 font-sans flex flex-col bg-slate-50 antialiased">
+
+    <!-- Encabezado Institucional Junta de Andalucía & Materia -->
+    <header class="bg-gradient-to-r from-teal-800 via-sky-800 to-indigo-900 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-white/10 rounded-xl backdrop-blur-md border border-white/20">
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-cyan-300"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-500/30 text-emerald-200 text-xs font-semibold px-2.5 py-0.5 rounded border border-emerald-400/30">4º ESO - LOMLOE</span>
+                            <span class="bg-sky-500/30 text-sky-200 text-xs font-semibold px-2.5 py-0.5 rounded border border-sky-400/30">Junta de Andalucía</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">SdA 2: Creación del PLE y Productividad en la Nube</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 text-xs sm:text-sm bg-white/10 p-2.5 rounded-lg border border-white/15 backdrop-blur-sm self-start md:self-auto">
+                    <div><i class="fa-regular fa-clock text-cyan-300 mr-1.5"></i><strong>Duración:</strong> 9 Sesiones (50 min)</div>
+                    <div class="h-4 w-px bg-white/30"></div>
+                    <div><i class="fa-solid fa-layer-group text-emerald-300 mr-1.5"></i><strong>Materia:</strong> Digitalización</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas Principales de Navegación -->
+        <nav class="bg-white border-b border-slate-200 text-slate-600 text-xs sm:text-sm font-medium overflow-x-auto">
+            <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 px-4">
+                <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="tab-btn active-tab py-3 px-3 sm:px-4 border-b-2 font-semibold flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-compass text-sky-600"></i><span>1. Visión General & Reto</span>
+                </button>
+                <button onclick="switchTab('tab-secuenciacion')" id="btn-tab-secuenciacion" class="tab-btn py-3 px-3 sm:px-4 border-b-2 border-transparent hover:text-slate-900 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-list-check text-indigo-600"></i><span>2. Secuenciación Didáctica</span>
+                </button>
+                <button onclick="switchTab('tab-mapeo')" id="btn-tab-mapeo" class="tab-btn py-3 px-3 sm:px-4 border-b-2 border-transparent hover:text-slate-900 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-sitemap text-emerald-600"></i><span>3. Mapeo Curricular</span>
+                </button>
+                <button onclick="switchTab('tab-dua')" id="btn-tab-dua" class="tab-btn py-3 px-3 sm:px-4 border-b-2 border-transparent hover:text-slate-900 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-universal-access text-purple-600"></i><span>4. Medidas DUA e Inclusión</span>
+                </button>
+                <button onclick="switchTab('tab-evaluacion')" id="btn-tab-evaluacion" class="tab-btn py-3 px-3 sm:px-4 border-b-2 border-transparent hover:text-slate-900 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-clipboard-check text-amber-600"></i><span>5. Evaluación Criterial</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Recordatorio Normativo Importante -->
+        <div class="mb-6 bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm flex items-start space-x-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5"></i>
+            <div class="text-xs sm:text-sm text-amber-900">
+                <span class="font-bold">Recordatorio Normativo (Andalucía LOMLOE):</span> En esta Situación de Aprendizaje <strong>únicamente se califican los Criterios de Evaluación</strong>. Los Saberes Básicos representan el medio y contexto para alcanzarlos, no el fin de la evaluación. Haz clic en cualquiera de las siglas (<span class="bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-mono font-semibold">CE 2</span>, <span class="bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-mono font-semibold">CE 2.3</span>, <span class="bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-mono font-semibold">DIG.4.B.1</span>, <span class="bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-mono font-semibold">CD1</span>) para abrir la ayuda curricular explicativa.
+            </div>
+        </div>
+
+        <!-- PESTAÑA 1: VISIÓN GENERAL Y JUSTIFICACIÓN -->
+        <section id="tab-vision" class="tab-content block space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Columna Izquierda: Justificación y Desafío -->
+                <div class="lg:col-col-span-2 space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center mb-3">
+                            <i class="fa-solid fa-bullseye text-sky-600 mr-2.5"></i>Justificación Pedagógica y Contexto
+                        </h2>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            La gestión ágil de la información y la producción de documentos compartidos en la nube resultan esenciales para el trabajo colaborativo académico y futuro profesional. En esta SdA, el alumnado optimiza su <strong>Entorno Personal de Aprendizaje (PLE)</strong> superando la simple navegación pasiva para convertirse en creador estructurado de contenidos. Se abordan habilidades de mecanografía, ergonomía, arquitectura de carpetas, interoperabilidad de archivos y edición colaborativa síncrona.
+                        </p>
+                        
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Ganchos Motivadores y Gamificación</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700">
+                                <div class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-keyboard text-indigo-500 mt-1"></i>
+                                    <div><strong>Reto Speed Typing:</strong> Desafío de agilidad en KeyHero imitando flujos de trabajo profesionales de creadores y desarrolladores.</div>
+                                </div>
+                                <div class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-users-viewfinder text-emerald-500 mt-1"></i>
+                                    <div><strong>Mundo Streamer & Nube:</strong> ¿Cómo gestiona un equipo la producción masiva de contenidos digitales sin perder datos ni versión final?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto Final Destacado -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-md border border-slate-700 relative overflow-hidden">
+                        <div class="absolute -right-6 -bottom-6 opacity-10 text-white text-9xl">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </div>
+                        <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Reto / Producto Final
+                        </span>
+                        <h3 class="text-xl font-bold text-white mt-3 mb-2">Documento Técnico Colaborativo Normativizado</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Creación por parejas de un documento colaborativo en <strong>Google Docs</strong> con índice dinámico hipervinculado, tabla maquetada del horario escolar del grupo, anexos normativos de etiqueta digital, y exportación final en formato PDF guardada en una estructura de carpetas compartidas en Drive con gestión fina de permisos de acceso.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-lg border border-slate-700"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Índice Automatizado</span>
+                            <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-lg border border-slate-700"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Tablas Maquetadas</span>
+                            <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-lg border border-slate-700"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Control de Versiones y Sugerencias</span>
+                            <span class="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-lg border border-slate-700"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Exportación PDF en Drive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Tarjetas Curriculares de Enlace -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                        <h2 class="text-base font-bold text-slate-900 border-b pb-2 flex items-center">
+                            <i class="fa-solid fa-graduation-cap text-emerald-600 mr-2"></i>Síntesis Curricular LOMLOE
+                        </h2>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Competencias Específicas</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span onclick="openPopup('CE2')" class="badge-pop bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-1 rounded-md border border-sky-300">CE 2</span>
+                                <span onclick="openPopup('CE4')" class="badge-pop bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-1 rounded-md border border-sky-300">CE 4</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Criterios de Evaluación</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span onclick="openPopup('CEv2.1')" class="badge-pop bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md border border-emerald-300">2.1</span>
+                                <span onclick="openPopup('CEv2.2')" class="badge-pop bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md border border-emerald-300">2.2</span>
+                                <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md border border-emerald-300">2.3</span>
+                                <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md border border-emerald-300">2.4</span>
+                                <span onclick="openPopup('CEv4.1')" class="badge-pop bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md border border-emerald-300">4.1</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Saberes Básicos Movilizados</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span onclick="openPopup('DIG.4.B.1')" class="badge-pop bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold px-2 py-0.5 rounded border border-indigo-200">DIG.4.B.1</span>
+                                <span onclick="openPopup('DIG.4.B.2')" class="badge-pop bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold px-2 py-0.5 rounded border border-indigo-200">DIG.4.B.2</span>
+                                <span onclick="openPopup('DIG.4.B.3')" class="badge-pop bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold px-2 py-0.5 rounded border border-indigo-200">DIG.4.B.3</span>
+                                <span onclick="openPopup('DIG.4.B.4')" class="badge-pop bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold px-2 py-0.5 rounded border border-indigo-200">DIG.4.B.4</span>
+                                <span onclick="openPopup('DIG.4.D.1')" class="badge-pop bg-indigo-100 text-indigo-800 text-xs font-mono font-semibold px-2 py-0.5 rounded border border-indigo-200">DIG.4.D.1</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Descriptores Perfil de Salida</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span onclick="openPopup('CD1')" class="badge-pop bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded border border-purple-200">CD1</span>
+                                <span onclick="openPopup('CD2')" class="badge-pop bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded border border-purple-200">CD2</span>
+                                <span onclick="openPopup('CD3')" class="badge-pop bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded border border-purple-200">CD3</span>
+                                <span onclick="openPopup('CPSAA4')" class="badge-pop bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded border border-purple-200">CPSAA4</span>
+                                <span onclick="openPopup('CE3')" class="badge-pop bg-purple-100 text-purple-800 text-xs font-semibold px-2 py-0.5 rounded border border-purple-200">CE3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-cyan-50 border border-cyan-200 rounded-2xl p-5 text-xs text-cyan-900 space-y-2">
+                        <div class="font-bold flex items-center text-cyan-800">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-2 text-sm"></i>Metodologías Activas
+                        </div>
+                        <p class="leading-relaxed">
+                            Aprendizaje Basado en Retos (ABR), Trabajo Cooperativo en Parejas y Aprendizaje Dialógico mediante revisión entre pares (peer review).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: SECUENCIACIÓN DIDÁCTICA -->
+        <section id="tab-secuenciacion" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">Secuenciación Didáctica Didáctica en 3 Fases</h2>
+                    <p class="text-xs text-slate-500">9 sesiones estructuradas para el desarrollo progresivo de competencias digitales</p>
+                </div>
+                <!-- Filtros de Fase -->
+                <div class="flex items-center space-x-2 text-xs">
+                    <button onclick="filterPhase('all')" class="phase-filter-btn bg-slate-800 text-white px-3 py-1.5 rounded-lg font-medium">Todas</button>
+                    <button onclick="filterPhase('inicio')" class="phase-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium">1. Inicio (1-2)</button>
+                    <button onclick="filterPhase('desarrollo')" class="phase-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium">2. Desarrollo (3-6)</button>
+                    <button onclick="filterPhase('cierre')" class="phase-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium">3. Cierre (7-9)</button>
+                </div>
+            </div>
+
+            <!-- FASE 1: INICIO -->
+            <div class="phase-block phase-inicio space-y-4">
+                <div class="flex items-center space-x-3 bg-sky-100 text-sky-900 px-4 py-2.5 rounded-xl border border-sky-200">
+                    <i class="fa-solid fa-flag-checkered text-sky-600 font-bold"></i>
+                    <h3 class="font-bold text-sm">FASE 1: ENTRENAMIENTO TÁCTICO Y CONFIGURACIÓN DEL PLE (Sesiones 1 - 2)</h3>
+                </div>
+
+                <!-- Sesión 1 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-sky-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesión 1</span>
+                            <h4 class="text-sm font-bold text-slate-800">Diagnóstico KWL, Ergonomía y Agilidad Mecanográfica</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Gancho Inicial (10 min):</strong> Vídeo corto sobre flujos de trabajo eficientes en la nube y presentación del Reto.</li>
+                                <li><strong>Cuestionario Diagnóstico KWL (10 min):</strong> ¿Qué sé, qué quiero saber sobre la nube y el formato documental?</li>
+                                <li><strong>Taller de Ergonomía y Tecleo (30 min):</strong> Posición corporal frente al teclado y prueba en <em>KeyHero</em> para medir WPM (palabras por minuto) y precisión. Registro inicial en su cuaderno digital.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.1</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Captura de pantalla del resultado inicial de velocidad mecanográfica y tabla KWL.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Gamificación e Indagación.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesión 2 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-sky-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesión 2</span>
+                            <h4 class="text-sm font-bold text-slate-800">Estructura del PLE: Árbol de Carpetas en Drive y Gestión Fina de Permisos</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Diseño del Árbol de Carpetas (20 min):</strong> Creación de la estructura institucional de carpetas en Google Drive para 4º ESO (<span class="font-mono text-xs bg-slate-100 px-1 rounded">/4ESO_Digitalizacion/SdA2_Nube/</span>).</li>
+                                <li><strong>Gestión de Accesos (20 min):</strong> Práctica guiada sobre roles de seguridad (Lector, Comentador, Editor) y enlaces restringidos frente a públicos.</li>
+                                <li><strong>Constitución de Parejas (10 min):</strong> Creación de carpeta compartida de trabajo con el compañero/a y docente.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.1</span>, <span onclick="openPopup('DIG.4.B.3')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.3</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.1</span>, <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.4</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Enlace a carpeta compartida en Drive con estructura normativizada verificada.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Aprendizaje Cooperativo.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 2: DESARROLLO -->
+            <div class="phase-block phase-desarrollo space-y-4">
+                <div class="flex items-center space-x-3 bg-indigo-100 text-indigo-900 px-4 py-2.5 rounded-xl border border-indigo-200">
+                    <i class="fa-solid fa-code-branch text-indigo-600 font-bold"></i>
+                    <h3 class="font-bold text-sm">FASE 2: EDICIÓN AVANZADA Y EDICIÓN COLABORATIVA SÍNCRONA (Sesiones 3 - 6)</h3>
+                </div>
+
+                <!-- Sesión 3 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesión 3</span>
+                            <h4 class="text-sm font-bold text-slate-800">Estructuración Documental: Estilos de Encabezado y Esquema Jerárquico</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Creación del Documento Maestro (15 min):</strong> Apertura del Google Doc colaborativo en la carpeta de la SdA.</li>
+                                <li><strong>Jerarquía semántica (25 min):</strong> Aplicación correcta de estilos de texto (Título, Título 1, Título 2, Título 3) evitando dar formato manual sin semántica para garantizar la accesibilidad.</li>
+                                <li><strong>Salto de página y Secciones (10 min):</strong> Organización de portadas limpias y separación formal de capítulos.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.2')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.2</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.2')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.2</span>, <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.3</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Documento borrador con esquema jerárquico accesible estructurado.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Aprendizaje Basado en Retos.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesión 4 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesión 4</span>
+                            <h4 class="text-sm font-bold text-slate-800">Maquetación de Tablas Complejas: Horario del Grupo y Formato Visual</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Diseño de la Tabla de Horario (25 min):</strong> Inserción de tabla (5 columnas x 7 filas), combinación de celdas para el recreo y personalización de bordes y rellenos con paleta accesible de alto contraste.</li>
+                                <li><strong>Importación de Datos (20 min):</strong> Copia estructurada de contenidos y alineación de texto vertical/horizontal.</li>
+                                <li><strong>Verificación DUA (5 min):</strong> Comprobación de la visibilidad y contraste para lectura accesible.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.2')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.2</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.3</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Tabla de horario maquetada y accesible integrada en el documento.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Trabajo en Parejas / Andamiaje.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesiones 5 y 6 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesiones 5 - 6</span>
+                            <h4 class="text-sm font-bold text-slate-800">Coedición Síncrona, Anexos Normativos e Etiqueta Digital</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>100 min (2 ses.)</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Investigación Guiada (30 min):</strong> Búsqueda de normas de netiqueta y derechos de autor (licencias Creative Commons).</li>
+                                <li><strong>Redacción Compartida en Tiempo Real (40 min):</strong> Redacción simultánea por parejas de la sección "Anexo: Código de Conducta Digital del Aula". Inserción de notas al pie indicando fuentes fiables.</li>
+                                <li><strong>Uso de Herramientas DUA (30 min):</strong> Experimentación con la función de Dictado por voz para facilitar la inclusión de alumnado con dificultades de redacción manual.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.3')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.3</span>, <span onclick="openPopup('DIG.4.D.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.D.1</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.3</span>, <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.4</span>, <span onclick="openPopup('CEv4.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">4.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Anexo normativo con fuentes citadas en notas al pie e historial de revisiones activo.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Coedición Síncrona y Revisión Dialógica.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 3: CIERRE -->
+            <div class="phase-block phase-cierre space-y-4">
+                <div class="flex items-center space-x-3 bg-emerald-100 text-emerald-900 px-4 py-2.5 rounded-xl border border-emerald-200">
+                    <i class="fa-solid fa-award text-emerald-600 font-bold"></i>
+                    <h3 class="font-bold text-sm">FASE 3: SÍNTESIS, REVISIÓN ENTRE PARES Y PUBLICACIÓN (Sesiones 7 - 9)</h3>
+                </div>
+
+                <!-- Sesión 7 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesión 7</span>
+                            <h4 class="text-sm font-bold text-slate-800">Generación de Índice Dinámico Hipervinculado e Interoperabilidad PDF</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Automatización del Índice (20 min):</strong> Inserción de tabla de contenidos automática vinculada a los estilos de encabezado creados en la Sesión 3.</li>
+                                <li><strong>Exportación e Interoperabilidad (20 min):</strong> Descarga en formato PDF normativizado (<span class="font-mono text-xs bg-slate-100 px-1 rounded">SdA2_GrupoX_DocumentoTecnico.pdf</span>) manteniendo hipervínculos funcionales.</li>
+                                <li><strong>Archivo en Nube (10 min):</strong> Subida del PDF a la carpeta institucional del grupo en Drive.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.2')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.2</span>, <span onclick="openPopup('DIG.4.B.4')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.4</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.2')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.2</span>, <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.3</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Archivo PDF exportado con índice interactivo comprobado.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Trabajo Autónomo Dirigido.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sesiones 8 y 9 -->
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">Sesiones 8 - 9</span>
+                            <h4 class="text-sm font-bold text-slate-800">Revisión entre Pares (Sugerencias), Elevator Pitch y Metacognición KWL</h4>
+                        </div>
+                        <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>100 min (2 ses.)</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-2">
+                            <p class="text-slate-600">
+                                <strong>Actividades paso a paso:</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1 pl-1">
+                                <li><strong>Coevaluación en Modo Sugerencias (30 min):</strong> Intercambio de carpetas entre parejas. Revisión cruzada mediante comentarios constructivos y correcciones con el modo "Sugerencias" de Google Docs.</li>
+                                <li><strong>Elevator Pitch de Presentación (40 min):</strong> Exposición oral rápida (2 minutos por pareja) explicando cómo organizaron su PLE y maquetaron el documento final.</li>
+                                <li><strong>Cierre Metacognitivo (30 min):</strong> Finalización de la columna "Lo que he aprendido" de la tabla KWL y autoevaluación criterial final.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                            <div><strong class="text-slate-700">Saberes:</strong> <span onclick="openPopup('DIG.4.B.3')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.3</span>, <span onclick="openPopup('DIG.4.B.4')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.4</span>, <span onclick="openPopup('DIG.4.D.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.D.1</span></div>
+                            <div><strong class="text-slate-700">Criterios:</strong> <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">2.4</span>, <span onclick="openPopup('CEv4.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">4.1</span></div>
+                            <div><strong class="text-slate-700">Evidencia:</strong> Registro de comentarios de coevaluación, exposición oral y Cuestionario KWL completo.</div>
+                            <div><strong class="text-slate-700">Metodología:</strong> Coevaluación y Metacognición.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 3: MAPEO CURRICULAR LOMLOE -->
+        <section id="tab-mapeo" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-slate-900">Tabla Matricial de Alineación Curricular (Andalucía)</h2>
+                    <p class="text-xs text-slate-500">Mapeo oficial de Criterios de Evaluación, Saberes Básicos, Descriptores Operativos y Actividades Asociadas</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-3 font-bold">Comp. Específica</th>
+                                <th class="p-3 font-bold">Criterio de Evaluación (Único Objeto de Calificación)</th>
+                                <th class="p-3 font-bold">Saberes Básicos Movilizados</th>
+                                <th class="p-3 font-bold">Descriptores Perfil</th>
+                                <th class="p-3 font-bold">Actividades Asociadas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <!-- Fila CE2 - 2.1 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="p-3 font-bold text-sky-800 bg-sky-50/50">
+                                    <span onclick="openPopup('CE2')" class="badge-pop hover:underline">CE 2</span>
+                                </td>
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <span onclick="openPopup('CEv2.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">2.1</span>
+                                    <p class="font-normal text-slate-600 mt-1">Configurar y gestionar autónomamente el entorno personal de aprendizaje (PLE) integrando recursos digitales.</p>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="openPopup('DIG.4.B.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.B.1</span>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="openPopup('CD2')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">CD2</span>,
+                                    <span onclick="openPopup('CPSAA4')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">CPSAA4</span>
+                                </td>
+                                <td class="p-3 text-slate-600">S1: Práctica mecanográfica.<br>S2: Árbol de carpetas Drive.</td>
+                            </tr>
+
+                            <!-- Fila CE2 - 2.2 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="p-3 font-bold text-sky-800 bg-sky-50/50">
+                                    <span onclick="openPopup('CE2')" class="badge-pop hover:underline">CE 2</span>
+                                </td>
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <span onclick="openPopup('CEv2.2')" class="badge-pop bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">2.2</span>
+                                    <p class="font-normal text-slate-600 mt-1">Buscar, seleccionar y archivar información en el PLE con sentido crítico y seguridad.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="openPopup('DIG.4.B.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono inline-block">DIG.4.B.1</span>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="openPopup('CD1')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">CD1</span>
+                                </td>
+                                <td class="p-3 text-slate-600">S3: Esquema jerárquico.<br>S7: Exportación a PDF e índice.</td>
+                            </tr>
+
+                            <!-- Fila CE2 - 2.3 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="p-3 font-bold text-sky-800 bg-sky-50/50">
+                                    <span onclick="openPopup('CE2')" class="badge-pop hover:underline">CE 2</span>
+                                </td>
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">2.3</span>
+                                    <p class="font-normal text-slate-600 mt-1">Crear, integrar y reelaborar contenidos digitales de forma creativa respetando licencias.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="openPopup('DIG.4.B.2')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono inline-block">DIG.4.B.2</span>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="openPopup('CD2')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded inline-block">CD2</span>
+                                    <span onclick="openPopup('CE3')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded inline-block">CE3</span>
+                                </td>
+                                <td class="p-3 text-slate-600">S3: Formato de encabezados.<br>S4: Horario maquetado.<br>S5-S6: Coedición.</td>
+                            </tr>
+
+                            <!-- Fila CE2 - 2.4 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="p-3 font-bold text-sky-800 bg-sky-50/50">
+                                    <span onclick="openPopup('CE2')" class="badge-pop hover:underline">CE 2</span>
+                                </td>
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">2.4</span>
+                                    <p class="font-normal text-slate-600 mt-1">Interactuar en espacios virtuales y plataformas colaborativas compartiendo información con respeto.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="openPopup('DIG.4.B.3')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono inline-block">DIG.4.B.3</span>
+                                    <span onclick="openPopup('DIG.4.B.4')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono inline-block">DIG.4.B.4</span>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="openPopup('CD3')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">CD3</span>
+                                </td>
+                                <td class="p-3 text-slate-600">S2: Permisos de acceso.<br>S5-S6: Edición compartida.<br>S8-S9: Revisión con sugerencias.</td>
+                            </tr>
+
+                            <!-- Fila CE4 - 4.1 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="p-3 font-bold text-sky-800 bg-sky-50/50">
+                                    <span onclick="openPopup('CE4')" class="badge-pop hover:underline">CE 4</span>
+                                </td>
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <span onclick="openPopup('CEv4.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">4.1</span>
+                                    <p class="font-normal text-slate-600 mt-1">Hacer un uso ético de los datos y herramientas aplicando normas de netiqueta y licencias de uso.</p>
+                                </td>
+                                <td class="p-3">
+                                    <span onclick="openPopup('DIG.4.D.1')" class="badge-pop bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono">DIG.4.D.1</span>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <span onclick="openPopup('CD3')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded inline-block">CD3</span>
+                                    <span onclick="openPopup('CPSAA4')" class="badge-pop bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded inline-block">CPSAA4</span>
+                                </td>
+                                <td class="p-3 text-slate-600">S5-S6: Anexo sobre etiqueta digital.<br>S8-S9: Sugerencias y Elevator Pitch.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 4: MEDIDAS DUA Y ATENCIÓN A LA DIVERSIDAD -->
+        <section id="tab-dua" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-universal-access text-purple-600 mr-2"></i>Diseño Universal para el Aprendizaje (DUA) e Inclusión
+                    </h2>
+                    <p class="text-xs text-slate-500">Estrategias de andamiaje y accesibilidad aplicadas a la producción de contenido digital</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Principio I: Compromiso -->
+                    <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-5 space-y-3">
+                        <div class="flex items-center space-x-2 text-purple-900 font-bold text-sm">
+                            <i class="fa-solid fa-heart text-purple-600"></i>
+                            <h3>1. Múltiples formas de Compromiso</h3>
+                        </div>
+                        <ul class="text-xs text-purple-950 space-y-2 list-disc list-inside">
+                            <li><strong>Opción de Elección:</strong> Selección libre en parejas del diseño visual del horario escolar respetando criterios mínimos de contraste.</li>
+                            <li><strong>Entorno Seguro:</strong> Trabajo colaborativo en parejas de tutoría igualitaria para reducir la ansiedad tecnológica.</li>
+                            <li><strong>Relevancia del Reto:</strong> Producto final con utilidad real directa para su organización del curso escolar.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Principio II: Representación -->
+                    <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-5 space-y-3">
+                        <div class="flex items-center space-x-2 text-blue-900 font-bold text-sm">
+                            <i class="fa-solid fa-eye text-blue-600"></i>
+                            <h3>2. Múltiples formas de Representación</h3>
+                        </div>
+                        <ul class="text-xs text-blue-950 space-y-2 list-disc list-inside">
+                            <li><strong>Videotutoriales Cortos:</strong> Píldoras en vídeo de 2 minutos sobre cómo insertar saltos de página y crear tablas dinámicas.</li>
+                            <li><strong>Guías Visuales con Capturas:</strong> Fichas paso a paso tipo "Checklist con imágenes" para la estructuración de encabezados.</li>
+                            <li><strong>Soporte Léxico:</strong> Glosario contextualizado emergente (popups) para conceptos técnicos del currículo.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Principio III: Expresión -->
+                    <div class="bg-emerald-50/60 border border-emerald-200 rounded-xl p-5 space-y-3">
+                        <div class="flex items-center space-x-2 text-emerald-900 font-bold text-sm">
+                            <i class="fa-solid fa-comment-dots text-emerald-600"></i>
+                            <h3>3. Acción y Expresión</h3>
+                        </div>
+                        <ul class="text-xs text-emerald-950 space-y-2 list-disc list-inside">
+                            <li><strong>Dictado por Voz:</strong> Uso de la herramienta integrada de dictado por voz en Google Docs para alumnado con disgrafía o dificultades motoras.</li>
+                            <li><strong>Andamiaje Gradual:</strong> Plantilla prediseñadas con marcadores de posición para alumnado con Adaptaciones Curriculares (NEAE).</li>
+                            <li><strong>Flexibilidad Temporal:</strong> Ajuste personalizado de ritmos en la práctica mecanográfica en KeyHero.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Cuadro de Atencion a la Diversidad Especifica -->
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs text-slate-700 space-y-2">
+                    <h4 class="font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-user-gear text-sky-600 mr-2"></i>Adaptaciones para Alumnado con Necesidades Específicas de Apoyo Educativo (NEAE)
+                    </h4>
+                    <p class="leading-relaxed">
+                        Para el alumnado con ritmo de aprendizaje ralentizado o desfase curricular, se facilitará una plantilla básica en Drive con los encabezados Título 1 ya creados, reduciendo la carga cognitiva inicial y focalizando el esfuerzo en el contenido de la tabla y la coedición. Para el alumnado con Altas Capacidades (AACC), se propondrá la automatización avanzada mediante fórmulas sencillas en tablas de hojas de cálculo vinculadas o el diseño de macros simples.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 5: EVALUACIÓN CRITERIAL INTERACTIVA -->
+        <section id="tab-evaluacion" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Lista de Cotejo / Checklist Interactivo -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Lista de Cotejo de Verificación Criterial</h2>
+                            <p class="text-xs text-slate-500">Checklist interactivo para evaluación cualitativa y cuantitativa de los Criterios</p>
+                        </div>
+                        <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl px-3 py-1.5 text-xs font-bold flex items-center">
+                            <span id="progress-score" class="text-base mr-1">0%</span> Conseguido
+                        </div>
+                    </div>
+
+                    <!-- Items del checklist -->
+                    <div class="space-y-3 text-xs">
+                        <!-- Item CEv 2.1 -->
+                        <label class="flex items-start space-x-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100/80 cursor-pointer transition-colors border border-slate-200/80">
+                            <input type="checkbox" onchange="updateProgress()" class="crit-check mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">Criterio 2.1: Gestión del PLE y Estructura Drive</span>
+                                    <span onclick="openPopup('CEv2.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">2.1</span>
+                                </div>
+                                <p class="text-slate-600 mt-0.5">Crea la carpeta en Drive, organiza subcarpetas normativizadas y gestiona permisos de acceso (Lector/Editor) correctamente.</p>
+                            </div>
+                        </label>
+
+                        <!-- Item CEv 2.2 -->
+                        <label class="flex items-start space-x-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100/80 cursor-pointer transition-colors border border-slate-200/80">
+                            <input type="checkbox" onchange="updateProgress()" class="crit-check mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">Criterio 2.2: Búsqueda Crítica y Generación de Índice</span>
+                                    <span onclick="openPopup('CEv2.2')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">2.2</span>
+                                </div>
+                                <p class="text-slate-600 mt-0.5">Selecciona información fiables e inserta un índice dinámico autogenerado hipervinculado a los títulos del documento.</p>
+                            </div>
+                        </label>
+
+                        <!-- Item CEv 2.3 -->
+                        <label class="flex items-start space-x-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100/80 cursor-pointer transition-colors border border-slate-200/80">
+                            <input type="checkbox" onchange="updateProgress()" class="crit-check mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">Criterio 2.3: Edición Avanzada y Maquetación de Tablas</span>
+                                    <span onclick="openPopup('CEv2.3')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">2.3</span>
+                                </div>
+                                <p class="text-slate-600 mt-0.5">Aplica estilos semánticos de encabezado (Título 1, 2) y maqueta la tabla del horario escolar con formato visual accesible.</p>
+                            </div>
+                        </label>
+
+                        <!-- Item CEv 2.4 -->
+                        <label class="flex items-start space-x-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100/80 cursor-pointer transition-colors border border-slate-200/80">
+                            <input type="checkbox" onchange="updateProgress()" class="crit-check mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">Criterio 2.4: Coedición y Revisión entre Pares</span>
+                                    <span onclick="openPopup('CEv2.4')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">2.4</span>
+                                </div>
+                                <p class="text-slate-600 mt-0.5">Trabaja de forma colaborativa síncrona y utiliza el modo "Sugerencias" para coevaluar con respeto el trabajo del compañero/a.</p>
+                            </div>
+                        </label>
+
+                        <!-- Item CEv 4.1 -->
+                        <label class="flex items-start space-x-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100/80 cursor-pointer transition-colors border border-slate-200/80">
+                            <input type="checkbox" onchange="updateProgress()" class="crit-check mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">Criterio 4.1: Etiqueta Digital y Citas Normativas</span>
+                                    <span onclick="openPopup('CEv4.1')" class="badge-pop bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">4.1</span>
+                                </div>
+                                <p class="text-slate-600 mt-0.5">Aplica normas de netiqueta en la redacción compartida y cita las fuentes de información en notas al pie respetando licencias.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Síntesis de Rúbrica Holística -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="text-sm font-bold text-slate-900 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-sliders text-amber-600 mr-2"></i>Niveles de Desempeño
+                    </h3>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                            <span class="font-bold text-emerald-900">Excelente (9 - 10)</span>
+                            <p class="text-emerald-800 mt-1">Estructura perfecta, índice automatizado funcional, tabla maquetada con alto contraste, coedición activa sin incidencias y citas en notas al pie impecables.</p>
+                        </div>
+
+                        <div class="p-3 bg-sky-50 rounded-xl border border-sky-200">
+                            <span class="font-bold text-sky-900">Satisfactorio (7 - 8)</span>
+                            <p class="text-sky-800 mt-1">Documento bien estructurado con pequeños fallos de formato, índice creado correctamente y colaboración respetuosa.</p>
+                        </div>
+
+                        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <span class="font-bold text-amber-900">En Proceso (5 - 6)</span>
+                            <p class="text-amber-800 mt-1">Documento incompleto en algún anexo, tabla de horario con formato simple sin maquetar o falta de índice automático.</p>
+                        </div>
+
+                        <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                            <span class="font-bold text-rose-900">Iniciado (1 - 4)</span>
+                            <p class="text-rose-800 mt-1">Falta de organización en Drive, documento en un solo estilo de texto no estructurado o ausencia de trabajo colaborativo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL / POPUP PARA DEFINICIÓN DE SIGLAS CURRICULARES -->
+    <div id="modal-popup" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 transform transition-all">
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center space-x-2">
+                    <span id="pop-category" class="text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wider">Categoría</span>
+                    <h3 id="pop-title" class="text-lg font-bold text-slate-900">Código</h3>
+                </div>
+                <button onclick="closePopup()" class="text-slate-400 hover:text-slate-600 text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div id="pop-content" class="text-sm text-slate-700 leading-relaxed space-y-2">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+
+            <div class="pt-3 border-t flex justify-end">
+                <button onclick="closePopup()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+                    Entendido / Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Programación Didáctica adaptada a la Instrucción de la Dirección General de Ordenación Educativa de la <strong>Junta de Andalucía</strong> (LOMLOE).</p>
+            <p class="text-slate-500">Materia: Digitalización — 4º Educación Secundaria Obligatoria (ESO)</p>
+        </div>
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT NATIVA -->
+    <script>
+        // Base de datos de elementos curriculares oficiales (Andalucía PDF)
+        const currData = {
+            'CE2': {
+                cat: 'Competencia Específica',
+                color: 'bg-sky-100 text-sky-800 border-sky-300',
+                title: 'Competencia Específica 2 (CE 2)',
+                desc: 'Configurar el entorno personal de aprendizaje (PLE), interactuando y aprovechando los recursos del ámbito digital, para optimizar y gestionar el aprendizaje permanente.'
+            },
+            'CE4': {
+                cat: 'Competencia Específica',
+                color: 'bg-sky-100 text-sky-800 border-sky-300',
+                title: 'Competencia Específica 4 (CE 4)',
+                desc: 'Ejercer una ciudadanía digital crítica, conociendo las posibles acciones que realizar en la red, e identificando sus repercusiones, para hacer un uso activo, responsable y ético de la tecnología.'
+            },
+            'CEv2.1': {
+                cat: 'Criterio de Evaluación (Objeto de Calificación)',
+                color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                title: 'Criterio de Evaluación 2.1',
+                desc: 'Gestionar el aprendizaje en el ámbito digital, configurando el entorno personal de aprendizaje mediante la integración de recursos digitales de manera autónoma.'
+            },
+            'CEv2.2': {
+                cat: 'Criterio de Evaluación (Objeto de Calificación)',
+                color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                title: 'Criterio de Evaluación 2.2',
+                desc: 'Buscar, seleccionar y archivar información en función de sus necesidades haciendo uso de las herramientas del entorno personal de aprendizaje con sentido crítico y siguiendo normas básicas de seguridad en la red.'
+            },
+            'CEv2.3': {
+                cat: 'Criterio de Evaluación (Objeto de Calificación)',
+                color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                title: 'Criterio de Evaluación 2.3',
+                desc: 'Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas para generar nuevo conocimiento y contenidos digitales de manera creativa, respetando los derechos de autor y licencias de uso.'
+            },
+            'CEv2.4': {
+                cat: 'Criterio de Evaluación (Objeto de Calificación)',
+                color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                title: 'Criterio de Evaluación 2.4',
+                desc: 'Interactuar en espacios virtuales de comunicación y plataformas de aprendizaje colaborativo, compartiendo y publicando información y datos, adaptándose a diferentes audiencias con una actitud participativa y respetuosa.'
+            },
+            'CEv4.1': {
+                cat: 'Criterio de Evaluación (Objeto de Calificación)',
+                color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                title: 'Criterio de Evaluación 4.1',
+                desc: 'Hacer un uso ético de los datos y las herramientas digitales, aplicando las normas de etiqueta digital y respetando la privacidad y las licencias de uso y propiedad intelectual en la comunicación, colaboración y participación activa en la red, basadas en el respeto mutuo.'
+            },
+            'DIG.4.B.1': {
+                cat: 'Saber Básico (Bloque B)',
+                color: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                title: 'DIG.4.B.1: Búsqueda y Archivo',
+                desc: 'Búsqueda, administración, gestión, selección y archivo de información digital.'
+            },
+            'DIG.4.B.2': {
+                cat: 'Saber Básico (Bloque B)',
+                color: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                title: 'DIG.4.B.2: Edición de Contenidos',
+                desc: 'Edición y creación de contenidos: aplicaciones de productividad, desarrollo de aplicaciones sencillas para dispositivos móviles y web, realidad virtual, aumentada y mixta.'
+            },
+            'DIG.4.B.3': {
+                cat: 'Saber Básico (Bloque B)',
+                color: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                title: 'DIG.4.B.3: Comunicación en Red',
+                desc: 'Comunicación y colaboración en red mediante espacios virtuales de aprendizaje y edición síncrona.'
+            },
+            'DIG.4.B.4': {
+                cat: 'Saber Básico (Bloque B)',
+                color: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                title: 'DIG.4.B.4: Publicación Responsable',
+                desc: 'Publicación y difusión responsable en redes y repositorios institucionales en la nube.'
+            },
+            'DIG.4.D.1': {
+                cat: 'Saber Básico (Bloque D)',
+                color: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                title: 'DIG.4.D.1: Ciudadanía Digital',
+                desc: 'Interactividad en la red: libertad de expresión, etiqueta digital (netiqueta), propiedad intelectual y licencias de uso (Creative Commons).'
+            },
+            'CD1': {
+                cat: 'Descriptor Perfil de Salida',
+                color: 'bg-purple-100 text-purple-800 border-purple-300',
+                title: 'CD1: Búsqueda y Selección Crítica',
+                desc: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos.'
+            },
+            'CD2': {
+                cat: 'Descriptor Perfil de Salida',
+                color: 'bg-purple-100 text-purple-800 border-purple-300',
+                title: 'CD2: Gestión del Entorno Digital',
+                desc: 'Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales mediante herramientas adecuadas.'
+            },
+            'CD3': {
+                cat: 'Descriptor Perfil de Salida',
+                color: 'bg-purple-100 text-purple-800 border-purple-300',
+                title: 'CD3: Comunicación y Colaboración',
+                desc: 'Se comunica, participa, colabora e interactúa compartiendo contenidos e información mediante herramientas virtuales ejerciendo ciudadanía activa.'
+            },
+            'CPSAA4': {
+                cat: 'Descriptor Perfil de Salida',
+                color: 'bg-purple-100 text-purple-800 border-purple-300',
+                title: 'CPSAA4: Autoevaluación y Metacognición',
+                desc: 'Realiza autoevaluaciones sobre su proceso de aprendizaje buscando fuentes fiables para validar la información y obtener conclusiones.'
+            },
+            'CE3': {
+                cat: 'Descriptor Perfil de Salida',
+                color: 'bg-purple-100 text-purple-800 border-purple-300',
+                title: 'CE3: Creación de Soluciones y Prototipos',
+                desc: 'Desarrolla el proceso de creación de ideas y soluciones valiosas utilizando estrategias ágiles de planificación y gestión.'
+            }
+        };
+
+        // Cambio de Pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('border-transparent');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+            document.getElementById('btn-' + tabId).classList.add('active-tab');
+            document.getElementById('btn-' + tabId).classList.remove('border-transparent');
+        }
+
+        // Filtro por Fases en la Pestaña 2
+        function filterPhase(phase) {
+            const blocks = document.querySelectorAll('.phase-block');
+            const btns = document.querySelectorAll('.phase-filter-btn');
+
+            btns.forEach(b => {
+                b.classList.remove('bg-slate-800', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-700');
+            });
+            event.target.classList.remove('bg-slate-100', 'text-slate-700');
+            event.target.classList.add('bg-slate-800', 'text-white');
+
+            if(phase === 'all') {
+                blocks.forEach(b => b.classList.remove('hidden'));
+            } else {
+                blocks.forEach(b => {
+                    if(b.classList.contains('phase-' + phase)) {
+                        b.classList.remove('hidden');
+                    } else {
+                        b.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        // Abrir emergente para explicaciones curriculares
+        function openPopup(code) {
+            const data = currData[code];
+            if(!data) return;
+
+            const modal = document.getElementById('modal-popup');
+            const popCat = document.getElementById('pop-category');
+            const popTitle = document.getElementById('pop-title');
+            const popContent = document.getElementById('pop-content');
+
+            popCat.className = `text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wider ${data.color}`;
+            popCat.innerText = data.cat;
+            popTitle.innerText = data.title;
+            popContent.innerHTML = `<p>${data.desc}</p>`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closePopup() {
+            document.getElementById('modal-popup').classList.add('hidden');
+        }
+
+        // Actualizar progreso del Checklist de evaluación
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.crit-check');
+            let checked = 0;
+            checkboxes.forEach(c => {
+                if(c.checked) checked++;
+            });
+            const pct = Math.round((checked / checkboxes.length) * 100);
+            document.getElementById('progress-score').innerText = pct + '%';
+        }
+
+        // Cerrar modal al pulsar fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-popup');
+            if (event.target == modal) {
+                closePopup();
+            }
+        }
+    </script>
+</body>
+</html>
