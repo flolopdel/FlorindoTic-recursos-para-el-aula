@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Interactiva para el Alumnado - SdA2: Videojuegos Sostenibles</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome CDN para Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            tech: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+            },
+            accent: {
+              50: '#fff7ed',
+              500: '#f97316',
+              600: '#ea580c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(229, 231, 235, 0.8);
+    }
+    .popup-trigger {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .popup-trigger:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <header class="bg-gradient-to-r from-slate-900 via-brand-900 to-tech-900 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-brand-500/20 rounded-xl border border-brand-400/30 text-brand-400">
+          <i class="fa-solid fa-gamepad text-2xl"></i>
+        </div>
+        <div>
+          <span class="text-xs uppercase tracking-widest text-brand-400 font-bold">2º ESO • Computación y Robótica</span>
+          <h1 class="text-xl font-extrabold font-heading text-white leading-tight">
+            Código en Acción: Videojuegos Sostenibles
+          </h1>
+        </div>
+      </div>
+      
+      <!-- Menú rápido -->
+      <nav class="flex flex-wrap items-center gap-2 text-sm font-medium">
+        <a href="#guia-sesiones" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-brand-400"></i>
+          <span>Hoja de Ruta (14 Sesiones)</span>
+        </a>
+        <a href="#mapa-curricular" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
+          <i class="fa-solid fa-sitemap text-tech-400"></i>
+          <span>Currículo LOMLOE</span>
+        </a>
+        <a href="#recursos-multimedia" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
+          <i class="fa-solid fa-photo-film text-amber-400"></i>
+          <span>Recursos & Tutoriales</span>
+        </a>
+        <a href="#autoevaluacion" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold transition flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-award"></i>
+          <span>Mi Lista de Cotejo</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <section class="relative bg-gradient-to-b from-slate-900 to-slate-800 text-white py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#22c55e_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      
+      <div class="max-w-5xl mx-auto relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-semibold uppercase tracking-wider mb-4">
+          <i class="fa-solid fa-leaf text-brand-400"></i> Situación de Aprendizaje 2 (2º Trimestre)
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold font-heading leading-tight mb-4 text-slate-50">
+          ¿Cómo podemos concienciar sobre los <button onclick="openPopup('ODS')" class="popup-trigger bg-brand-500/30 text-brand-200 border border-brand-400/40 hover:bg-brand-500/50">ODS <i class="fa-solid fa-circle-info"></i></button> programando nuestro propio videojuego?
+        </h2>
+        <p class="text-slate-300 text-base sm:text-lg max-w-3xl mx-auto mb-8 font-normal">
+          Hola. Esta guía interactiva te acompañará paso a paso durante las <strong class="text-white">14 sesiones</strong> del trimestre. Trabajaréis en equipo para diseñar, programar y publicar un videojuego o simulador interactivo en <strong class="text-brand-300">Scratch o MakeCode</strong> con físicas 2D, marcadores de puntos, niveles de dificultad y licencias libres.
+        </p>
+
+        <!-- Tracker Global de Progreso -->
+        <div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl max-w-2xl mx-auto shadow-xl backdrop-blur-md">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-bars-progress text-brand-400"></i> Tu Progreso en el Reto:
+            </span>
+            <span id="global-progress-text" class="text-sm font-bold text-brand-400">0 de 14 sesiones completadas (0%)</span>
+          </div>
+          <div class="w-full bg-slate-700 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-600">
+            <div id="global-progress-bar" class="bg-gradient-to-r from-brand-500 to-tech-500 h-full rounded-full transition-all duration-500 w-0"></div>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">
+            Haz clic en las casillas de verificación de cada sesión a medida que alcances los hitos con tu equipo.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="guia-sesiones" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h3 class="text-2xl font-bold font-heading text-slate-900 flex items-center gap-3">
+            <i class="fa-solid fa-route text-brand-600"></i>
+            Hoja de Ruta del Alumnado Paso a Paso
+          </h3>
+          <p class="text-slate-600 text-sm mt-1">
+            Revisa lo que debes hacer en cada sesión, sus hitos y las explicaciones sencillas.
+          </p>
+        </div>
+
+        <!-- Filtros por Fase -->
+        <div class="flex flex-wrap gap-2 bg-slate-200/70 p-1.5 rounded-xl text-sm font-medium">
+          <button onclick="filterPhase('all')" id="btn-phase-all" class="phase-btn px-3 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm font-bold transition">
+            Todas (14)
+          </button>
+          <button onclick="filterPhase('fase1')" id="btn-phase-fase1" class="phase-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+            Fase I: Inicio (1-3)
+          </button>
+          <button onclick="filterPhase('fase2')" id="btn-phase-fase2" class="phase-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+            Fase II: Creación (4-11)
+          </button>
+          <button onclick="filterPhase('fase3')" id="btn-phase-fase3" class="phase-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+            Fase III: Cierre (12-14)
+          </button>
+        </div>
+      </div>
+
+      <div id="sessions-container" class="space-y-6">
+
+        <!-- SESIÓN 1 -->
+        <div class="session-card fase1 glass-card rounded-2xl p-6 border-l-8 border-l-amber-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 1 • Fase I
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Lanzamiento del Reto y Análisis de Juegos Sostenibles
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 hover:bg-amber-100 transition">
+                <input type="checkbox" onchange="toggleSession(1)" id="chk-s1" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-amber-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-amber-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Verás un vídeo inspirador sobre videojuegos educativos e interactivos de concienciación ambiental. En pequeños grupos, probarás videojuegos de Scratch sobre los <button onclick="openPopup('ODS')" class="popup-trigger bg-amber-100 text-amber-800">ODS <i class="fa-solid fa-circle-info"></i></button> para analizar cómo funcionan sus mecánicas (puntos, obstáculos, personajes).
+              </p>
+              
+              <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-amber-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-amber-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-amber-800">
+                  Completar la primera parte del cuestionario diagnóstico <button onclick="openPopup('KWL')" class="popup-trigger bg-amber-200/60 text-amber-900">KWL <i class="fa-solid fa-circle-info"></i></button> en el entorno virtual ("Lo que sé" y "Lo que quiero aprender").
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE1')" class="popup-trigger bg-slate-200 text-slate-700">CE1</button>
+                <button onclick="openPopup('CEv1.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 1.3</button>
+                <button onclick="openPopup('CYR.2.A.1')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.1</button>
+                <button onclick="openPopup('CCL3')" class="popup-trigger bg-slate-200 text-slate-700">CCL3</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i> Aclaraciones y Recursos
+              </h5>
+              <div class="text-xs text-slate-600 space-y-2">
+                <p><strong>Gamificación:</strong> Usar dinámicas de juego (misiones, puntos, niveles) para aprender y concienciar.</p>
+                <a href="https://scratch.mit.edu/explore/projects/all" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-tech-600 hover:text-tech-800 font-semibold underline">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Explorar Scratch Studio
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 2 -->
+        <div class="session-card fase1 glass-card rounded-2xl p-6 border-l-8 border-l-amber-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 2 • Fase I
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Diseño Algorítmico y Pseudocódigo (Pensar antes de programar)
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 hover:bg-amber-100 transition">
+                <input type="checkbox" onchange="toggleSession(2)" id="chk-s2" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-amber-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-amber-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Antes de tocar la pantalla, dibujaremos el mapa mental del juego en papel o herramienta digital. Diseñaréis el flujo de juego: cómo se mueve el personaje, cuándo gana puntos de sostenibilidad, qué pasa si choca con un obstáculo contaminante y cuándo termina la partida.
+              </p>
+              
+              <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-amber-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-amber-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-amber-800">
+                  Diagrama de flujo completado del juego con flechas de inicio, decisiones (sí/no) y pantallas finales.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE1')" class="popup-trigger bg-slate-200 text-slate-700">CE1</button>
+                <button onclick="openPopup('CEv1.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 1.3</button>
+                <button onclick="openPopup('CYR.2.A.3')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.3</button>
+                <button onclick="openPopup('STEM2')" class="popup-trigger bg-slate-200 text-slate-700">STEM2</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i> Conceptos Fáciles
+              </h5>
+              <div class="text-xs text-slate-600 space-y-2">
+                <p><strong>Algoritmo:</strong> Una receta con los pasos ordenados para resolver un problema o ejecutar una acción.</p>
+                <p><strong>Diagrama de flujo:</strong> Dibujo con rectángulos y rombos que muestra las decisiones de un programa.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 3 -->
+        <div class="session-card fase1 glass-card rounded-2xl p-6 border-l-8 border-l-amber-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 3 • Fase I
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Organización de Equipos y Contrato de Roles
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 hover:bg-amber-100 transition">
+                <input type="checkbox" onchange="toggleSession(3)" id="chk-s3" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-amber-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-amber-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Formaréis equipos cooperativos de 3 o 4 personas. Cada integrante asumirá un rol técnico profesional para garantizar el trabajo en equipo y firmaréis el contrato del equipo.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 my-2">
+                <div class="p-2 bg-white rounded-lg border border-slate-200 text-xs">
+                  <span class="font-bold text-slate-800 block"><i class="fa-solid fa-code text-brand-600"></i> Lead Programmer</span>
+                  Coordina la estructura general del código.
+                </div>
+                <div class="p-2 bg-white rounded-lg border border-slate-200 text-xs">
+                  <span class="font-bold text-slate-800 block"><i class="fa-solid fa-palette text-tech-600"></i> UI/UX Designer</span>
+                  Diseña escenarios, personajes y menús.
+                </div>
+                <div class="p-2 bg-white rounded-lg border border-slate-200 text-xs">
+                  <span class="font-bold text-slate-800 block"><i class="fa-solid fa-bug text-amber-600"></i> QA Tester & Content</span>
+                  Revisa fallos, licencias e historia.
+                </div>
+              </div>
+              
+              <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-amber-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-amber-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-amber-800">
+                  Documento de Constitución de Equipo firmado y primera "Historia de Usuario" escrita (ej: "Como jugador quiero recoger envases para ganar puntos").
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv2.1')" class="popup-trigger bg-slate-200 text-slate-700">CEv 2.1</button>
+                <button onclick="openPopup('CPSAA3')" class="popup-trigger bg-slate-200 text-slate-700">CPSAA3</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-handshake text-amber-500"></i> Compromiso Cooperativo
+              </h5>
+              <p class="text-xs text-slate-600">
+                Recuerda que en un estudio de desarrollo de videojuegos la comunicación fluida y el apoyo mutuo son la clave del éxito.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 4 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 4 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Diseño de Interfaz y Cambio de Escenarios
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(4)" id="chk-s4" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Crearéis las pantallas principales de vuestro juego: Menú de inicio (con botón "Jugar"), Pantalla de Instrucciones, Escenario de Juego y pantallas de "Victoria" y "Game Over". Programaréis los cambios de fondo mediante <button onclick="openPopup('CYR.2.A.5')" class="popup-trigger bg-tech-100 text-tech-800">eventos de Scratch <i class="fa-solid fa-circle-info"></i></button>.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Prototipo navegable: al pulsar el botón "Comenzar", el escenario cambia a la pantalla de juego y oculta los botones del menú.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv1.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 1.3</button>
+                <button onclick="openPopup('CYR.2.A.5')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.5</button>
+                <button onclick="openPopup('CD5')" class="popup-trigger bg-slate-200 text-slate-700">CD5</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-laptop-code text-tech-600"></i> Bloques Clave
+              </h5>
+              <div class="text-xs text-slate-600 space-y-2">
+                <p class="font-mono bg-white p-1.5 rounded border border-slate-200 text-slate-800">
+                  al hacer clic en este objeto ➔ cambiar fondo a [Juego] ➔ enviar mensaje [empezar_juego]
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 5 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 5 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Movimiento del Personaje y Física 2D
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(5)" id="chk-s5" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Programaréis el personaje principal para que se mueva suavemente por la pantalla mediante teclado o ratón. Ajustaréis ejes de coordenadas (X e Y), límites de pantalla para que no se salga y una simulación sencilla de salto o gravedad.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Código de movimiento continuo funcional en el personaje principal usando bucles ("por siempre") y condicionales ("si tecla presionada").
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.2</button>
+                <button onclick="openPopup('CYR.2.A.3')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.3</button>
+                <button onclick="openPopup('STEM1')" class="popup-trigger bg-slate-200 text-slate-700">STEM1</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-compass text-tech-600"></i> Coordenadas en 2D
+              </h5>
+              <div class="text-xs text-slate-600 space-y-1">
+                <p><strong>Eje X:</strong> Movimiento horizontal (Izquierda / Derecha).</p>
+                <p><strong>Eje Y:</strong> Movimiento vertical (Arriba / Abajo).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 6 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 6 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Sensores y Detección de Colisiones
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(6)" id="chk-s6" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Añadiréis objetos interactivos al juego (ej. residuos reciclables o paneles solares) y obstáculos. Programaréis sensores de choque mediante condicionales anidados (<button onclick="openPopup('CYR.2.A.4')" class="popup-trigger bg-tech-100 text-tech-800">si... entonces <i class="fa-solid fa-circle-info"></i></button>) para que el juego reaccione cuando el personaje los toque.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Detección de colisión comprobada: los objetos desaparecen al ser tocados, reproducen un efecto de sonido y envían una señal de acción.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv2.1')" class="popup-trigger bg-slate-200 text-slate-700">CEv 2.1</button>
+                <button onclick="openPopup('CYR.2.A.4')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.4</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-microchip text-tech-600"></i> Lógica Condicional
+              </h5>
+              <p class="text-xs text-slate-600">
+                Usa el bloque: <code>si ¿tocando a [Objeto]? entonces ➔ esconder ➔ tocar sonido [pop]</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 7 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 7 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Variables: Puntuación de Sostenibilidad y Tiempo
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(7)" id="chk-s7" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Crearéis contenedores de datos llamados <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-tech-100 text-tech-800">variables <i class="fa-solid fa-circle-info"></i></button>. Una variable guardará los "Puntos ODS" y otra llevará la cuenta atrás del "Tiempo" o las "Vidas" del jugador.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Marcador funcional en pantalla: la puntuación aumenta al recoger elementos sostenibles y el temporizador resta 1 segundo automáticamente hasta llegar a 0.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv1.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 1.3</button>
+                <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.2</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-calculator text-tech-600"></i> Explicación Sencilla
+              </h5>
+              <p class="text-xs text-slate-600">
+                Una <strong>variable</strong> es como una caja con etiqueta donde guardas un número que cambia durante el juego.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 8 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 8 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Bloques Personalizados (Funciones)
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(8)" id="chk-s8" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Para evitar repetir el mismo código una y otra vez, inventaréis vuestros propios bloques ("Mis Bloques" en Scratch). Crearéis una función para acciones repetitivas como "Reiniciar Posición" o "Aplicar Penalización".
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Código ordenado utilizando al menos un bloque personalizado creado por el equipo (abstracción).
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE1')" class="popup-trigger bg-slate-200 text-slate-700">CE1</button>
+                <button onclick="openPopup('CEv1.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 1.3</button>
+                <button onclick="openPopup('CYR.2.A.3')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.3</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-cubes text-tech-600"></i> Modularización
+              </h5>
+              <p class="text-xs text-slate-600">
+                Si creas el bloque <code>Definir [Reiniciar]</code>, luego solo tienes que llamar a <code>Reiniciar</code> en cualquier lugar del código.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 9 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 9 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Uso de Listas para Récords e Inventarios
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(9)" id="chk-s9" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Aprenderéis a usar <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-tech-100 text-tech-800">Listas (Arrays) <i class="fa-solid fa-circle-info"></i></button> para guardar varios datos juntos, como una tabla de mejores puntuaciones acumuladas o un inventario de objetos ecológicos recogidos durante la partida.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Lista programada en el proyecto que añade elementos automáticamente cuando finaliza la partida o se recoge un ítem.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.2</button>
+                <button onclick="openPopup('CYR.2.A.4')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.4</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-list-ol text-tech-600"></i> ¿Qué es una Lista?
+              </h5>
+              <p class="text-xs text-slate-600">
+                Es como la lista de la compra: guarda múltiples elementos ordenados por posición (1, 2, 3...).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 10 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 10 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Recursos Multimedia y Propiedad Intelectual
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(10)" id="chk-s10" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Buscaréis música de fondo, efectos de sonido e imágenes en bancos de recursos libres con licencias <button onclick="openPopup('CC')" class="popup-trigger bg-tech-100 text-tech-800">Creative Commons <i class="fa-solid fa-circle-info"></i></button> o Dominio Público. Crearéis la hoja de créditos de autoría.
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Hoja de registro de licencias de todos los audios e imágenes descargados e integrados con su debida atribución de autoría.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE6')" class="popup-trigger bg-slate-200 text-slate-700">CE6</button>
+                <button onclick="openPopup('CEv6.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 6.3</button>
+                <button onclick="openPopup('CYR.2.I.5')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.I.5</button>
+                <button onclick="openPopup('CD1')" class="popup-trigger bg-slate-200 text-slate-700">CD1</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-copyright text-tech-600"></i> Ética Digital
+              </h5>
+              <p class="text-xs text-slate-600">
+                No podemos usar cualquier imagen de Google sin permiso. Debemos respetar siempre los derechos de creación.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 11 -->
+        <div class="session-card fase2 glass-card rounded-2xl p-6 border-l-8 border-l-tech-500 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-tech-100 text-tech-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 11 • Fase II
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Ensamblaje Final y Transición de Niveles
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-tech-50 px-3 py-1.5 rounded-xl border border-tech-200 hover:bg-tech-100 transition">
+                <input type="checkbox" onchange="toggleSession(11)" id="chk-s11" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-tech-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-tech-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Juntaréis todos los módulos creados. Programaréis la transición al Nivel 2 o a un nivel más difícil cuando el jugador alcance una determinada puntuación (ej: 100 puntos de sostenibilidad).
+              </p>
+              
+              <div class="bg-tech-50/70 border border-tech-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-tech-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-tech-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-tech-800">
+                  Versión Beta completa del videojuego totalmente jugable de principio a fin sin bloqueos.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv2.1')" class="popup-trigger bg-slate-200 text-slate-700">CEv 2.1</button>
+                <button onclick="openPopup('CYR.2.A.1')" class="popup-trigger bg-slate-200 text-slate-700">CYR.2.A.1 - CYR.2.A.5</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-tech-600"></i> Lógica de Niveles
+              </h5>
+              <p class="text-xs text-slate-600">
+                <code>si [Puntuacion > 100] entonces ➔ enviar mensaje [nivel_2]</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 12 -->
+        <div class="session-card fase3 glass-card rounded-2xl p-6 border-l-8 border-l-brand-600 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-brand-100 text-brand-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 12 • Fase III
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Depuración (Debugging) y Prueba Cruzada entre Equipos
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-200 hover:bg-brand-100 transition">
+                <input type="checkbox" onchange="toggleSession(12)" id="chk-s12" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-brand-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-brand-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                ¡Día de prueba cruzada! Probaréis el juego de otro equipo (Beta Testing) buscando fallos de código o problemas de dificultad. Rellenaréis la hoja de registro de errores y la diana de coevaluación para ayudarles a mejorar.
+              </p>
+              
+              <div class="bg-brand-50/70 border border-brand-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-brand-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-brand-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-brand-800">
+                  Ficha de Registro de Errores ("Bug Tracking") recibida de los probadores y corrección de al menos dos fallos de código.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CEv2.1')" class="popup-trigger bg-slate-200 text-slate-700">CEv 2.1</button>
+                <button onclick="openPopup('CPSAA4')" class="popup-trigger bg-slate-200 text-slate-700">CPSAA4</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bug-slash text-brand-600"></i> ¿Qué es Debugging?
+              </h5>
+              <p class="text-xs text-slate-600">
+                Es la depuración o rastreo de errores en el código informático para solucionarlos de forma lógica.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 13 -->
+        <div class="session-card fase3 glass-card rounded-2xl p-6 border-l-8 border-l-brand-600 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-brand-100 text-brand-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 13 • Fase III
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Publicación Web y Documentación Técnica
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-200 hover:bg-brand-100 transition">
+                <input type="checkbox" onchange="toggleSession(13)" id="chk-s13" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-brand-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-brand-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Publicaréis el proyecto en el estudio oficial de Scratch del instituto. Escribiréis la ficha técnica: título definitivo, instrucciones claras de cómo jugar, notas de versión y la licencia <button onclick="openPopup('CC')" class="popup-trigger bg-brand-100 text-brand-800">Creative Commons <i class="fa-solid fa-circle-info"></i></button> seleccionada.
+              </p>
+              
+              <div class="bg-brand-50/70 border border-brand-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-brand-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-brand-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-brand-800">
+                  Enlace público publicado en el estudio de la clase con la ficha explicativa adecuadamente redactada.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE6')" class="popup-trigger bg-slate-200 text-slate-700">CE6</button>
+                <button onclick="openPopup('CEv6.3')" class="popup-trigger bg-slate-200 text-slate-700">CEv 6.3</button>
+                <button onclick="openPopup('CD3')" class="popup-trigger bg-slate-200 text-slate-700">CD3</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-globe text-brand-600"></i> Ciudadanía Digital
+              </h5>
+              <p class="text-xs text-slate-600">
+                Al publicar con licencia libre contribuyes a la comunidad y enseñas a otros sobre desarrollo sostenible.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESIÓN 14 -->
+        <div class="session-card fase3 glass-card rounded-2xl p-6 border-l-8 border-l-brand-600 shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-brand-100 text-brand-800 text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
+                Sesión 14 • Fase III
+              </span>
+              <h4 class="text-xl font-bold font-heading text-slate-900">
+                Feria Tecnológica: "Sostenibilidad en Código"
+              </h4>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="cursor-pointer flex items-center gap-2 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-200 hover:bg-brand-100 transition">
+                <input type="checkbox" onchange="toggleSession(14)" id="chk-s14" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                <span class="text-xs font-bold text-brand-900">¡Hito Completado!</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-3">
+              <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-brand-600"></i> ¿Qué vas a hacer hoy?
+              </h5>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                Presentación pública de 3 minutos por equipo (Elevator Pitch) ante el grupo clase. Explicaréis la temática del ODS abordado, las mecánicas del juego y los retos técnicos superados. Rellenaréis el diario metacognitivo final.
+              </p>
+              
+              <div class="bg-brand-50/70 border border-brand-200 rounded-xl p-3.5">
+                <h6 class="text-xs font-bold text-brand-900 uppercase mb-1">
+                  <i class="fa-solid fa-trophy text-brand-600 mr-1"></i> Hito de la Sesión:
+                </h6>
+                <p class="text-xs text-brand-800">
+                  Exposición oral realizada con éxito y entrega del diario de reflexión individual.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="text-xs text-slate-500 font-semibold">Elementos Curriculares:</span>
+                <button onclick="openPopup('CE1')" class="popup-trigger bg-slate-200 text-slate-700">CE1</button>
+                <button onclick="openPopup('CE2')" class="popup-trigger bg-slate-200 text-slate-700">CE2</button>
+                <button onclick="openPopup('CPSAA5')" class="popup-trigger bg-slate-200 text-slate-700">CPSAA5</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-100/80 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-microphone text-brand-600"></i> Elevator Pitch
+              </h5>
+              <p class="text-xs text-slate-600">
+                Una presentación breve, clara y entusiasta capaz de captar la atención en menos de tres minutos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="mapa-curricular" class="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-brand-400">Junta de Andalucía • Normativa LOMLOE</span>
+          <h3 class="text-2xl sm:text-4xl font-extrabold font-heading mt-1">
+            Matriz Curricular de la SdA2
+          </h3>
+          <p class="text-slate-400 text-sm mt-2">
+            Recuerda que en el modelo autonómico se evalúan exclusivamente los <strong class="text-slate-200">Criterios de Evaluación</strong>. Puedes pulsar sobre cualquier código para desplegar la ventana emergente con su descripción completa.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Competencias Específicas -->
+          <div class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl">
+            <h4 class="text-lg font-bold font-heading text-brand-400 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-award"></i> Competencias Específicas
+            </h4>
+            <div class="space-y-2">
+              <button onclick="openPopup('CE1')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-brand-300 block">CE1 - Pensamiento Computacional</span>
+                  <span class="text-slate-400">Comprender impacto y crear proyectos sostenibles.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+              <button onclick="openPopup('CE2')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-brand-300 block">CE2 - Producción de Software</span>
+                  <span class="text-slate-400">Programación en bloques y trabajo colaborativo.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+              <button onclick="openPopup('CE6')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-brand-300 block">CE6 - Ciberseguridad y Licencias</span>
+                  <span class="text-slate-400">Protección en red e interacción responsable.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Criterios de Evaluación -->
+          <div class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl">
+            <h4 class="text-lg font-bold font-heading text-tech-400 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-check-double"></i> Criterios de Evaluación
+            </h4>
+            <div class="space-y-2">
+              <button onclick="openPopup('CEv1.3')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-tech-300 block">CEv 1.3 - Estructura de Programas</span>
+                  <span class="text-slate-400">Entender el funcionamiento y componentes.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+              <button onclick="openPopup('CEv2.1')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-tech-300 block">CEv 2.1 - Programar y Colaborar</span>
+                  <span class="text-slate-400">Resolver problemas en equipo programando.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+              <button onclick="openPopup('CEv6.3')" class="w-full text-left p-2.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition border border-slate-600 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-bold text-tech-300 block">CEv 6.3 - Derechos en Internet</span>
+                  <span class="text-slate-400">Reconocer propiedad intelectual y licencias.</span>
+                </div>
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Saberes Básicos -->
+          <div class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl">
+            <h4 class="text-lg font-bold font-heading text-amber-400 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-book-bookmark"></i> Saberes Básicos
+            </h4>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="openPopup('CYR.2.A.1')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.A.1</button>
+              <button onclick="openPopup('CYR.2.A.2')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.A.2</button>
+              <button onclick="openPopup('CYR.2.A.3')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.A.3</button>
+              <button onclick="openPopup('CYR.2.A.4')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.A.4</button>
+              <button onclick="openPopup('CYR.2.A.5')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.A.5</button>
+              <button onclick="openPopup('CYR.2.I.5')" class="popup-trigger bg-slate-700 text-amber-300 border border-slate-600">CYR.2.I.5</button>
+            </div>
+            <p class="text-xs text-slate-400 mt-4 leading-relaxed">
+              Los saberes básicos son los conocimientos procedimentales (programación visual por bloques, variables, condicionales e interfaz) utilizados como medio para alcanzar los criterios de evaluación.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="recursos-multimedia" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-xs font-extrabold uppercase tracking-widest text-tech-600">Biblioteca de Aprendizaje</span>
+        <h3 class="text-2xl sm:text-4xl font-extrabold font-heading text-slate-900 mt-1">
+          Recursos Multimedia, Enlaces Libres y Videotutoriales
+        </h3>
+        <p class="text-slate-600 text-sm mt-2">
+          Herramientas gratuitas y libres recomendadas para inspirarse, conseguir audios/imágenes e instruirse en Scratch.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Tarjeta 1: Entorno de Programación -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center gap-2 justify-center text-xl font-bold mb-4">
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <h4 class="text-lg font-bold font-heading text-slate-900 mb-2">Plataformas de Programación</h4>
+          <p class="text-slate-600 text-xs mb-4 leading-relaxed">
+            Entornos web oficiales para crear tu proyecto mediante bloques interactivos sin necesidad de instalar programas.
+          </p>
+          <ul class="space-y-2 text-xs">
+            <li>
+              <a href="https://scratch.mit.edu" target="_blank" rel="noopener" class="text-tech-600 hover:text-tech-800 font-bold inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Scratch (MIT Official)
+              </a>
+            </li>
+            <li>
+              <a href="https://arcade.makecode.com" target="_blank" rel="noopener" class="text-tech-600 hover:text-tech-800 font-bold inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> MakeCode Arcade (Microsoft)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tarjeta 2: Bancos de Recursos Libres (CC) -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold mb-4">
+            <i class="fa-solid fa-icons"></i>
+          </div>
+          <h4 class="text-lg font-bold font-heading text-slate-900 mb-2">Imágenes y Audios Libres</h4>
+          <p class="text-slate-600 text-xs mb-4 leading-relaxed">
+            Bancos de sprites, música e iconos con licencias abiertas para descargar legalmente citando autoría.
+          </p>
+          <ul class="space-y-2 text-xs">
+            <li>
+              <a href="https://opengameart.org" target="_blank" rel="noopener" class="text-tech-600 hover:text-tech-800 font-bold inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> OpenGameArt.org (Sprites 2D)
+              </a>
+            </li>
+            <li>
+              <a href="https://freesound.org" target="_blank" rel="noopener" class="text-tech-600 hover:text-tech-800 font-bold inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Freesound.org (Efectos de sonido)
+              </a>
+            </li>
+            <li>
+              <a href="https://commons.wikimedia.org" target="_blank" rel="noopener" class="text-tech-600 hover:text-tech-800 font-bold inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Wikimedia Commons (Fotografía libre)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tarjeta 3: Tutoriales Sugeridos -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-tech-100 text-tech-600 flex items-center justify-center text-xl font-bold mb-4">
+            <i class="fa-solid fa-play"></i>
+          </div>
+          <h4 class="text-lg font-bold font-heading text-slate-900 mb-2">Tutoriales en Vídeo</h4>
+          <p class="text-slate-600 text-xs mb-4 leading-relaxed">
+            Guías breves en vídeo recomendadas para resolver dudas rápidas sobre bloques específicos.
+          </p>
+          <ul class="space-y-2 text-xs">
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-video text-amber-500"></i>
+              <span>Cómo crear variables y puntuaciones en Scratch</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-video text-amber-500"></i>
+              <span>Físicas de salto y gravedad simple en 2D</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-video text-amber-500"></i>
+              <span>Cómo usar las listas y guardar récords</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="autoevaluacion" class="bg-gradient-to-br from-slate-900 to-brand-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-400">Evaluación Criterial e Inclusiva</span>
+          <h3 class="text-3xl font-extrabold font-heading mt-1">
+            Lista de Cotejo Técnica del Videojuego
+          </h3>
+          <p class="text-slate-300 text-sm mt-2">
+            Verifica los requerimientos técnicos de tu producto final antes de entregarlo. Marca cada característica que cumpla vuestro videojuego:
+          </p>
+        </div>
+
+        <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Pantallas e Interfaz Navegable</span>
+              <span class="text-xs text-slate-400">Incluye menú de inicio con botón de jugar, pantalla de instrucciones, escenario de juego y pantallas finales de victoria/derrota.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Lógica Condicional y Bucles</span>
+              <span class="text-xs text-slate-400">Utiliza estructuras condicionales anidadas (si... entonces... si no) y bucles continuos para controlar el juego.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Variables Múltiples</span>
+              <span class="text-xs text-slate-400">Se han implementado al menos dos variables (puntuación de sostenibilidad y temporizador o vidas).</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Bloques Personalizados (Funciones)</span>
+              <span class="text-xs text-slate-400">El código utiliza al menos un bloque personalizado ("Mis Bloques") para optimizar tareas repetitivas.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Uso de Licencias Abiertas y Atribución</span>
+              <span class="text-xs text-slate-400">Todos los materiales multimedia descargados respetan licencias Creative Commons o Dominio Público con atribución de autoría.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-700/50 border border-slate-600/60 cursor-pointer hover:bg-slate-700 transition">
+            <input type="checkbox" onchange="calcChecklist()" class="chk-cotejo w-5 h-5 text-brand-500 rounded mt-0.5 focus:ring-brand-500">
+            <div>
+              <span class="font-bold text-sm block text-slate-100">Publicación en el Estudio Oficial</span>
+              <span class="text-xs text-slate-400">El juego está publicado en la galería oficial de Scratch con sus instrucciones completas y créditos redactados.</span>
+            </div>
+          </label>
+
+          <!-- Resultado de la Calculadora -->
+          <div class="mt-6 p-4 rounded-xl bg-slate-900 border border-brand-500/30 text-center">
+            <span class="text-xs text-slate-400 uppercase font-semibold">Resultado de Autoevaluación Técnica:</span>
+            <div id="cotejo-score" class="text-2xl font-extrabold font-heading text-brand-400 my-1">
+              0 de 6 requisitos cumplidos (0%)
+            </div>
+            <p id="cotejo-feedback" class="text-xs text-slate-300">
+              Marca las casillas correspondientes a medida que integréis los componentes técnicos en Scratch.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-graduation-cap text-brand-500 text-base"></i>
+        <span>Situación de Aprendizaje LOMLOE • Junta de Andalucía (2º ESO)</span>
+      </div>
+      <div>
+        <span>Materia: Computación y Robótica • Recursos Abiertos</span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="popup-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative animate-fade-in">
+      
+      <!-- Botón de Cerrar -->
+      <button onclick="closePopup()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Encabezado del Popup -->
+      <div class="flex items-center gap-3 mb-4">
+        <div id="modal-badge" class="px-3 py-1 rounded-lg text-xs font-bold uppercase bg-brand-100 text-brand-800">
+          Sigla Curricular
+        </div>
+        <h4 id="modal-title" class="text-xl font-bold font-heading text-slate-900">
+          Título del Elemento
+        </h4>
+      </div>
+
+      <!-- Contenido del Popup -->
+      <div class="space-y-3 text-sm text-slate-600 leading-relaxed" id="modal-body">
+        Descripción del elemento...
+      </div>
+
+      <!-- Pie del Popup -->
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
+        <span id="modal-category" class="text-xs text-slate-400 font-semibold">Normativa LOMLOE Andalucía</span>
+        <button onclick="closePopup()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de Datos de Siglas Curriculares y Conceptos (LOMLOE Andalucía)
+    const curricularData = {
+      'ODS': {
+        title: 'Objetivos de Desarrollo Sostenible (ODS)',
+        category: 'Marco Global / Agenda 2030',
+        badge: 'bg-emerald-100 text-emerald-800',
+        body: 'Son 17 objetivos globales adoptados por la ONU para erradicar la pobreza, proteger el planeta y garantizar la paz y la prosperidad para el año 2030. En esta SdA los aplicamos en videojuegos de concienciación.'
+      },
+      'KWL': {
+        title: 'Cuestionario Diagnóstico KWL',
+        category: 'Metodología Didáctica',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Estrategia metacognitiva dividida en 3 columnas: K (Know / Lo que sé), W (Want / Lo que quiero aprender) y L (Learned / Lo que he aprendido al finalizar la unidad).'
+      },
+      'CE1': {
+        title: 'Competencia Específica 1 (CE1)',
+        category: 'Competencia Específica',
+        badge: 'bg-brand-100 text-brand-800',
+        body: 'Comprender el impacto que la computación y la robótica tienen en nuestra sociedad y desarrollar el pensamiento computacional para realizar proyectos de construcción de sistemas digitales de forma sostenible.'
+      },
+      'CE2': {
+        title: 'Competencia Específica 2 (CE2)',
+        category: 'Competencia Específica',
+        badge: 'bg-brand-100 text-brand-800',
+        body: 'Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado o exhibir un comportamiento deseado.'
+      },
+      'CE6': {
+        title: 'Competencia Específica 6 (CE6)',
+        category: 'Competencia Específica',
+        badge: 'bg-brand-100 text-brand-800',
+        body: 'Conocer y aplicar los principios de la ciberseguridad, adoptando hábitos y conductas de seguridad, para permitir la protección del individuo en su interacción en la red.'
+      },
+      'CEv1.3': {
+        title: 'Criterio de Evaluación 1.3 (CEv 1.3)',
+        category: 'Criterio de Evaluación Evaluado',
+        badge: 'bg-tech-100 text-tech-800',
+        body: 'Entender cómo funciona un programa informático, la manera de elaborarlo y sus principales componentes.'
+      },
+      'CEv2.1': {
+        title: 'Criterio de Evaluación 2.1 (CEv 2.1)',
+        category: 'Criterio de Evaluación Evaluado',
+        badge: 'bg-tech-100 text-tech-800',
+        body: 'Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.'
+      },
+      'CEv6.3': {
+        title: 'Criterio de Evaluación 6.3 (CEv 6.3)',
+        category: 'Criterio de Evaluación Evaluado',
+        badge: 'bg-tech-100 text-tech-800',
+        body: 'Reconocer y comprender los derechos de los materiales alojados en Internet (propiedad intelectual y licencias abiertas).'
+      },
+      'CYR.2.A.1': {
+        title: 'Saber Básico CYR.2.A.1',
+        category: 'Saberes Básicos (2º ESO)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Lenguajes de programación visuales por bloques: ventajas e inconvenientes.'
+      },
+      'CYR.2.A.2': {
+        title: 'Saber Básico CYR.2.A.2',
+        category: 'Saberes Básicos (2º ESO)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Elementos de los programas con lenguaje de bloques (variables, constantes, eventos, objetos y listas).'
+      },
+      'CYR.2.A.3': {
+        title: 'Saber Básico CYR.2.A.3',
+        category: 'Saberes Básicos (2º ESO)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Secuencia de instrucciones. Medios de expresión de algoritmos (diagramas de flujo, pseudocódigo).'
+      },
+      'CYR.2.A.4': {
+        title: 'Saber Básico CYR.2.A.4',
+        category: 'Saberes Básicos (2º ESO)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Generación de tareas repetitivas (bucles) y condicionales (si... entonces... si no).'
+      },
+      'CYR.2.A.5': {
+        title: 'Saber Básico CYR.2.A.5',
+        category: 'Saberes Básicos (2º ESO)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Pantallas e interfaces de interacción con el usuario (menús, botones, cambios de escenario y finales).'
+      },
+      'CYR.2.I.5': {
+        title: 'Saber Básico CYR.2.I.5',
+        category: 'Saberes Básicos (Ciberseguridad)',
+        badge: 'bg-amber-100 text-amber-800',
+        body: 'Protección de la propiedad intelectual y el uso ético de recursos multimedia digitales.'
+      },
+      'CCL3': {
+        title: 'Descriptor Operativo CCL3',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Localiza, selecciona y contrasta información de fuentes evaluando su fiabilidad e integrándola respetando la propiedad intelectual.'
+      },
+      'STEM1': {
+        title: 'Descriptor Operativo STEM1',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Utiliza métodos inductivos y deductivos propios del razonamiento matemático y selecciona estrategias para resolver problemas.'
+      },
+      'STEM2': {
+        title: 'Descriptor Operativo STEM2',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Utiliza el pensamiento científico para entender fenómenos planteándose preguntas y comprobando hipótesis.'
+      },
+      'CD1': {
+        title: 'Descriptor Operativo CD1',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad, respetando la propiedad intelectual.'
+      },
+      'CD3': {
+        title: 'Descriptor Operativo CD3',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Se comunica, participa y colabora compartiendo contenidos mediante entornos virtuales para ejercitar una ciudadanía digital activa.'
+      },
+      'CD5': {
+        title: 'Descriptor Operativo CD5',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver retos.'
+      },
+      'CPSAA3': {
+        title: 'Descriptor Operativo CPSAA3',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Comprende proactivamente las perspectivas de las demás personas y las incorpora para trabajar en equipo equitativamente.'
+      },
+      'CPSAA4': {
+        title: 'Descriptor Operativo CPSAA4',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Realiza autoevaluaciones sobre su proceso de aprendizaje contrastando la información para obtener conclusiones.'
+      },
+      'CPSAA5': {
+        title: 'Descriptor Operativo CPSAA5',
+        category: 'Perfil de Salida',
+        badge: 'bg-purple-100 text-purple-800',
+        body: 'Planea objetivos a medio plazo y desarrolla procesos metacognitivos para aprender de sus propios errores.'
+      },
+      'CC': {
+        title: 'Licencias Creative Commons (CC)',
+        category: 'Derechos de Autor Libres',
+        badge: 'bg-blue-100 text-blue-800',
+        body: 'Modelos de licencias gratuitas que permiten a autores y creadores otorgar permisos al público para compartir y usar su trabajo bajo condiciones sencillas (como citar la autoría).'
+      }
+    };
+
+    // Función para abrir el Popup emergente
+    function openPopup(key) {
+      const data = curricularData[key];
+      if (!data) return;
+
+      document.getElementById('modal-badge').className = `px-3 py-1 rounded-lg text-xs font-bold uppercase ${data.badge}`;
+      document.getElementById('modal-badge').textContent = data.category;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-body').textContent = data.body;
+      
+      document.getElementById('popup-modal').classList.remove('hidden');
+    }
+
+    // Función para cerrar el Popup
+    function closePopup() {
+      document.getElementById('popup-modal').classList.add('hidden');
+    }
+
+    // Filtrar Sesiones por Fase
+    function filterPhase(phase) {
+      const cards = document.querySelectorAll('.session-card');
+      const buttons = document.querySelectorAll('.phase-btn');
+
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm', 'font-bold');
+        btn.classList.add('text-slate-600');
+      });
+
+      const activeBtn = document.getElementById(`btn-phase-${phase}`);
+      if(activeBtn) {
+        activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm', 'font-bold');
+        activeBtn.classList.remove('text-slate-600');
+      }
+
+      cards.forEach(card => {
+        if (phase === 'all' || card.classList.contains(phase)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Gestión del Progreso en LocalStorage
+    let completedSessions = JSON.parse(localStorage.getItem('cyr_sda2_progress')) || [];
+
+    function initProgress() {
+      completedSessions.forEach(sessionNum => {
+        const chk = document.getElementById(`chk-s${sessionNum}`);
+        if(chk) chk.checked = true;
+      });
+      updateProgressUI();
+    }
+
+    function toggleSession(sessionNum) {
+      const chk = document.getElementById(`chk-s${sessionNum}`);
+      if (chk.checked) {
+        if (!completedSessions.includes(sessionNum)) completedSessions.push(sessionNum);
+      } else {
+        completedSessions = completedSessions.filter(s => s !== sessionNum);
+      }
+      localStorage.setItem('cyr_sda2_progress', JSON.stringify(completedSessions));
+      updateProgressUI();
+    }
+
+    function updateProgressUI() {
+      const count = completedSessions.length;
+      const percent = Math.round((count / 14) * 100);
+      document.getElementById('global-progress-text').textContent = `${count} de 14 sesiones completadas (${percent}%)`;
+      document.getElementById('global-progress-bar').style.width = `${percent}%`;
+    }
+
+    // Calculadora para Lista de Cotejo
+    function calcChecklist() {
+      const checkboxes = document.querySelectorAll('.chk-cotejo');
+      let checkedCount = 0;
+      checkboxes.forEach(chk => { if(chk.checked) checkedCount++; });
+
+      const total = checkboxes.length;
+      const percent = Math.round((checkedCount / total) * 100);
+
+      document.getElementById('cotejo-score').textContent = `${checkedCount} de ${total} requisitos cumplidos (${percent}%)`;
+
+      let feedback = '';
+      if(percent === 100) {
+        feedback = '¡Excelente! Tu videojuego reúne todas las características técnicas solicitadas en la SdA2.';
+      } else if(percent >= 50) {
+        feedback = '¡Buen avance! Estás cerca de completar todos los requisitos técnicos. Revisa los apartados pendientes.';
+      } else {
+        feedback = 'Sigue programando. Revisa con tu equipo los elementos de código e interfaz que faltan.';
+      }
+      document.getElementById('cotejo-feedback').textContent = feedback;
+    }
+
+    // Inicializar al cargar la página
+    window.onload = function() {
+      initProgress();
+      
+      // Cerrar modal al pulsar Escape o fuera del cuadro
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closePopup();
+      });
+      document.getElementById('popup-modal').addEventListener('click', function(e) {
+        if (e.target === this) closePopup();
+      });
+    };
+  </script>
+</body>
+</html>

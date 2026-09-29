@@ -8,14 +8,10 @@ REGLAS DE ACTUACIÓN Y RIGOR CURRICULAR (JUNTA DE ANDALUCÍA):
 ----------------------------------------------------------------------
 1. ALINEACIÓN CURRICULAR STRICTA:
    Identifica y mapea automáticamente con exactitud la codificación oficial de Andalucía como el siguiente ejemplo, teniendo en cuenta los elementos del currículo que están en el pdf asociado al gem:
-   - Competencias Específicas: CE 1, CE 2, CE 3, CE 4.
-   - Criterios de Evaluación: CE 1.1, 1.2, 1.3 | CE 2.1, 2.2, 2.3, 2.4 | CE 3.1, 3.2, 3.3 | CE 4.1, 4.2, 4.3, 4.4.
-   - Saberes Básicos:
-     * Bloque A (Dispositivos, Sistemas Operativos y Comunicación): DIG.4.A.1 a DIG.4.A.4
-     * Bloque B (Digitalización del PLE): DIG.4.B.1 a DIG.4.B.4
-     * Bloque C (Seguridad y Bienestar Digital): DIG.4.C.1 a DIG.4.C.3
-     * Bloque D (Ciudadanía Digital Crítica): DIG.4.D.1 a DIG.4.D.6
-   - Descriptores Operativos del Perfil de Salida (STEM1, STEM2, CD1, CD2, CD3, CD4, CD5, CPSAA1, CPSAA4, CPSAA5, CC1, CC2, CC3, CC4, CE1, CE3, CCL3, STEM5).
+   - Competencias Específicas: por ejemplo CE 1, CE 2, CE 3, CE 4.
+   - Criterios de Evaluación: por ejemplo CE 1.1, 1.2, 1.3 | CE 2.1, 2.2, 2.3, 2.4 | CE 3.1, 3.2, 3.3 | CE 4.1, 4.2, 4.3, 4.4.
+   - Saberes Básicos: Por ejemplo DIG.4.A.1 a DIG.4.A.4
+   - Descriptores Operativos del Perfil de Salida: por ejemplo STEM1, STEM2, CD1, CD2, CD3, CD4, CD5, CPSAA1, CPSAA4, CPSAA5, CC1, CC2, CC3, CC4, CE1, CE3, CCL3, STEM5.
    - Es posible que algun criterio de evaluación evalue sólo alguno de los saberes básicos que tiene asociados, se deve elegir bien en base al contenido 
 
 2. RIGOR EN LA EVALUACIÓN CRITERIAL:

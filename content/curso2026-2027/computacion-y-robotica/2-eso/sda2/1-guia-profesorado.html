@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Código en Acción - 2º ESO Computación y Robótica</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        anda: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                        },
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            border-bottom-color: #0284c7;
+            color: #0284c7;
+            font-weight: 600;
+            background-color: #f0f9ff;
+        }
+        .curriculum-badge {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .curriculum-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Encabezado Institucional Junta de Andalucía & SdA -->
+    <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-900 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/20">
+                        <i class="fa-solid fa-gamepad text-3xl text-emerald-300"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-emerald-500/30 text-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-emerald-400/30">
+                                Junta de Andalucía · LOMLOE
+                            </span>
+                            <span class="bg-cyan-500/30 text-cyan-200 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-cyan-400/30">
+                                2º ESO · Computación y Robótica
+                            </span>
+                            <span class="bg-amber-500/30 text-amber-200 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-amber-400/30">
+                                14 Sesiones (50 min)
+                            </span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight mt-1 text-white">
+                            SdA 2: Código en Acción: Videojuegos e Historias Interactivas Sostenibles
+                        </h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-auto">
+                    <button onclick="openCurriculumModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl transition shadow flex items-center gap-2 border border-emerald-400/30">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span>Glosario Normativo</span>
+                    </button>
+                    <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl transition backdrop-blur-md border border-white/20 flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span class="hidden sm:inline">Imprimir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación por Pestañas -->
+        <nav class="bg-slate-900/40 backdrop-blur-md border-t border-white/10 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex overflow-x-auto no-scrollbar gap-1 text-xs sm:text-sm font-medium py-1">
+                <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="tab-btn active text-slate-200 hover:text-white px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+                    <i class="fa-solid fa-compass text-emerald-400"></i> Visión General
+                </button>
+                <button onclick="switchTab('tab-secuenciacion')" id="btn-tab-secuenciacion" class="tab-btn text-slate-200 hover:text-white px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+                    <i class="fa-solid fa-list-check text-cyan-400"></i> Secuenciación Didáctica
+                </button>
+                <button onclick="switchTab('tab-mapeo')" id="btn-tab-mapeo" class="tab-btn text-slate-200 hover:text-white px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+                    <i class="fa-solid fa-table-cells text-amber-400"></i> Mapeo Curricular
+                </button>
+                <button onclick="switchTab('tab-dua')" id="btn-tab-dua" class="tab-btn text-slate-200 hover:text-white px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+                    <i class="fa-solid fa-universal-access text-indigo-400"></i> Medidas DUA
+                </button>
+                <button onclick="switchTab('tab-evaluacion')" id="btn-tab-evaluacion" class="tab-btn text-slate-200 hover:text-white px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent">
+                    <i class="fa-solid fa-clipboard-check text-rose-400"></i> Evaluación Criterial
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+        <!-- Pestaña 1: Visión General y Justificación -->
+        <section id="tab-vision" class="tab-content space-y-6">
+            <!-- Tarjeta Resumen Contexto & Reto -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <span class="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl">
+                            <i class="fa-solid fa-rocket text-xl"></i>
+                        </span>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Desafío y Planteamiento de la SdA</h2>
+                            <p class="text-xs text-slate-500">Transposición didáctica basada en retos del mundo real y desarrollo sostenible</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        El alumnado de 2º de ESO avanzará desde la programación secuencial básica hacia el diseño modular e interactivo con herramientas visuales por bloques (<strong class="text-slate-800">Scratch / MakeCode</strong>). A través del reto ambiental <em class="text-emerald-700 font-medium">"Gaming por el Planeta"</em>, el equipo creará un videojuego o simulador interactivo enfocado en concienciar sobre el consumo responsable, la acción climática o la gestión de residuos.
+                    </p>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/60 space-y-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            <i class="fa-solid fa-bullseye text-amber-500 mr-1"></i> Producto Final Deseado
+                        </h3>
+                        <p class="text-sm font-medium text-slate-800">
+                            "Videojuego o Simulador Interactivo para la Sostenibilidad", publicado en la plataforma comunitaria con licencia <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-mono font-bold">Creative Commons</span>, con contadores de puntuación, vectores de movimiento, detección de colisiones, niveles progresivos e interfaz completa (menú, instrucciones y pantalla final).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ficha Técnica Rápidos -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders"></i> Parámetros de la SdA
+                        </h3>
+                        <ul class="space-y-3 text-xs sm:text-sm">
+                            <li class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                                <span class="text-slate-400">Materia:</span>
+                                <span class="font-semibold text-slate-200">Computación y Robótica</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                                <span class="text-slate-400">Nivel Educativo:</span>
+                                <span class="font-semibold text-slate-200">2º de Educación Secundaria</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                                <span class="text-slate-400">Temporalización:</span>
+                                <span class="font-semibold text-emerald-300">14 sesiones (50 min)</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                                <span class="text-slate-400">Metodología Principal:</span>
+                                <span class="font-semibold text-cyan-300">Aprendizaje Basado en Proyectos (ABP)</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-400">Enfoque de Inclusión:</span>
+                                <span class="font-semibold text-indigo-300">DUA (Universal Design)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10 text-xs text-slate-300 flex items-center gap-3">
+                        <i class="fa-solid fa-shield-halved text-2xl text-emerald-400"></i>
+                        <span>Evaluación criterial directa mediante los Criterios de Evaluación 1.3, 2.1 y 6.3.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estructura de Roles de Trabajo en Equipo -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-users-gear text-brand-600"></i> Organigrama de Trabajo Cooperativo (Metodología Scrum/Maker)
+                </h3>
+                <p class="text-xs text-slate-500">El alumnado asume roles rotativos en parejas o tríos cooperativos para fomentar el pensamiento algorítmico y la responsabilidad compartida.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                    <div class="p-4 bg-blue-50/60 border border-blue-200/60 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-7 h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">1</span>
+                            <h4 class="font-bold text-sm text-blue-900">Lead Programmer</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Diseña la lógica de bloques, coordina las estructuras de control anidadas y supervisa la correcta declaración de variables y listas.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50/60 border border-emerald-200/60 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">2</span>
+                            <h4 class="font-bold text-sm text-emerald-900">UI/UX Designer</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Diseña los escenarios interactivos, botones de menú y selecciona sprites y audios con licencias libres de derechos.</p>
+                    </div>
+                    <div class="p-4 bg-amber-50/60 border border-amber-200/60 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-7 h-7 bg-amber-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">3</span>
+                            <h4 class="font-bold text-sm text-amber-900">QA Tester & Debugger</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Comprueba el correcto funcionamiento del programa, localiza errores de ejecucion (bugs) y gestiona la lista de mejoras.</p>
+                    </div>
+                    <div class="p-4 bg-purple-50/60 border border-purple-200/60 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-7 h-7 bg-purple-600 text-white rounded-lg flex items-center justify-center text-xs font-bold">4</span>
+                            <h4 class="font-bold text-sm text-purple-900">Community Manager</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Redacta las instrucciones del juego, documenta la licencia Creative Commons e impulsa la presentación Elevator Pitch.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña 2: Secuenciación Didáctica (14 Sesiones) -->
+        <section id="tab-secuenciacion" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">Ruta de Aprendizaje Didáctico (14 Sesiones)</h2>
+                    <p class="text-xs text-slate-500">Distribuidas en 3 Fases Pedagógicas con andamiaje DUA integrado</p>
+                </div>
+                <!-- Filtro por Fase -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                    <button onclick="filterSessions('all')" id="filter-all" class="filter-btn active text-xs font-medium px-3 py-1.5 rounded-lg bg-brand-600 text-white transition">Todas</button>
+                    <button onclick="filterSessions('fase1')" id="filter-fase1" class="filter-btn text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Fase 1: Inicio</button>
+                    <button onclick="filterSessions('fase2')" id="filter-fase2" class="filter-btn text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Fase 2: Desarrollo</button>
+                    <button onclick="filterSessions('fase3')" id="filter-fase3" class="filter-btn text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Fase 3: Cierre</button>
+                </div>
+            </div>
+
+            <!-- Contenedor Dinámico de Sesiones -->
+            <div class="space-y-4" id="sessions-container">
+
+                <!-- S1-S3: Fase 1 Inicio -->
+                <div class="session-card fase1 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-emerald-500/10 via-slate-50 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-emerald-600 text-white rounded-xl font-bold flex items-center justify-center text-sm shadow-sm">S1-3</span>
+                            <div>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">Fase 1: Inicio y Motivación</span>
+                                <h3 class="font-bold text-slate-800 text-base">Gancho Green Gaming, Diagnóstico KWL y Diseño de Algoritmos</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg"><i class="fa-regular fa-clock mr-1"></i> 3 Sesiones (150 min)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 text-xs sm:text-sm space-y-3">
+                        <p class="text-slate-600">
+                            <strong>Actividades:</strong> Análisis crítico de juegos educativos sobre sostenibilidad. Uso del tablero KWL (Qué sé, Qué quiero saber, Qué he aprendido). Elaboración de los primeros diagramas de flujo y pseudocódigo del videojuego en pizarras colaborativas digitales.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Saberes Trabajados:</span>
+                                <span class="text-slate-600">CYR.2.A.1, CYR.2.A.3</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Evidencia / Entregable:</span>
+                                <span class="text-slate-600">Boceto del algoritmo y diagrama de flujo preliminar.</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-emerald-700 block mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Pauta DUA:</span>
+                                <span class="text-slate-600">Iconografía visual en diagramas de flujo para facilitar la comprensión gráfica.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S4-S6: Fase 2 Desarrollo Parte I -->
+                <div class="session-card fase2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-brand-500/10 via-slate-50 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-600 text-white rounded-xl font-bold flex items-center justify-center text-sm shadow-sm">S4-6</span>
+                            <div>
+                                <span class="bg-brand-100 text-brand-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">Fase 2: Desarrollo e Investigación</span>
+                                <h3 class="font-bold text-slate-800 text-base">Interfaces Visuales, Escenarios y Menús Interactivos</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg"><i class="fa-regular fa-clock mr-1"></i> 3 Sesiones (150 min)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 text-xs sm:text-sm space-y-3">
+                        <p class="text-slate-600">
+                            <strong>Actividades:</strong> Maquetación de la pantalla de inicio (Start Game), pantalla de Game Over y contadores. Programación de eventos de ratón/teclado y cambio de fondos según estados del programa.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Saberes Trabajados:</span>
+                                <span class="text-slate-600">CYR.2.A.2, CYR.2.A.5</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Evidencia / Entregable:</span>
+                                <span class="text-slate-600">Interfaz gráfica navegable con cambio de pantallas funcional.</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-brand-700 block mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Pauta DUA:</span>
+                                <span class="text-slate-600">Plantillas de código "andamio" con escenarios ya precargados.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S7-S9: Fase 2 Desarrollo Parte II -->
+                <div class="session-card fase2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-brand-500/10 via-slate-50 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-600 text-white rounded-xl font-bold flex items-center justify-center text-sm shadow-sm">S7-9</span>
+                            <div>
+                                <span class="bg-brand-100 text-brand-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">Fase 2: Estructuración y Lógica Avanzada</span>
+                                <h3 class="font-bold text-slate-800 text-base">Estructuras Anidadas, Bucles Condicionales y Variables de Puntuación</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg"><i class="fa-regular fa-clock mr-1"></i> 3 Sesiones (150 min)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 text-xs sm:text-sm space-y-3">
+                        <p class="text-slate-600">
+                            <strong>Actividades:</strong> Programación de colisiones con objetos sostenibles, variables globales (`puntuación`, `vidas`, `tiempo`) e iteraciones condicionadas (`repetir hasta que`). Creación de bloques personalizados (funciones).
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Saberes Trabajados:</span>
+                                <span class="text-slate-600">CYR.2.A.2, CYR.2.A.4</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Evidencia / Entregable:</span>
+                                <span class="text-slate-600">Prototipo funcional con mecánicas de juego activas y sistema de vida/puntos.</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-brand-700 block mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Pauta DUA:</span>
+                                <span class="text-slate-600">Tarjetas de retos por colores (Verde: Básico | Azul: Medio | Morado: Pro).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S10-S11: Fase 2 Desarrollo Parte III -->
+                <div class="session-card fase2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-brand-500/10 via-slate-50 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-600 text-white rounded-xl font-bold flex items-center justify-center text-sm shadow-sm">S10-11</span>
+                            <div>
+                                <span class="bg-brand-100 text-brand-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">Fase 2: Integración Multimedia y Propiedad Intelectual</span>
+                                <h3 class="font-bold text-slate-800 text-base">Recursos Multimedia Libres y Ciberseguridad / Licenciamiento</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg"><i class="fa-regular fa-clock mr-1"></i> 2 Sesiones (100 min)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 text-xs sm:text-sm space-y-3">
+                        <p class="text-slate-600">
+                            <strong>Actividades:</strong> Búsqueda de música y efectos de sonido en repositorios Open Source (Freesound, OpenGameArt). Aplicación de licencias Creative Commons (CC-BY, CC-BY-NC) y atribución explícita en los créditos del juego.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Saberes Trabajados:</span>
+                                <span class="text-slate-600">CYR.2.I.5</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Evidencia / Entregable:</span>
+                                <span class="text-slate-600">Pantalla de Créditos con registro formal de autorías y licencia elegida.</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-brand-700 block mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Pauta DUA:</span>
+                                <span class="text-slate-600">Guía gráfica simplificada sobre los 4 símbolos de Creative Commons.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- S12-S14: Fase 3 Cierre y Difusión -->
+                <div class="session-card fase3 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-purple-500/10 via-slate-50 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-purple-600 text-white rounded-xl font-bold flex items-center justify-center text-sm shadow-sm">S12-14</span>
+                            <div>
+                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">Fase 3: Cierre, Depuración y Difusión Pública</span>
+                                <h3 class="font-bold text-slate-800 text-base">Beta Testing, Elevator Pitch y Coevaluación entre Equipos</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg"><i class="fa-regular fa-clock mr-1"></i> 3 Sesiones (150 min)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 text-xs sm:text-sm space-y-3">
+                        <p class="text-slate-600">
+                            <strong>Actividades:</strong> Prueba cruzada de videojuegos entre equipos (Beta Testing con diana de evaluación). Corrección de errores finales. Presentación del videojuego mediante un formato "Elevator Pitch" de 2 minutos y publicación en la galería web del centro.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Saberes Trabajados:</span>
+                                <span class="text-slate-600">CYR.2.A.1, CYR.2.A.2, CYR.2.A.3, CYR.2.A.4, CYR.2.A.5, CYR.2.I.5</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-slate-700 block mb-1">Evidencia / Entregable:</span>
+                                <span class="text-slate-600">Enlace web al juego publicado + Diana de Coevaluación cumplimentada.</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                                <span class="font-bold text-purple-700 block mb-1"><i class="fa-solid fa-universal-access mr-1"></i> Pauta DUA:</span>
+                                <span class="text-slate-600">Múltiples vías de presentación (exposición oral, video-demo pregrabado o demostración guiada).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Pestaña 3: Mapeo Curricular LOMLOE (Matriz) -->
+        <section id="tab-mapeo" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Matriz de Alineación Curricular (Andalucía)</h2>
+                        <p class="text-xs text-slate-500">Mapeo bidireccional entre Criterios de Evaluación, Saberes, Descriptores y Actividades</p>
+                    </div>
+                    <span class="text-xs bg-amber-50 text-amber-800 px-3 py-1 rounded-full border border-amber-200 font-medium">
+                        <i class="fa-solid fa-circle-info mr-1"></i> Haz clic en los códigos para desplegar el texto oficial
+                    </span>
+                </div>
+
+                <!-- Tabla Matricial Responsive -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 uppercase text-[11px] tracking-wider border-b border-slate-200">
+                                <th class="p-3 font-bold">Criterio de Evaluación</th>
+                                <th class="p-3 font-bold">Competencia Específica</th>
+                                <th class="p-3 font-bold">Saberes Básicos</th>
+                                <th class="p-3 font-bold">Descriptores Perfil Salida</th>
+                                <th class="p-3 font-bold">Actividades Asociadas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-slate-600">
+                            <!-- Fila 1: CEv 1.3 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-medium text-slate-900">
+                                    <button onclick="showCodeDetail('CEv 1.3')" class="curriculum-badge inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg font-mono font-bold">
+                                        CEv 1.3 <i class="fa-solid fa-circle-question text-[10px]"></i>
+                                    </button>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showCodeDetail('CE1')" class="curriculum-badge bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">
+                                        CE1
+                                    </button>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <button onclick="showCodeDetail('CYR.2.A.1')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.1</button>
+                                    <button onclick="showCodeDetail('CYR.2.A.2')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.2</button>
+                                    <button onclick="showCodeDetail('CYR.2.A.3')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.3</button>
+                                </td>
+                                <td class="p-3 flex flex-wrap gap-1">
+                                    <button onclick="showCodeDetail('CCL3')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CCL3</button>
+                                    <button onclick="showCodeDetail('STEM2')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">STEM2</button>
+                                    <button onclick="showCodeDetail('CD1')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CD1</button>
+                                </td>
+                                <td class="p-3 text-xs">
+                                    Análisis de diagramas de flujo, pseudocódigo y reconocimiento de componentes de un programa. (Sesiones 1-3).
+                                </td>
+                            </tr>
+
+                            <!-- Fila 2: CEv 2.1 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-medium text-slate-900">
+                                    <button onclick="showCodeDetail('CEv 2.1')" class="curriculum-badge inline-flex items-center gap-1.5 bg-brand-100 text-brand-800 px-2.5 py-1 rounded-lg font-mono font-bold">
+                                        CEv 2.1 <i class="fa-solid fa-circle-question text-[10px]"></i>
+                                    </button>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showCodeDetail('CE2')" class="curriculum-badge bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">
+                                        CE2
+                                    </button>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <button onclick="showCodeDetail('CYR.2.A.2')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.2</button>
+                                    <button onclick="showCodeDetail('CYR.2.A.4')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.4</button>
+                                    <button onclick="showCodeDetail('CYR.2.A.5')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.A.5</button>
+                                </td>
+                                <td class="p-3 flex flex-wrap gap-1">
+                                    <button onclick="showCodeDetail('STEM1')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">STEM1</button>
+                                    <button onclick="showCodeDetail('CD3')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CD3</button>
+                                    <button onclick="showCodeDetail('CD5')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CD5</button>
+                                    <button onclick="showCodeDetail('CE3')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CE3</button>
+                                </td>
+                                <td class="p-3 text-xs">
+                                    Programación de mecánicas de juego en equipo, estructuras anidadas, contadores y listas de puntos. (Sesiones 4-9).
+                                </td>
+                            </tr>
+
+                            <!-- Fila 3: CEv 6.3 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-medium text-slate-900">
+                                    <button onclick="showCodeDetail('CEv 6.3')" class="curriculum-badge inline-flex items-center gap-1.5 bg-purple-100 text-purple-800 px-2.5 py-1 rounded-lg font-mono font-bold">
+                                        CEv 6.3 <i class="fa-solid fa-circle-question text-[10px]"></i>
+                                    </button>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showCodeDetail('CE6')" class="curriculum-badge bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">
+                                        CE6
+                                    </button>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showCodeDetail('CYR.2.I.5')" class="curriculum-badge bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded font-mono text-xs">CYR.2.I.5</button>
+                                </td>
+                                <td class="p-3 flex flex-wrap gap-1">
+                                    <button onclick="showCodeDetail('CD4')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CD4</button>
+                                    <button onclick="showCodeDetail('CCEC4')" class="curriculum-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono text-xs">CCEC4</button>
+                                </td>
+                                <td class="p-3 text-xs">
+                                    Integración de audios e imágenes con licencias Creative Commons y documentación de la propiedad intelectual. (Sesiones 10-11).
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña 4: Medidas DUA y Atención a la Diversidad -->
+        <section id="tab-dua" class="tab-content hidden space-y-6">
+            <!-- Tres Principios DUA -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Principio I -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2.5 bg-blue-100 text-blue-700 rounded-xl">
+                            <i class="fa-solid fa-eye text-lg"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-blue-600 tracking-wider">Principio I DUA</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Formas de Representación</h3>
+                        </div>
+                    </div>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Guías de bloques de código codificadas por colores según su tipo (eventos, control, variables).</li>
+                        <li>Videotutoriales breves (1-2 min) con subtítulos interactivos para la resolución de dudas frecuentes.</li>
+                        <li>Diagramas visuales de lógica condicional en formato físico e infografías digitales.</li>
+                    </ul>
+                </div>
+
+                <!-- Principio II -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl">
+                            <i class="fa-solid fa-pen-ruler text-lg"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-emerald-600 tracking-wider">Principio II DUA</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Acción y Expresión</h3>
+                        </div>
+                    </div>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Diversificación de entregables: opción de entregar el código documentado, grabar un vídeo explicativo o exponerlo de forma presencial.</li>
+                        <li>Pautas de autoevaluación paso a paso para la verificación del código antes de la entrega final.</li>
+                        <li>Soporte de teclados adaptados y comandos por voz para alumnado con necesidades motoras.</li>
+                    </ul>
+                </div>
+
+                <!-- Principio III -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2.5 bg-purple-100 text-purple-700 rounded-xl">
+                            <i class="fa-solid fa-heart text-lg"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-purple-600 tracking-wider">Principio III DUA</span>
+                            <h3 class="font-bold text-slate-800 text-sm">Formas de Compromiso</h3>
+                        </div>
+                    </div>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Elección temática libre dentro de los Objetivos de Desarrollo Sostenible (reciclaje, energía solar, vida marina).</li>
+                        <li>Mecánicas de gamificación en el aula (badges de "Debugging Expert" y "UI Master").</li>
+                        <li>Trabajo cooperativo con roles definidos para asegurar la inclusión plena de todo el alumnado.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Adaptaciones Específicas por Perfil de Alumnado -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-brand-600"></i> Adaptación Pedagógica y Gradación de Retos
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="bg-amber-50/50 border border-amber-200/60 p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                            <i class="fa-solid fa-hands-holding-child text-amber-600"></i> Alumnado de Nuevo Ingreso / Apoyo DUA
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Proyectos "andamio" con plantillas que incluyen escenarios maquetados y fragmentos de código listos para ordenar o depurar pequeños errores. Enfoque prioritario en condicionales sencillos (`si ... entonces`) y bucles directos.
+                        </p>
+                    </div>
+
+                    <div class="bg-indigo-50/50 border border-indigo-200/60 p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-indigo-900 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-indigo-600"></i> Alumnado de Continuidad / Altas Capacidades
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Implementación obligatoria de funciones con paso de parámetros, listas/arrays para marcadores de mejores puntuaciones (High Scores), simulación de física 2D (gravedad/rebotes) o algoritmos de persecución lógica básica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña 5: Evaluación Criterial Interactiva -->
+        <section id="tab-evaluacion" class="tab-content hidden space-y-6">
+            <!-- Recordatorio Pedagógico -->
+            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center gap-3 text-emerald-900 text-xs sm:text-sm">
+                <i class="fa-solid fa-gavel text-2xl text-emerald-600"></i>
+                <div>
+                    <strong class="font-bold">Recordatorio Normativo de Evaluación Criterial:</strong>
+                    En el marco de la LOMLOE en Andalucía, <em class="font-semibold underline">únicamente se califican los Criterios de Evaluación</em>. Los Saberes Básicos representan el medio didáctico para alcanzar el nivel de desempeño.
+                </div>
+            </div>
+
+            <!-- Lista de Cotejo / Calculadora Interactiva -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Instrumento de Evaluación: Lista de Cotejo Criterial</h2>
+                        <p class="text-xs text-slate-500">Haz clic en los checkboxes para simular la evaluación criterial en tiempo real</p>
+                    </div>
+                    <div class="bg-slate-900 text-white px-4 py-2 rounded-xl text-center">
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Calificación Estimada</span>
+                        <span id="score-display" class="text-xl font-extrabold text-emerald-400">0.0 / 10</span>
+                    </div>
+                </div>
+
+                <!-- Criterio 1.3 -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-600 text-white font-mono text-xs font-bold px-2.5 py-1 rounded-lg">CEv 1.3</span>
+                            <span class="font-bold text-slate-800 text-sm">Comprensión y Estructura del Programa Informático (Peso: 30%)</span>
+                        </div>
+                        <span class="text-xs text-slate-500">CE 1 · Saberes: CYR.2.A.1, CYR.2.A.2, CYR.2.A.3</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-emerald-600 focus:ring-emerald-500" data-weight="1.5">
+                            <span>Comprende los elementos básicos de un algoritmo y los plasma correctamente en un diagrama de flujo inicial.</span>
+                        </label>
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-emerald-600 focus:ring-emerald-500" data-weight="1.5">
+                            <span>Identifica y explica la función de cada bloque de instrucciones utilizado en el proyecto.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Criterio 2.1 -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-brand-600 text-white font-mono text-xs font-bold px-2.5 py-1 rounded-lg">CEv 2.1</span>
+                            <span class="font-bold text-slate-800 text-sm">Resolución de Problemas y Desarrollo en Equipo (Peso: 50%)</span>
+                        </div>
+                        <span class="text-xs text-slate-500">CE 2 · Saberes: CYR.2.A.2, CYR.2.A.4, CYR.2.A.5</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-brand-600 focus:ring-brand-500" data-weight="1.5">
+                            <span>Implementa de forma funcional bucles condicionales anidados y variables globales (puntuación/vidas).</span>
+                        </label>
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-brand-600 focus:ring-brand-500" data-weight="1.5">
+                            <span>Diseña interfaces de usuario interactivas con cambio fluido entre escenarios y menús.</span>
+                        </label>
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-brand-600 focus:ring-brand-500" data-weight="2.0">
+                            <span>Colabora activamente en su equipo asumiendo su rol asignado y comunicándose de forma respetuosa.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Criterio 6.3 -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-purple-600 text-white font-mono text-xs font-bold px-2.5 py-1 rounded-lg">CEv 6.3</span>
+                            <span class="font-bold text-slate-800 text-sm">Respeto a la Propiedad Intelectual y Licenciamiento (Peso: 20%)</span>
+                        </div>
+                        <span class="text-xs text-slate-500">CE 6 · Saberes: CYR.2.I.5</span>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-purple-600 focus:ring-purple-500" data-weight="1.0">
+                            <span>Selecciona y utiliza exclusivamente recursos multimedia con licencias libres o dominio público.</span>
+                        </label>
+                        <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded text-purple-600 focus:ring-purple-500" data-weight="1.0">
+                            <span>Registra la autoría de los recursos en la pantalla de créditos y publica el trabajo con licencia Creative Commons.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Institucional -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-emerald-400 text-base"></i>
+                <span>Programación Didáctica adaptada a la Instrucción de la Junta de Andalucía (LOMLOE)</span>
+            </div>
+            <div class="text-slate-500">
+                2º ESO · Computación y Robótica · Asesoría Curricular
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Emergente para Códigos Curriculares (PopUp) -->
+    <div id="curriculum-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeCurriculumModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                <span id="modal-icon-bg" class="p-2.5 bg-brand-100 text-brand-700 rounded-xl">
+                    <i id="modal-icon" class="fa-solid fa-bookmark text-lg"></i>
+                </span>
+                <div>
+                    <span id="modal-type" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Detalle Curricular</span>
+                    <h3 id="modal-title" class="font-bold text-slate-800 text-base">CEv 1.3</h3>
+                </div>
+            </div>
+            <div id="modal-body" class="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-2">
+                <!-- Contenido dinámico inyectado con JS -->
+            </div>
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeCurriculumModal()" class="bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-xl hover:bg-slate-700 transition">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de Datos de la Normativa LOMLOE (Junta de Andalucía)
+        const curriculumData = {
+            'CE1': {
+                type: 'Competencia Específica',
+                title: 'Competencia Específica 1 (CE1)',
+                icon: 'fa-brain',
+                bg: 'bg-emerald-100 text-emerald-700',
+                desc: 'Comprender el impacto que la computación y la robótica tienen en nuestra sociedad y desarrollar el pensamiento computacional para realizar proyectos de construcción de sistemas digitales de forma sostenible.'
+            },
+            'CE2': {
+                type: 'Competencia Específica',
+                title: 'Competencia Específica 2 (CE2)',
+                icon: 'fa-code',
+                bg: 'bg-brand-100 text-brand-700',
+                desc: 'Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado o exhibir un comportamiento deseado.'
+            },
+            'CE6': {
+                type: 'Competencia Específica',
+                title: 'Competencia Específica 6 (CE6)',
+                icon: 'fa-shield-halved',
+                bg: 'bg-purple-100 text-purple-700',
+                desc: 'Conocer y aplicar los principios de la ciberseguridad, adoptando hábitos y conductas de seguridad, para permitir la protección del individuo en su interacción en la red.'
+            },
+            'CEv 1.3': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio de Evaluación 1.3 (CEv 1.3)',
+                icon: 'fa-check-double',
+                bg: 'bg-emerald-100 text-emerald-700',
+                desc: 'Entender cómo funciona un programa informático, la manera de elaborarlo y sus principales componentes.'
+            },
+            'CEv 2.1': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio de Evaluación 2.1 (CEv 2.1)',
+                icon: 'fa-check-double',
+                bg: 'bg-brand-100 text-brand-700',
+                desc: 'Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.'
+            },
+            'CEv 6.3': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio de Evaluación 6.3 (CEv 6.3)',
+                icon: 'fa-check-double',
+                bg: 'bg-purple-100 text-purple-700',
+                desc: 'Reconocer y comprender los derechos de los materiales alojados en Internet.'
+            },
+            'CYR.2.A.1': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.A.1',
+                icon: 'fa-cubes',
+                bg: 'bg-cyan-100 text-cyan-700',
+                desc: 'Lenguajes de programación visuales: ventajas e inconvenientes.'
+            },
+            'CYR.2.A.2': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.A.2',
+                icon: 'fa-cubes',
+                bg: 'bg-cyan-100 text-cyan-700',
+                desc: 'Elementos de los programas con lenguaje de bloques.'
+            },
+            'CYR.2.A.3': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.A.3',
+                icon: 'fa-cubes',
+                bg: 'bg-cyan-100 text-cyan-700',
+                desc: 'Secuencia de instrucciones. Medios de expresión de algoritmos.'
+            },
+            'CYR.2.A.4': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.A.4',
+                icon: 'fa-cubes',
+                bg: 'bg-cyan-100 text-cyan-700',
+                desc: 'Generación de tareas repetitivas y condicionales.'
+            },
+            'CYR.2.A.5': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.A.5',
+                icon: 'fa-cubes',
+                bg: 'bg-cyan-100 text-cyan-700',
+                desc: 'Pantallas de interacción con el usuario.'
+            },
+            'CYR.2.I.5': {
+                type: 'Saber Básico',
+                title: 'Saber Básico CYR.2.I.5',
+                icon: 'fa-lock',
+                bg: 'bg-purple-100 text-purple-700',
+                desc: 'Protección de la propiedad intelectual.'
+            },
+            'CCL3': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CCL3 (Comunicación Lingüística)',
+                icon: 'fa-passport',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Localiza, selecciona y contrasta información procedente de diferentes fuentes evaluando su fiabilidad, evitando los riesgos de manipulación y respetando la propiedad intelectual.'
+            },
+            'STEM1': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor STEM1 (Competencia STEM)',
+                icon: 'fa-calculator',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y emplea diferentes estrategias para resolver problemas.'
+            },
+            'STEM2': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor STEM2 (Competencia STEM)',
+                icon: 'fa-flask',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, comprobando hipótesis mediante la indagación.'
+            },
+            'CD1': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CD1 (Competencia Digital)',
+                icon: 'fa-laptop-code',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad, respetando la propiedad intelectual.'
+            },
+            'CD3': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CD3 (Competencia Digital)',
+                icon: 'fa-users',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Se comunica, participa, colabora e interactúa compartiendo contenidos mediante herramientas virtuales de manera responsable.'
+            },
+            'CD4': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CD4 (Competencia Digital)',
+                icon: 'fa-user-shield',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Identifica riesgos y adopta medidas preventivas al usar tecnologías digitales para proteger dispositivos, datos y medioambiente.'
+            },
+            'CD5': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CD5 (Competencia Digital)',
+                icon: 'fa-wand-magic-sparkles',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos.'
+            },
+            'CE3': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CE3 (Competencia Emprendedora)',
+                icon: 'fa-lightbulb',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones razonadas mediante planificación ágil.'
+            },
+            'CCEC4': {
+                type: 'Descriptor del Perfil de Salida',
+                title: 'Descriptor CCEC4 (Conciencia Cultural)',
+                icon: 'fa-palette',
+                bg: 'bg-indigo-100 text-indigo-700',
+                desc: 'Selecciona y utiliza con creatividad diversos medios, soportes y técnicas para la creación de productos culturales o artísticos.'
+            }
+        };
+
+        // Cambio de Pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // Filtro de Sesiones
+        function filterSessions(fase) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+
+            const activeBtn = document.getElementById('filter-' + fase);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+                activeBtn.classList.add('bg-brand-600', 'text-white');
+            }
+
+            document.querySelectorAll('.session-card').forEach(card => {
+                if (fase === 'all' || card.classList.contains(fase)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Mostrar Detalle Curricular en Popup Modal
+        function showCodeDetail(code) {
+            const data = curriculumData[code];
+            const modal = document.getElementById('curriculum-modal');
+            
+            if (data) {
+                document.getElementById('modal-type').innerText = data.type;
+                document.getElementById('modal-title').innerText = data.title;
+                document.getElementById('modal-body').innerHTML = `<p>${data.desc}</p>`;
+                
+                const iconBg = document.getElementById('modal-icon-bg');
+                iconBg.className = `p-2.5 rounded-xl ${data.bg}`;
+                document.getElementById('modal-icon').className = `fa-solid ${data.icon} text-lg`;
+
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function openCurriculumModal() {
+            showCodeDetail('CEv 2.1');
+        }
+
+        function closeCurriculumModal() {
+            document.getElementById('curriculum-modal').classList.add('hidden');
+        }
+
+        // Cálculo de Puntuación de la Lista de Cotejo Criterial
+        function calculateScore() {
+            const checkboxes = document.querySelectorAll('.eval-check');
+            let total = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    total += parseFloat(cb.getAttribute('data-weight'));
+                }
+            });
+
+            const display = document.getElementById('score-display');
+            display.innerText = total.toFixed(1) + ' / 10';
+            
+            if (total >= 5.0) {
+                display.className = 'text-xl font-extrabold text-emerald-400';
+            } else {
+                display.className = 'text-xl font-extrabold text-amber-400';
+            }
+        }
+
+        // Iniciar tab por defecto al cargar
+        window.onload = function() {
+            switchTab('tab-vision');
+        };
+    </script>
+</body>
+</html>

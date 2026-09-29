@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Código en Acción - Presentación de Clase</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        tech: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px) scale(0.99);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #34d399 0%, #38bdf8 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom scrollbar for slide content if needed */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between select-none overflow-hidden antialiased">
+
+    <!-- Top Bar Header -->
+    <header class="w-full px-6 py-4 flex items-center justify-between z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-tech-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/20">
+                👾
+            </div>
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-brand-500">Computación y Robótica 2º ESO</span>
+                <h1 class="text-sm md:text-base font-bold text-slate-200">SdA 2: Código en Acción</h1>
+            </div>
+        </div>
+
+        <!-- Progress Dots / Slide Selector -->
+        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700/50">
+            <button onclick="goToSlide(0)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 1"></button>
+            <button onclick="goToSlide(1)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 2"></button>
+            <button onclick="goToSlide(2)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 3"></button>
+            <button onclick="goToSlide(3)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 4"></button>
+            <button onclick="goToSlide(4)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 5"></button>
+            <button onclick="goToSlide(5)" class="nav-dot w-3 h-3 rounded-full bg-slate-600 transition-all hover:scale-125" title="Diapositiva 6"></button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <span id="slide-counter" class="text-xs md:text-sm font-semibold px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                1 / 6
+            </span>
+            <button id="fullscreen-btn" onclick="toggleFullscreen()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Pantalla Completa">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Top Progress Bar -->
+    <div class="w-full bg-slate-800 h-1.5 relative overflow-hidden">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-tech-500 transition-all duration-300 w-1/6"></div>
+    </div>
+
+    <!-- Presentation Main Viewport -->
+    <main id="presentation-container" class="flex-1 relative w-full h-full max-w-7xl mx-auto p-4 md:p-8 flex items-center justify-center overflow-hidden">
+
+        <!-- SLIDE 1: INTRODUCCIÓN Y GRAN RETO -->
+        <section class="slide active flex-col w-full h-full justify-between overflow-y-auto">
+            <div class="space-y-4 my-auto py-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-500 text-xs md:text-sm font-semibold">
+                    <span>🚀 Presentación de la SdA</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+                </div>
+                
+                <h2 class="text-3xl md:text-5xl font-extrabold font-heading text-white leading-tight">
+                    Código en Acción: <br>
+                    <span class="gradient-text">Videojuegos e Historias Interactivas Sostenibles</span>
+                </h2>
+
+                <p class="text-slate-300 text-base md:text-xl max-w-3xl font-light leading-relaxed">
+                    Durante las próximas semanas nos convertiremos en creadores de tecnología. Vamos a programar nuestros propios videojuegos con un propósito real: <strong class="text-emerald-400 font-semibold">cuidar nuestro entorno y el planeta</strong>.
+                </p>
+
+                <!-- Reto destacado -->
+                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-brand-500 mt-6 shadow-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-brand-500/20 text-brand-500 rounded-xl text-2xl">
+                            🎯
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white font-heading">Nuestro Gran Reto:</h3>
+                            <p class="text-slate-300 mt-1 text-sm md:text-base">
+                                "¿Cómo podemos concienciar a nuestro colegio e instituto sobre el cuidado del planeta (ODS) a través de videojuegos interactivos creados por nosotros mismos?"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalle clave de inicio -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="glass-card p-4 rounded-xl flex items-center gap-3">
+                        <span class="text-2xl">🧩</span>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Herramienta</p>
+                            <p class="text-sm font-bold text-slate-200">Scratch / MakeCode</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl flex items-center gap-3">
+                        <span class="text-2xl">👥</span>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Organización</p>
+                            <p class="text-sm font-bold text-slate-200">Equipos de 3 o 4</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl flex items-center gap-3">
+                        <span class="text-2xl">🏆</span>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Evento Final</p>
+                            <p class="text-sm font-bold text-slate-200">Feria Tecnológica</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: ¿QUÉ VAS A APRENDER? -->
+        <section class="slide flex-col w-full h-full justify-center overflow-y-auto">
+            <div class="space-y-6 my-auto py-2">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Objetivos Claros</span>
+                    <h2 class="text-2xl md:text-4xl font-bold font-heading text-white">¿Qué vas a aprender en esta SdA?</h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-1">Aprenderemos lógica, diseño y ética digital paso a paso.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Bloque 1 -->
+                    <div class="glass-card p-5 rounded-2xl flex items-start space-x-4">
+                        <div class="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl text-xl font-bold">
+                            1
+                        </div>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold text-white font-heading">Pensamiento de Programador/a</h3>
+                            <p class="text-slate-300 text-xs md:text-sm mt-1">
+                                Aprenderás a darle instrucciones ordenadas al ordenador usando bloques: tomar decisiones (<span class="text-indigo-300 italic">"si pasa esto, haz aquello"</span>) y repetir acciones automáticamente.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 2 -->
+                    <div class="glass-card p-5 rounded-2xl flex items-start space-x-4">
+                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl text-xl font-bold">
+                            2
+                        </div>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold text-white font-heading">Mecánicas de Juego Avanzadas</h3>
+                            <p class="text-slate-300 text-xs md:text-sm mt-1">
+                                Crearás movimiento de personajes, detección de choques o toque de objetos, marcadores de puntos, vidas, tiempo y cambio de pantallas/niveles.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 3 -->
+                    <div class="glass-card p-5 rounded-2xl flex items-start space-x-4">
+                        <div class="p-3 bg-sky-500/20 text-sky-400 rounded-xl text-xl font-bold">
+                            3
+                        </div>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold text-white font-heading">Trabajo en Equipo Profesional</h3>
+                            <p class="text-slate-300 text-xs md:text-sm mt-1">
+                                Trabajarás en equipo asumiendo un rol técnico claro (Programación, Diseño de Pantallas o Calidad y Sonido) para lograr un producto común.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 4 -->
+                    <div class="glass-card p-5 rounded-2xl flex items-start space-x-4">
+                        <div class="p-3 bg-purple-500/20 text-purple-400 rounded-xl text-xl font-bold">
+                            4
+                        </div>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold text-white font-heading">Uso Ético e Internet Seguro</h3>
+                            <p class="text-slate-300 text-xs md:text-sm mt-1">
+                                Aprenderás a buscar e integrar música e imágenes libres de derechos (<span class="text-purple-300">Creative Commons</span>) nombrando siempre a los autores.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: HOJA DE RUTA Y FASES -->
+        <section class="slide flex-col w-full h-full justify-center overflow-y-auto">
+            <div class="space-y-6 my-auto py-2">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Plan de Trabajo</span>
+                    <h2 class="text-2xl md:text-4xl font-bold font-heading text-white">Nuestra Hoja de Ruta (14 Sesiones)</h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-1">El camino estructurado desde la idea en papel hasta la publicación web.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- FASE 1 -->
+                    <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-sky-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-500/20 text-sky-400">Sesiones 1 - 3</span>
+                                <span class="text-2xl">💡</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-heading mb-2">FASE 1: Idea y Diseño</h3>
+                            <ul class="text-slate-300 text-xs md:text-sm space-y-2 list-disc list-inside">
+                                <li>Análisis de juegos sostenibles.</li>
+                                <li>Diseño del flujo del juego en papel.</li>
+                                <li>Constitución del equipo y reparto de roles.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700/50 text-xs text-sky-300 font-medium">
+                            📌 Resultado: Esquema del juego y roles claros.
+                        </div>
+                    </div>
+
+                    <!-- FASE 2 -->
+                    <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-brand-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-500/20 text-brand-400">Sesiones 4 - 11</span>
+                                <span class="text-2xl">💻</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-heading mb-2">FASE 2: Programación</h3>
+                            <ul class="text-slate-300 text-xs md:text-sm space-y-2 list-disc list-inside">
+                                <li>Diseño de pantallas (Menú, Juego, Final).</li>
+                                <li>Movimiento, choques, tiempo y puntos.</li>
+                                <li>Creación de bloques propios y niveles.</li>
+                                <li>Inclusión de música libre de derechos.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700/50 text-xs text-brand-300 font-medium">
+                            📌 Resultado: Videojuego completo y funcional.
+                        </div>
+                    </div>
+
+                    <!-- FASE 3 -->
+                    <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-purple-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400">Sesiones 12 - 14</span>
+                                <span class="text-2xl">📢</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-heading mb-2">FASE 3: Pruebas y Feria</h3>
+                            <ul class="text-slate-300 text-xs md:text-sm space-y-2 list-disc list-inside">
+                                <li>Prueba e intercambio entre equipos (buscar fallos).</li>
+                                <li>Publicación en la web.</li>
+                                <li>Presentación en la Feria "Sostenibilidad en Código".</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700/50 text-xs text-purple-300 font-medium">
+                            📌 Resultado: Presentación oral de 3 minutos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: TAREAS Y ENTREGABLES -->
+        <section class="slide flex-col w-full h-full justify-center overflow-y-auto">
+            <div class="space-y-6 my-auto py-2">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Entregables</span>
+                    <h2 class="text-2xl md:text-4xl font-bold font-heading text-white">¿Qué tareas vas a realizar?</h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-1">Los elementos concretos que formarán la nota final de tu equipo.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tarea 1 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-l-sky-500">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-xl">📄</span>
+                            <h3 class="font-bold text-white font-heading">1. Hoja de Equipo y Plan inicial</h3>
+                        </div>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Un documento breve donde figurará el nombre de tu equipo, los roles de cada integrante y el dibujo/boceto inicial de cómo funcionará tu videojuego.
+                        </p>
+                    </div>
+
+                    <!-- Tarea 2 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-l-emerald-500">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-xl">🎮</span>
+                            <h3 class="font-bold text-white font-heading">2. El Videojuego en Scratch/MakeCode</h3>
+                        </div>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            El proyecto interactivo publicado en la web que incluya: menú principal, pantalla de juego, marcador de puntos de sostenibilidad, vidas/tiempo y pantalla final.
+                        </p>
+                    </div>
+
+                    <!-- Tarea 3 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-l-purple-500">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-xl">🎵</span>
+                            <h3 class="font-bold text-white font-heading">3. Registro de Créditos y Licencias</h3>
+                        </div>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Una lista sencilla donde anotarás de dónde has sacado los fondos, personajes o canciones, asegurando que son libres de uso y citando a sus autores.
+                        </p>
+                    </div>
+
+                    <!-- Tarea 4 -->
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-l-amber-500">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-xl">🎤</span>
+                            <h3 class="font-bold text-white font-heading">4. Presentación Oral Breve (3 min)</h3>
+                        </div>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            En la última sesión, tu equipo expondrá durante 3 minutos el juego ante la clase, explicando el problema del planeta abordado y cómo lo habéis solucionado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: EVALUACIÓN Y APOYOS (DUA) -->
+        <section class="slide flex-col w-full h-full justify-center overflow-y-auto">
+            <div class="space-y-6 my-auto py-2">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Criterios Claros</span>
+                    <h2 class="text-2xl md:text-4xl font-bold font-heading text-white">¿Cómo vamos a evaluar y aprender?</h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-1">Evaluamos lo que sabes hacer y cómo colaboras con tu equipo.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <div class="text-brand-400 text-xl font-bold mb-2 flex items-center gap-2">
+                            <span>💻</span> Criterio 1
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">Lógica del Programa</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Demostrar que entiendes cómo funcionan los bloques, los loops (bucles) y las condiciones de tu juego.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <div class="text-sky-400 text-xl font-bold mb-2 flex items-center gap-2">
+                            <span>🤝</span> Criterio 2
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">Trabajo en Equipo</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Resolver problemas juntos, cumplir las tareas de tu rol y comunicar de forma respetuosa.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <div class="text-purple-400 text-xl font-bold mb-2 flex items-center gap-2">
+                            <span>🛡️</span> Criterio 3
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">Respeto Digital</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Utilizar recursos de Internet respetando los derechos de autor y licencias abiertas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bloque de apoyos para todos -->
+                <div class="glass-card p-5 rounded-2xl bg-gradient-to-r from-brand-900/40 to-tech-900/40 border border-brand-500/30">
+                    <h3 class="text-base font-bold text-emerald-300 font-heading flex items-center gap-2">
+                        <span>🌟</span> ¡Habrá apoyos y niveles para todos los ritmos!
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2 text-xs md:text-sm text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Proyectos plantilla para arrancar si necesitas un empujón.</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Vídeos tutoriales cortos (1-2 minutos) para repasar la lógica.</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Libertad para elegir el tema sobre sostenibilidad que más te motive.</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400">✓</span>
+                            <span>Retos avanzados de programación si quieres ir más allá.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: PRIMEROS PASOS HOY -->
+        <section class="slide flex-col w-full h-full justify-center overflow-y-auto">
+            <div class="space-y-6 my-auto py-2">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Acción Inmediata</span>
+                    <h2 class="text-2xl md:text-4xl font-bold font-heading text-white">¡Manos a la obra! ¿Qué hacemos hoy?</h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-1">Tres pasos sencillos para arrancar el motor de nuestro proyecto.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-2xl font-bold mb-4">
+                            1
+                        </div>
+                        <h3 class="font-bold text-white text-lg font-heading mb-2">Formar Equipos</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Nos agrupamos en equipos de 3-4 personas y repartimos roles: Programador/a, Diseñador/a de Pantallas y Encargado/a de Calidad.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-2xl font-bold mb-4">
+                            2
+                        </div>
+                        <h3 class="font-bold text-white text-lg font-heading mb-2">Elegir el Tema ODS</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Decidimos en qué causa nos enfocaremos: reciclaje, energías limpias, cuidado de los océanos, ahorro de agua o ciudades sostenibles.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl font-bold mb-4">
+                            3
+                        </div>
+                        <h3 class="font-bold text-white text-lg font-heading mb-2">Primer Boceto</h3>
+                        <p class="text-slate-300 text-xs md:text-sm">
+                            Dibujamos en una hoja en blanco la pantalla principal de nuestro juego y contestamos a las preguntas iniciales.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pregunta motivadora -->
+                <div class="glass-panel p-5 rounded-2xl text-center border border-amber-500/30 bg-amber-500/10">
+                    <p class="text-amber-200 text-sm md:text-base font-semibold">
+                        🤔 Pregunta para empezar a pensar: <br>
+                        <span class="text-white font-normal">"¿Cuál es tu videojuego preferido y cómo podríamos transformarlo en un juego para salvar el planeta?"</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Controls Footer -->
+    <footer class="w-full px-6 py-4 flex items-center justify-between z-20 border-t border-slate-800 bg-slate-900/80 backdrop-blur-md">
+        <button id="prev-btn" onclick="prevSlide()" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <span>Anterior</span>
+        </button>
+
+        <!-- Slide title dynamic display -->
+        <div id="slide-title-display" class="hidden md:block text-xs text-slate-400 font-medium">
+            Presentación de la SdA
+        </div>
+
+        <button id="next-btn" onclick="nextSlide()" class="flex items-center space-x-2 px-5 py-2 rounded-xl bg-gradient-to-r from-brand-500 to-tech-600 hover:from-brand-600 hover:to-tech-700 text-white text-sm font-bold shadow-lg shadow-brand-500/20 transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <span>Siguiente</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+    </footer>
+
+    <script>
+        // State variables
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        const progressBar = document.getElementById('progress-bar');
+        const slideCounter = document.getElementById('slide-counter');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const slideTitleDisplay = document.getElementById('slide-title-display');
+
+        const slideTitles = [
+            "1. Presentación y Gran Reto",
+            "2. ¿Qué vas a aprender?",
+            "3. Hoja de Ruta (14 Sesiones)",
+            "4. Tareas y Entregables",
+            "5. Evaluación y Apoyos DUA",
+            "6. Primeros Pasos Hoy"
+        ];
+
+        // Function to update slide state
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Update progress dots
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.remove('bg-slate-600');
+                    dot.classList.add('bg-brand-500', 'w-6');
+                } else {
+                    dot.classList.remove('bg-brand-500', 'w-6');
+                    dot.classList.add('bg-slate-600');
+                }
+            });
+
+            // Update progress bar
+            const progressPercent = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            // Update counter text
+            slideCounter.textContent = `${currentSlide + 1} / ${slides.length}`;
+
+            // Update bottom title
+            if (slideTitleDisplay) {
+                slideTitleDisplay.textContent = slideTitles[currentSlide] || "";
+            }
+
+            // Disable/Enable buttons
+            prevBtn.disabled = currentSlide === 0;
+            if (currentSlide === slides.length - 1) {
+                nextBtn.innerHTML = `<span>Finalizar</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            } else {
+                nextBtn.innerHTML = `<span>Siguiente</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+            }
+        }
+
+        // Navigation Functions
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                updateSlides();
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'Home') {
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                goToSlide(slides.length - 1);
+            }
+        });
+
+        // Touch Swipe Gestures
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const container = document.getElementById('presentation-container');
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        container.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const threshold = 50; // Minimum distance for swipe
+            if (touchEndX < touchStartX - threshold) {
+                nextSlide(); // Swipe Left -> Next
+            } else if (touchEndX > touchStartX + threshold) {
+                prevSlide(); // Swipe Right -> Prev
+            }
+        }
+
+        // Fullscreen Mode Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Initialize presentation
+        window.onload = function() {
+            updateSlides();
+        };
+    </script>
+</body>
+</html>

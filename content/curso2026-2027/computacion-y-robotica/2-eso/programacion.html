@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Curricular Interactiva - Computación y Robótica 2º ESO</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        andalucia: {
+                            light: '#e8f5e9',
+                            DEFAULT: '#007a33',
+                            dark: '#004d20'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans min-h-screen flex flex-col">
+
+    <!-- Encabezado Principal -->
+    <header class="bg-gradient-to-r from-andalucia-dark via-andalucia to-emerald-800 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/20">
+                        <i class="fa-solid fa-robot text-2xl text-emerald-300"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-400/20 text-emerald-200 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-400/30">LOMLOE Andalucía</span>
+                            <span class="text-xs text-emerald-100/80">2º ESO (48 Sesiones)</span>
+                        </div>
+                        <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white">Computación y Robótica</h1>
+                    </div>
+                </div>
+
+                <!-- Buscador global e interacciones rápidas -->
+                <div class="flex items-center space-x-2">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" id="globalSearch" placeholder="Buscar SdA, Criterio, Saber..." 
+                               class="w-full bg-white/10 text-white placeholder-emerald-100/60 text-sm rounded-xl pl-9 pr-4 py-2 border border-white/20 focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-emerald-200/70 text-sm"></i>
+                    </div>
+                    <button onclick="openLegendModal()" class="bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-xl border border-emerald-400/40 flex items-center gap-1.5 transition-all shadow-sm shrink-0">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span class="hidden sm:inline">Glosario</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navegación por pestañas principales -->
+            <nav class="flex space-x-1 sm:space-x-2 mt-4 pt-3 border-t border-white/10 overflow-x-auto custom-scrollbar">
+                <button onclick="switchTab('timeline')" id="tab-timeline" class="nav-tab active px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-2 whitespace-nowrap bg-white/20 text-white">
+                    <i class="fa-solid fa-calendar-days"></i> Temporización & SdAs
+                </button>
+                <button onclick="switchTab('matrix')" id="tab-matrix" class="nav-tab px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-100 hover:bg-white/10 transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-table-cells"></i> Matriz Séneca
+                </button>
+                <button onclick="switchTab('competencias')" id="tab-competencias" class="nav-tab px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-100 hover:bg-white/10 transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-bullseye"></i> Competencias y Criterios
+                </button>
+                <button onclick="switchTab('saberes')" id="tab-saberes" class="nav-tab px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-100 hover:bg-white/10 transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-cubes"></i> Saberes Básicos
+                </button>
+                <button onclick="switchTab('dua')" id="tab-dua" class="nav-tab px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-100 hover:bg-white/10 transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-universal-access"></i> Inclusión DUA
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Panel Estadístico Resumen -->
+    <section class="bg-white border-b border-slate-200 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <div class="p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Duración Total</span>
+                <span class="text-base sm:text-lg font-bold text-slate-800">~50 Sesiones</span>
+            </div>
+            <div class="p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Situaciones Apren.</span>
+                <span class="text-base sm:text-lg font-bold text-emerald-700">5 SdAs Coordinadas</span>
+            </div>
+            <div class="p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Evaluación</span>
+                <span class="text-base sm:text-lg font-bold text-blue-700">100% Criterial</span>
+            </div>
+            <div class="p-2 sm:p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Criterios Cobertura</span>
+                <span class="text-base sm:text-lg font-bold text-purple-700">18 Criterios (100%)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ==================== PESTAÑA 1: TEMPORIZACIÓN Y SDAs ==================== -->
+        <div id="view-timeline" class="view-content space-y-6">
+            
+            <!-- Barra de progreso visual temporal -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-timeline text-emerald-600"></i> Distribución Temporal del Curso (24 Semanas)
+                    </h2>
+                    <span class="text-xs text-slate-500">Haz clic en cada barra para ir a la Situación de Aprendizaje</span>
+                </div>
+                
+                <!-- Barra segmentada -->
+                <div class="h-6 w-full bg-slate-100 rounded-xl overflow-hidden flex shadow-inner">
+                    <div onclick="scrollToSda('sda1')" class="bg-emerald-500 hover:bg-emerald-600 transition-all cursor-pointer flex items-center justify-center text-white text-xs font-bold" style="width: 10.4%" title="SdA 1: 5 Sesiones (10%)">SdA 1 (10%)</div>
+                    <div onclick="scrollToSda('sda2')" class="bg-blue-500 hover:bg-blue-600 transition-all cursor-pointer flex items-center justify-center text-white text-xs font-bold" style="width: 29.2%" title="SdA 2: 14 Sesiones (30%)">SdA 2 (30%)</div>
+                    <div onclick="scrollToSda('sda3')" class="bg-indigo-500 hover:bg-indigo-600 transition-all cursor-pointer flex items-center justify-center text-white text-xs font-bold" style="width: 31.25%" title="SdA 3: 15 Sesiones (30%)">SdA 3 (30%)</div>
+                    <div onclick="scrollToSda('sda4')" class="bg-amber-500 hover:bg-amber-600 transition-all cursor-pointer flex items-center justify-center text-white text-xs font-bold" style="width: 14.6%" title="SdA 4: 7 Sesiones (15%)">SdA 4 (15%)</div>
+                    <div onclick="scrollToSda('sda5')" class="bg-purple-500 hover:bg-purple-600 transition-all cursor-pointer flex items-center justify-center text-white text-xs font-bold" style="width: 14.55%" title="SdA 5: 7 Sesiones (15%)">SdA 5 (15%)</div>
+                </div>
+                
+                <div class="flex flex-wrap justify-between text-xs text-slate-500 mt-2 font-medium">
+                    <span>Inicios de Curso</span>
+                    <span>Evaluación Inicial</span>
+                    <span>Programación</span>
+                    <span>Robótica / IoT</span>
+                    <span>IA & Datos</span>
+                    <span>Desarrollo Web / Apps</span>
+                </div>
+            </div>
+
+            <!-- Listado Detallado de las 5 SdAs -->
+            <div class="space-y-6" id="sdaListContainer">
+                
+                <!-- SdA 1 -->
+                <article id="sda1" class="sda-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-emerald-600 text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">SdA 1</span>
+                                <span class="text-xs text-emerald-100 font-medium"><i class="fa-regular fa-clock"></i> 5 Sesiones (~2,5 semanas)</span>
+                                <span class="text-xs bg-emerald-800/60 text-emerald-100 font-medium px-2 py-0.5 rounded-md">Evaluación Inicial y PLE</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold">Mi Identidad Digital y Pasaporte Virtual en el Aula</h3>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-xs text-emerald-100 block">Peso Calificación</span>
+                                <span class="text-xl font-black text-white">10%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 space-y-5">
+                        <!-- Justificación y Producto Final -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <h4 class="text-xs font-bold uppercase text-slate-500 mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bullseye text-emerald-600"></i> Justificación Pedagógica
+                                </h4>
+                                <p class="text-sm text-slate-700 leading-relaxed">
+                                    El alumnado debe consolidar la gestión avanzada y segura de su identidad digital institucional y la estructuración eficiente de su Entorno Personal de Aprendizaje (PLE). Se profundiza en ciberseguridad, contraseñas robustas, detección de vulnerabilidades e intercambio seguro de información en el ecosistema corporativo (<span class="font-semibold text-slate-800">iPasen, Moodle Centros, Google Workspace</span>).
+                                </p>
+                            </div>
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200/80 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase text-emerald-800 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-trophy text-emerald-600"></i> Producto Final
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-emerald-950 font-medium">
+                                        <strong>Portafolio Digital de Identidad y Seguridad Avanzada</strong> en PDF interactivo: perfiles auditados, jerarquía de carpetas en la nube, mapa conceptual de vulnerabilidades y correo formal cifrado/firmado.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conexión Curricular con Popups -->
+                        <div class="border-t border-slate-100 pt-4">
+                            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Conexión Curricular Estricta (Haz clic para ver detalle):</h4>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Competencias:</span>
+                                <button onclick="showCurricularPopup('CE5')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE5</button>
+                                <button onclick="showCurricularPopup('CE6')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE6</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Criterios:</span>
+                                <button onclick="showCurricularPopup('CEv 5.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 5.1</button>
+                                <button onclick="showCurricularPopup('CEv 6.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.1</button>
+                                <button onclick="showCurricularPopup('CEv 6.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.2</button>
+                                <button onclick="showCurricularPopup('CEv 6.4')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.4</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Saberes:</span>
+                                <button onclick="showCurricularPopup('CYR.2.I.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.1</button>
+                                <button onclick="showCurricularPopup('CYR.2.I.2')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.2</button>
+                                <button onclick="showCurricularPopup('CYR.2.I.3')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.3</button>
+                                <button onclick="showCurricularPopup('CYR.2.I.4')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.4</button>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-2">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Descriptores Perfil Salida:</span>
+                                <button onclick="showCurricularPopup('STEM1')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM1</button>
+                                <button onclick="showCurricularPopup('CD1')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD1</button>
+                                <button onclick="showCurricularPopup('CD4')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD4</button>
+                                <button onclick="showCurricularPopup('CD5')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD5</button>
+                                <button onclick="showCurricularPopup('CPSAA3')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA3</button>
+                                <button onclick="showCurricularPopup('CPSAA4')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA4</button>
+                                <button onclick="showCurricularPopup('CPSAA5')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA5</button>
+                                <button onclick="showCurricularPopup('CC3')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC3</button>
+                                <button onclick="showCurricularPopup('CCEC4')" class="badge-desc bg-rose-100 text-rose-900 hover:bg-rose-200">CCEC4</button>
+                            </div>
+                        </div>
+
+                        <!-- Accordion para Secuenciación Didáctica y DUA -->
+                        <div class="border-t border-slate-100 pt-3">
+                            <button onclick="toggleSdaDetails('sda1-details')" class="w-full text-left font-semibold text-xs text-slate-600 hover:text-emerald-700 flex items-center justify-between py-2">
+                                <span><i class="fa-solid fa-list-check mr-1.5 text-emerald-600"></i> Ver Secuenciación Didáctica (5 Pasos) y DUA</span>
+                                <i id="sda1-details-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+
+                            <div id="sda1-details" class="hidden mt-3 space-y-4 pt-2 border-t border-slate-100">
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-emerald-700 block mb-1">1. Activación</span>
+                                        Diagnóstico inicial. Análisis de casos sobre suplantación de identidad y fallos de seguridad comunes.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-emerald-700 block mb-1">2. Exploración</span>
+                                        Taller de auditoría de seguridad en la cuenta corporativa @g.educaand.es y herramientas antimalware.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-emerald-700 block mb-1">3. Estructuración</span>
+                                        Organización del almacenamiento en Drive/Moodle con carpetas jerárquicas y permisos granulares.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-emerald-700 block mb-1">4. Aplicación</span>
+                                        Elaboración del Portafolio con esquemas de protección y capturas auditadas. Exportación a PDF.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-emerald-700 block mb-1">5. Conclusión</span>
+                                        Redacción y envío de correo formal con netiqueta profesional al docente adjuntando el producto.
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                                    <span class="font-bold text-slate-700 block">Atención a la Diversidad (DUA):</span>
+                                    <p><strong>Representación:</strong> Esquemas visuales interactivos y videotutoriales con subtítulos.</p>
+                                    <p><strong>Acción/Expresión:</strong> Entrega en PDF interactivo o screencast grabado con voz explícita.</p>
+                                    <p><strong>Diferenciación:</strong> Plantilla base para alumnado de nuevo ingreso; reto de auditoría avanzada para alumnado de continuidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- SdA 2 -->
+                <article id="sda2" class="sda-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-blue-600 text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">SdA 2</span>
+                                <span class="text-xs text-blue-100 font-medium"><i class="fa-regular fa-clock"></i> 14 Sesiones (~7 semanas)</span>
+                                <span class="text-xs bg-blue-800/60 text-blue-100 font-medium px-2 py-0.5 rounded-md">Programación Visual</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold">Código en Acción: Videojuegos e Historias Interactivas Sostenibles</h3>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-xs text-blue-100 block">Peso Calificación</span>
+                                <span class="text-xl font-black text-white">30%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <h4 class="text-xs font-bold uppercase text-slate-500 mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bullseye text-blue-600"></i> Justificación Pedagógica
+                                </h4>
+                                <p class="text-sm text-slate-700 leading-relaxed">
+                                    El alumnado pasa de la programación básica a la creación de programas modulares complejos para resolver retos de desarrollo sostenible. Con lenguajes por bloques (<span class="font-semibold text-slate-800">Scratch avanzado / MakeCode</span>), integrará estructuras de control anidadas, funciones propias con parámetros, variables globales/locales, listas (arrays) y física básica 2D.
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200/80 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase text-blue-800 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-trophy text-blue-600"></i> Producto Final
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-blue-950 font-medium">
+                                        <strong>Videojuego o Simulador Interactivo Complejo para la Sostenibilidad</strong> en equipo, con marcadores, vectores de movimiento, colisiones, niveles y publicación bajo licencias Creative Commons.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-4">
+                            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Conexión Curricular Estricta (Haz clic para ver detalle):</h4>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Competencias:</span>
+                                <button onclick="showCurricularPopup('CE1')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE1</button>
+                                <button onclick="showCurricularPopup('CE2')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE2</button>
+                                <button onclick="showCurricularPopup('CE6')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE6</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Criterios:</span>
+                                <button onclick="showCurricularPopup('CEv 1.3')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 1.3</button>
+                                <button onclick="showCurricularPopup('CEv 2.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 2.1</button>
+                                <button onclick="showCurricularPopup('CEv 6.3')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.3</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Saberes:</span>
+                                <button onclick="showCurricularPopup('CYR.2.A.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.A.1</button>
+                                <button onclick="showCurricularPopup('CYR.2.A.2')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.A.2</button>
+                                <button onclick="showCurricularPopup('CYR.2.A.3')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.A.3</button>
+                                <button onclick="showCurricularPopup('CYR.2.A.4')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.A.4</button>
+                                <button onclick="showCurricularPopup('CYR.2.A.5')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.A.5</button>
+                                <button onclick="showCurricularPopup('CYR.2.I.5')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.5</button>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-2">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Descriptores Perfil Salida:</span>
+                                <button onclick="showCurricularPopup('CCL3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">CCL3</button>
+                                <button onclick="showCurricularPopup('STEM1')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM1</button>
+                                <button onclick="showCurricularPopup('STEM2')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM2</button>
+                                <button onclick="showCurricularPopup('STEM3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM3</button>
+                                <button onclick="showCurricularPopup('CD1')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD1</button>
+                                <button onclick="showCurricularPopup('CD3')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD3</button>
+                                <button onclick="showCurricularPopup('CD4')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD4</button>
+                                <button onclick="showCurricularPopup('CD5')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD5</button>
+                                <button onclick="showCurricularPopup('CPSAA1')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA1</button>
+                                <button onclick="showCurricularPopup('CPSAA3')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA3</button>
+                                <button onclick="showCurricularPopup('CC4')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC4</button>
+                                <button onclick="showCurricularPopup('CE1')" class="badge-desc bg-orange-100 text-orange-900 hover:bg-orange-200">CE1</button>
+                                <button onclick="showCurricularPopup('CE3')" class="badge-desc bg-orange-100 text-orange-900 hover:bg-orange-200">CE3</button>
+                                <button onclick="showCurricularPopup('CCEC3')" class="badge-desc bg-rose-100 text-rose-900 hover:bg-rose-200">CCEC3</button>
+                                <button onclick="showCurricularPopup('CCEC4')" class="badge-desc bg-rose-100 text-rose-900 hover:bg-rose-200">CCEC4</button>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3">
+                            <button onclick="toggleSdaDetails('sda2-details')" class="w-full text-left font-semibold text-xs text-slate-600 hover:text-blue-700 flex items-center justify-between py-2">
+                                <span><i class="fa-solid fa-list-check mr-1.5 text-blue-600"></i> Ver Secuenciación Didáctica (5 Pasos) y DUA</span>
+                                <i id="sda2-details-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+
+                            <div id="sda2-details" class="hidden mt-3 space-y-4 pt-2 border-t border-slate-100">
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-blue-700 block mb-1">1. Activación</span>
+                                        Análisis de videojuegos educativos. Diseño de algoritmos con pseudocódigo y diagramas de flujo.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-blue-700 block mb-1">2. Exploración</span>
+                                        Estudio comparativo de entornos visuales y creación de interfaces con pantallas de inicio, puntuación y menú.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-blue-700 block mb-1">3. Estructuración</span>
+                                        Programación de estructuras anidadas, iteraciones condicionadas, bloques propios y gestión de listas.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-blue-700 block mb-1">4. Aplicación</span>
+                                        Desarrollo colaborativo en roles (Programador Líder, UI/UX, Tester) e integración de recursos Creative Commons.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-blue-700 block mb-1">5. Conclusión</span>
+                                        Fase de pruebas (depuración entre equipos) y publicación en la comunidad Scratch con documentación.
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                                    <span class="font-bold text-slate-700 block">Atención a la Diversidad (DUA):</span>
+                                    <p><strong>Representación:</strong> Tarjetas sintácticas de retos por colores y vídeos de lógica condicional.</p>
+                                    <p><strong>Acción/Expresión:</strong> Entrega de código ejecutable, diagramas interactivos o presentación demostrativa.</p>
+                                    <p><strong>Diferenciación:</strong> "Proyectos andamio" con fragmentos prehechos para nivelación; funciones avanzadas con gravedad o IA básica para continuidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- SdA 3 -->
+                <article id="sda3" class="sda-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-indigo-600 text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">SdA 3</span>
+                                <span class="text-xs text-indigo-100 font-medium"><i class="fa-regular fa-clock"></i> 15 Sesiones (~7,5 semanas)</span>
+                                <span class="text-xs bg-indigo-800/60 text-indigo-100 font-medium px-2 py-0.5 rounded-md">Robótica e IoT</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold">Eco-Robótica y Computación Física: Soluciones a Retos de Nuestro Entorno</h3>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-xs text-indigo-100 block">Peso Calificación</span>
+                                <span class="text-xl font-black text-white">30%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <h4 class="text-xs font-bold uppercase text-slate-500 mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bullseye text-indigo-600"></i> Justificación Pedagógica
+                                </h4>
+                                <p class="text-sm text-slate-700 leading-relaxed">
+                                    El alumnado estudia la computación física y clasifica la robótica (industrial vs. servicios, móvil). Integrando la filosofía Maker y microcontroladores (<span class="font-semibold text-slate-800">Micro:bit / Arduino</span>) con comunicación inalámbrica BLE o sensores IoT, diseñarán un sistema automatizado sostenible que resuelva una necesidad real del centro educativo o del entorno local.
+                                </p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200/80 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase text-indigo-800 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-trophy text-indigo-600"></i> Producto Final
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-indigo-950 font-medium">
+                                        <strong>Prototipo Funcional de Sistema Robótico/IoT Sostenible</strong> con microcontrolador, sensores, actuadores y radio BLE, acompañado de memoria técnica con esquemas de ingeniería.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-4">
+                            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Conexión Curricular Estricta (Haz clic para ver detalle):</h4>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Competencias:</span>
+                                <button onclick="showCurricularPopup('CE1')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE1</button>
+                                <button onclick="showCurricularPopup('CE2')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE2</button>
+                                <button onclick="showCurricularPopup('CE3')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE3</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Criterios:</span>
+                                <button onclick="showCurricularPopup('CEv 1.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 1.1</button>
+                                <button onclick="showCurricularPopup('CEv 1.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 1.2</button>
+                                <button onclick="showCurricularPopup('CEv 1.4')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 1.4</button>
+                                <button onclick="showCurricularPopup('CEv 2.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 2.1</button>
+                                <button onclick="showCurricularPopup('CEv 3.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 3.1</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Saberes:</span>
+                                <button onclick="showCurricularPopup('CYR.2.B.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.B.1-4</button>
+                                <button onclick="showCurricularPopup('CYR.2.C.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.C.1-5</button>
+                                <button onclick="showCurricularPopup('CYR.2.F.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.F.1-4</button>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-2">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Descriptores Perfil Salida:</span>
+                                <button onclick="showCurricularPopup('CCL3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">CCL3</button>
+                                <button onclick="showCurricularPopup('STEM1')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM1</button>
+                                <button onclick="showCurricularPopup('STEM2')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM2</button>
+                                <button onclick="showCurricularPopup('STEM3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM3</button>
+                                <button onclick="showCurricularPopup('STEM5')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM5</button>
+                                <button onclick="showCurricularPopup('CD1')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD1</button>
+                                <button onclick="showCurricularPopup('CD3')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD3</button>
+                                <button onclick="showCurricularPopup('CD4')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD4</button>
+                                <button onclick="showCurricularPopup('CD5')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD5</button>
+                                <button onclick="showCurricularPopup('CPSAA1')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA1</button>
+                                <button onclick="showCurricularPopup('CPSAA3')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA3</button>
+                                <button onclick="showCurricularPopup('CC3')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC3</button>
+                                <button onclick="showCurricularPopup('CC4')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC4</button>
+                                <button onclick="showCurricularPopup('CE1')" class="badge-desc bg-orange-100 text-orange-900 hover:bg-orange-200">CE1</button>
+                                <button onclick="showCurricularPopup('CE3')" class="badge-desc bg-orange-100 text-orange-900 hover:bg-orange-200">CE3</button>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3">
+                            <button onclick="toggleSdaDetails('sda3-details')" class="w-full text-left font-semibold text-xs text-slate-600 hover:text-indigo-700 flex items-center justify-between py-2">
+                                <span><i class="fa-solid fa-list-check mr-1.5 text-indigo-600"></i> Ver Secuenciación Didáctica (5 Pasos) y DUA</span>
+                                <i id="sda3-details-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+
+                            <div id="sda3-details" class="hidden mt-3 space-y-4 pt-2 border-t border-slate-100">
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-indigo-700 block mb-1">1. Activación</span>
+                                        Debate sobre automatización y robótica industrial vs servicios. Análisis de aplicaciones ecológicas.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-indigo-700 block mb-1">2. Exploración</span>
+                                        Estudio de arquitectura: sensores, actuadores, microcontrolador, conectividad BLE y prevención de fallos elécticos.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-indigo-700 block mb-1">3. Estructuración</span>
+                                        Programación guiada de entradas/salidas en MakeCode/Tinkercad Circuits. Intercambio de mensajes por radio.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-indigo-700 block mb-1">4. Aplicación</span>
+                                        Proyecto Maker en Design Thinking: problema ambiental -> circuito -> código -> construcción física reciclable.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-indigo-700 block mb-1">5. Conclusión</span>
+                                        Feria de Innovación Robótica del centro: demostración pública del prototipo y defensa de la memoria técnica.
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                                    <span class="font-bold text-slate-700 block">Atención a la Diversidad (DUA):</span>
+                                    <p><strong>Representación:</strong> Esquemas de conexión codificados por colores y simuladores online (Tinkercad Circuits).</p>
+                                    <p><strong>Acción/Expresión:</strong> Opción entre montaje físico, diseño 3D de estructura o codificación de la lógica.</p>
+                                    <p><strong>Diferenciación:</strong> Circuito simple de 1 sensor + 1 actuador para nivelación; red de sensores comunicados por radio BLE para continuidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- SdA 4 -->
+                <article id="sda4" class="sda-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-amber-600 text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">SdA 4</span>
+                                <span class="text-xs text-amber-100 font-medium"><i class="fa-regular fa-clock"></i> 7 Sesiones (~3,5 semanas)</span>
+                                <span class="text-xs bg-amber-800/60 text-amber-100 font-medium px-2 py-0.5 rounded-md">Big Data e IA Ética</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold">Ciudadanía Digital, Datos e Inteligencia Artificial Ética</h3>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-xs text-amber-100 block">Peso Calificación</span>
+                                <span class="text-xl font-black text-white">15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <h4 class="text-xs font-bold uppercase text-slate-500 mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bullseye text-amber-600"></i> Justificación Pedagógica
+                                </h4>
+                                <p class="text-sm text-slate-700 leading-relaxed">
+                                    El alumnado analiza el ciclo de vida de los datos y metadatos, entiende el Big Data y experimenta con agentes inteligentes y aprendizaje automático (supervisado/no supervisado con <span class="font-semibold text-slate-800">Teachable Machine / LearningML</span>), reflexionando sobre sesgos, ética y ciberseguridad.
+                                </p>
+                            </div>
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200/80 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase text-amber-800 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-trophy text-amber-600"></i> Producto Final
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-amber-950 font-medium">
+                                        <strong>Campaña Digital y Debate Crítico: Impacto Ético de la IA y el Big Data</strong>, panel con datos procesados, modelo de IA entrenado y decálogo de ética digital.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-4">
+                            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Conexión Curricular Estricta (Haz clic para ver detalle):</h4>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Competencias:</span>
+                                <button onclick="showCurricularPopup('CE4')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE4</button>
+                                <button onclick="showCurricularPopup('CE6')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE6</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Criterios:</span>
+                                <button onclick="showCurricularPopup('CEv 4.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 4.1</button>
+                                <button onclick="showCurricularPopup('CEv 4.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 4.2</button>
+                                <button onclick="showCurricularPopup('CEv 6.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.1</button>
+                                <button onclick="showCurricularPopup('CEv 6.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.2</button>
+                                <button onclick="showCurricularPopup('CEv 6.4')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 6.4</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Saberes:</span>
+                                <button onclick="showCurricularPopup('CYR.2.G.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.G.1-4</button>
+                                <button onclick="showCurricularPopup('CYR.2.H.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.H.1-5</button>
+                                <button onclick="showCurricularPopup('CYR.2.I.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.I.1-4</button>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-2">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Descriptores Perfil Salida:</span>
+                                <button onclick="showCurricularPopup('STEM1')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM1</button>
+                                <button onclick="showCurricularPopup('STEM3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM3</button>
+                                <button onclick="showCurricularPopup('STEM5')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM5</button>
+                                <button onclick="showCurricularPopup('CD1')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD1</button>
+                                <button onclick="showCurricularPopup('CD4')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD4</button>
+                                <button onclick="showCurricularPopup('CD5')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD5</button>
+                                <button onclick="showCurricularPopup('CPSAA3')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA3</button>
+                                <button onclick="showCurricularPopup('CPSAA5')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA5</button>
+                                <button onclick="showCurricularPopup('CC3')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC3</button>
+                                <button onclick="showCurricularPopup('CCEC4')" class="badge-desc bg-rose-100 text-rose-900 hover:bg-rose-200">CCEC4</button>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3">
+                            <button onclick="toggleSdaDetails('sda4-details')" class="w-full text-left font-semibold text-xs text-slate-600 hover:text-amber-700 flex items-center justify-between py-2">
+                                <span><i class="fa-solid fa-list-check mr-1.5 text-amber-600"></i> Ver Secuenciación Didáctica (5 Pasos) y DUA</span>
+                                <i id="sda4-details-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+
+                            <div id="sda4-details" class="hidden mt-3 space-y-4 pt-2 border-t border-slate-100">
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-amber-700 block mb-1">1. Activación</span>
+                                        Análisis de la huella digital y metadatos ocultos Exif en fotos. Distinción entre datos cualitativos y cuantitativos.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-amber-700 block mb-1">2. Exploración</span>
+                                        Taller de Big Data y entrenamiento práctico de un modelo de aprendizaje automático con Teachable Machine.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-amber-700 block mb-1">3. Estructuración</span>
+                                        Evolución histórica de la IA, estudio de sesgos algorítmicos e ingeniería social en ciberseguridad.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-amber-700 block mb-1">4. Aplicación</span>
+                                        Entrenamiento de un modelo de clasificación ambiental en equipo y redacción de Decálogo de Ética Digital.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-amber-700 block mb-1">5. Conclusión</span>
+                                        Debate guiado en el aula sobre los límites de la IA, evaluado con rúbricas y diana de autoevaluación.
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                                    <span class="font-bold text-slate-700 block">Atención a la Diversidad (DUA):</span>
+                                    <p><strong>Representación:</strong> Infografías dinámicas y simulaciones interactivas de aprendizaje automático.</p>
+                                    <p><strong>Acción/Expresión:</strong> Elección de formato: infografía estática, podcast de audio o participación en el debate.</p>
+                                    <p><strong>Diferenciación:</strong> Modelos con guías visuales sencillas para nivelación; auditoría de sesgos en datasets complejos para continuidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- SdA 5 -->
+                <article id="sda5" class="sda-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-purple-600 text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">SdA 5</span>
+                                <span class="text-xs text-purple-100 font-medium"><i class="fa-regular fa-clock"></i> 7 Sesiones (~3,5 semanas)</span>
+                                <span class="text-xs bg-purple-800/60 text-purple-100 font-medium px-2 py-0.5 rounded-md">Web y Apps Móviles</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold">Soluciones Web y Apps Móviles para Nuestra Comunidad</h3>
+                        </div>
+                        <div class="flex items-center space-x-3 shrink-0">
+                            <div class="text-right">
+                                <span class="text-xs text-purple-100 block">Peso Calificación</span>
+                                <span class="text-xl font-black text-white">15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <h4 class="text-xs font-bold uppercase text-slate-500 mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bullseye text-purple-600"></i> Justificación Pedagógica
+                                </h4>
+                                <p class="text-sm text-slate-700 leading-relaxed">
+                                    Como broche final, el alumnado explora los fundamentos del desarrollo web (<span class="font-semibold text-slate-800">HTML/CSS, modelo cliente-servidor</span>) y la programación móvil por eventos (<span class="font-semibold text-slate-800">App Inventor / Thunkable</span>) para crear un ecosistema digital de utilidad social para el centro educativo o municipio.
+                                </p>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200/80 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase text-purple-800 mb-1 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-trophy text-purple-600"></i> Producto Final
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-purple-950 font-medium">
+                                        <strong>Ecosistema Digital Comunitario</strong>: Sitio web promocional maquetado en HTML/CSS que presenta y permite descargar una App Móvil nativa (.apk) basada en eventos de sensores.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-4">
+                            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Conexión Curricular Estricta (Haz clic para ver detalle):</h4>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Competencias:</span>
+                                <button onclick="showCurricularPopup('CE2')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE2</button>
+                                <button onclick="showCurricularPopup('CE4')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE4</button>
+                                <button onclick="showCurricularPopup('CE5')" class="badge-ce bg-purple-100 text-purple-800 hover:bg-purple-200">CE5</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Criterios:</span>
+                                <button onclick="showCurricularPopup('CEv 2.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 2.2</button>
+                                <button onclick="showCurricularPopup('CEv 2.3')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 2.3</button>
+                                <button onclick="showCurricularPopup('CEv 4.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 4.2</button>
+                                <button onclick="showCurricularPopup('CEv 5.1')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 5.1</button>
+                                <button onclick="showCurricularPopup('CEv 5.2')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200">CEv 5.2</button>
+
+                                <span class="text-xs font-semibold text-slate-600 ml-3 mr-2">Saberes:</span>
+                                <button onclick="showCurricularPopup('CYR.2.D.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.D.1-5</button>
+                                <button onclick="showCurricularPopup('CYR.2.E.1')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.E.1-4</button>
+                                <button onclick="showCurricularPopup('CYR.2.H.2')" class="badge-saber bg-emerald-100 text-emerald-800 hover:bg-emerald-200">CYR.2.H.2-3</button>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 items-center mt-2">
+                                <span class="text-xs font-semibold text-slate-600 mr-2">Descriptores Perfil Salida:</span>
+                                <button onclick="showCurricularPopup('STEM1')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM1</button>
+                                <button onclick="showCurricularPopup('STEM3')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM3</button>
+                                <button onclick="showCurricularPopup('STEM5')" class="badge-desc bg-amber-100 text-amber-900 hover:bg-amber-200">STEM5</button>
+                                <button onclick="showCurricularPopup('CD1')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD1</button>
+                                <button onclick="showCurricularPopup('CD4')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD4</button>
+                                <button onclick="showCurricularPopup('CD5')" class="badge-desc bg-sky-100 text-sky-900 hover:bg-sky-200">CD5</button>
+                                <button onclick="showCurricularPopup('CPSAA3')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA3</button>
+                                <button onclick="showCurricularPopup('CPSAA4')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA4</button>
+                                <button onclick="showCurricularPopup('CPSAA5')" class="badge-desc bg-teal-100 text-teal-900 hover:bg-teal-200">CPSAA5</button>
+                                <button onclick="showCurricularPopup('CC3')" class="badge-desc bg-indigo-100 text-indigo-900 hover:bg-indigo-200">CC3</button>
+                                <button onclick="showCurricularPopup('CE3')" class="badge-desc bg-orange-100 text-orange-900 hover:bg-orange-200">CE3</button>
+                                <button onclick="showCurricularPopup('CCEC3')" class="badge-desc bg-rose-100 text-rose-900 hover:bg-rose-200">CCEC3</button>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3">
+                            <button onclick="toggleSdaDetails('sda5-details')" class="w-full text-left font-semibold text-xs text-slate-600 hover:text-purple-700 flex items-center justify-between py-2">
+                                <span><i class="fa-solid fa-list-check mr-1.5 text-purple-600"></i> Ver Secuenciación Didáctica (5 Pasos) y DUA</span>
+                                <i id="sda5-details-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+
+                            <div id="sda5-details" class="hidden mt-3 space-y-4 pt-2 border-t border-slate-100">
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-purple-700 block mb-1">1. Activación</span>
+                                        Análisis de arquitectura cliente-servidor web frente a ejecución de Apps móviles nativas.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-purple-700 block mb-1">2. Exploración</span>
+                                        Maquetación básica HTML/CSS e introducción a la programación por eventos en App Inventor.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-purple-700 block mb-1">3. Estructuración</span>
+                                        Programación de eventos de usuario, temporizadores y sensores del móvil (acelerómetro).
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-purple-700 block mb-1">4. Aplicación</span>
+                                        Desarrollo en equipo de una App de utilidad social y sitio web responsive de presentación.
+                                    </div>
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <span class="font-bold text-purple-700 block mb-1">5. Conclusión</span>
+                                        Pruebas e instalación mediante códigos QR en móviles reales y evaluación cruzada entre equipos.
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+                                    <span class="font-bold text-slate-700 block">Atención a la Diversidad (DUA):</span>
+                                    <p><strong>Representación:</strong> Plantillas de código HTML/CSS comentadas y diagramas visuales de flujo de eventos.</p>
+                                    <p><strong>Acción/Expresión:</strong> Demostración mediante emulador en pantalla o ejecución compilada en smartphone.</p>
+                                    <p><strong>Diferenciación:</strong> App simple de 2 pantallas para nivelación; App multipantalla con acelerómetro y TinyDB para continuidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+        <!-- ==================== PESTAÑA 2: MATRIZ SÉNECA ==================== -->
+        <div id="view-matrix" class="view-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-emerald-600"></i> Matriz de Ponderación Criterial (Cuaderno Séneca)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Distribución simétrica de las 6 Competencias Específicas y 18 Criterios para su traspaso directo al Sistema Séneca de la Junta de Andalucía.
+                        </p>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-800 px-4 py-2 rounded-xl border border-emerald-200 text-xs font-semibold">
+                        Suma Total Ponderada: 100% Criterial
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                <th class="p-3">Competencia Específica (CE)</th>
+                                <th class="p-3 text-center">Peso CE</th>
+                                <th class="p-3">Criterio de Evaluación (CEv)</th>
+                                <th class="p-3 text-center">SdA Vinculada</th>
+                                <th class="p-3 text-right">Peso CEv en Séneca</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <!-- CE1 -->
+                            <tr class="hover:bg-slate-50">
+                                <td rowspan="4" class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE1')" class="underline decoration-dotted font-bold text-purple-700">CE1</button>: Impacto de la computación, robótica y pensamiento computacional.
+                                </td>
+                                <td rowspan="4" class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">15%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 1.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 1.1</button>: Sistemas computación física</td>
+                                <td class="p-3 text-center"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs">SdA 3</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">4,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 1.2')" class="font-bold text-blue-700 underline decoration-dotted">CEv 1.2</button>: Papel de la robótica en la sociedad</td>
+                                <td class="p-3 text-center"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs">SdA 3</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">3,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 1.3')" class="font-bold text-blue-700 underline decoration-dotted">CEv 1.3</button>: Funcionamiento de un programa</td>
+                                <td class="p-3 text-center"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">SdA 2</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">5,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 1.4')" class="font-bold text-blue-700 underline decoration-dotted">CEv 1.4</button>: Principios de ingeniería en robots</td>
+                                <td class="p-3 text-center"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs">SdA 3</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">3,0%</td>
+                            </tr>
+
+                            <!-- CE2 -->
+                            <tr class="hover:bg-slate-50 border-t-2 border-slate-200">
+                                <td rowspan="3" class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE2')" class="underline decoration-dotted font-bold text-purple-700">CE2</button>: Producir programas informáticos y trabajo en equipo.
+                                </td>
+                                <td rowspan="3" class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">25%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 2.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 2.1</button>: Resolver problemas mediante programas</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs">SdA 2</span>
+                                    <span class="bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded text-xs">SdA 3</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">15,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 2.2')" class="font-bold text-blue-700 underline decoration-dotted">CEv 2.2</button>: Apps móviles funcionamiento interno</td>
+                                <td class="p-3 text-center"><span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">SdA 5</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">5,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 2.3')" class="font-bold text-blue-700 underline decoration-dotted">CEv 2.3</button>: Resolver problemas creando Apps</td>
+                                <td class="p-3 text-center"><span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">SdA 5</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">5,0%</td>
+                            </tr>
+
+                            <!-- CE3 -->
+                            <tr class="hover:bg-slate-50 border-t-2 border-slate-200">
+                                <td class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE3')" class="underline decoration-dotted font-bold text-purple-700">CE3</button>: Sistemas físicos y robóticos sencillos.
+                                </td>
+                                <td class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">15%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 3.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 3.1</button>: Construir sistema físico robótico real</td>
+                                <td class="p-3 text-center"><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs">SdA 3</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">15,0%</td>
+                            </tr>
+
+                            <!-- CE4 -->
+                            <tr class="hover:bg-slate-50 border-t-2 border-slate-200">
+                                <td rowspan="2" class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE4')" class="underline decoration-dotted font-bold text-purple-700">CE4</button>: Datos, Big Data e Inteligencia Artificial.
+                                </td>
+                                <td rowspan="2" class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">15%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 4.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 4.1</button>: Aplicaciones Big Data y metadatos</td>
+                                <td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs">SdA 4</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">7,5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 4.2')" class="font-bold text-blue-700 underline decoration-dotted">CEv 4.2</button>: Agentes inteligentes y IA ética</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs">SdA 4</span>
+                                    <span class="bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded text-xs">SdA 5</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">7,5%</td>
+                            </tr>
+
+                            <!-- CE5 -->
+                            <tr class="hover:bg-slate-50 border-t-2 border-slate-200">
+                                <td rowspan="2" class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE5')" class="underline decoration-dotted font-bold text-purple-700">CE5</button>: Crear aplicaciones web y software seguro.
+                                </td>
+                                <td rowspan="2" class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">15%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 5.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 5.1</button>: Construcción segura de web y software</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-xs">SdA 1</span>
+                                    <span class="bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded text-xs">SdA 5</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">7,5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 5.2')" class="font-bold text-blue-700 underline decoration-dotted">CEv 5.2</button>: Resolver problemas en desarrollo web</td>
+                                <td class="p-3 text-center"><span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">SdA 5</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">7,5%</td>
+                            </tr>
+
+                            <!-- CE6 -->
+                            <tr class="hover:bg-slate-50 border-t-2 border-slate-200">
+                                <td rowspan="4" class="p-3 font-semibold text-purple-900 bg-purple-50/50 align-top">
+                                    <button onclick="showCurricularPopup('CE6')" class="underline decoration-dotted font-bold text-purple-700">CE6</button>: Principios de ciberseguridad y hábitos seguros.
+                                </td>
+                                <td rowspan="4" class="p-3 font-bold text-center align-top bg-purple-50/30 text-purple-900">15%</td>
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 6.1')" class="font-bold text-blue-700 underline decoration-dotted">CEv 6.1</button>: Conductas de protección activa en la red</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-xs">SdA 1</span>
+                                    <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs">SdA 4</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">4,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 6.2')" class="font-bold text-blue-700 underline decoration-dotted">CEv 6.2</button>: Servicios de publicación segura</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-xs">SdA 1</span>
+                                    <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs">SdA 4</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">4,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 6.3')" class="font-bold text-blue-700 underline decoration-dotted">CEv 6.3</button>: Derechos de materiales e propiedad intelectual</td>
+                                <td class="p-3 text-center"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">SdA 2</span></td>
+                                <td class="p-3 text-right font-semibold text-slate-800">3,0%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3"><button onclick="showCurricularPopup('CEv 6.4')" class="font-bold text-blue-700 underline decoration-dotted">CEv 6.4</button>: Protección activa y pasiva de datos</td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-xs">SdA 1</span>
+                                    <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-xs">SdA 4</span>
+                                </td>
+                                <td class="p-3 text-right font-semibold text-slate-800">4,0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PESTAÑA 3: COMPETENCIAS Y CRITERIOS ==================== -->
+        <div id="view-competencias" class="view-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-purple-600"></i> Catálogo Completo de Competencias Específicas y Criterios (2º ESO)
+                </h2>
+
+                <div class="space-y-4" id="ceContainer">
+                    <!-- Las competencias se renderizan dinámicamente o estructuradas -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PESTAÑA 4: SABERES BÁSICOS ==================== -->
+        <div id="view-saberes" class="view-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-emerald-600"></i> Bloques de Saberes Básicos de 2º de ESO
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            Recuerda: Los saberes son el medio pedagógico para alcanzar los Criterios de Evaluación, no un fin en sí mismos.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="saberesGrid">
+                    <!-- Se rellenan con JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PESTAÑA 5: INCLUSIÓN Y DUA ==================== -->
+        <div id="view-dua" class="view-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-universal-access text-teal-600"></i> Diseño Universal para el Aprendizaje (DUA) e Inclusión Digital
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Estrategias transversales aplicadas a la materia para garantizar la accesibilidad y el éxito formativo de todo el alumnado de 2º ESO.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="p-4 bg-teal-50/60 rounded-xl border border-teal-200/80 space-y-2">
+                        <div class="flex items-center space-x-2 text-teal-800 font-bold text-sm">
+                            <i class="fa-solid fa-eye text-teal-600"></i>
+                            <span>Principio I: Múltiples formas de Representación</span>
+                        </div>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Guías sintácticas codificadas por colores para algoritmos.</li>
+                            <li>Simuladores virtuales interactivos (Tinkercad Circuits, MakeCode).</li>
+                            <li>Videotutoriales breves subtitulados con transcripción.</li>
+                            <li>Esquemas conceptuales y diagramas de flujo interactivos.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-sky-50/60 rounded-xl border border-sky-200/80 space-y-2">
+                        <div class="flex items-center space-x-2 text-sky-800 font-bold text-sm">
+                            <i class="fa-solid fa-pen-ruler text-sky-600"></i>
+                            <span>Principio II: Múltiples formas de Acción y Expresión</span>
+                        </div>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Elección entre código funcional, diagrama de flujo o exposición oral.</li>
+                            <li>Demostración mediante emulador o ejecución en smartphone real.</li>
+                            <li>Soporte de portafolios interactivos en PDF o podcast explicativo.</li>
+                            <li>Plantillas preestructuradas con listas de verificación (checklists).</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50/60 rounded-xl border border-indigo-200/80 space-y-2">
+                        <div class="flex items-center space-x-2 text-indigo-800 font-bold text-sm">
+                            <i class="fa-solid fa-heart text-indigo-600"></i>
+                            <span>Principio III: Múltiples formas de Implicación</span>
+                        </div>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                            <li>Retos conectados con los Objetivos de Desarrollo Sostenible (ODS).</li>
+                            <li>Roles rotativos en equipos de trabajo cooperativo.</li>
+                            <li>Evaluación formativa mediante dianas de autoevaluación.</li>
+                            <li>Fomento del hardware/software libre y la cultura Maker.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Cuadro de gradación curricular -->
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-emerald-600"></i> Estrategia de Gradación Pedagógica en el Aula
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <span class="font-bold text-emerald-800 block mb-1">🟢 Alumnado de Nuevo Ingreso (Sin C&R en 1º ESO)</span>
+                            <p class="text-slate-600 leading-relaxed">
+                                Se aplican "proyectos andamio" con plantillas preestructuradas, guiado paso a paso, lectura de sensores sencillos de una sola variable y programas visuales enfocado en condicionales básicas.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <span class="font-bold text-blue-800 block mb-1">🔵 Alumnado de Continuidad (Cursó C&R en 1º ESO)</span>
+                            <p class="text-slate-600 leading-relaxed">
+                                Retos avanzados de extensión: funciones personalizadas con parámetros, comunicación inalámbrica radio/BLE entre microcontroladores, arrays/listas de datos y auditorías completas de ciberseguridad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL / POPUP INTERACTIVO PARA ELEMENTOS CURRICULARES -->
+    <div id="curricularModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-150">
+            <!-- Encabezado Modal -->
+            <div id="modalHeader" class="bg-slate-800 text-white px-5 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <span id="modalBadge" class="bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded-md">CE 1</span>
+                    <h3 id="modalTitle" class="text-base font-bold">Elemento Curricular</h3>
+                </div>
+                <button onclick="closeCurricularModal()" class="text-slate-400 hover:text-white text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cuerpo Modal -->
+            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4 text-slate-700 text-sm">
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 mb-1">Definición Normativa LOMLOE (Andalucía)</h4>
+                    <p id="modalOfficialText" class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 leading-relaxed text-slate-800 font-normal">
+                        Texto oficial del elemento curricular...
+                    </p>
+                </div>
+
+                <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200/80">
+                    <h4 class="text-xs font-bold uppercase text-emerald-800 mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-emerald-600"></i> Explicación Sencilla para el Alumnado
+                    </h4>
+                    <p id="modalStudentText" class="text-xs text-emerald-950 leading-relaxed font-medium">
+                        Explicación didáctica simple...
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 mb-1">Situaciones de Aprendizaje Vinculadas</h4>
+                    <div id="modalSdasList" class="flex flex-wrap gap-1.5">
+                        <!-- Botones de SdAs -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Modal -->
+            <div class="bg-slate-50 border-t border-slate-100 px-5 py-3 flex justify-end">
+                <button onclick="closeCurricularModal()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-xl font-medium transition-colors">
+                    Entendido / Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE GLOSARIO / LEYENDA -->
+    <div id="legendModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-emerald-800 text-white px-5 py-4 flex items-center justify-between">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i> Glosario de Siglas Curriculares LOMLOE
+                </h3>
+                <button onclick="closeLegendModal()" class="text-emerald-200 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4 text-xs text-slate-700">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <strong class="text-purple-700 block mb-0.5">CE (Competencia Específica)</strong>
+                        Desempeños que el alumnado debe poder desplegar en situaciones o actividades de aprendizaje sobre la materia.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <strong class="text-blue-700 block mb-0.5">CEv (Criterio de Evaluación)</strong>
+                        Referente evaluable que indica los niveles de logro esperados. En la LOMLOE, ¡solo se califican los Criterios!
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <strong class="text-emerald-700 block mb-0.5">Saberes Básicos (CYR.2.X)</strong>
+                        Conocimientos, destrezas y actitudes que constituyen los contenidos de la materia. Son un medio, no un fin.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <strong class="text-amber-800 block mb-0.5">Descriptores del Perfil de Salida</strong>
+                        Habilidades globales al terminar la etapa (STEM, CD, CPSAA, CC, CCEC, CCL, CE) para la ciudadanía del siglo XXI.
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 border-t border-slate-100 px-5 py-3 flex justify-end">
+                <button onclick="closeLegendModal()" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-xl">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT Y DICCIONARIO CURRICULAR -->
+    <script>
+        // Diccionario completo de datos curriculares para los popups
+        const curriculumData = {
+            // Competencias Específicas
+            "CE1": {
+                title: "Competencia Específica 1",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Comprender el impacto que la computación y la robótica tienen en nuestra sociedad y desarrollar el pensamiento computacional para realizar proyectos de construcción de sistemas digitales de forma sostenible.",
+                student: "Entender cómo la informática y los robots cambian nuestro mundo y aprender a pensar paso a paso para crear proyectos tecnológicos útiles y ecológicos.",
+                sdas: ["SdA 2", "SdA 3"]
+            },
+            "CE2": {
+                title: "Competencia Específica 2",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado o exhibir un comportamiento deseado.",
+                student: "Crear programas y juegos trabajando en equipo con programación por bloques (como Scratch o App Inventor) para resolver problemas.",
+                sdas: ["SdA 2", "SdA 3", "SdA 5"]
+            },
+            "CE3": {
+                title: "Competencia Específica 3",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Diseñar y construir sistemas de computación físicos o robóticos sencillos, aplicando los conocimientos necesarios para desarrollar soluciones automatizadas a problemas planteados.",
+                student: "Diseñar e inventar sistemas con piezas reales o placas de programación (como Micro:bit o Arduino) que reaccionen con sensores ante el entorno.",
+                sdas: ["SdA 3"]
+            },
+            "CE4": {
+                title: "Competencia Específica 4",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Recopilar, almacenar y procesar datos, identificando patrones y descubriendo conexiones para resolver problemas mediante la Inteligencia Artificial entendiendo cómo nos ayuda a mejorar nuestra comprensión del mundo.",
+                student: "Aprender a organizar información, entender qué es el Big Data y entrenar Inteligencias Artificiales para que reconozcan imágenes o sonidos de forma ética.",
+                sdas: ["SdA 4", "SdA 5"]
+            },
+            "CE5": {
+                title: "Competencia Específica 5",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Utilizar y crear aplicaciones informáticas y web sencillas, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa, protegiendo la identidad online y la privacidad.",
+                student: "Saber cómo se construyen las páginas web e Internet por dentro, creando sitios web sencillos y navegando con total seguridad y privacidad.",
+                sdas: ["SdA 1", "SdA 5"]
+            },
+            "CE6": {
+                title: "Competencia Específica 6",
+                badgeClass: "bg-purple-600 text-white",
+                official: "Conocer y aplicar los principios de la ciberseguridad, adoptando hábitos y conductas de seguridad, para permitir la protección del individuo en su interacción en la red.",
+                student: "Proteger tus contraseñas, tus fotos y tus datos en Internet, detectando engaños y respetando los derechos de autor de lo que encuentras online.",
+                sdas: ["SdA 1", "SdA 2", "SdA 4"]
+            },
+
+            // Criterios de Evaluación
+            "CEv 1.1": {
+                title: "Criterio de Evaluación 1.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Comprender el funcionamiento de los sistemas de computación física, sus componentes y principales características.",
+                student: "Saber explicar de qué partes se compone un sistema informático físico (pantallas, botones, placas) y cómo trabajan juntas.",
+                sdas: ["SdA 3"]
+            },
+            "CEv 1.2": {
+                title: "Criterio de Evaluación 1.2",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Reconocer el papel de la robótica en nuestra sociedad, conociendo las aplicaciones más comunes.",
+                student: "Identificar para qué nos sirven los robots en la vida cotidiana, la medicina, las fábricas o el cuidado del planeta.",
+                sdas: ["SdA 3"]
+            },
+            "CEv 1.3": {
+                title: "Criterio de Evaluación 1.3",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Entender cómo funciona un programa informático, la manera de elaborarlo y sus principales componentes.",
+                student: "Comprender cómo se escribe un programa de ordenador, desde la idea original hasta las instrucciones paso a paso.",
+                sdas: ["SdA 2"]
+            },
+            "CEv 1.4": {
+                title: "Criterio de Evaluación 1.4",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Comprender los principios de ingeniería en los que se basan los robots, su funcionamiento, componentes y características.",
+                student: "Entender cómo se diseñan los robots por dentro (motores, estructuras, placas) y cómo toman decisiones.",
+                sdas: ["SdA 3"]
+            },
+            "CEv 2.1": {
+                title: "Criterio de Evaluación 2.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.",
+                student: "Resolver retos programando en equipo, comunicándote bien con tus compañeros y creando código que sirva para otros casos.",
+                sdas: ["SdA 2", "SdA 3"]
+            },
+            "CEv 2.2": {
+                title: "Criterio de Evaluación 2.2",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Entender el funcionamiento interno de las aplicaciones móviles y cómo se construyen, dando respuesta a las posibles demandas del escenario a resolver.",
+                student: "Explicar cómo funcionan las aplicaciones de un teléfono móvil por dentro cuando tocas un botón o mueves la pantalla.",
+                sdas: ["SdA 5"]
+            },
+            "CEv 2.3": {
+                title: "Criterio de Evaluación 2.3",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Conocer y resolver la variedad de problemas posibles desarrollando una aplicación móvil y generalizando las soluciones.",
+                student: "Diseñar y programar una app móvil completa que responda a una necesidad real de tu entorno.",
+                sdas: ["SdA 5"]
+            },
+            "CEv 3.1": {
+                title: "Criterio de Evaluación 3.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Ser capaz de construir un sistema de computación o robótico, promoviendo la interacción con el mundo físico en el contexto de un problema del mundo real, de forma sostenible.",
+                student: "Construir con tus manos y programar un invento o robot con sensores que resuelva un problema real de forma ecológica.",
+                sdas: ["SdA 3"]
+            },
+            "CEv 4.1": {
+                title: "Criterio de Evaluación 4.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Conocer las aplicaciones actuales del Big Data, así como la naturaleza de los distintos tipos de datos y metadatos generados, siendo capaces de analizarlos, visualizarlos y compararlos, empleando a su vez un espíritu crítico y científico.",
+                student: "Comprender la enorme cantidad de datos que genera Internet y saber analizar listas o mapas de información con sentido crítico.",
+                sdas: ["SdA 4"]
+            },
+            "CEv 4.2": {
+                title: "Criterio de Evaluación 4.2",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la Inteligencia Artificial de forma ética y responsable.",
+                student: "Aprender cómo entrenar a un ordenador para que aprenda solo (Inteligencia Artificial) de forma responsable y sin prejuicios.",
+                sdas: ["SdA 4", "SdA 5"]
+            },
+            "CEv 5.1": {
+                title: "Criterio de Evaluación 5.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Conocer la construcción de aplicaciones informáticas y web, entendiendo su funcionamiento interno, de forma segura, responsable y respetuosa.",
+                student: "Construir páginas web y aplicaciones entendiendo su estructura básica y respetando las normas de seguridad.",
+                sdas: ["SdA 1", "SdA 5"]
+            },
+            "CEv 5.2": {
+                title: "Criterio de Evaluación 5.2",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Conocer y resolver la variedad de problemas potencialmente presentes en el desarrollo de una aplicación web, tratando de generalizar posibles soluciones.",
+                student: "Arreglar fallos y solucionar problemas técnicos cuando creas una página web o un sitio de descargas.",
+                sdas: ["SdA 5"]
+            },
+            "CEv 6.1": {
+                title: "Criterio de Evaluación 6.1",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Adoptar conductas y hábitos que permitan la protección activa del individuo en su interacción en la red.",
+                student: "Usar contraseñas seguras, no compartir datos privados y proteger tu móvil u ordenador frente a virus.",
+                sdas: ["SdA 1", "SdA 4"]
+            },
+            "CEv 6.2": {
+                title: "Criterio de Evaluación 6.2",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Acceder a servicios de intercambio y publicación de información digital aplicando criterios de seguridad y uso responsable.",
+                student: "Subir tareas, usar el correo del instituto y publicar contenidos en Internet de forma madura y segura.",
+                sdas: ["SdA 1", "SdA 4"]
+            },
+            "CEv 6.3": {
+                title: "Criterio de Evaluación 6.3",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Reconocer y comprender los derechos de los materiales alojados en Internet.",
+                student: "Respetar la propiedad intelectual, sabiendo cuándo puedes usar imágenes o música libre (Creative Commons).",
+                sdas: ["SdA 2"]
+            },
+            "CEv 6.4": {
+                title: "Criterio de Evaluación 6.4",
+                badgeClass: "bg-blue-600 text-white",
+                official: "Adoptar conductas de seguridad activa y pasiva en la protección de datos y en el intercambio de información.",
+                student: "Realizar copias de seguridad de tus trabajos y configurar la privacidad de tus cuentas para evitar sustos.",
+                sdas: ["SdA 1", "SdA 4"]
+            },
+
+            // Descriptores Operativos del Perfil de Salida
+            "STEM1": { title: "Descriptor STEM1", badgeClass: "bg-amber-600 text-white", official: "Utiliza métodos inductivos y deductivos del razonamiento matemático para resolver problemas.", student: "Pensar con lógica para resolver retos y problemas paso a paso.", sdas: ["SdA 1", "SdA 2", "SdA 3", "SdA 4", "SdA 5"] },
+            "STEM2": { title: "Descriptor STEM2", badgeClass: "bg-amber-600 text-white", official: "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor.", student: "Hacer preguntas, experimentar e investigar lo que te rodea como un científico.", sdas: ["SdA 2", "SdA 3"] },
+            "STEM3": { title: "Descriptor STEM3", badgeClass: "bg-amber-600 text-white", official: "Plantea y desarrolla proyectos diseñando, fabricando y evaluando prototipos tecnológicos en equipo.", student: "Inventar y construir maquetas o aparatos tecnológicos en grupo.", sdas: ["SdA 2", "SdA 3", "SdA 4", "SdA 5"] },
+            "STEM5": { title: "Descriptor STEM5", badgeClass: "bg-amber-600 text-white", official: "Emprende acciones fundamentadas para preservar el medio ambiente y aplicar principios de seguridad.", student: "Usar la tecnología para cuidar la naturaleza y promover la sostenibilidad.", sdas: ["SdA 3", "SdA 4", "SdA 5"] },
+            "CD1": { title: "Descriptor CD1", badgeClass: "bg-sky-600 text-white", official: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad.", student: "Buscar información fiable en Google o páginas web sin dejarte engañar.", sdas: ["Todas las SdAs"] },
+            "CD3": { title: "Descriptor CD3", badgeClass: "bg-sky-600 text-white", official: "Se comunica, participa y colabora en entornos digitales compartiendo información de forma responsable.", student: "Trabajar juntos en plataformas online de forma educada y constructiva.", sdas: ["SdA 2", "SdA 3"] },
+            "CD4": { title: "Descriptor CD4", badgeClass: "bg-sky-600 text-white", official: "Identifica riesgos y adopta medidas preventivas para proteger dispositivos, datos y salud.", student: "Cuidar tu salud visual, tu postura y proteger tu privacidad ante peligros de la red.", sdas: ["Todas las SdAs"] },
+            "CD5": { title: "Descriptor CD5", badgeClass: "bg-sky-600 text-white", official: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles.", student: "Crear tus propios programas, aplicaciones o inventos para ayudar a los demás.", sdas: ["Todas las SdAs"] },
+            "CPSAA3": { title: "Descriptor CPSAA3", badgeClass: "bg-teal-600 text-white", official: "Comprende las perspectivas de las demás personas y participa activamente en el trabajo en grupo.", student: "Escuchar a tus compañeros y repartir las tareas con justicia al trabajar en grupo.", sdas: ["Todas las SdAs"] },
+            "CC3": { title: "Descriptor CC3", badgeClass: "bg-indigo-600 text-white", official: "Comprende y analiza problemas éticos fundamentales y de actualidad con actitud dialogante.", student: "Pensar qué cosas de la tecnología son éticas y buenas, y cuáles pueden ser peligrosas.", sdas: ["SdA 1", "SdA 3", "SdA 4", "SdA 5"] },
+
+            // Saberes Básicos Muestra
+            "CYR.2.A.1": { title: "Saber Básico CYR.2.A.1", badgeClass: "bg-emerald-600 text-white", official: "Lenguajes de programación visuales: ventajas e inconvenientes.", student: "Aprender pros y contras de programar encajando bloques de colores tipo Scratch.", sdas: ["SdA 2"] },
+            "CYR.2.I.1": { title: "Saber Básico CYR.2.I.1", badgeClass: "bg-emerald-600 text-white", official: "Privacidad e identidad digital en la red.", student: "Aprender a gestionar tu nombre e imagen en Internet sin riesgos.", sdas: ["SdA 1", "SdA 4"] }
+        };
+
+        // Estructura de Saberes por Bloques para la pestaña de Saberes
+        const saberesBloques = [
+            { id: "A", title: "A. Introducción a la Programación", items: ["CYR.2.A.1. Lenguajes de programación visuales.", "CYR.2.A.2. Elementos de lenguaje de bloques.", "CYR.2.A.3. Secuencia y expresiones algorítmicas.", "CYR.2.A.4. Tareas repetitivas y condicionales.", "CYR.2.A.5. Pantallas de interacción con el usuario."] },
+            { id: "B", title: "B. Internet de las Cosas (IoT)", items: ["CYR.2.B.1. Clasificación de sensores IoT.", "CYR.2.B.2. Conexión dispositivo a dispositivo.", "CYR.2.B.3. Conexión BLE (Bluetooth Low Energy).", "CYR.2.B.4. Aplicaciones de IoT industrial."] },
+            { id: "C", title: "C. Robótica", items: ["CYR.2.C.1. Robots industriales y de servicios.", "CYR.2.C.2. Aplicaciones de los robots.", "CYR.2.C.3. Sensores, efectores y actuadores.", "CYR.2.C.4. Robots móviles.", "CYR.2.C.5. Programación de robots con bloques."] },
+            { id: "D", title: "D. Desarrollo Móvil", items: ["CYR.2.D.1. IDEs de programación móvil.", "CYR.2.D.2. Programación orientada a eventos.", "CYR.2.D.3. Dependencia de eventos.", "CYR.2.D.4. Tipos de eventos móviles.", "CYR.2.D.5. Eventos de entrada/salida (E/S)."] },
+            { id: "E", title: "E. Desarrollo Web", items: ["CYR.2.E.1. Estructura básica de una web (HTML).", "CYR.2.E.2. Servidores web: funcionamiento.", "CYR.2.E.3. Lenguajes para edición de páginas web.", "CYR.2.E.4. Tipos de animación web."] },
+            { id: "F", title: "F. Computación Física", items: ["CYR.2.F.1. Tipologías de sistemas de computación.", "CYR.2.F.2. Historia de los microcontroladores.", "CYR.2.F.3. Hardware: periféricos de E/S.", "CYR.2.F.4. Seguridad eléctrica y SAI."] },
+            { id: "G", title: "G. Datos Masivos (Big Data)", items: ["CYR.2.G.1. Aplicaciones del Big Data.", "CYR.2.G.2. Datos cualitativos y cuantitativos.", "CYR.2.G.3. Distinción entre datos y metadatos.", "CYR.2.G.4. Ciclo de vida de los metadatos."] },
+            { id: "H", title: "H. Inteligencia Artificial", items: ["CYR.2.H.1. Historia de la IA.", "CYR.2.H.2. Ética y responsabilidad social en IA.", "CYR.2.H.3. Agentes inteligentes simples.", "CYR.2.H.4. Aprendizaje automático.", "CYR.2.H.5. Aprendizaje supervisado vs no supervisado."] },
+            { id: "I", title: "I. Ciberseguridad", items: ["CYR.2.I.1. Privacidad e identidad.", "CYR.2.I.2. Tipología de riesgos por exposición.", "CYR.2.I.3. Malware y antimalware.", "CYR.2.I.4. Vulnerabilidades en entornos virtuales.", "CYR.2.I.5. Protección de la propiedad intelectual."] }
+        ];
+
+        // Cambio de pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                el.classList.remove('active', 'bg-white/20', 'text-white');
+                el.classList.add('text-emerald-100');
+            });
+
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            const activeNav = document.getElementById('tab-' + tabId);
+            activeNav.classList.add('active', 'bg-white/20', 'text-white');
+            activeNav.classList.remove('text-emerald-100');
+        }
+
+        // Abrir Modal de Elemento Curricular
+        function showCurricularPopup(code) {
+            const data = curriculumData[code] || {
+                title: "Elemento Curricular " + code,
+                badgeClass: "bg-emerald-600 text-white",
+                official: "Elemento curricular normativo oficial según Instrucciones de Computación y Robótica 2º ESO en Andalucía.",
+                student: "Concepto o habilidad técnica para aprender a crear soluciones digitales seguras.",
+                sdas: ["SdA Vinculada"]
+            };
+
+            document.getElementById('modalBadge').textContent = code;
+            document.getElementById('modalBadge').className = `text-xs font-bold px-2.5 py-1 rounded-md ${data.badgeClass}`;
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalOfficialText').textContent = data.official;
+            document.getElementById('modalStudentText').textContent = data.student;
+
+            const sdasContainer = document.getElementById('modalSdasList');
+            sdasContainer.innerHTML = '';
+            data.sdas.forEach(sda => {
+                const span = document.createElement('span');
+                span.className = 'bg-slate-100 text-slate-800 text-xs px-2.5 py-1 rounded-lg border border-slate-200 font-semibold';
+                span.textContent = sda;
+                sdasContainer.appendChild(span);
+            });
+
+            document.getElementById('curricularModal').classList.remove('hidden');
+        }
+
+        function closeCurricularModal() {
+            document.getElementById('curricularModal').classList.add('hidden');
+        }
+
+        function openLegendModal() {
+            document.getElementById('legendModal').classList.remove('hidden');
+        }
+
+        function closeLegendModal() {
+            document.getElementById('legendModal').classList.add('hidden');
+        }
+
+        // Toggle para los detalles de las SdA
+        function toggleSdaDetails(id) {
+            const container = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        function scrollToSda(sdaId) {
+            switchTab('timeline');
+            setTimeout(() => {
+                const el = document.getElementById(sdaId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('ring-2', 'ring-emerald-500');
+                    setTimeout(() => el.classList.remove('ring-2', 'ring-emerald-500'), 2000);
+                }
+            }, 100);
+        }
+
+        // Cargar vista dinámica de Competencias Específicas
+        function renderCompetenciasTab() {
+            const container = document.getElementById('ceContainer');
+            container.innerHTML = '';
+
+            const listCE = [
+                { id: "CE1", name: "Impacto y Pensamiento Computacional", weight: "15%", criterios: ["CEv 1.1", "CEv 1.2", "CEv 1.3", "CEv 1.4"] },
+                { id: "CE2", name: "Programación y Trabajo en Equipo", weight: "25%", criterios: ["CEv 2.1", "CEv 2.2", "CEv 2.3"] },
+                { id: "CE3", name: "Sistemas Físicos y Robótica", weight: "15%", criterios: ["CEv 3.1"] },
+                { id: "CE4", name: "Big Data e Inteligencia Artificial", weight: "15%", criterios: ["CEv 4.1", "CEv 4.2"] },
+                { id: "CE5", name: "Desarrollo Web y Software Seguro", weight: "15%", criterios: ["CEv 5.1", "CEv 5.2"] },
+                { id: "CE6", name: "Ciberseguridad y Hábitos Seguros", weight: "15%", criterios: ["CEv 6.1", "CEv 6.2", "CEv 6.3", "CEv 6.4"] }
+            ];
+
+            listCE.forEach(ce => {
+                const ceData = curriculumData[ce.id];
+                const card = document.createElement('div');
+                card.className = 'p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3';
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="showCurricularPopup('${ce.id}')" class="bg-purple-700 text-white font-bold text-xs px-2.5 py-1 rounded-md hover:bg-purple-800 transition-colors">${ce.id}</button>
+                            <h3 class="font-bold text-slate-800 text-sm">${ce.name}</h3>
+                        </div>
+                        <span class="text-xs bg-purple-100 text-purple-900 font-bold px-2.5 py-0.5 rounded-full">Peso Total Séneca: ${ce.weight}</span>
+                    </div>
+                    <p class="text-xs text-slate-600">${ceData ? ceData.official : ''}</p>
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 block mb-1.5">Criterios de Evaluación evaluables asociados:</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${ce.criterios.map(cev => `<button onclick="showCurricularPopup('${cev}')" class="badge-cev bg-blue-100 text-blue-800 hover:bg-blue-200 text-xs px-2 py-0.5 rounded font-semibold">${cev}</button>`).join('')}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Cargar Saberes por Bloques
+        function renderSaberesTab() {
+            const grid = document.getElementById('saberesGrid');
+            grid.innerHTML = '';
+
+            saberesBloques.forEach(bloque => {
+                const div = document.createElement('div');
+                div.className = 'p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2';
+                div.innerHTML = `
+                    <h3 class="font-bold text-xs uppercase text-emerald-800 border-b border-slate-200 pb-1.5 flex items-center justify-between">
+                        <span>${bloque.title}</span>
+                        <i class="fa-solid fa-cubes text-emerald-600"></i>
+                    </h3>
+                    <ul class="space-y-1">
+                        ${bloque.items.map(item => `
+                            <li class="text-xs text-slate-700 leading-relaxed flex items-start gap-1.5">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span>${item}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCompetenciasTab();
+            renderSaberesTab();
+
+            // Configurar buscador global
+            document.getElementById('globalSearch').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                if (!query) return;
+
+                document.querySelectorAll('.sda-card').forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Estilos de badges interactivas -->
+    <style>
+        .badge-ce, .badge-cev, .badge-saber, .badge-desc {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .badge-ce:hover, .badge-cev:hover, .badge-saber:hover, .badge-desc:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+    </style>
+
+    <!-- Pie de página -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-graduation-cap text-emerald-400"></i>
+                <span class="text-slate-200 font-semibold">Asesoría Pedagógica y Curricular de Computación y Robótica 2º ESO</span>
+            </div>
+            <p class="text-slate-500">Alineado con el Marco LOMLOE y Normativa de la Junta de Andalucía.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
