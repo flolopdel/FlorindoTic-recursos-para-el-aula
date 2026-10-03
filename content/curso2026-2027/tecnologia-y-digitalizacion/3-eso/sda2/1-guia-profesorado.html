@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SdA: Resolviendo Problemas - TYD 3º ESO Andalucía</title>
-    <!-- Tailwind CSS CDN -->
+    <title>SdA 2: Diseño de un Producto - Tecnología y Digitalización 3º ESO (LOMLOE Andalucía)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome CDN -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Font Family Inter -->
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
                     colors: {
-                        andalucia: {
+                        brand: {
                             50: '#f0fdf4',
                             100: '#dcfce7',
                             500: '#22c55e',
@@ -27,14 +24,14 @@
                             800: '#166534',
                             900: '#14532d',
                         },
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
+                        anda: {
+                            emerald: '#007a33',
+                            accent: '#85c441',
+                            dark: '#0f2918'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
@@ -42,465 +39,655 @@
     </script>
     <style>
         .active-tab {
-            border-bottom: 3px solid #16a34a;
-            color: #15803d;
+            border-bottom: 3px solid #007a33;
+            color: #007a33;
             font-weight: 700;
-            background-color: rgba(240, 253, 244, 0.6);
+            background-color: #f0fdf4;
         }
-        .badge-clickable {
-            transition: all 0.2s ease;
+        .curriculum-badge {
             cursor: pointer;
+            transition: all 0.2s ease-in-out;
         }
-        .badge-clickable:hover {
+        .curriculum-badge:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body class="h-full flex flex-col font-sans text-slate-800 bg-slate-50">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
-    <!-- Encabezado Principal -->
-    <header class="bg-gradient-to-r from-andalucia-800 via-teal-800 to-slate-900 text-white shadow-lg sticky top-0 z-30">
+    <!-- Header & Banner -->
+    <header class="bg-gradient-to-r from-anda-dark via-anda-emerald to-emerald-800 text-white shadow-lg sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex items-center space-x-3">
-                    <div class="p-3 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
-                        <i class="fa-solid fa-microchip text-2xl text-emerald-300"></i>
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-300 mb-1">
+                        <span class="bg-emerald-900/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                            <i class="fa-solid fa-graduation-cap mr-1">
+                            </i>Junta de Andalucía · LOMLOE
+                        </span>
+                        <span class="bg-emerald-900/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                            3º de ESO
+                        </span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="bg-emerald-500/30 text-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-medium border border-emerald-400/30">
-                                Junta de Andalucía · LOMLOE
-                            </span>
-                            <span class="bg-blue-500/30 text-blue-200 text-xs px-2.5 py-0.5 rounded-full font-medium border border-blue-400/30">
-                                3º ESO · Tecnología y Digitalización
-                            </span>
-                        </div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">
-                            SdA: "RESOLVIENDO PROBLEMAS"
-                        </h1>
-                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-cubes text-emerald-400"></i>
+                        SdA 2: Diseño de un Producto
+                    </h1>
+                    <p class="text-xs sm:text-sm text-emerald-100 mt-1 font-light">
+                        Materia: Tecnología y Digitalización · Programación Didáctica & Secuenciación Didáctica Completa
+                    </p>
                 </div>
-
-                <div class="flex items-center gap-3 bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/10 text-xs sm:text-sm">
-                    <div class="text-right">
-                        <p class="text-emerald-200 font-semibold"><i class="fa-regular fa-clock mr-1"></i> Temporalización</p>
-                        <p class="text-white font-medium">6 Sesiones (50 min)</p>
+                <!-- Quick Info Badges -->
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <div class="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20">
+                        <span class="block text-emerald-200 text-[10px] uppercase font-bold">Duración</span>
+                        <span class="font-bold"><i class="fa-regular fa-clock mr-1"></i>6 Sesiones (50 min)</span>
                     </div>
-                    <div class="h-8 w-px bg-white/20"></div>
-                    <div class="text-left">
-                        <p class="text-emerald-200 font-semibold"><i class="fa-solid fa-box-open mr-1"></i> Producto Final</p>
-                        <p class="text-white font-medium">Prototipo + Pitch Maker</p>
+                    <div class="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20">
+                        <span class="block text-emerald-200 text-[10px] uppercase font-bold">Producto Final</span>
+                        <span class="font-bold"><i class="fa-solid fa-box-open mr-1"></i>Diseño CAD + Memoria + Pitch</span>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20">
+                        <span class="block text-emerald-200 text-[10px] uppercase font-bold">Herramienta 3D</span>
+                        <span class="font-bold"><i class="fa-solid fa-cube mr-1"></i>Tinkercad</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Barra de Navegación por Pestañas -->
-        <nav class="bg-slate-900/90 backdrop-blur-md border-t border-slate-700/50">
-            <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-                <div class="flex space-x-1 overflow-x-auto py-2 no-scrollbar text-xs sm:text-sm font-medium">
-                    <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="active-tab flex items-center px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition-all whitespace-nowrap gap-2">
-                        <i class="fa-solid fa-compass text-emerald-500"></i>
-                        <span>1. Visión General</span>
-                    </button>
-                    <button onclick="switchTab('tab-secuenciacion')" id="btn-tab-secuenciacion" class="flex items-center px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition-all whitespace-nowrap gap-2">
-                        <i class="fa-solid fa-list-check text-blue-400"></i>
-                        <span>2. Secuenciación (6 Sesiones)</span>
-                    </button>
-                    <button onclick="switchTab('tab-mapeo')" id="btn-tab-mapeo" class="flex items-center px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition-all whitespace-nowrap gap-2">
-                        <i class="fa-solid fa-table-cells text-amber-400"></i>
-                        <span>3. Mapeo Curricular LOMLOE</span>
-                    </button>
-                    <button onclick="switchTab('tab-dua')" id="btn-tab-dua" class="flex items-center px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition-all whitespace-nowrap gap-2">
-                        <i class="fa-solid fa-universal-access text-purple-400"></i>
-                        <span>4. Atencion DUA</span>
-                    </button>
-                    <button onclick="switchTab('tab-evaluacion')" id="btn-tab-evaluacion" class="flex items-center px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition-all whitespace-nowrap gap-2">
-                        <i class="fa-solid fa-clipboard-check text-rose-400"></i>
-                        <span>5. Evaluación Criterial</span>
-                    </button>
-                </div>
+        <!-- Navigation Tabs -->
+        <nav class="bg-white border-b border-slate-200 shadow-sm text-slate-600 overflow-x-auto scrollbar-none">
+            <div class="max-w-7xl mx-auto px-4 flex whitespace-nowrap min-w-max text-sm font-medium">
+                <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="tab-btn active-tab px-5 py-3.5 flex items-center gap-2 border-b-2 border-transparent hover:text-emerald-700 transition">
+                    <i class="fa-solid fa-compass text-base"></i> Visión General y Reto
+                </button>
+                <button onclick="switchTab('tab-secuenciacion')" id="btn-tab-secuenciacion" class="tab-btn px-5 py-3.5 flex items-center gap-2 border-b-2 border-transparent hover:text-emerald-700 transition">
+                    <i class="fa-solid fa-list-check text-base"></i> Secuenciación Didáctica (6 Sesiones)
+                </button>
+                <button onclick="switchTab('tab-mapeo')" id="btn-tab-mapeo" class="tab-btn px-5 py-3.5 flex items-center gap-2 border-b-2 border-transparent hover:text-emerald-700 transition">
+                    <i class="fa-solid fa-sitemap text-base"></i> Mapeo Curricular LOMLOE
+                </button>
+                <button onclick="switchTab('tab-dua')" id="btn-tab-dua" class="tab-btn px-5 py-3.5 flex items-center gap-2 border-b-2 border-transparent hover:text-emerald-700 transition">
+                    <i class="fa-solid fa-universal-access text-base"></i> Principios DUA e Inclusión
+                </button>
+                <button onclick="switchTab('tab-evaluacion')" id="btn-tab-evaluacion" class="tab-btn px-5 py-3.5 flex items-center gap-2 border-b-2 border-transparent hover:text-emerald-700 transition">
+                    <i class="fa-solid fa-square-poll-vertical text-base"></i> Evaluación Criterial
+                </button>
             </div>
         </nav>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
 
-        <!-- ==================== PESTAÑA 1: VISIÓN GENERAL ==================== -->
-        <section id="tab-vision" class="tab-content space-y-6">
-            <!-- Banner Motivacional -->
-            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-700 relative overflow-hidden">
-                <div class="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                
-                <div class="flex flex-col lg:flex-row gap-6 items-start justify-between relative z-10">
-                    <div class="space-y-4 max-w-3xl">
-                        <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/30">
-                            <i class="fa-solid fa-bolt"></i> Reto Tecnológico Completo
+        <!-- ==================== TAB 1: VISIÓN GENERAL Y RETO ==================== -->
+        <section id="tab-vision" class="tab-content space-y-8">
+            <!-- Context and Hook -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="flex flex-col lg:flex-row gap-8 items-center">
+                    <div class="lg:w-2/3 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wide">
+                            <i class="fa-solid fa-bolt"></i> El Gancho: Desafío de Innovación del Entorno
                         </div>
-                        <h2 class="text-2xl sm:text-3xl font-bold text-white leading-tight">
-                            Desafío: De la necesidad cotidiana a un prototipo real funcional
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight">
+                            ¿Cómo podemos diseñar un producto útil, genial y sostenible para resolver un problema real de nuestro instituto o barrio?
                         </h2>
-                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                            Al iniciar la materia de Tecnología y Digitalización en 3º de la ESO, el alumnado asume el rol de un <strong class="text-emerald-300">Equipo de Innovación Maker</strong>. A través del análisis de un problema real de su entorno cercano (aula, hogar, instituto o barrio), investigará soluciones, diseñará en 3D un prototipo sustentable, construirá una solución física reutilizando materiales y defenderá su proyecto públicamente.
+                        <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                            Simulando el funcionamiento real de un estudio de ingeniería y diseño industrial moderno, el alumnado se transformará en equipos emprendedores de tecnología. Identificarán una necesidad cercana, investigarán en la red de forma crítica y segura, y crearán un prototipo virtual en 3D utilizando <strong>Tinkercad</strong>, junto a una memoria técnica, presupuesto sostenible y un pitch final estilo "Shark Tank".
                         </p>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-xs font-medium">
+                                <i class="fa-solid fa-users text-emerald-600"></i> Trabajo en Equipos (2-4 integrantes)
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-xs font-medium">
+                                <i class="fa-solid fa-laptop-code text-emerald-600"></i> Entorno Digital Seguro (Google Drive / Tinkercad)
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-xs font-medium">
+                                <i class="fa-solid fa-leaf text-emerald-600"></i> Criterios de Sostenibilidad y Reutilización
+                            </span>
+                        </div>
                     </div>
-
-                    <div class="w-full lg:w-80 bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 space-y-3">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-2">
-                            <i class="fa-solid fa-bullseye"></i> Producto Final
-                        </h3>
-                        <p class="text-xs text-slate-200">
-                            Construcción física de un <strong class="text-white">Prototipo Funcional</strong> de solución tecnológica + <strong class="text-white">Presentación tipo Elevator Pitch</strong> apoyada en documentación digital 3D.
+                    <div class="lg:w-1/3 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6 shadow-inner text-center">
+                        <div class="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-md">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-lg mb-1">Producto Final Integrado</h3>
+                        <p class="text-xs text-slate-600 mb-4">
+                            Entregable completo multi-formato listo para su difusión pública.
                         </p>
-                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
-                            <span>Metodología:</span>
-                            <span class="font-semibold text-emerald-300">Aprendizaje Basado en Proyectos (ABP)</span>
+                        <ul class="text-left text-xs space-y-2 text-slate-700 font-medium">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Memoria Técnica Digital estructurada</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Modelo 3D interactivo en Tinkercad (.STL)</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Inventario y Presupuesto de materiales</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Presentación pública oral (Pitch de 4 min)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metodologías y Roles -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Metodologías Activas -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-gears text-emerald-600"></i>
+                        Metodologías Activas Utilizadas
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-bold">ABP</span>
+                                Aprendizaje Basado en Proyectos
+                            </h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Desarrollo guiado de una solución técnica real siguiendo todas las fases normalizadas del proceso tecnológico.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-bold">Design Thinking</span>
+                                Pensamiento de Diseño
+                            </h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Empatizar con los usuarios afectados, definir la necesidad, idear respuestas creativas, prototipar en CAD y evaluar.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-bold">Gamificación</span>
+                                Dinámica "Shark Tank" & Roles
+                            </h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Presentación ante el grupo-clase emulando una feria de start-ups tecnológicas y evaluación mediante diana interactiva.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles de Trabajo Cooperativo -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-people-group text-emerald-600"></i>
+                        Roles en los Equipos Cooperativos
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <div class="flex items-center gap-2 font-bold text-slate-800 text-sm text-emerald-700">
+                                <i class="fa-solid fa-stopwatch text-base"></i> Coordinador/a
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Controla los tiempos en cada sesión, revisa la agenda y asegura que todo el equipo cumpla el plan de trabajo.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <div class="flex items-center gap-2 font-bold text-slate-800 text-sm text-blue-700">
+                                <i class="fa-solid fa-pen-nib text-base"></i> Secretario/a
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Redacta y revisa la memoria técnica, cuidando el lenguaje técnico, la ortografía y el registro de entregables.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <div class="flex items-center gap-2 font-bold text-slate-800 text-sm text-purple-700">
+                                <i class="fa-solid fa-cloud-arrow-up text-base"></i> Responsable Digital
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Organiza la estructura de carpetas en Google Drive, gestiona copias de seguridad y los archivos .STL de Tinkercad.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <div class="flex items-center gap-2 font-bold text-slate-800 text-sm text-amber-700">
+                                <i class="fa-solid fa-bullhorn text-base"></i> Portavoz
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Lidera la comunicación externa del grupo, resuelve dudas con el docente y presenta el Elevator Pitch final.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bloques de Detalle Pedagógico -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Tarjeta 1: Justificación Didáctica -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center text-xl font-bold mb-4">
-                        <i class="fa-solid fa-lightbulb"></i>
+            <!-- Diagnóstico Inicial KWL / CQA Interactivo -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-brain text-emerald-600"></i>
+                            Diagnóstico Inicial KWL (¿Qué sabemos? ¿Qué queremos aprender? ¿Qué aprendimos?)
+                        </h3>
+                        <p class="text-xs text-slate-500">Herramienta de indagación y metacognición para la Fase de Inicio.</p>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Justificación Didáctica</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Desarrolla el pensamiento técnico, la creatividad e iniciativa emprendedora. El alumnado aprende a afrontar la incertidumbre del fallo técnico mediante la iteración de prototipos y el trabajo colaborativo en equipo.
-                    </p>
+                    <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+                        Estrategia DUA
+                    </span>
                 </div>
-
-                <!-- Tarjeta 2: Conexión con Entorno y Andalucía -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center text-xl font-bold mb-4">
-                        <i class="fa-solid fa-leaf"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-amber-50/60 border border-amber-200 rounded-lg p-4">
+                        <h4 class="font-bold text-amber-900 text-sm mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-600"></i> K (Know) - ¿Qué sabemos?
+                        </h4>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
+                            <li>Identificar problemas en el instituto (ej. desorden de cables, papeleras sin reciclaje).</li>
+                            <li>Búsqueda básica de información en Google.</li>
+                            <li>Uso elemental de herramientas ofimáticas.</li>
+                        </ul>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Sostenibilidad y Andalucía</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Incentiva el aprovechamiento de recursos y residuos locales (economía circular) alineado con los Objetivos de Desarrollo Sostenible (ODS 9 y ODS 12), impulsando soluciones adaptadas a problemas cercanos del municipio.
-                    </p>
-                </div>
-
-                <!-- Tarjeta 3: Ganchos e Interés del Alumnado -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center text-xl font-bold mb-4">
-                        <i class="fa-solid fa-gamepad"></i>
+                    <div class="bg-blue-50/60 border border-blue-200 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-900 text-sm mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-question text-blue-600"></i> W (Want) - ¿Qué queremos saber?
+                        </h4>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
+                            <li>¿Cómo diseñar en 3D con medidas reales en Tinkercad?</li>
+                            <li>¿Cómo saber si una web es fiable para investigar?</li>
+                            <li>¿Cómo calcular el coste realista de los materiales?</li>
+                        </ul>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Cultura Maker y Digital</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Integra el diseño con herramientas CAD 3D dinámicas (estilo modelado de videojuegos), documentación en formatos digitales modernos e interacciones del estilo "Shark Tank / Maker Expo" para motivar el aprendizaje.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Resumen de Conexión Curricular Oficial -->
-            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 bg-amber-100 text-amber-800 rounded-xl text-xl">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-                    <div class="space-y-2">
-                        <h4 class="font-bold text-amber-900 text-base">Recordatorio sobre la Evaluación Criterial LOMLOE en Andalucía</h4>
-                        <p class="text-sm text-amber-800 leading-relaxed">
-                            En el diseño curricular de la Junta de Andalucía, <strong>únicamente se evalúan los Criterios de Evaluación</strong> (CEv). Los Saberes Básicos son el medio para adquirir y desarrollar dichos criterios. En esta SdA se evalúan específicamente los criterios: 
-                            <button onclick="openModal('CE 1.1')" class="badge-clickable inline-block bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-0.5 rounded font-mono font-bold text-xs">CE 1.1</button>, 
-                            <button onclick="openModal('CE 2.1')" class="badge-clickable inline-block bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-0.5 rounded font-mono font-bold text-xs">CE 2.1</button>, 
-                            <button onclick="openModal('CE 4.1')" class="badge-clickable inline-block bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-0.5 rounded font-mono font-bold text-xs">CE 4.1</button> y 
-                            <button onclick="openModal('CE 6.2')" class="badge-clickable inline-block bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-0.5 rounded font-mono font-bold text-xs">CE 6.2</button>.
-                        </p>
+                    <div class="bg-emerald-50/60 border border-emerald-200 rounded-lg p-4">
+                        <h4 class="font-bold text-emerald-900 text-sm mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-award text-emerald-600"></i> L (Learned) - ¿Qué hemos aprendido?
+                        </h4>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
+                            <li>Contrastar fuentes y respetar derechos de autor.</li>
+                            <li>Exportar y modificar piezas tridimensionales.</li>
+                            <li>Defender un producto de forma clara mediante un Pitch.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== PESTAÑA 2: SECUENCIACIÓN DIDÁCTICA ==================== -->
+        <!-- ==================== TAB 2: SECUENCIACIÓN DIDÁCTICA ==================== -->
         <section id="tab-secuenciacion" class="tab-content hidden space-y-6">
             
-            <!-- Barra de Filtros -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-emerald-600"></i>
-                    <span class="font-bold text-sm text-slate-700">Filtrar Fase:</span>
+            <!-- Filter & Summary Header -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Secuenciación Didáctica de las 6 Sesiones</h2>
+                    <p class="text-xs text-slate-500">Distribución temporal coherente en 3 fases didácticas (Inicio, Desarrollo y Cierre).</p>
                 </div>
+                <!-- Phase filter buttons -->
                 <div class="flex flex-wrap gap-2 text-xs">
-                    <button onclick="filterSessions('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold shadow-sm">
-                        Todas las Sesiones (6)
+                    <button onclick="filterSessions('all')" class="session-filter-btn bg-slate-800 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-sm">
+                        Todas las Sesiones
                     </button>
-                    <button onclick="filterSessions('inicio')" id="filter-btn-inicio" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">
-                        Fase 1: Inicio (1-2)
+                    <button onclick="filterSessions('fase-1')" class="session-filter-btn bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 px-3 py-1.5 rounded-lg font-medium transition">
+                        Fase 1: Inicio (Ses. 1-2)
                     </button>
-                    <button onclick="filterSessions('desarrollo')" id="filter-btn-desarrollo" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">
-                        Fase 2: Desarrollo (3-5)
+                    <button onclick="filterSessions('fase-2')" class="session-filter-btn bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 px-3 py-1.5 rounded-lg font-medium transition">
+                        Fase 2: Desarrollo (Ses. 3-5)
                     </button>
-                    <button onclick="filterSessions('cierre')" id="filter-btn-cierre" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">
-                        Fase 3: Cierre y Difusión (6)
+                    <button onclick="filterSessions('fase-3')" class="session-filter-btn bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 px-3 py-1.5 rounded-lg font-medium transition">
+                        Fase 3: Cierre (Ses. 6)
                     </button>
                 </div>
             </div>
 
-            <!-- Contenedor de Tarjetas de Sesión -->
+            <!-- Sessions Container -->
             <div class="space-y-6">
 
+                <!-- FASE 1: INICIO -->
                 <!-- SESIÓN 1 -->
-                <div class="session-card session-inicio bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-emerald-300 transition">
-                    <div class="bg-gradient-to-r from-emerald-700 to-teal-800 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 1
-                            </span>
-                            <h3 class="font-bold text-lg">Detector de Necesidades e Indagación Inicial</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 1</span>
+                            <h3 class="font-bold text-base">Presentación de la SdA y Organización de Equipos</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-emerald-900/50 px-2.5 py-1 rounded-lg border border-emerald-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-300/30 font-semibold">Fase 1: Inicio</span>
+                            <span class="bg-amber-700/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-amber-700/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-flag mr-1"></i>Fase 1: Inicio</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            <strong>Detonador motivacional:</strong> Proyección de un vídeo interactivo con casos reales de jóvenes inventores ("Tech Makers") que resolvieron problemas en sus institutos. Se lanza la dinámica del <em>Panel KWL</em> (Qué sabemos, qué queremos saber, qué hemos aprendido).
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Comprender el reto tecnológico, analizar la estructura del proceso de diseño e integrar los equipos cooperativos asignando roles claros.
                         </p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-amber-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Explicación del reto, criterios de evaluación y memoria técnica (15 min).</li>
+                                    <li>Constitución de equipos (2-4 integrantes) y asignación de roles (10 min).</li>
+                                    <li>Creación de estructura de carpetas en Google Drive: <code class="bg-slate-200 px-1 rounded">TYD/SdA2/</code> (10 min).</li>
+                                    <li>Tormenta de ideas (Fase 1 del Proceso Tecnológico) sobre necesidades del centro o barrio (15 min).</li>
+                                </ol>
+                            </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-emerald-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 1.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 1.1</button>
-                                    <button onclick="openModal('TYD.3.A.2')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.2</button>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 1.1')" class="curriculum-badge bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 1.1</span>
+                                        <span onclick="openModal('CEv 6.3')" class="curriculum-badge bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 6.3</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.A.1')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.1</span>
+                                        <span onclick="openModal('TYD.3.D.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.D.3</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> CCL3, CD1, CD4, CPSAA3, CE1</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Subtítulos activados en vídeo, organizadores gráficos impresos con pictogramas y apoyo visual.</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Acta de constitución del equipo con roles + Registro inicial de ideas en Google Doc.</p>
+                                    <p><strong>Recursos:</strong> Plantilla PDF de la Memoria Técnica, proyector, acceso a Google Classroom / Drive.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Indagación guiada y KWL grupal.</span>
-                            <span><strong>Evidencia:</strong> Registro inicial del problema detectado en el cuaderno Maker digital.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- SESIÓN 2 -->
-                <div class="session-card session-inicio bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-emerald-300 transition">
-                    <div class="bg-gradient-to-r from-emerald-700 to-teal-800 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 2
-                            </span>
-                            <h3 class="font-bold text-lg">Investigación de Soluciones y Selección de Propuesta</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 2</span>
+                            <h3 class="font-bold text-base">Fundamentos Teóricos y Definición Formal del Problema</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-emerald-900/50 px-2.5 py-1 rounded-lg border border-emerald-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-300/30 font-semibold">Fase 1: Inicio</span>
+                            <span class="bg-amber-700/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-amber-700/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-flag mr-1"></i>Fase 1: Inicio</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            Investigación guiada en la red utilizando búsquedas avanzadas e imágenes inspiradoras. Trabajo en equipos cooperativos (4 personas) mediante la técnica de <em>Lluvia de ideas + Matriz de Viabilidad</em> para seleccionar la propuesta más idónea y sostenible.
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Asimilar los conceptos teóricos del método de resolución de problemas y redactar la definición formal del problema seleccionado.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-emerald-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 1.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 1.1</button>
-                                    <button onclick="openModal('CE 2.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 2.1</button>
-                                    <button onclick="openModal('TYD.3.A.2')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.2</button>
-                                    <button onclick="openModal('TYD.3.A.5')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.5</button>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-amber-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Masterclass interactiva (25 min): Análisis de necesidades, fiabilidad de fuentes y propiedad intelectual.</li>
+                                    <li>Trabajo en equipo (25 min): Cumplimentar la <strong>Fase 2: Definición del problema</strong> en la memoria técnica.</li>
+                                    <li>Redacción precisa identificando usuarios afectados e impacto esperado.</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 1.1')" class="curriculum-badge bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 1.1</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.A.2')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.2</span>
+                                        <span onclick="openModal('TYD.3.A.5')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.5</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> CCL3, STEM2, CD1, CE1</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Guía sintética con criterios de selección simplificados y soporte para lectura fácil.</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Borrador completado de la Fase 2 en la memoria compartida del equipo.</p>
+                                    <p><strong>Recursos:</strong> Presentación interactiva sobre fiabilidad web y derechos de autor.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Aprendizaje Cooperativo (Técnica 1-2-4).</span>
-                            <span><strong>Evidencia:</strong> Documento borrador de justificación de la propuesta seleccionada.</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- FASE 2: DESARROLLO -->
                 <!-- SESIÓN 3 -->
-                <div class="session-card session-desarrollo bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-blue-300 transition">
-                    <div class="bg-gradient-to-r from-blue-700 to-slate-800 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 3
-                            </span>
-                            <h3 class="font-bold text-lg">Diseño Técnico 2D/3D con Herramientas CAD</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 3</span>
+                            <h3 class="font-bold text-base">Investigación Crítica y Planteamiento de Soluciones</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-blue-900/50 px-2.5 py-1 rounded-lg border border-blue-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-blue-500/30 px-2.5 py-1 rounded-lg border border-blue-300/30 font-semibold">Fase 2: Desarrollo</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-gears mr-1"></i>Fase 2: Desarrollo</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            Bocetado a mano alzada del objeto y posterior modelado 3D interactivo empleando software CAD en la nube (Tinkercad o similar). Acotación rápida de dimensiones clave y previsualización tridimensional del prototipo.
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Investigar de forma segura en internet antecedentes y referentes, contrastando al menos 3 fuentes fiables, y seleccionar la mejor alternativa.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 2.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 2.1</button>
-                                    <button onclick="openModal('CE 4.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 4.1</button>
-                                    <button onclick="openModal('TYD.3.B.2')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.2</button>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Búsqueda crítica guiada (25 min): Completar la <strong>Fase 3: Investigación</strong> registrando 3 referencias web fiables y 3 imágenes inspiradoras.</li>
+                                    <li>Debate en equipo (25 min): Aplicar la <strong>Fase 4: Planteamiento y Selección</strong>, evaluando viabilidad, innovación y sostenibilidad.</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 1.1')" class="curriculum-badge bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 1.1</span>
+                                        <span onclick="openModal('CEv 2.1')" class="curriculum-badge bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 2.1</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.A.2')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.2</span>
+                                        <span onclick="openModal('TYD.3.A.5')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.5</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> CCL3, CD1, CD4, CPSAA4, CE1</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Videotutoriales breves paso a paso de 2 minutos para el modelado CAD básico.</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Registro de Fase 3 y 4 en la memoria técnica con enlaces correctamente citados y justificación de la idea elegida.</p>
+                                    <p><strong>Recursos:</strong> Dispositivos con conexión a internet, guía de verificación de fiabilidad de fuentes digital.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Aprendizaje Práctico Basado en Proyectos (Maker).</span>
-                            <span><strong>Evidencia:</strong> Archivo de modelo 3D y vista en plano digital del prototipo.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- SESIÓN 4 -->
-                <div class="session-card session-desarrollo bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-blue-300 transition">
-                    <div class="bg-gradient-to-r from-blue-700 to-slate-800 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 4
-                            </span>
-                            <h3 class="font-bold text-lg">Construcción y Conformado de Materiales Reutilizados</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 4</span>
+                            <h3 class="font-bold text-base">Diseño CAD 3D en Tinkercad</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-blue-900/50 px-2.5 py-1 rounded-lg border border-blue-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-blue-500/30 px-2.5 py-1 rounded-lg border border-blue-300/30 font-semibold">Fase 2: Desarrollo</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-gears mr-1"></i>Fase 2: Desarrollo</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            Trabajo en el aula de tecnología. Medición, marcado, corte y ensamblaje del prototipo físico utilizando materiales reciclados/reutilizados (cartón, plásticos, madera recuperada). Aplicación estricta de normas de seguridad e higiene.
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Modelar la solución acordada en 3D utilizando Tinkercad con precisión de medidas y exportar capturas/renderizados para la memoria técnica.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 2.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 2.1</button>
-                                    <button onclick="openModal('TYD.3.A.5')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.5</button>
-                                    <button onclick="openModal('TYD.3.C.3')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.C.3</button>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Modelado 3D interactivo en Tinkercad (50 min): Aplicación de la <strong>Fase 5: Diseño</strong>.</li>
+                                    <li>Creación de formas compuestas, agrupaciones, huecos y ajuste de cotas en milímetros.</li>
+                                    <li>Captura de vistas principales (alzado, planta, perfil) y exportación del modelo (.STL).</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 2.1')" class="curriculum-badge bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 2.1</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.B.2')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.B.2</span>
+                                        <span onclick="openModal('TYD.3.C.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.C.3</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> STEM1, STEM3, CD5, CE3, CCEC3</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Herramientas adaptadas de fácil agarre, reparto de roles según fortalezas individuales.</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Archivo .STL de Tinkercad + Enlace público de diseño + Imágenes del modelo integradas en la memoria.</p>
+                                    <p><strong>Recursos:</strong> Plataforma Tinkercad (cuentas de clase sin datos personales), pautas Multinivel DUA de modelado.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Trabajo Colaborativo en Taller / Cultura Maker.</span>
-                            <span><strong>Evidencia:</strong> Prototipo físico en fase avanzada de montaje.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- SESIÓN 5 -->
-                <div class="session-card session-desarrollo bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-blue-300 transition">
-                    <div class="bg-gradient-to-r from-blue-700 to-slate-800 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 5
-                            </span>
-                            <h3 class="font-bold text-lg">Evaluación Técnica, Depuración y Dossier Digital</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 5</span>
+                            <h3 class="font-bold text-base">Planificación Económica y de Materiales (Inventario y Presupuesto)</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-blue-900/50 px-2.5 py-1 rounded-lg border border-blue-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-blue-500/30 px-2.5 py-1 rounded-lg border border-blue-300/30 font-semibold">Fase 2: Desarrollo</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-emerald-800/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-gears mr-1"></i>Fase 2: Desarrollo</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            Pruebas de funcionamiento del prototipo. Detección y depuración de fallos (cultura del error como aprendizaje). Elaboración de la documentación técnica y almacenamiento en el espacio seguro corporativo (PLE).
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Completar la planificación técnica mediante el inventario de piezas, estimación de costes con materiales reciclados/reutilizados y la ordenación de la memoria técnica en el entorno seguro.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 4.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 4.1</button>
-                                    <button onclick="openModal('CE 6.2')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 6.2</button>
-                                    <button onclick="openModal('TYD.3.B.3')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.3</button>
-                                    <button onclick="openModal('TYD.3.D.3')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.D.3</button>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Redacción del inventario detallado de materiales y componentes (25 min).</li>
+                                    <li>Elaboración de la tabla de presupuesto estimado considerando la sostenibilidad (15 min).</li>
+                                    <li>Organización de archivos y comprobación de almacenamiento seguro en Google Drive (10 min).</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 2.1')" class="curriculum-badge bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 2.1</span>
+                                        <span onclick="openModal('CEv 6.3')" class="curriculum-badge bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 6.3</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.B.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.B.3</span>
+                                        <span onclick="openModal('TYD.3.D.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.D.3</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> STEM3, CD2, CD4, CPSAA5, CE1</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Plantillas rellenables preorganizadas con andamiaje de texto para la memoria técnica.</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Tabla de presupuesto e inventario completa e integrada en el documento final del proyecto.</p>
+                                    <p><strong>Recursos:</strong> Hoja de cálculo / Tabla modelo de inventario, tarifas estándar de materiales escolar/reciclado.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Depuración iterativa y gestión digital del PLE.</span>
-                            <span><strong>Evidencia:</strong> Memoria técnica y prototipo optimizado final.</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- FASE 3: CIERRE -->
                 <!-- SESIÓN 6 -->
-                <div class="session-card session-cierre bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:border-purple-300 transition">
-                    <div class="bg-gradient-to-r from-purple-700 to-indigo-900 text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="session-card fase-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition hover:border-emerald-300">
+                    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 text-white flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-white/20 text-white font-extrabold px-3 py-1 rounded-xl text-sm">
-                                Sesión 6
-                            </span>
-                            <h3 class="font-bold text-lg">Presentación Pública "Elevator Pitch" y Coevaluación</h3>
+                            <span class="bg-white/20 text-white font-black px-2.5 py-1 rounded text-sm">SESIÓN 6</span>
+                            <h3 class="font-bold text-base">Presentación Pública (Pitch) y Coevaluación</h3>
                         </div>
                         <div class="flex items-center gap-3 text-xs">
-                            <span class="bg-purple-900/50 px-2.5 py-1 rounded-lg border border-purple-400/30"><i class="fa-regular fa-clock mr-1"></i> 50 min</span>
-                            <span class="bg-purple-500/30 px-2.5 py-1 rounded-lg border border-purple-300/30 font-semibold">Fase 3: Cierre</span>
+                            <span class="bg-purple-800/60 px-2.5 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i>50 min</span>
+                            <span class="bg-purple-800/60 px-2.5 py-1 rounded-full"><i class="fa-solid fa-award mr-1"></i>Fase 3: Cierre</span>
                         </div>
                     </div>
-
                     <div class="p-6 space-y-4">
-                        <p class="text-sm text-slate-700 leading-relaxed">
-                            Feria de Proyectos Maker ("Shark Tank / Maker Expo"). Cada equipo presenta su prototipo en 3 minutos resaltando cómo resuelve la necesidad. Coevaluación en directo entre el alumnado mediante diana interactiva.
+                        <p class="text-sm text-slate-700">
+                            <strong>Objetivo:</strong> Exponer públicamente el producto ante el grupo-clase mediante un Elevator Pitch de 4 minutos y realizar la coevaluación intergrupal y autoevaluación final.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-purple-700"><i class="fa-solid fa-laptop-code mr-1"></i> Saberes y Criterios</span>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button onclick="openModal('CE 4.1')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 4.1</button>
-                                    <button onclick="openModal('CE 6.2')" class="badge-clickable bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">CE 6.2</button>
-                                    <button onclick="openModal('TYD.3.B.3')" class="badge-clickable bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.3</button>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-purple-800">
+                                    <i class="fa-solid fa-list-ol mr-1"></i>Secuencia de Actividades
+                                </span>
+                                <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                                    <li>Exposición oral / Pitch (35 min): Cada equipo tiene 4 minutos para destacar la utilidad, innovación y sostenibilidad de su producto.</li>
+                                    <li>Coevaluación intergrupal digital y autoevaluación en la diana de aprendizaje (15 min).</li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-emerald-800">
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>Mapeo Curricular de Sesión
+                                </span>
+                                <div class="space-y-1.5">
+                                    <div><strong>Criterios:</strong> 
+                                        <span onclick="openModal('CEv 2.1')" class="curriculum-badge bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 2.1</span>
+                                        <span onclick="openModal('CEv 6.3')" class="curriculum-badge bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-mono text-[11px]">CEv 6.3</span>
+                                    </div>
+                                    <div><strong>Saberes:</strong> 
+                                        <span onclick="openModal('TYD.3.B.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.B.3</span>
+                                        <span onclick="openModal('TYD.3.C.3')" class="curriculum-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.C.3</span>
+                                    </div>
+                                    <div><strong>Descriptores:</strong> CCL1, STEM4, CD3, CPSAA4, CPSAA5, CE1, CCEC3</div>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <span class="font-bold text-slate-800 block uppercase tracking-wider text-[11px] text-blue-700"><i class="fa-solid fa-hands-holding-child mr-1"></i> Medidas DUA y Recursos</span>
-                                <p class="text-slate-600">Múltiples opciones de presentación (oral, vídeo pregrabado, demo interactiva).</p>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                                <span class="font-bold text-slate-900 block text-xs uppercase tracking-wider text-blue-800">
+                                    <i class="fa-solid fa-folder-open mr-1"></i>Evidencias y Recursos
+                                </span>
+                                <div class="space-y-1 text-slate-600">
+                                    <p><strong>Evidencia:</strong> Diapositivas/Vídeo del Pitch + Formulario de coevaluación cumplimentado + Diana de autoevaluación.</p>
+                                    <p><strong>Recursos:</strong> Proyector, rúbrica interactiva digital de coevaluación, cronómetro visual.</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span><strong>Metodología:</strong> Comunicación oral persuasiva y Coevaluación.</span>
-                            <span><strong>Evidencia:</strong> Exposición oral y cuestionario de coevaluación/autoevaluación.</span>
                         </div>
                     </div>
                 </div>
@@ -508,121 +695,143 @@
             </div>
         </section>
 
-        <!-- ==================== PESTAÑA 3: MAPEO CURRICULAR LOMLOE ==================== -->
+        <!-- ==================== TAB 3: MAPEO CURRICULAR LOMLOE ==================== -->
         <section id="tab-mapeo" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-table-cells text-emerald-600"></i> Matriz de Alineación Curricular (Andalucía)
-                    </h3>
-                    <span class="text-xs text-slate-500">Haz clic en cualquier código para desplegar su definición oficial</span>
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Matriz de Concreción Curricular (Junta de Andalucía)</h2>
+                        <p class="text-xs text-slate-500">Mapeo riguroso entre Competencias Específicas, Criterios de Evaluación, Saberes Básicos y Descriptores Operativos.</p>
+                    </div>
+                    <div class="bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Evaluación 100% Criterial
+                    </div>
                 </div>
+
+                <p class="text-xs text-slate-600">
+                    Haz clic sobre cualquier código (ej. <span class="bg-emerald-100 text-emerald-800 px-1 rounded font-mono">CEv 1.1</span>, <span class="bg-slate-200 text-slate-800 px-1 rounded font-mono">TYD.3.A.2</span>, <span class="bg-blue-100 text-blue-800 px-1 rounded font-mono">CCL3</span>) para abrir una ventana explicativa con su definición normativa oficial adaptada.
+                </p>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
-                                <th class="p-3 font-bold uppercase">Criterios de Evaluación</th>
-                                <th class="p-3 font-bold uppercase">Saberes Básicos Asociados</th>
-                                <th class="p-3 font-bold uppercase">Descriptores Perfil de Salida</th>
-                                <th class="p-3 font-bold uppercase">Sesiones en que se trabaja</th>
+                            <tr class="bg-slate-800 text-white font-semibold">
+                                <th class="p-3 rounded-tl-lg">Competencia Específica</th>
+                                <th class="p-3">Criterios de Evaluación (Oficial)</th>
+                                <th class="p-3">Saberes Básicos Asociados</th>
+                                <th class="p-3">Descriptores Operativos</th>
+                                <th class="p-3 rounded-tr-lg">Instrumento / Evidencia</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200 text-slate-700">
-                            <!-- Fila CEv 1.1 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="p-3 align-top font-medium">
-                                    <button onclick="openModal('CE 1.1')" class="badge-clickable bg-emerald-100 hover:bg-emerald-200 text-emerald-900 px-2 py-1 rounded font-mono font-bold block mb-1">
-                                        CE 1.1
-                                    </button>
-                                    <span class="text-[11px] text-slate-500">Definir problemas planteando e investigando información crítica.</span>
+                        <tbody class="divide-y divide-slate-200 border-b border-slate-200">
+                            <!-- ROW 1: CE 1 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-semibold text-slate-900 align-top">
+                                    <span onclick="openModal('CE 1')" class="curriculum-badge text-emerald-700 font-bold block mb-1">
+                                        <i class="fa-solid fa-magnifying-glass mr-1"></i>CE 1
+                                    </span>
+                                    <span class="text-[11px] text-slate-600 font-normal">Buscar y seleccionar información crítica y segura para definir problemas e iniciar la creación.</span>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('TYD.3.A.2')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.2</button>
-                                        <button onclick="openModal('TYD.3.A.5')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.5</button>
-                                    </div>
+                                    <span onclick="openModal('CEv 1.1')" class="curriculum-badge bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-bold font-mono inline-block mb-1">
+                                        CEv 1.1
+                                    </span>
+                                    <p class="text-[11px] text-slate-600 mt-1">
+                                        Definir problemas o necesidades planteadas, buscando y contrastando información de fuentes de forma crítica y segura.
+                                    </p>
+                                </td>
+                                <td class="p-3 align-top space-y-1">
+                                    <div><span onclick="openModal('TYD.3.A.2')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.2</span> <span class="text-[10px] text-slate-500">Búsqueda crítica de información.</span></div>
+                                    <div><span onclick="openModal('TYD.3.A.5')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.A.5</span> <span class="text-[10px] text-slate-500">Emprendimiento y creatividad.</span></div>
+                                    <div><span onclick="openModal('TYD.3.C.3')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.C.3</span> <span class="text-[10px] text-slate-500">Autoconfianza e iniciativa.</span></div>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('CCL3')" class="badge-clickable bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-mono">CCL3</button>
-                                        <button onclick="openModal('STEM2')" class="badge-clickable bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">STEM2</button>
-                                        <button onclick="openModal('CD1')" class="badge-clickable bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-mono">CD1</button>
-                                        <button onclick="openModal('CE1')" class="badge-clickable bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded font-mono">CE1</button>
+                                    <div class="flex flex-wrap gap-1 font-mono text-[10px]">
+                                        <span onclick="openModal('CCL3')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CCL3</span>
+                                        <span onclick="openModal('STEM2')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">STEM2</span>
+                                        <span onclick="openModal('CD1')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD1</span>
+                                        <span onclick="openModal('CD4')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD4</span>
+                                        <span onclick="openModal('CPSAA4')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CPSAA4</span>
+                                        <span onclick="openModal('CE1')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CE1</span>
                                     </div>
                                 </td>
-                                <td class="p-3 align-top font-semibold text-emerald-700">Sesiones 1 y 2</td>
+                                <td class="p-3 align-top font-medium text-slate-700">
+                                    Memoria Técnica (Fases 2 y 3: Definición del problema e investigación de 3 fuentes fiables).
+                                    <span class="block text-[10px] text-emerald-700 font-bold mt-1">Ponderación indicativa: 30%</span>
+                                </td>
                             </tr>
 
-                            <!-- Fila CEv 2.1 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="p-3 align-top font-medium">
-                                    <button onclick="openModal('CE 2.1')" class="badge-clickable bg-emerald-100 hover:bg-emerald-200 text-emerald-900 px-2 py-1 rounded font-mono font-bold block mb-1">
-                                        CE 2.1
-                                    </button>
-                                    <span class="text-[11px] text-slate-500">Idear y diseñar soluciones eficaces, innovadoras y sostenibles.</span>
+                            <!-- ROW 2: CE 2 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-semibold text-slate-900 align-top">
+                                    <span onclick="openModal('CE 2')" class="curriculum-badge text-teal-700 font-bold block mb-1">
+                                        <i class="fa-solid fa-lightbulb mr-1"></i>CE 2
+                                    </span>
+                                    <span class="text-[11px] text-slate-600 font-normal">Abordar problemas tecnológicos con autonomía y creatividad, aplicando trabajo cooperativo.</span>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('TYD.3.A.5')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.A.5</button>
-                                        <button onclick="openModal('TYD.3.B.2')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.2</button>
-                                        <button onclick="openModal('TYD.3.C.3')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.C.3</button>
-                                    </div>
+                                    <span onclick="openModal('CEv 2.1')" class="curriculum-badge bg-teal-100 text-teal-800 px-2 py-1 rounded font-bold font-mono inline-block mb-1">
+                                        CEv 2.1
+                                    </span>
+                                    <p class="text-[11px] text-slate-600 mt-1">
+                                        Idear y diseñar soluciones eficaces, innovadoras y sostenibles a problemas definidos con actitud emprendedora.
+                                    </p>
+                                </td>
+                                <td class="p-3 align-top space-y-1">
+                                    <div><span onclick="openModal('TYD.3.B.2')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.B.2</span> <span class="text-[10px] text-slate-500">Aplicaciones CAD 2D/3D.</span></div>
+                                    <div><span onclick="openModal('TYD.3.B.3')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.B.3</span> <span class="text-[10px] text-slate-500">Herramientas digitales de documentación.</span></div>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('CCL1')" class="badge-clickable bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-mono">CCL1</button>
-                                        <button onclick="openModal('STEM1')" class="badge-clickable bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">STEM1</button>
-                                        <button onclick="openModal('STEM3')" class="badge-clickable bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">STEM3</button>
-                                        <button onclick="openModal('CE3')" class="badge-clickable bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded font-mono">CE3</button>
+                                    <div class="flex flex-wrap gap-1 font-mono text-[10px]">
+                                        <span onclick="openModal('CCL1')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CCL1</span>
+                                        <span onclick="openModal('STEM1')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">STEM1</span>
+                                        <span onclick="openModal('STEM3')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">STEM3</span>
+                                        <span onclick="openModal('CD3')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD3</span>
+                                        <span onclick="openModal('CPSAA3')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CPSAA3</span>
+                                        <span onclick="openModal('CPSAA5')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CPSAA5</span>
+                                        <span onclick="openModal('CE1')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CE1</span>
+                                        <span onclick="openModal('CCEC3')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CCEC3</span>
                                     </div>
                                 </td>
-                                <td class="p-3 align-top font-semibold text-emerald-700">Sesiones 2, 3 y 4</td>
+                                <td class="p-3 align-top font-medium text-slate-700">
+                                    Modelo 3D en Tinkercad (Fase 5) + Elevator Pitch final ante el grupo-clase (Fase 8).
+                                    <span class="block text-[10px] text-teal-700 font-bold mt-1">Ponderación indicativa: 50%</span>
+                                </td>
                             </tr>
 
-                            <!-- Fila CEv 4.1 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="p-3 align-top font-medium">
-                                    <button onclick="openModal('CE 4.1')" class="badge-clickable bg-emerald-100 hover:bg-emerald-200 text-emerald-900 px-2 py-1 rounded font-mono font-bold block mb-1">
-                                        CE 4.1
-                                    </button>
-                                    <span class="text-[11px] text-slate-500">Representar y comunicar el proceso con herramientas digitales.</span>
+                            <!-- ROW 3: CE 6 -->
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-3 font-semibold text-slate-900 align-top">
+                                    <span onclick="openModal('CE 6')" class="curriculum-badge text-purple-700 font-bold block mb-1">
+                                        <i class="fa-solid fa-hard-drive mr-1"></i>CE 6
+                                    </span>
+                                    <span class="text-[11px] text-slate-600 font-normal">Comprender dispositivos y entorno digital, estructurando la información de forma segura.</span>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('TYD.3.B.2')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.2</button>
-                                        <button onclick="openModal('TYD.3.B.3')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.B.3</button>
-                                    </div>
+                                    <span onclick="openModal('CEv 6.3')" class="curriculum-badge bg-purple-100 text-purple-800 px-2 py-1 rounded font-bold font-mono inline-block mb-1">
+                                        CEv 6.3
+                                    </span>
+                                    <p class="text-[11px] text-slate-600 mt-1">
+                                        Organizar la información de manera estructurada, aplicando técnicas de almacenamiento seguro en la nube.
+                                    </p>
+                                </td>
+                                <td class="p-3 align-top space-y-1">
+                                    <div><span onclick="openModal('TYD.3.D.3')" class="curriculum-badge bg-slate-100 hover:bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono text-[11px]">TYD.3.D.3</span> <span class="text-[10px] text-slate-500">Tratamiento y almacenamiento seguro.</span></div>
                                 </td>
                                 <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('STEM4')" class="badge-clickable bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">STEM4</button>
-                                        <button onclick="openModal('CD3')" class="badge-clickable bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-mono">CD3</button>
+                                    <div class="flex flex-wrap gap-1 font-mono text-[10px]">
+                                        <span onclick="openModal('CP2')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CP2</span>
+                                        <span onclick="openModal('CD2')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD2</span>
+                                        <span onclick="openModal('CD4')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD4</span>
+                                        <span onclick="openModal('CD5')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CD5</span>
+                                        <span onclick="openModal('CPSAA4')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CPSAA4</span>
+                                        <span onclick="openModal('CPSAA5')" class="curriculum-badge bg-blue-100 text-blue-800 px-1 rounded">CPSAA5</span>
                                     </div>
                                 </td>
-                                <td class="p-3 align-top font-semibold text-emerald-700">Sesiones 3, 5 y 6</td>
-                            </tr>
-
-                            <!-- Fila CEv 6.2 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="p-3 align-top font-medium">
-                                    <button onclick="openModal('CE 6.2')" class="badge-clickable bg-emerald-100 hover:bg-emerald-200 text-emerald-900 px-2 py-1 rounded font-mono font-bold block mb-1">
-                                        CE 6.2
-                                    </button>
-                                    <span class="text-[11px] text-slate-500">Crear contenidos digitales y difundirlos respetando derechos.</span>
+                                <td class="p-3 align-top font-medium text-slate-700">
+                                    Estructura de carpetas en Google Drive, gestión de copias de seguridad y entrega ordenada del proyecto.
+                                    <span class="block text-[10px] text-purple-700 font-bold mt-1">Ponderación indicativa: 20%</span>
                                 </td>
-                                <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('TYD.3.D.3')" class="badge-clickable bg-slate-100 hover:bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">TYD.3.D.3</button>
-                                    </div>
-                                </td>
-                                <td class="p-3 align-top">
-                                    <div class="flex flex-wrap gap-1">
-                                        <button onclick="openModal('CD2')" class="badge-clickable bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-mono">CD2</button>
-                                        <button onclick="openModal('CPSAA4')" class="badge-clickable bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-mono">CPSAA4</button>
-                                    </div>
-                                </td>
-                                <td class="p-3 align-top font-semibold text-emerald-700">Sesiones 5 y 6</td>
                             </tr>
                         </tbody>
                     </table>
@@ -630,465 +839,476 @@
             </div>
         </section>
 
-        <!-- ==================== PESTAÑA 4: MEDIDAS DUA ==================== -->
+        <!-- ==================== TAB 4: PRINCIPIOS DUA ==================== -->
         <section id="tab-dua" class="tab-content hidden space-y-6">
-            <div class="bg-gradient-to-r from-purple-900 to-slate-900 text-white rounded-2xl p-6 shadow-lg">
-                <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-universal-access text-purple-300"></i>
-                    Aplicación del Diseño Universal para el Aprendizaje (DUA)
-                </h3>
-                <p class="text-sm text-slate-300">
-                    Estrategias inclusivas diseñadas para eliminar barreras en el aula de Tecnología y Digitalización en 3º de ESO.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Principio I -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
-                    <div class="w-10 h-10 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center font-bold">
-                        I
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-base">Múltiples formas de Representación</h4>
-                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside leading-relaxed">
-                        <li>Videotutoriales breves (menos de 3 min) con subtítulos para el diseño CAD.</li>
-                        <li>Formatos imprimibles y digitales interactivos con contraste adaptado.</li>
-                        <li>Glosario de términos técnicos con pictogramas explicativos.</li>
-                    </ul>
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Principios DUA y Atención a la Diversidad</h2>
+                    <p class="text-xs text-slate-500">Medidas inclusivas concretas para garantizar la participación activa de todo el alumnado.</p>
                 </div>
 
-                <!-- Principio II -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
-                    <div class="w-10 h-10 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center font-bold">
-                        II
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Principio 1 -->
+                    <div class="bg-emerald-50/50 rounded-xl p-5 border border-emerald-200 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">I</span>
+                            <h3 class="font-bold text-emerald-900 text-sm">Múltiples Formas de Implicación</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Proporcionar opciones para captar el interés y mantener el esfuerzo:
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+                            <li>Elección libre del problema práctico del entorno escolar o del barrio para conectar con sus intereses cotidianos.</li>
+                            <li>Trabajo cooperativo con roles rotativos y bien delimitados para reducir la ansiedad.</li>
+                            <li>Contextualización mediante dinámicas emprendedoras (Shark Tank).</li>
+                        </ul>
                     </div>
-                    <h4 class="font-bold text-slate-900 text-base">Múltiples formas de Expresión</h4>
-                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside leading-relaxed">
-                        <li>Elección del formato de presentación final (exposición oral, prototipo físico guiado, vídeo corto grabado).</li>
-                        <li>Plantillas digitales de estructura guiada para el dossier técnico.</li>
-                        <li>Opciones de software libre adaptables por teclado/ratón.</li>
-                    </ul>
+
+                    <!-- Principio 2 -->
+                    <div class="bg-blue-50/50 rounded-xl p-5 border border-blue-200 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">II</span>
+                            <h3 class="font-bold text-blue-900 text-sm">Múltiples Formas de Representación</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Ofrecer la información en diversos formatos perceptivos y conceptuales:
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+                            <li>Guías paso a paso con esquemas visuales, infografías y subtítulos para Tinkercad.</li>
+                            <li>Glosario interactivo integrado para comprender el vocabulario técnico sin barreras.</li>
+                            <li>Plantillas estructuradas con andamiaje progresivo para redactar la memoria.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Principio 3 -->
+                    <div class="bg-purple-50/50 rounded-xl p-5 border border-purple-200 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">III</span>
+                            <h3 class="font-bold text-purple-900 text-sm">Múltiples Formas de Acción y Expresión</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Facilitar diferentes alternativas para demostrar el aprendizaje:
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+                            <li>Flexibilidad en la exposición del producto final (soporte audiovisual, presentación digital o guion apoyado).</li>
+                            <li>Opción de modelado 3D mediante bloques interactivos o herramientas de extrusión avanzada.</li>
+                            <li>Coevaluación accesible con diana visual de aprendizaje.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <!-- Principio III -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
-                    <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold">
-                        III
+                <!-- Adaptaciones específicas -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-hands-holding-child text-emerald-600"></i> Medidas Específicas de Andamiaje y Apoyo
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-slate-800 block mb-1">Dificultades de Comprensión Lectora</span>
+                            <p class="text-slate-600">Utilización de organizadores gráficos pre-diseñados y resúmenes con pictogramas o iconos explicativos.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-slate-800 block mb-1">Alta Capacidad / Extensión</span>
+                            <p class="text-slate-600">Retos de amplificación: integración de despiece de componentes en Tinkercad o exportación para simulación de renderizado real.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-slate-800 block mb-1">Dificultad de Expresión Oral</span>
+                            <p class="text-slate-600">Apoyo mediante la locución de vídeo previo grabado o reparto adaptado del Pitch priorizando el soporte digital.</p>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-slate-900 text-base">Múltiples formas de Compromiso</h4>
-                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside leading-relaxed">
-                        <li>Elección de retos e ideas vinculados a intereses del propio alumnado.</li>
-                        <li>Asignación rotativa de roles cooperativos en el taller Maker.</li>
-                        <li>Refuerzo positivo del error como parte natural de la depuración.</li>
-                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== PESTAÑA 5: EVALUACIÓN CRITERIAL ==================== -->
+        <!-- ==================== TAB 5: EVALUACIÓN CRITERIAL ==================== -->
         <section id="tab-evaluacion" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
-                
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-check text-rose-500"></i> Herramienta de Evaluación Criterial
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-1">
-                            Marca los indicadores observados para calcular automáticamente la calificación del desempleo del alumnado.
-                        </p>
-                    </div>
+            
+            <!-- LOMLOE Rigor Warning -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm flex items-start gap-3">
+                <i class="fa-solid fa-circle-info text-amber-600 text-xl mt-0.5"></i>
+                <div class="text-xs text-amber-900">
+                    <strong class="font-bold block text-sm mb-0.5">Rigor en la Evaluación Criterial (Junta de Andalucía - LOMLOE)</strong>
+                    En esta materia, <strong>únicamente se evalúan los Criterios de Evaluación</strong> oficiales. Los Saberes Básicos son solo el medio de aprendizaje y no deben calificarse por separado.
+                </div>
+            </div>
 
-                    <div class="bg-slate-900 text-white p-3.5 rounded-2xl text-right flex items-center gap-4">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-emerald-400 block">Grado de Desempeño</span>
-                            <span id="score-display" class="text-2xl font-extrabold">0 %</span>
-                        </div>
-                        <button onclick="resetEvaluation()" class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl transition">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
+            <!-- Interactive Criterial Checklist -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Lista de Cotejo Interactiva de Desempeño</h2>
+                        <p class="text-xs text-slate-500">Marca los indicadores observados durante el desarrollo del proyecto para calcular la estimación del nivel criterial.</p>
+                    </div>
+                    <div class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold font-mono text-center">
+                        Puntuación Estimada: <span id="checklist-score">0 / 10</span> pts
                     </div>
                 </div>
 
-                <!-- Lista de Cotejo Interactiva por Criterios de Evaluación -->
-                <div class="space-y-6">
-
-                    <!-- Criterio 1.1 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                <div class="space-y-4 text-xs">
+                    <!-- CEv 1.1 Checklist Section -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <button onclick="openModal('CE 1.1')" class="badge-clickable bg-emerald-700 text-white px-2.5 py-1 rounded font-mono font-bold text-xs">
-                                    CE 1.1
-                                </button>
-                                <span class="font-bold text-slate-800 text-sm">Investigación y Definición de Necesidades</span>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-500">Peso: 25%</span>
+                            <span class="font-bold text-emerald-800 font-mono text-sm">CEv 1.1 (Ponderación 30%) - Definir problemas e investigar fuentes fiables</span>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Investigación</span>
                         </div>
-
-                        <div class="space-y-2 text-xs">
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="12.5">
-                                <span class="text-slate-700">Identifica con claridad un problema relevante en su entorno e investiga soluciones existentes contrastando fuentes fiables.</span>
+                        <div class="space-y-2 pt-1">
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-emerald-600 focus:ring-emerald-500" value="1.5">
+                                <span>Define con precisión el problema o necesidad y los usuarios o colectivos afectados.</span>
                             </label>
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="12.5">
-                                <span class="text-slate-700">Analiza las necesidades técnicas y justifica de forma lógica la viabilidad de la propuesta elegida.</span>
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-emerald-600 focus:ring-emerald-500" value="1.5">
+                                <span>Aporta al menos 3 fuentes web de fiabilidad alta y justifica el motivo de su selección.</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Criterio 2.1 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <!-- CEv 2.1 Checklist Section -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <button onclick="openModal('CE 2.1')" class="badge-clickable bg-emerald-700 text-white px-2.5 py-1 rounded font-mono font-bold text-xs">
-                                    CE 2.1
-                                </button>
-                                <span class="font-bold text-slate-800 text-sm">Diseño, Planificación y Prototipado Sostenible</span>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-500">Peso: 35%</span>
+                            <span class="font-bold text-teal-800 font-mono text-sm">CEv 2.1 (Ponderación 50%) - Idear y diseñar soluciones eficaces y sostenibles</span>
+                            <span class="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-bold">Diseño CAD & Pitch</span>
                         </div>
-
-                        <div class="space-y-2 text-xs">
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="17.5">
-                                <span class="text-slate-700">Aplica creatividad y criterios de sostenibilidad en la selección de materiales reutilizados y conformación del prototipo.</span>
+                        <div class="space-y-2 pt-1">
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-teal-600 focus:ring-teal-500" value="1.5">
+                                <span>El modelo 3D en Tinkercad es completo, funcional, respeta las medidas y tiene un alto nivel de detalle.</span>
                             </label>
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="17.5">
-                                <span class="text-slate-700">Trabaja cooperativamente en equipo resolviendo imprevistos y optimizando el proceso de fabricación.</span>
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-teal-600 focus:ring-teal-500" value="1.5">
+                                <span>Contempla criterios de sostenibilidad y presupuesto realista en la elección de materiales.</span>
+                            </label>
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-teal-600 focus:ring-teal-500" value="2.0">
+                                <span>Defiende la propuesta oralmente con claridad, entusiasmo y adecuación al lenguaje técnico en el Pitch.</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Criterio 4.1 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <!-- CEv 6.3 Checklist Section -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <button onclick="openModal('CE 4.1')" class="badge-clickable bg-emerald-700 text-white px-2.5 py-1 rounded font-mono font-bold text-xs">
-                                    CE 4.1
-                                </button>
-                                <span class="font-bold text-slate-800 text-sm">Representación Gráfica y Comunicación Digital</span>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-500">Peso: 20%</span>
+                            <span class="font-bold text-purple-800 font-mono text-sm">CEv 6.3 (Ponderación 20%) - Organizar información con almacenamiento seguro</span>
+                            <span class="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">Soberanía Digital</span>
                         </div>
-
-                        <div class="space-y-2 text-xs">
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="10">
-                                <span class="text-slate-700">Elabora bocetos y diseños CAD 3D precisos empleando la simbología y vocabulario técnico apropiado.</span>
+                        <div class="space-y-2 pt-1">
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-purple-600 focus:ring-purple-500" value="1.0">
+                                <span>Mantiene la estructura de carpetas en Google Drive en orden con nomenclaturas unificadas.</span>
                             </label>
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="10">
-                                <span class="text-slate-700">Comunica de manera clara y directa el proyecto en la presentación oral / Elevator Pitch.</span>
+                            <label class="flex items-start gap-2 text-slate-700 cursor-pointer">
+                                <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-0.5 rounded text-purple-600 focus:ring-purple-500" value="1.0">
+                                <span>Aplica técnicas de guardado seguro y realiza copias de seguridad de la memoria y los archivos 3D.</span>
                             </label>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Criterio 6.2 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <button onclick="openModal('CE 6.2')" class="badge-clickable bg-emerald-700 text-white px-2.5 py-1 rounded font-mono font-bold text-xs">
-                                    CE 6.2
-                                </button>
-                                <span class="font-bold text-slate-800 text-sm">Gestión del Entorno Digital y Respeto a Licencias</span>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-500">Peso: 20%</span>
-                        </div>
+            <!-- Holistic Rubric Table -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">Rúbrica de Evaluación Criterial (Niveles de Desempeño)</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800 text-white font-semibold">
+                                <th class="p-3 w-1/4">Criterio de Evaluación</th>
+                                <th class="p-3 bg-red-900/60 text-red-100">Insuficiente (1 - 4)</th>
+                                <th class="p-3 bg-amber-900/60 text-amber-100">Suficiente / Bien (5 - 6)</th>
+                                <th class="p-3 bg-blue-900/60 text-blue-100">Notable (7 - 8)</th>
+                                <th class="p-3 bg-emerald-900/60 text-emerald-100">Sobresaliente (9 - 10)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 border-b border-slate-200 text-slate-700">
+                            <!-- CEv 1.1 -->
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50 text-slate-900">
+                                    <span onclick="openModal('CEv 1.1')" class="curriculum-badge text-emerald-800 font-mono block">CEv 1.1</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Definir problema y contrastar fuentes.</span>
+                                </td>
+                                <td class="p-3">Describe el problema de forma imprecisa y no contrasta fuentes web ni selecciona imágenes adecuadas.</td>
+                                <td class="p-3">Define el problema con cierta claridad e identifica 3 fuentes web de fiabilidad aceptable.</td>
+                                <td class="p-3">Define con claridad el problema y sus afectados, aportando 3 referencias web veraces y justificadas.</td>
+                                <td class="p-3 font-medium bg-emerald-50/30">Define el problema con alta precisión y riqueza de lenguaje. Contrasta críticamente fuentes de alta fiabilidad.</td>
+                            </tr>
+                            <!-- CEv 2.1 -->
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50 text-slate-900">
+                                    <span onclick="openModal('CEv 2.1')" class="curriculum-badge text-teal-800 font-mono block">CEv 2.1</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Idear y diseñar soluciones sostenibles.</span>
+                                </td>
+                                <td class="p-3">La solución no responde al problema. El diseño 3D en Tinkercad es incompleto o no funcional.</td>
+                                <td class="p-3">Diseña una solución básica que responde al problema. El modelo 3D refleja la forma general del objeto.</td>
+                                <td class="p-3">Diseña una solución innovadora y sostenible. El modelo 3D en Tinkercad presenta buen nivel de detalle.</td>
+                                <td class="p-3 font-medium bg-teal-50/30">Diseña una solución altamente innovadora, eficaz y sostenible. El diseño CAD 3D es excelente y detallado.</td>
+                            </tr>
+                            <!-- CEv 6.3 -->
+                            <tr>
+                                <td class="p-3 font-bold bg-slate-50 text-slate-900">
+                                    <span onclick="openModal('CEv 6.3')" class="curriculum-badge text-purple-800 font-mono block">CEv 6.3</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Organizar información de forma segura.</span>
+                                </td>
+                                <td class="p-3">Archivos desorganizados, nomenclaturas inadecuadas o entregas fuera del entorno digital seguro.</td>
+                                <td class="p-3">Almacena y clasifica los documentos y modelos en carpetas digitales con un orden básico.</td>
+                                <td class="p-3">Organiza la documentación técnica de forma clara y estructurada utilizando el entorno seguro.</td>
+                                <td class="p-3 font-medium bg-purple-50/30">Estructura impecablemente toda la documentación digital, copias de seguridad y archivos multimedia del proyecto.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                        <div class="space-y-2 text-xs">
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="10">
-                                <span class="text-slate-700">Organiza correctamente la documentación en la nube respetando normas de seguridad y almacenamiento.</span>
-                            </label>
-                            <label class="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition">
-                                <input type="checkbox" onchange="calculateScore()" class="eval-check mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" data-weight="10">
-                                <span class="text-slate-700">Respeta la propiedad intelectual citando adecuadamente referencias e imágenes utilizadas.</span>
-                            </label>
-                        </div>
+            <!-- Diana de Autoevaluación Visual -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-emerald-600"></i> Diana de Autoevaluación Grupal (Metacognición)
+                </h3>
+                <p class="text-xs text-slate-600">Herramienta gráfica para reflexionar en la Sesión 6 sobre el nivel de colaboración y aprendizaje.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-center text-xs">
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <span class="font-bold text-emerald-900 block mb-1">1. Organización</span>
+                        <p class="text-[11px] text-slate-600">Reparto de roles y cumplimiento de tiempos en cada sesión.</p>
                     </div>
-
+                    <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                        <span class="font-bold text-teal-900 block mb-1">2. Investigación</span>
+                        <p class="text-[11px] text-slate-600">Búsqueda crítica de fuentes fiables y respeto a derechos de autor.</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <span class="font-bold text-blue-900 block mb-1">3. Calidad CAD 3D</span>
+                        <p class="text-[11px] text-slate-600">Precisión en las medidas y detalle en Tinkercad.</p>
+                    </div>
+                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <span class="font-bold text-purple-900 block mb-1">4. Comunicación</span>
+                        <p class="text-[11px] text-slate-600">Claridad en el Pitch y argumentación emprendedora.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Pie de Página -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs mt-12">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
             <p class="font-medium text-slate-300">
-                Materia: Tecnología y Digitalización (3º ESO) · Programación Curricular Adaptada a Andalucía (LOMLOE)
+                Situación de Aprendizaje (SdA 2): Diseño de un Producto · Materia Tecnología y Digitalización (3º ESO)
             </p>
             <p class="text-slate-500">
-                Diseñado para facilitar la transposición didáctica y el trabajo docente en el aula.
+                Diseñado conforme al Decreto de Ordenación de Enseñanzas en Andalucía (LOMLOE).
             </p>
         </div>
     </footer>
 
-    <!-- Ventana Modal de Consulta Curricular LOMLOE (Popup) -->
-    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200">
-            <div class="bg-gradient-to-r from-andalucia-800 to-teal-800 p-5 text-white flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-white/10 rounded-xl">
-                        <i class="fa-solid fa-book-bookmark text-emerald-300"></i>
-                    </div>
-                    <div>
-                        <span id="modal-code" class="font-mono text-xs font-bold text-emerald-300 uppercase tracking-widest block">CÓDIGO CURRICULAR</span>
-                        <h3 id="modal-title" class="font-bold text-base leading-tight">Título del Elemento</h3>
-                    </div>
+    <!-- POPUP MODAL FOR CURRICULAR DEFINITIONS -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative animate-fade-in space-y-4">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                <div id="modal-icon" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-book"></i>
                 </div>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-sm transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                <div class="space-y-1">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Descripción Oficial</span>
-                    <p id="modal-description" class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        Cargando información...
-                    </p>
-                </div>
-
-                <div id="modal-extra-container" class="space-y-1">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Vínculos Curriculares</span>
-                    <div id="modal-extra" class="flex flex-wrap gap-1.5 text-xs">
-                        <!-- badges extras se insertan dinámicamente -->
-                    </div>
+                <div>
+                    <span id="modal-category" class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Elemento Curricular</span>
+                    <h3 id="modal-title" class="text-lg font-bold text-slate-900">Código Curricular</h3>
                 </div>
             </div>
-
-            <div class="bg-slate-50 p-4 border-t border-slate-100 text-right">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-5 py-2 rounded-xl text-xs transition">
-                    Entendido / Cerrar
+            <div id="modal-body" class="text-xs text-slate-700 leading-relaxed space-y-2">
+                <!-- Dynamic Content -->
+            </div>
+            <div class="pt-2 text-right">
+                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium text-xs px-4 py-2 rounded-lg transition shadow-sm">
+                    Entendido
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT CODE -->
     <script>
-        // Dictionary containing all LOMLOE elements for 3º ESO Andalucía (TYD)
-        const curriculumData = {
-            // Competencias Específicas
-            "CE 1": {
-                title: "Competencia Específica 1",
-                description: "Buscar y seleccionar la información adecuada proveniente de diversas fuentes, de manera crítica y segura, aplicando procesos de investigación, métodos de análisis de productos y experimentando con herramientas de simulación, para definir problemas tecnológicos e iniciar procesos de creación de soluciones a partir de la información obtenida.",
-                extra: ["CCL3", "STEM2", "CD1", "CD4", "CPSAA4", "CE1"]
+        // Database of curricular elements for interactive popups
+        const curriculumDb = {
+            'CE 1': {
+                category: 'Competencia Específica',
+                title: 'CE 1: Buscar e Investigar Información Crítica y Segura',
+                description: 'Buscar y seleccionar la información adecuada proveniente de diversas fuentes, de manera crítica y segura, aplicando procesos de investigación y métodos de análisis de productos para definir problemas tecnológicos e iniciar procesos de creación de soluciones.',
+                icon: 'fa-magnifying-glass'
             },
-            "CE 2": {
-                title: "Competencia Específica 2",
-                description: "Abordar problemas tecnológicos con autonomía y actitud creativa, aplicando conocimientos interdisciplinares y trabajando de forma cooperativa y colaborativa, para diseñar y planificar soluciones a un problema o necesidad de forma eficaz, innovadora y sostenible.",
-                extra: ["CCL1", "STEM1", "STEM3", "CD3", "CPSAA3", "CPSAA5", "CE1", "CE3"]
+            'CE 2': {
+                category: 'Competencia Específica',
+                title: 'CE 2: Abordar Problemas con Actitud Creativa y Cooperativa',
+                description: 'Abordar problemas tecnológicos con autonomía y actitud creativa, aplicando conocimientos interdisciplinares y trabajando de forma cooperativa y colaborativa para diseñar y planificar soluciones a un problema o necesidad de forma eficaz, innovadora y sostenible.',
+                icon: 'fa-lightbulb'
             },
-            "CE 4": {
-                title: "Competencia Específica 4",
-                description: "Describir, representar e intercambiar ideas o soluciones a problemas tecnológicos o digitales, utilizando medios de representación, simbología y vocabulario adecuados, así como los instrumentos y recursos disponibles, valorando la utilidad de las herramientas digitales para comunicar y difundir información y propuestas.",
-                extra: ["CCL1", "STEM4", "CD3", "CCEC3", "CCEC4"]
+            'CE 6': {
+                category: 'Competencia Específica',
+                title: 'CE 6: Dispositivos y Entorno Digital Seguro',
+                description: 'Comprender los fundamentos del funcionamiento de los dispositivos y aplicaciones habituales de su entorno digital de aprendizaje, estructurando la información de manera organizada y aplicando técnicas de almacenamiento seguro.',
+                icon: 'fa-hard-drive'
             },
-            "CE 6": {
-                title: "Competencia Específica 6",
-                description: "Comprender los fundamentos del funcionamiento de los dispositivos y aplicaciones habituales de su entorno digital de aprendizaje, analizando sus componentes y funciones y ajustándolos a sus necesidades para hacer un uso más eficiente y seguro de los mismos y para detectar y resolver problemas técnicos sencillos.",
-                extra: ["CP2", "CD2", "CD4", "CD5", "CPSAA4", "CPSAA5"]
+            'CEv 1.1': {
+                category: 'Criterio de Evaluación Oficial',
+                title: 'CEv 1.1: Definición de Problemas y Fuentes Fiables',
+                description: 'Definir problemas o necesidades planteadas, buscando y contrastando información procedente de diferentes fuentes de manera crítica y segura, evaluando su fiabilidad y pertinencia.',
+                icon: 'fa-circle-check'
             },
-
-            // Criterios de Evaluación
-            "CE 1.1": {
-                title: "Criterio de Evaluación 1.1",
-                description: "Definir problemas o necesidades planteadas, buscando y contrastando información procedente de diferentes fuentes de manera crítica y segura, evaluando su fiabilidad y pertinencia.",
-                extra: ["Competencia Asoc: CE 1", "Saberes: TYD.3.A.1, TYD.3.A.2, TYD.3.A.5"]
+            'CEv 2.1': {
+                category: 'Criterio de Evaluación Oficial',
+                title: 'CEv 2.1: Diseño de Soluciones Sostenibles e Innovadoras',
+                description: 'Idear y diseñar soluciones eficaces, innovadoras y sostenibles a problemas definidos, aplicando conceptos, técnicas y procedimientos interdisciplinares, así como criterios de sostenibilidad, con actitud emprendedora, perseverante y creativa.',
+                icon: 'fa-circle-check'
             },
-            "CE 2.1": {
-                title: "Criterio de Evaluación 2.1",
-                description: "Idear y diseñar soluciones eficaces, innovadoras y sostenibles a problemas definidos, aplicando conceptos, técnicas y procedimientos interdisciplinares, así como criterios de sostenibilidad, con actitud emprendedora, perseverante y creativa.",
-                extra: ["Competencia Asoc: CE 2", "Saberes: TYD.3.A.5, TYD.3.B.1, TYD.3.B.2"]
+            'CEv 6.3': {
+                category: 'Criterio de Evaluación Oficial',
+                title: 'CEv 6.3: Almacenamiento Seguro de la Información',
+                description: 'Organizar la información de manera estructurada, aplicando técnicas de almacenamiento seguro y copias de seguridad en el entorno digital de aprendizaje.',
+                icon: 'fa-circle-check'
             },
-            "CE 4.1": {
-                title: "Criterio de Evaluación 4.1",
-                description: "Representar y comunicar el proceso de creación de un producto, desde su diseño hasta su difusión, elaborando documentación técnica y gráfica con la ayuda de herramientas digitales, empleando los formatos y el vocabulario técnico adecuados, de manera colaborativa, tanto presencialmente como en remoto.",
-                extra: ["Competencia Asoc: CE 4", "Saberes: TYD.3.B.1, TYD.3.B.2, TYD.3.B.3, TYD.3.D.2"]
+            'TYD.3.A.1': {
+                category: 'Saber Básico',
+                title: 'TYD.3.A.1: Estrategias de Resolución de Problemas',
+                description: 'Estrategias, técnicas y marcos de resolución de problemas sencillos en diferentes contextos y sus fases.',
+                icon: 'fa-layer-group'
             },
-            "CE 6.2": {
-                title: "Criterio de Evaluación 6.2",
-                description: "Crear contenidos, elaborar materiales y difundirlos en distintas plataformas, configurando correctamente las herramientas digitales habituales del entorno de aprendizaje, ajustándolas a sus necesidades y respetando los derechos de autor y la etiqueta digital.",
-                extra: ["Competencia Asoc: CE 6", "Saberes: TYD.3.D.2, TYD.3.D.4"]
+            'TYD.3.A.2': {
+                category: 'Saber Básico',
+                title: 'TYD.3.A.2: Búsqueda Crítica de Información',
+                description: 'Estrategias de búsqueda crítica de información durante la investigación y definición de problemas sencillos planteados.',
+                icon: 'fa-layer-group'
             },
-
-            // Saberes Básicos (3º ESO)
-            "TYD.3.A.2": {
-                title: "Saber Básico TYD.3.A.2",
-                description: "Estrategias de búsqueda crítica de información durante la investigación y definición de problemas sencillos planteados.",
-                extra: ["Bloque: A. Proceso de resolución de problemas"]
+            'TYD.3.A.5': {
+                category: 'Saber Básico',
+                title: 'TYD.3.A.5: Emprendimiento y Resiliencia',
+                description: 'Emprendimiento, resiliencia, perseverancia y creatividad para abordar problemas sencillos desde una perspectiva interdisciplinar.',
+                icon: 'fa-layer-group'
             },
-            "TYD.3.A.5": {
-                title: "Saber Básico TYD.3.A.5",
-                description: "Emprendimiento, resiliencia, perseverancia y creatividad para abordar problemas sencillos desde una perspectiva interdisciplinar.",
-                extra: ["Bloque: A. Proceso de resolución de problemas"]
+            'TYD.3.B.2': {
+                category: 'Saber Básico',
+                title: 'TYD.3.B.2: Aplicaciones CAD en 2D y 3D',
+                description: 'Aplicaciones CAD en dos y tres dimensiones (ej. Tinkercad) para la representación de esquemas, circuitos, planos y objetos básicos.',
+                icon: 'fa-layer-group'
             },
-            "TYD.3.B.2": {
-                title: "Saber Básico TYD.3.B.2",
-                description: "Aplicaciones CAD en dos y tres dimensiones para la representación de esquemas, circuitos, planos y objetos básicos.",
-                extra: ["Bloque: B. Comunicación y difusión de ideas"]
+            'TYD.3.B.3': {
+                category: 'Saber Básico',
+                title: 'TYD.3.B.3: Herramientas para la Difusión Técnica',
+                description: 'Herramientas digitales para la elaboración, publicación y difusión de documentación técnica e información multimedia relativa a proyectos sencillos.',
+                icon: 'fa-layer-group'
             },
-            "TYD.3.B.3": {
-                title: "Saber Básico TYD.3.B.3",
-                description: "Herramientas digitales para la elaboración, publicación y difusión de documentación técnica e información multimedia relativa a proyectos sencillos.",
-                extra: ["Bloque: B. Comunicación y difusión de ideas"]
+            'TYD.3.C.3': {
+                category: 'Saber Básico',
+                title: 'TYD.3.C.3: Autoconfianza y Gestión del Error',
+                description: 'Autoconfianza e iniciativa: el error, la reevaluación y la depuración como parte fundamental del proceso de aprendizaje.',
+                icon: 'fa-layer-group'
             },
-            "TYD.3.C.3": {
-                title: "Saber Básico TYD.3.C.3",
-                description: "Autoconfianza e iniciativa: el error, la reevaluación y la depuración de errores como parte del proceso de aprendizaje.",
-                extra: ["Bloque: C. Pensamiento computacional, programación y robótica"]
+            'TYD.3.D.3': {
+                category: 'Saber Básico',
+                title: 'TYD.3.D.3: Almacenamiento Seguro y Copias de Seguridad',
+                description: 'Técnicas de tratamiento, organización y almacenamiento seguro de la información. Copias de seguridad.',
+                icon: 'fa-layer-group'
             },
-            "TYD.3.D.3": {
-                title: "Saber Básico TYD.3.D.3",
-                description: "Técnicas de tratamiento, organización y almacenamiento seguro de la información. Copias de seguridad.",
-                extra: ["Bloque: D. Digitalización del entorno personal de aprendizaje"]
+            'CCL3': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'CCL3: Búsqueda Crítica y Veracidad',
+                description: 'Localiza, selecciona y contrasta información de fuentes evaluando su fiabilidad, evitando la desinformación y respetando la propiedad intelectual.',
+                icon: 'fa-shield-halved'
             },
-
-            // Descriptores Operativos Perfil de Salida
-            "CCL1": {
-                title: "Descriptor CCL1",
-                description: "Se expresa de forma oral, escrita, signada o multimodal con coherencia, corrección y adecuación a los diferentes contextos sociales...",
-                extra: ["Competencia Clave: Comunicación Lingüística"]
+            'STEM2': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'STEM2: Pensamiento Científico',
+                description: 'Utiliza el pensamiento científico para entender y explicar fenómenos, comprobando hipótesis mediante la indagación y apreciando la veracidad.',
+                icon: 'fa-flask'
             },
-            "CCL3": {
-                title: "Descriptor CCL3",
-                description: "Localiza, selecciona y contrasta de manera progresivamente autónoma información procedente de diferentes fuentes evaluando su fiabilidad...",
-                extra: ["Competencia Clave: Comunicación Lingüística"]
+            'CD1': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'CD1: Búsqueda y Gestión Digital de la Información',
+                description: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad, archivándolos respetando la propiedad intelectual.',
+                icon: 'fa-desktop'
             },
-            "STEM1": {
-                title: "Descriptor STEM1",
-                description: "Utiliza métodos inductivos y deductivos propios del razonamiento matemático en situaciones conocidas y selecciona diferentes estrategias para resolver problemas...",
-                extra: ["Competencia Clave: STEM"]
+            'CD4': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'CD4: Bienestar Digital y Seguridad',
+                description: 'Identifica riesgos y adopta medidas preventivas al usar tecnologías digitales para proteger dispositivos, datos personales y la salud.',
+                icon: 'fa-lock'
             },
-            "STEM2": {
-                title: "Descriptor STEM2",
-                description: "Utiliza el pensamiento científico para entender y explicar los fenómenos que ocurren a su alrededor, planteándose preguntas y comprobando hipótesis...",
-                extra: ["Competencia Clave: STEM"]
+            'CPSAA4': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'CPSAA4: Autoevaluación del Aprendizaje',
+                description: 'Realiza autoevaluaciones sobre su proceso de aprendizaje buscando fuentes fiables para obtener conclusiones relevantes.',
+                icon: 'fa-user-check'
             },
-            "STEM3": {
-                title: "Descriptor STEM3",
-                description: "Plantea y desarrolla proyectos diseñando, fabricando y evaluando diferentes prototipos o modelos para generar productos que den solución a una necesidad...",
-                extra: ["Competencia Clave: STEM"]
-            },
-            "STEM4": {
-                title: "Descriptor STEM4",
-                description: "Interpreta y transmite los elementos más relevantes de procesos, razonamientos, demostraciones y resultados tecnológicos de forma clara y precisa...",
-                extra: ["Competencia Clave: STEM"]
-            },
-            "CD1": {
-                title: "Descriptor CD1",
-                description: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica...",
-                extra: ["Competencia Clave: Digital"]
-            },
-            "CD2": {
-                title: "Descriptor CD2",
-                description: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales...",
-                extra: ["Competencia Clave: Digital"]
-            },
-            "CD3": {
-                title: "Descriptor CD3",
-                description: "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales...",
-                extra: ["Competencia Clave: Digital"]
-            },
-            "CD4": {
-                title: "Descriptor CD4",
-                description: "Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, datos personales y salud...",
-                extra: ["Competencia Clave: Digital"]
-            },
-            "CD5": {
-                title: "Descriptor CD5",
-                description: "Desarrolla aplicaciones informáticas sencillas y soluciones tecnológicas creativas y sostenibles para resolver problemas concretos...",
-                extra: ["Competencia Clave: Digital"]
-            },
-            "CE1": {
-                title: "Descriptor CE1",
-                description: "Analiza necesidades y oportunidades y afronta retos con sentido crítico, haciendo balance de su sostenibilidad y valorando el impacto en el entorno...",
-                extra: ["Competencia Clave: Emprendedora"]
-            },
-            "CE3": {
-                title: "Descriptor CE3",
-                description: "Desarrolla el proceso de creación de ideas y soluciones valiosas y toma decisiones de manera razonada utilizando estrategias ágiles de planificación...",
-                extra: ["Competencia Clave: Emprendedora"]
-            },
-            "CPSAA4": {
-                title: "Descriptor CPSAA4",
-                description: "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información...",
-                extra: ["Competencia Clave: Personal, Social y Aprender a Aprender"]
+            'CE1': {
+                category: 'Descriptor Operativo del Perfil de Salida',
+                title: 'CE1: Análisis de Necesidades y Creación de Valor',
+                description: 'Analiza necesidades y oportunidades afrontando retos con sentido crítico para presentar soluciones innovadoras, éticas y sostenibles.',
+                icon: 'fa-rocket'
             }
         };
 
-        // Navigation Tab Switcher
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
 
-            document.querySelectorAll('nav button').forEach(btn => {
+            // Remove active style from buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
                 btn.classList.remove('active-tab');
             });
-            document.getElementById('btn-' + tabId).classList.add('active-tab');
+
+            // Show selected tab content
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            // Set active class on target button
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (targetBtn) {
+                targetBtn.classList.add('active-tab');
+            }
         }
 
-        // Session Filter Logic
-        function filterSessions(phase) {
+        function filterSessions(fase) {
             const cards = document.querySelectorAll('.session-card');
-            
-            // Reset active button styling
-            ['all', 'inicio', 'desarrollo', 'cierre'].forEach(p => {
-                const btn = document.getElementById('filter-btn-' + p);
-                if (btn) {
-                    if (p === phase) {
-                        btn.className = "px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold shadow-sm";
+            cards.forEach(card => {
+                if (fase === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (card.classList.contains(fase)) {
+                        card.classList.remove('hidden');
                     } else {
-                        btn.className = "px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium";
+                        card.classList.add('hidden');
                     }
                 }
             });
 
-            cards.forEach(card => {
-                if (phase === 'all') {
-                    card.style.display = 'block';
-                } else {
-                    if (card.classList.contains('session-' + phase)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                }
+            // Update button styles
+            const btns = document.querySelectorAll('.session-filter-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
             });
+            event.currentTarget.classList.remove('bg-slate-100', 'text-slate-700');
+            event.currentTarget.classList.add('bg-slate-800', 'text-white');
         }
 
-        // Modal Popup Logic
         function openModal(code) {
+            const data = curriculumDb[code];
             const backdrop = document.getElementById('modal-backdrop');
-            const modalCode = document.getElementById('modal-code');
-            const modalTitle = document.getElementById('modal-title');
-            const modalDesc = document.getElementById('modal-description');
-            const modalExtra = document.getElementById('modal-extra');
-
-            const item = curriculumData[code] || {
-                title: code,
-                description: "Elemento curricular normativo según la Orden Curricular para Andalucía de la materia Tecnología y Digitalización.",
-                extra: []
-            };
-
-            modalCode.innerText = code;
-            modalTitle.innerText = item.title;
-            modalDesc.innerText = item.description;
-
-            modalExtra.innerHTML = '';
-            if (item.extra && item.extra.length > 0) {
-                item.extra.forEach(ex => {
-                    const span = document.createElement('span');
-                    span.className = "bg-emerald-100 text-emerald-800 font-mono px-2 py-0.5 rounded font-semibold text-[11px]";
-                    span.innerText = ex;
-                    modalExtra.appendChild(span);
-                });
-                document.getElementById('modal-extra-container').style.display = 'block';
+            
+            if (data) {
+                document.getElementById('modal-title').innerText = data.title;
+                document.getElementById('modal-category').innerText = data.category;
+                document.getElementById('modal-body').innerHTML = `<p class="text-sm font-normal text-slate-700">${data.description}</p>`;
+                document.getElementById('modal-icon').innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
             } else {
-                document.getElementById('modal-extra-container').style.display = 'none';
+                document.getElementById('modal-title').innerText = code;
+                document.getElementById('modal-category').innerText = 'Elemento Curricular LOMLOE';
+                document.getElementById('modal-body').innerHTML = `<p class="text-xs text-slate-600">Código oficial del currículo de Tecnología y Digitalización (3º ESO) en la Comunidad Autónoma de Andalucía.</p>`;
+                document.getElementById('modal-icon').innerHTML = `<i class="fa-solid fa-bookmark"></i>`;
             }
 
             backdrop.classList.remove('hidden');
@@ -1098,39 +1318,24 @@
             document.getElementById('modal-backdrop').classList.add('hidden');
         }
 
-        // Interactive Criterial Assessment Calculation
-        function calculateScore() {
-            const checkboxes = document.querySelectorAll('.eval-check');
-            let totalScore = 0;
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const backdrop = document.getElementById('modal-backdrop');
+            if (event.target === backdrop) {
+                closeModal();
+            }
+        };
 
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    totalScore += parseFloat(cb.getAttribute('data-weight') || 0);
+        function updateChecklist() {
+            const checkboxes = document.querySelectorAll('.chk-item');
+            let total = 0;
+            checkboxes.forEach(chk => {
+                if (chk.checked) {
+                    total += parseFloat(chk.value);
                 }
             });
-
-            const rounded = Math.round(totalScore);
-            const display = document.getElementById('score-display');
-            display.innerText = rounded + " %";
-
-            if (rounded >= 80) {
-                display.className = "text-2xl font-extrabold text-emerald-400";
-            } else if (rounded >= 50) {
-                display.className = "text-2xl font-extrabold text-amber-400";
-            } else {
-                display.className = "text-2xl font-extrabold text-rose-400";
-            }
+            document.getElementById('checklist-score').innerText = total.toFixed(1) + ' / 10';
         }
-
-        function resetEvaluation() {
-            document.querySelectorAll('.eval-check').forEach(cb => cb.checked = false);
-            calculateScore();
-        }
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
-        });
     </script>
 </body>
 </html>
