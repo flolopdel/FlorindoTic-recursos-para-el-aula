@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía del Alumnado | SdA 2: Relanzamos Productos (4º ESO)</title>
+    <title>SdA 2: Relanzamos Productos - Guía del Alumnado | Tecnología 4º ESO</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
+    <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -23,14 +23,15 @@
                             100: '#e0f2fe',
                             500: '#0284c7',
                             600: '#0369a1',
-                            700: '#035485',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0a3651',
                         },
                         eco: {
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
                         }
                     }
                 }
@@ -38,1167 +39,950 @@
         }
     </script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        .modal-active { overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- TOP NAVIGATION & HEADER -->
+    <!-- Top Navigation Header -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-500 flex items-center justify-center text-white shadow-md">
-                    <i class="fa-solid font-bold fa-rotate text-lg"></i>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-500 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-arrows-rotate"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-slate-900 text-sm sm:text-base leading-tight">Agencia Creativa de Rediseño</h1>
-                    <p class="text-xs text-brand-600 font-medium">SdA 2: Relanzamos Productos • 4º ESO Tecnología</p>
+                    <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Relanzamos Productos</h1>
+                    <p class="text-xs text-slate-500">Tecnología 4º ESO • Andalucía LOMLOE</p>
                 </div>
             </div>
+            
+            <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+                <button onclick="scrollToSection('contexto')" class="px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition">El Reto</button>
+                <button onclick="scrollToSection('curriculo')" class="px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition">Mapeo Curricular</button>
+                <button onclick="scrollToSection('sesiones')" class="px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition">Guía por Sesiones</button>
+                <button onclick="scrollToSection('recursos')" class="px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition">Recursos y Multimedia</button>
+                <button onclick="scrollToSection('evaluacion')" class="px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition">Evaluación</button>
+            </nav>
 
-            <!-- Global Progress Tracker Header -->
-            <div class="hidden md:flex items-center space-x-4 bg-slate-100 py-1.5 px-4 rounded-full border border-slate-200">
-                <div class="text-xs font-semibold text-slate-600">Progreso del Proyecto:</div>
-                <div class="w-32 bg-slate-200 rounded-full h-2.5 overflow-hidden">
-                    <div id="headerProgressBar" class="bg-gradient-to-r from-brand-500 to-eco-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-                <span id="headerProgressPercent" class="text-xs font-bold text-brand-700">0%</span>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="flex items-center space-x-2">
-                <button onclick="toggleCurriculumModal()" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-semibold border border-brand-200 transition flex items-center space-x-1.5 shadow-sm">
-                    <i class="fa-solid fa-graduation-cap text-sm"></i>
-                    <span class="hidden sm:inline">Mapa Curricular</span>
-                </button>
-                <button onclick="scrollToSection('recursos')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold border border-emerald-200 transition flex items-center space-x-1.5 shadow-sm">
-                    <i class="fa-solid fa-photo-film text-sm"></i>
-                    <span class="hidden sm:inline">Recursos & Multimedia</span>
-                </button>
+            <div class="flex items-center gap-2">
+                <span class="text-xs bg-brand-50 text-brand-700 font-semibold px-2.5 py-1 rounded-full border border-brand-200">
+                    SdA 2 (8 Sesiones)
+                </span>
             </div>
         </div>
     </header>
 
-    <!-- HERO / RETO PRINCIPAL -->
-    <section class="bg-gradient-to-br from-slate-900 via-brand-900 to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-5xl mx-auto relative z-10 text-center sm:text-left flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="space-y-4 max-w-2xl">
-                <div class="inline-flex items-center space-x-2 bg-brand-500/20 text-brand-300 border border-brand-500/30 px-3 py-1 rounded-full text-xs font-medium backdrop-blur">
-                    <i class="fa-solid fa-rocket"></i>
-                    <span>Reto Tecnológico de Innovación Sostenible</span>
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Hero & Context Banner -->
+        <section id="contexto" class="bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-3xl space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-teal-300 text-xs font-semibold backdrop-blur">
+                    <i class="fa-solid fa-bullhorn"></i> Misión Creativa Ecosocial
                 </div>
-                <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-snug">
-                    ¿Cómo podemos resucitar e innovar un objeto tecnológico en declive?
+                <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                    ¿Te atreves a resucitar un producto olvidado y hacerlo sostenible?
                 </h2>
                 <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                    Te damos la bienvenida a tu rol en la <strong class="text-white">Agencia Creativa de Rediseño</strong>. Durante 8 sesiones, transformarás un dispositivo antiguo o en desuso en una propuesta moderna, accesible y respetuosa con el medio ambiente.
+                    Vivimos en un mundo donde muchos aparatos se vuelven obsoletos rápidamente. Tu equipo asumirá el rol de un estudio de diseño y marketing tecnológico. Vuestra misión: investigar un producto en declive, rediseñarlo con criterios ecológicos, crear su prototipo digital y vender la idea mediante un <em class="text-brand-100 font-medium not-italic">pitch</em> ante inversores.
                 </p>
-                <div class="flex flex-wrap gap-2 pt-2">
-                    <span class="bg-slate-800/80 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md flex items-center space-x-1">
-                        <i class="fa-solid fa-cubes text-cyan-400"></i>
-                        <span>Prototipo Digital 2D/3D</span>
-                    </span>
-                    <span class="bg-slate-800/80 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md flex items-center space-x-1">
-                        <i class="fa-solid fa-bullhorn text-amber-400"></i>
-                        <span>Campaña Publicitaria Inclusiva</span>
-                    </span>
-                    <span class="bg-slate-800/80 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md flex items-center space-x-1">
-                        <i class="fa-solid fa-microphone-lines text-emerald-400"></i>
-                        <span>Elevator Pitch (3 min)</span>
-                    </span>
-                </div>
-            </div>
-
-            <!-- Quick Progress Widget Card -->
-            <div class="w-full md:w-80 bg-white/10 backdrop-blur border border-white/20 p-5 rounded-2xl text-left space-y-4 shadow-xl">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs uppercase tracking-wider font-semibold text-slate-300">Tu Hoja de Ruta</span>
-                    <span class="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">8 Sesiones</span>
-                </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between text-xs font-medium text-slate-200">
-                        <span>Hitos completados</span>
-                        <span id="heroProgressText">0 de 8 sesiones</span>
+                
+                <!-- Progress Stats Bar -->
+                <div class="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-white/10 text-center sm:text-left">
+                    <div>
+                        <span class="block text-xs text-slate-400">Duración total</span>
+                        <span class="text-lg font-bold text-white"><i class="fa-regular fa-clock text-brand-500 mr-1"></i> 8 Sesiones</span>
                     </div>
-                    <div class="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden p-0.5 border border-slate-600">
-                        <div id="heroProgressBar" class="bg-gradient-to-r from-teal-400 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div>
+                        <span class="block text-xs text-slate-400">Agrupamiento</span>
+                        <span class="text-lg font-bold text-white"><i class="fa-solid fa-users text-teal-400 mr-1"></i> 2 - 4 personas</span>
                     </div>
-                </div>
-                <p class="text-xs text-slate-300 italic">
-                    <i class="fa-solid fa-circle-info mr-1 text-cyan-400"></i>
-                    Marca los hitos a medida que avances en cada sesión para guardar tu trabajo.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-10">
-
-        <!-- FAST NAVIGATION PHASES -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center space-x-2">
-                <i class="fa-solid fa-compass text-brand-600"></i>
-                <span>Fases de la SdA:</span>
-            </div>
-            <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-center">
-                <button onclick="filterPhase('all')" id="btnPhaseAll" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition shadow-sm">
-                    Todas las Sesiones (1-8)
-                </button>
-                <button onclick="filterPhase('fase1')" id="btnPhase1" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                    Fase 1: Inicio y Diagnóstico
-                </button>
-                <button onclick="filterPhase('fase2')" id="btnPhase2" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                    Fase 2: Desarrollo e Ideación
-                </button>
-                <button onclick="filterPhase('fase3')" id="btnPhase3" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                    Fase 3: Cierre y Exposición
-                </button>
-            </div>
-        </div>
-
-        <!-- SESSIONS STEP-BY-STEP CONTAINER -->
-        <div class="space-y-8" id="sessionsList">
-
-            <!-- FASE 1: INICIO Y DIAGNÓSTICO -->
-            <div class="phase-header bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-3 rounded-xl font-bold text-sm tracking-wide flex items-center justify-between shadow-sm">
-                <span class="flex items-center space-x-2">
-                    <i class="fa-solid fa-flag-checkered"></i>
-                    <span>FASE 1: INICIO Y DIAGNÓSTICO (Sesiones 1 y 2)</span>
-                </span>
-                <span class="text-xs font-normal bg-white/20 px-2.5 py-1 rounded-md backdrop-blur">Sensibilización y Constitución de Agencias</span>
-            </div>
-
-            <!-- SESIÓN 1 -->
-            <div class="session-card fase1 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-1">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-blue-100 text-blue-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 1</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">El Diagnóstico Retro: ¿Por qué mueren los productos?</h3>
-                        <p class="text-xs text-slate-600">Comprender qué es la obsolescencia, analizar el ciclo de vida de los productos y reflexionar en equipo.</p>
+                    <div>
+                        <span class="block text-xs text-slate-400">Producto Final</span>
+                        <span class="text-lg font-bold text-white"><i class="fa-solid fa-cube text-amber-400 mr-1"></i> Prototipo + Pitch</span>
                     </div>
-                    <!-- Curricular Badges -->
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 2.1')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition" title="Ver Criterio de Evaluación">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 2.1
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.2.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition" title="Ver Saber Básico">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.2.1
-                        </button>
+                    <div>
+                        <span class="block text-xs text-slate-400">Metodología</span>
+                        <span class="text-lg font-bold text-white"><i class="fa-solid fa-seedling text-eco-500 mr-1"></i> DUA / Cooperativo</span>
                     </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <!-- PASO A PASO / HITOS -->
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-[#0284c7] fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Gancho Audiovisual (10 min)</span>
-                                <p class="text-slate-600">Mira el vídeo sobre cómo evolucionaron los gadgets (Walkman → Spotify, Cámaras fotográficas analógicas → Smartphones).</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Mural KWL en Grupo (25 min)</span>
-                                <p class="text-slate-600">En tu grupo de 4, completa el mural digital (Miro o Padlet) respondiendo: ¿Qué Sé? y ¿Qué Quiero saber?</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Puesta en Común (15 min)</span>
-                                <p class="text-slate-600">Debate con la clase sobre las causas de que un objeto quede en declive o desuso.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RECURSOS Y CONTENIDOS MULTIMEDIA RECOMENDADOS -->
-                    <div class="p-4 bg-sky-50 rounded-xl border border-sky-100 text-xs space-y-3">
-                        <div class="font-bold text-sky-900 flex items-center space-x-2">
-                            <i class="fa-solid fa-film text-sky-600"></i>
-                            <span>Aclaraciones y Recursos Recomendados:</span>
-                        </div>
-                        <div class="grid gap-2 sm:grid-cols-2">
-                            <a href="https://www.youtube.com/watch?v=24S02R39i_U" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-sky-200 hover:border-sky-400 transition text-sky-800">
-                                <i class="fa-brands fa-youtube text-red-500 text-base"></i>
-                                <span><strong>Vídeo:</strong> ¿Qué es la Obsolescencia Programada? (Explicado fácil)</span>
-                            </a>
-                            <a href="https://miro.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-sky-200 hover:border-sky-400 transition text-sky-800">
-                                <i class="fa-solid fa-chalkboard text-yellow-600 text-base"></i>
-                                <span><strong>Herramienta:</strong> Mural Colaborativo Miro / Padlet</span>
-                            </a>
-                        </div>
-                        <!-- Aclaración de Vocabulario -->
-                        <div class="p-2.5 bg-sky-100/70 rounded-lg text-sky-950 text-[11px] leading-relaxed">
-                            <strong><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>¿Qué es el Ciclo de Vida de un Producto?</strong> Es todo el camino que recorre un objeto desde que sacamos sus materias primas de la naturaleza, lo fabricamos, lo vendemos, lo usamos y, finalmente, lo reciclamos o desechamos.
-                        </div>
-                    </div>
-
-                    <!-- CHECKLIST DE SESIÓN -->
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(1)" id="check-session-1" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 1 completado: Mural KWL o cuestionario completado.</span>
-                        </label>
-                        <span id="badge-session-1" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SESIÓN 2 -->
-            <div class="session-card fase1 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-2">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-blue-100 text-blue-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 2</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Constitución de Agencias y Elección del Reto</h3>
-                        <p class="text-xs text-slate-600">Crear tu equipo cooperativo de 4 personas, repartir roles y seleccionar el producto retro a rediseñar.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 1.3')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 1.3
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.1.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.1.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Asignación de Roles (15 min)</span>
-                                <p class="text-slate-600">Repartid entre los 4 miembros del grupo los roles oficiales (Coordinación, Diseño, Sostenibilidad y Comunicación).</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Elección del Objeto (20 min)</span>
-                                <p class="text-slate-600">Elegid un objeto del Catálogo Retro (Ej. reproductor MP3, cámara instantánea analógica, walkman, Tamagotchi, radio antigua).</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Acta de Constitución (15 min)</span>
-                                <p class="text-slate-600">Rellenad y firmad el compromiso de trabajo en equipo y convivencia del grupo.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ROLES EN EL EQUIPO COOPERATIVO -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                        <span class="text-xs font-bold text-slate-800 block"><i class="fa-solid fa-users-gear text-brand-600 mr-1"></i>Los 4 Roles Oficiales de tu Agencia Creativa:</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
-                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
-                                <strong class="text-blue-700 block"><i class="fa-solid fa-user-gear mr-1"></i>Coordinación:</strong>
-                                <span class="text-slate-600">Gestiona el tiempo, comprueba los plazos y asegura que todo el alumnado participe.</span>
-                            </div>
-                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
-                                <strong class="text-indigo-700 block"><i class="fa-solid fa-compass-drafting mr-1"></i>Diseño e Innovación:</strong>
-                                <span class="text-slate-600">Lidera el modelo 2D/3D y la parte estética y funcional del prototipo.</span>
-                            </div>
-                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
-                                <strong class="text-emerald-700 block"><i class="fa-solid fa-leaf mr-1"></i>Sostenibilidad y Calidad:</strong>
-                                <span class="text-slate-600">Supervisa el impacto ambiental, los materiales y el reciclaje del objeto.</span>
-                            </div>
-                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
-                                <strong class="text-amber-700 block"><i class="fa-solid fa-bullhorn mr-1"></i>Comunicación:</strong>
-                                <span class="text-slate-600">Lidera la presentación oral (Pitch), el cartel y la difusión inclusiva.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(2)" id="check-session-2" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 2 completado: Acta de constitución firmada y objeto seleccionado.</span>
-                        </label>
-                        <span id="badge-session-2" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FASE 2: DESARROLLO E IDEACIÓN -->
-            <div class="phase-header bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-3 rounded-xl font-bold text-sm tracking-wide flex items-center justify-between shadow-sm">
-                <span class="flex items-center space-x-2">
-                    <i class="fa-solid fa-lightbulb"></i>
-                    <span>FASE 2: DESARROLLO E IDEACIÓN (Sesiones 3 a 6)</span>
-                </span>
-                <span class="text-xs font-normal bg-white/20 px-2.5 py-1 rounded-md backdrop-blur">SCAMPER, Ecodiseño, Prototipado 2D/3D y Anuncio</span>
-            </div>
-
-            <!-- SESIÓN 3 -->
-            <div class="session-card fase2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-3">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 3</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Tormenta de Ideas y Técnica SCAMPER</h3>
-                        <p class="text-xs text-slate-600">Aplicar la matriz SCAMPER para transformar el producto retro en una solución del siglo XXI.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 1.3')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 1.3
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.1.3')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.1.3
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.1.4')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.1.4
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Explicación SCAMPER (10 min)</span>
-                                <p class="text-slate-600">Revisad las 7 preguntas de ideación: Sustituir, Combinar, Adaptar, Modificar, Poner otros usos, Eliminar, Reorganizar.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Tormenta de Ideas (30 min)</span>
-                                <p class="text-slate-600">Aplicad la matriz sobre vuestro objeto elegido (Ej. MP3 → Sustituir plástico por bambú, Combinar con sensor solar).</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Selección de Mejoras (10 min)</span>
-                                <p class="text-slate-600">Elegid las 3 mejores ideas más innovadoras y realistas para vuestro nuevo prototipo.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INTERACTIVE TOOL: SIMULADOR SCAMPER -->
-                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-xl border border-emerald-200 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-emerald-900 flex items-center space-x-1">
-                                <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i>
-                                <span>Asistente Interactivo de SCAMPER:</span>
-                            </span>
-                            <span class="text-[10px] bg-emerald-200 text-emerald-800 font-bold px-2 py-0.5 rounded">Herramienta de ayuda</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
-                            <div class="bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm">
-                                <strong class="text-emerald-700 block">S - Sustituir:</strong>
-                                <span class="text-slate-600">¿Qué materiales ecológicos o piezas podemos cambiar?</span>
-                            </div>
-                            <div class="bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm">
-                                <strong class="text-emerald-700 block">C - Combinar:</strong>
-                                <span class="text-slate-600">¿Con qué otra función o sensor digital lo podemos unir?</span>
-                            </div>
-                            <div class="bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm">
-                                <strong class="text-emerald-700 block">A - Adaptar:</strong>
-                                <span class="text-slate-600">¿Cómo lo hacemos más accesible para personas con discapacidad?</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(3)" id="check-session-3" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 3 completado: Matriz SCAMPER rellenada con las 3 mejoras principales.</span>
-                        </label>
-                        <span id="badge-session-3" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SESIÓN 4 -->
-            <div class="session-card fase2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-4">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 4</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Rediseño del Ciclo de Vida y Materiales Sostenibles</h3>
-                        <p class="text-xs text-slate-600">Aplicar el ecodiseño, elegir materiales de bajo impacto y defender el derecho a reparar.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 2.1')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 2.1
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.2.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.2.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Diagnóstico Ambiental (15 min)</span>
-                                <p class="text-slate-600">Analizad por qué el objeto antiguo contaminaba (plásticos no reciclables, baterías soldadas, difícil desmontaje).</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Matriz de Ecodiseño (25 min)</span>
-                                <p class="text-slate-600">Elegid materiales sostenibles (bioplásticos, bambú, aluminio reciclado) y diseño modular para reparar fácilmente.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Ficha de Sostenibilidad (10 min)</span>
-                                <p class="text-slate-600">Documentad las decisiones en la Ficha Técnica de Sostenibilidad del proyecto.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-xs space-y-2">
-                        <span class="font-bold text-emerald-900 block"><i class="fa-solid fa-recycle text-emerald-600 mr-1"></i>Aclaración para el Alumnado: ¿Qué es el Ecodiseño?</span>
-                        <p class="text-slate-700 text-[11px] leading-relaxed">
-                            Consiste en pensar desde el primer segundo cómo hacer un producto para que no dañe al planeta: usar la menor energía posible al fabricarlo, hacer sus piezas fáciles de desmontar y cambiar si se rompen, y asegurar que se pueda reciclar al 100% cuando ya no funcione.
-                        </p>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(4)" id="check-session-4" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 4 completado: Ficha técnica de sostenibilidad redactada.</span>
-                        </label>
-                        <span id="badge-session-4" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SESIÓN 5 -->
-            <div class="session-card fase2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-5">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 5</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Prototipado Digital I: Modelado 2D / 3D del Producto</h3>
-                        <p class="text-xs text-slate-600">Crear el modelo digital interactivo o visual del nuevo producto con Tinkercad o Canva CAD.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 2.1')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 2.1
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.1.4')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.1.4
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.2.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.2.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Croquis Acotado a Mano (10 min)</span>
-                                <p class="text-slate-600">Dibujad un boceto rápido en papel anotando medidas, botones y la pantalla o sensores.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Modelado Digital (30 min)</span>
-                                <p class="text-slate-600">Usad Tinkercad para modelar en 3D o Canva CAD para crear un diseño 2D detallado interactivo.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Revisión del Docente (10 min)</span>
-                                <p class="text-slate-600">Verificad con el profesorado la viabilidad técnica y guardad el enlace del prototipo.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TUTORIALES DIRECTOS -->
-                    <div class="p-4 bg-teal-50 rounded-xl border border-teal-100 text-xs space-y-3">
-                        <div class="font-bold text-teal-900 flex items-center space-x-2">
-                            <i class="fa-solid fa-laptop-code text-teal-600"></i>
-                            <span>Tutoriales y Plataformas Recomendadas:</span>
-                        </div>
-                        <div class="grid gap-2 sm:grid-cols-2">
-                            <a href="https://www.tinkercad.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-teal-200 hover:border-teal-400 transition text-teal-800">
-                                <i class="fa-solid fa-cube text-cyan-600 text-base"></i>
-                                <span><strong>Tinkercad 3D:</strong> Entrar a Tinkercad (Diseño 3D gratis)</span>
-                            </a>
-                            <a href="https://www.youtube.com/watch?v=19I5N33JtD8" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 p-2 bg-white rounded-lg border border-teal-200 hover:border-teal-400 transition text-teal-800">
-                                <i class="fa-brands fa-youtube text-red-500 text-base"></i>
-                                <span><strong>Tutorial:</strong> Cómo usar Tinkercad en 10 minutos</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(5)" id="check-session-5" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 5 completado: Enlace o archivo del prototipo digital 2D/3D guardado.</span>
-                        </label>
-                        <span id="badge-session-5" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SESIÓN 6 -->
-            <div class="session-card fase2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-6">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 6</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Estrategia Publicitaria e Impacto Visual Inclusivo</h3>
-                        <p class="text-xs text-slate-600">Diseñar un cartel promocional o anuncio en redes sociales con enfoque libre de estereotipos de género.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 3.2')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 3.2
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.4.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.4.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Análisis Crítico (10 min)</span>
-                                <p class="text-slate-600">Comparad la publicidad retro machista antigua con la publicidad inclusiva actual.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Diseño Gráfico (30 min)</span>
-                                <p class="text-slate-600">Cread vuestro cartel promocional o guion gráfico (storyboard) usando Canva o Genially.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Checklist de Inclusión (10 min)</span>
-                                <p class="text-slate-600">Pasad el filtro de verificación de lenguaje neutro e imágenes diversas sin roles sexistas.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HERRAMIENTA INTERACTIVA: CHECKLIST INCLUSIVO -->
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                        <span class="text-xs font-bold text-slate-800 block"><i class="fa-solid fa-scale-balanced text-brand-600 mr-1"></i>Lista de Verificación Coeducativa (Autochequeo del Anuncio):</span>
-                        <div class="space-y-2 text-xs">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500">
-                                <span>Usa lenguaje inclusivo y neutro (ej. "alumnado", "personas que usan el producto").</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500">
-                                <span>Muestra diversidad de personas usándolo sin asociar roles típicos a hombres o mujeres.</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" class="rounded text-brand-600 focus:ring-brand-500">
-                                <span>El diseño gráfico es claro, accesible y destaca la innovación sostenible.</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(6)" id="check-session-6" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 6 completado: Cartel o anuncio gráfico inclusivo finalizado.</span>
-                        </label>
-                        <span id="badge-session-6" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FASE 3: CIERRE Y COMUNICACIÓN -->
-            <div class="phase-header bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-3 rounded-xl font-bold text-sm tracking-wide flex items-center justify-between shadow-sm">
-                <span class="flex items-center space-x-2">
-                    <i class="fa-solid fa-award"></i>
-                    <span>FASE 3: CIERRE Y COMUNICACIÓN (Sesiones 7 y 8)</span>
-                </span>
-                <span class="text-xs font-normal bg-white/20 px-2.5 py-1 rounded-md backdrop-blur">Elevator Pitch, Shark Tank y Evaluación</span>
-            </div>
-
-            <!-- SESIÓN 7 -->
-            <div class="session-card fase3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-7">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-purple-100 text-purple-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 7</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Ensayo y Técnica de Comunicación "Elevator Pitch"</h3>
-                        <p class="text-xs text-slate-600">Preparar un discurso convincente de 3 minutos para presentar la solución a los inversores.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 3.2')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 3.2
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.4.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.4.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Estructura del Discurso (10 min)</span>
-                                <p class="text-slate-600">Escribid el guion en 4 partes: Gancho (problema antiguo), Solución (vuestro objeto), Sostenibilidad y Llamada a la acción.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Ensayo entre Parejas (25 min)</span>
-                                <p class="text-slate-600">Un equipo expone mientras otro equipo observa y da consejos de mejora con la rúbrica.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Ajustes de Tiempo (15 min)</span>
-                                <p class="text-slate-600">Asegurad que la presentación dura exactamente entre 1 y 3 minutos y que habla todo el grupo.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INTERACTIVE TOOL: ELEVATOR PITCH TIMER & SCRIPT ASSISTANT -->
-                    <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-purple-900 flex items-center space-x-2">
-                                <i class="fa-solid fa-stopwatch text-purple-600"></i>
-                                <span>Simulador y Cronómetro de Elevator Pitch (3 min):</span>
-                            </span>
-                            <div class="flex items-center space-x-2">
-                                <span id="pitchTimer" class="font-mono font-extrabold text-sm bg-white px-2.5 py-1 rounded border border-purple-300 text-purple-900">03:00</span>
-                                <button onclick="startPitchTimer()" id="btnStartTimer" class="px-2.5 py-1 bg-purple-600 text-white rounded text-xs font-bold hover:bg-purple-700 transition">
-                                    Iniciar Ensayo
-                                </button>
-                                <button onclick="resetPitchTimer()" class="px-2 py-1 bg-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-300 transition">
-                                    Reiniciar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px]">
-                            <div class="bg-white p-2 rounded border border-purple-100">
-                                <strong class="text-purple-700 block">1. Gancho (30s):</strong>
-                                <span>"¿Sabías que millones de cámaras de plástico terminan en el mar...?"</span>
-                            </div>
-                            <div class="bg-white p-2 rounded border border-purple-100">
-                                <strong class="text-purple-700 block">2. Solución (60s):</strong>
-                                <span>"Por eso nuestra Agencia ha creado EcoCam 360, la cámara de bambú..."</span>
-                            </div>
-                            <div class="bg-white p-2 rounded border border-purple-100">
-                                <strong class="text-purple-700 block">3. Sostenibilidad (60s):</strong>
-                                <span>"Funciona con panel solar flexible y es 100% reparable por piezas."</span>
-                            </div>
-                            <div class="bg-white p-2 rounded border border-purple-100">
-                                <strong class="text-purple-700 block">4. Llamada (30s):</strong>
-                                <span>"¡Invertid en nuestro proyecto y cambiemos el futuro!"</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(7)" id="check-session-7" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 7 completado: Guion ajustado y ensayo de 3 minutos realizado.</span>
-                        </label>
-                        <span id="badge-session-7" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SESIÓN 8 -->
-            <div class="session-card fase3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md" id="session-8">
-                <div class="bg-slate-50 border-b border-slate-200 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-purple-100 text-purple-800 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase">Sesión 8</span>
-                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>50 minutos</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Evento Final "Shark Tank Tecnológico" y Metacognición</h3>
-                        <p class="text-xs text-slate-600">Presentación pública de la agencia ante el jurado, coevaluación y reflexión individual de aprendizaje.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                        <button onclick="showCurriculumDetail('CEv 1.3')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 1.3
-                        </button>
-                        <button onclick="showCurriculumDetail('CEv 3.2')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>CEv 3.2
-                        </button>
-                        <button onclick="showCurriculumDetail('TEC.4.A.4.1')" class="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-bold px-2 py-1 rounded transition">
-                            <i class="fa-solid fa-book-bookmark text-purple-600 mr-1"></i>TEC.4.A.4.1
-                        </button>
-                    </div>
-                </div>
-
-                <div class="p-5 sm:p-6 space-y-6">
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-brand-600"></i>
-                            <span>Paso a Paso de la Sesión:</span>
-                        </h4>
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">1. Shark Tank Feria (30 min)</span>
-                                <p class="text-slate-600">Cada agencia expone en 3 minutos + 1 minuto de preguntas del panel de inversores.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">2. Diana de Coevaluación (10 min)</span>
-                                <p class="text-slate-600">Evaluad a los demás equipos usando la diana interactiva sobre sostenibilidad y expresión.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                <span class="font-bold text-brand-700 block">3. Diario Metacognitivo (10 min)</span>
-                                <p class="text-slate-600">Escribid vuestra reflexión personal sobre el trabajo en equipo y qué habéis aprendido.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INTERACTIVE REFLECTION FORM -->
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                        <span class="text-xs font-bold text-slate-800 block"><i class="fa-solid fa-pen-to-square text-brand-600 mr-1"></i>Diario Metacognitivo Individual (Guárdalo en tu navegador):</span>
-                        <textarea id="diarioText" rows="3" placeholder="Escribe aquí: ¿Qué fue lo más difícil de rediseñar? ¿Cómo resolvisteis las dudas en tu grupo?" class="w-full p-2.5 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"></textarea>
-                        <div class="flex justify-end">
-                            <button onclick="saveDiario()" class="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition flex items-center space-x-1">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                                <span>Guardar Reflexión</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
-                            <input type="checkbox" onchange="toggleSessionCheck(8)" id="check-session-8" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-                            <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition">Hito de la Sesión 8 completado: Elevator Pitch presentado y diana de coevaluación completada.</span>
-                        </label>
-                        <span id="badge-session-8" class="text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600">Pendiente</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- RECURSOS Y CONTENIDOS MULTIMEDIA / TUTORIALES -->
-        <section id="recursos" class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6 shadow-sm">
-            <div class="flex items-center space-x-3 border-b border-slate-200 pb-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
-                    <i class="fa-solid fa-photo-film"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900">Centro de Recursos y Multimedia de la SdA</h3>
-                    <p class="text-xs text-slate-500">Tutoriales directos, herramientas digitales y guías de apoyo para tu proyecto.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-                <!-- CAD / 3D -->
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 hover:border-brand-300 transition">
-                    <div class="flex items-center space-x-2 font-bold text-brand-800">
-                        <i class="fa-solid fa-cube text-base text-brand-600"></i>
-                        <span>Diseño y Prototipado 3D / 2D</span>
-                    </div>
-                    <p class="text-slate-600 text-[11px]">Plataformas para crear tu prototipo digital interactivo.</p>
-                    <ul class="space-y-1.5 pt-1 text-slate-700">
-                        <li><a href="https://www.tinkercad.com" target="_blank" rel="noopener noreferrer" class="text-brand-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Tinkercad 3D (Gratuito)</a></li>
-                        <li><a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="text-brand-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Canva CAD & Diseños 2D</a></li>
-                    </ul>
-                </div>
-
-                <!-- DIFUSIÓN & CARTELERÍA -->
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 hover:border-purple-300 transition">
-                    <div class="flex items-center space-x-2 font-bold text-purple-800">
-                        <i class="fa-solid fa-bullhorn text-base text-purple-600"></i>
-                        <span>Campaña Publicitaria & Presentación</span>
-                    </div>
-                    <p class="text-slate-600 text-[11px]">Herramientas para cartelería inclusiva y guiones gráficos.</p>
-                    <ul class="space-y-1.5 pt-1 text-slate-700">
-                        <li><a href="https://genially.com" target="_blank" rel="noopener noreferrer" class="text-purple-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Genially Presentaciones</a></li>
-                        <li><a href="https://www.canva.com/es_es/crear/carteles/" target="_blank" rel="noopener noreferrer" class="text-purple-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Creador de Carteles Canva</a></li>
-                    </ul>
-                </div>
-
-                <!-- TRABAJO COLABORATIVO -->
-                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 hover:border-emerald-300 transition">
-                    <div class="flex items-center space-x-2 font-bold text-emerald-800">
-                        <i class="fa-solid fa-users text-base text-emerald-600"></i>
-                        <span>Tableros Colaborativos</span>
-                    </div>
-                    <p class="text-slate-600 text-[11px]">Para organizar el mural KWL y la matriz SCAMPER en grupo.</p>
-                    <ul class="space-y-1.5 pt-1 text-slate-700">
-                        <li><a href="https://miro.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Miro Tablero Infinito</a></li>
-                        <li><a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="text-emerald-600 font-semibold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>Padlet Mural Virtual</a></li>
-                    </ul>
                 </div>
             </div>
         </section>
 
+        <!-- Interactive Curricular Mapping Section -->
+        <section id="curriculo" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-brand-600"></i>
+                        Conexión Curricular Oficial (Junta de Andalucía)
+                    </h3>
+                    <p class="text-sm text-slate-500">Haz clic en cualquiera de las siglas para abrir la explicación interactiva detallada.</p>
+                </div>
+                <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg border border-slate-200 self-start sm:self-auto">
+                    <i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> LOMLOE Andalucía
+                </span>
+            </div>
+
+            <!-- Curricular Quick-Buttons Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Competencias Específicas -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-brand-600"></i> Competencias Específicas
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openModal('CE1')" class="px-3 py-1.5 bg-white hover:bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> CE 1
+                        </button>
+                        <button onclick="openModal('CE2')" class="px-3 py-1.5 bg-white hover:bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-compass-drafting text-teal-600"></i> CE 2
+                        </button>
+                        <button onclick="openModal('CE3')" class="px-3 py-1.5 bg-white hover:bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-comments text-indigo-600"></i> CE 3
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Criterios de Evaluación -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-eco-600"></i> Criterios de Evaluación
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openModal('CEv1.3')" class="px-3 py-1.5 bg-white hover:bg-eco-50 text-eco-700 border border-eco-200 rounded-lg text-xs font-semibold shadow-sm transition">
+                            CEv 1.3 (30%)
+                        </button>
+                        <button onclick="openModal('CEv2.1')" class="px-3 py-1.5 bg-white hover:bg-eco-50 text-eco-700 border border-eco-200 rounded-lg text-xs font-semibold shadow-sm transition">
+                            CEv 2.1 (40%)
+                        </button>
+                        <button onclick="openModal('CEv3.2')" class="px-3 py-1.5 bg-white hover:bg-eco-50 text-eco-700 border border-eco-200 rounded-lg text-xs font-semibold shadow-sm transition">
+                            CEv 3.2 (30%)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Descriptores del Perfil de Salida -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                        <i class="fa-solid fa-key text-amber-600"></i> Descriptores Clave
+                    </h4>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="openModal('CCL1')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CCL1</button>
+                        <button onclick="openModal('STEM2')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">STEM2</button>
+                        <button onclick="openModal('STEM5')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">STEM5</button>
+                        <button onclick="openModal('CD2')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CD2</button>
+                        <button onclick="openModal('CD3')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CD3</button>
+                        <button onclick="openModal('CPSAA3')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CPSAA3</button>
+                        <button onclick="openModal('CE1')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CE1</button>
+                        <button onclick="openModal('CC4')" class="px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-200 rounded text-xs font-medium">CC4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saberes Básicos Badges -->
+            <div class="pt-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Saberes Básicos Directos de Andalucía:</h4>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="openModal('TEC.4.A.1.1')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200 font-mono">TEC.4.A.1.1</button>
+                    <button onclick="openModal('TEC.4.A.1.3')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200 font-mono">TEC.4.A.1.3</button>
+                    <button onclick="openModal('TEC.4.A.1.4')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200 font-mono">TEC.4.A.1.4</button>
+                    <button onclick="openModal('TEC.4.A.2.1')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200 font-mono">TEC.4.A.2.1</button>
+                    <button onclick="openModal('TEC.4.A.4.1')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200 font-mono">TEC.4.A.4.1</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step-by-step Interactive Sessions Section -->
+        <section id="sesiones" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900">
+                        <i class="fa-solid fa-route text-brand-600 mr-2"></i>
+                        Guía de Trabajo Paso a Paso (Sesión a Sesión)
+                    </h3>
+                    <p class="text-slate-600 text-sm">Sigue cada hito en clase, marca los pasos completados y revisa las recomendaciones.</p>
+                </div>
+                
+                <!-- Session Selector Tabs -->
+                <div class="flex overflow-x-auto custom-scrollbar gap-1 bg-slate-200/80 p-1.5 rounded-xl text-xs font-semibold">
+                    <button onclick="switchSession(1)" id="tab-1" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition bg-white text-brand-700 shadow-sm">S1: Lanzamiento</button>
+                    <button onclick="switchSession(2)" id="tab-2" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S2: Ciclo de Vida</button>
+                    <button onclick="switchSession(3)" id="tab-3" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S3: Selección</button>
+                    <button onclick="switchSession(4)" id="tab-4" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S4: Ideación</button>
+                    <button onclick="switchSession(5)" id="tab-5" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S5: Prototipo</button>
+                    <button onclick="switchSession(6)" id="tab-6" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S6: Marketing</button>
+                    <button onclick="switchSession(7)" id="tab-7" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S7: Pitch PDF</button>
+                    <button onclick="switchSession(8)" id="tab-8" class="session-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition text-slate-600 hover:text-slate-900">S8: Exposición</button>
+                </div>
+            </div>
+
+            <!-- SESSION CONTAINERS -->
+
+            <!-- Session 1 -->
+            <div id="session-1" class="session-card bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">01</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 1: Lanzamiento del Reto y Fundamentos del Diseño</h4>
+                            <p class="text-xs text-slate-500">Comprender los requisitos del reto, constituir el equipo cooperativo y repartir los 4 roles clave.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-list-check text-brand-600 mr-1"></i> Lo que tienes que hacer en esta sesión:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Formar vuestro equipo de 2 a 4 personas</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Asignad los siguientes roles de forma clara y democrática:</p>
+                                    <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
+                                        <span class="bg-white p-2 rounded border border-slate-200"><strong>Coordinación:</strong> Controla el tiempo e imprevistos.</span>
+                                        <span class="bg-white p-2 rounded border border-slate-200"><strong>Secretaría:</strong> Redacta la memoria técnica.</span>
+                                        <span class="bg-white p-2 rounded border border-slate-200"><strong>Resp. Digital:</strong> Organiza archivos en Google Drive.</span>
+                                        <span class="bg-white p-2 rounded border border-slate-200"><strong>Portavoz:</strong> Presenta en público ante la clase.</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Comprender los 3 requisitos de una solución óptima</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5"><strong>Funcionalidad:</strong> Que sirva para lo que fue creado. <strong>Factibilidad:</strong> Que se pueda fabricar técnicamente. <strong>Contextualización:</strong> Que respete el entorno.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Dinámica exprés de Ergonomía y Biónica</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Analizad vuestra mochila o un bolígrafo: ¿Se adapta bien al cuerpo humano (ergonomía)? ¿Se inspira en formas de la naturaleza (biónica)?</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Sidebar Clarifications & Resources -->
+                    <div class="bg-brand-50/50 rounded-xl p-4 border border-brand-100 space-y-4">
+                        <h5 class="font-bold text-brand-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Conceptos Fáciles de Entender
+                        </h5>
+                        <div class="space-y-2 text-xs text-brand-800">
+                            <p><strong>Ergonomía:</strong> Diseñar un objeto para que sea cómodo y seguro para las personas que lo usan.</p>
+                            <p><strong>Biónica:</strong> Copiar soluciones de la naturaleza para inventar cosas (ejemplo: el velcro inspirado en las semillas de planta).</p>
+                        </div>
+                        <div class="pt-2 border-t border-brand-200/60">
+                            <h6 class="font-semibold text-xs text-brand-900 mb-1">Entregables de la sesión:</h6>
+                            <span class="inline-block bg-white text-slate-700 px-2.5 py-1 rounded text-xs border border-brand-200">
+                                <i class="fa-regular fa-file-pdf text-red-500 mr-1"></i> Ficha de constitución del equipo (Roles)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 2 -->
+            <div id="session-2" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">02</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 2: Ciclo de Vida, Obsolescencia y Sostenibilidad</h4>
+                            <p class="text-xs text-slate-500">Analizar las 4 fases de vida de un objeto y entender por qué los aparatos mueren.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-list-check text-brand-600 mr-1"></i> Tareas de la sesión:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Lectura investigativa: La bombilla de Livermore y el Cartel Phoebus</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Descubre cómo en 1924 los fabricantes acordaron que las bombillas durasen solo 1000 horas para vender más. ¡El origen de la obsolescencia programada!</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Mapear las 4 fases del ciclo de vida</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">1) Introducción (Nace el producto) &rarr; 2) Crecimiento (Todo el mundo lo compra) &rarr; 3) Madurez (Se vende pero no crece) &rarr; 4) Declive (Pasa de moda o es reemplazado por otro mejor).</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Debatir sobre Economía Lineal vs. Economía Circular</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Pasar del modelo insostenible "Extraer &rarr; Fabricar &rarr; Usar &rarr; Tirar" a las 4R: Reducir, Reutilizar, Reparar y Reciclar.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-50/60 rounded-xl p-4 border border-amber-200/80 space-y-4">
+                        <h5 class="font-bold text-amber-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Tipos de Obsolescencia
+                        </h5>
+                        <div class="space-y-2 text-xs text-amber-900">
+                            <p><strong>Programada:</strong> Se fabrica a propósito para romperse tras x tiempo.</p>
+                            <p><strong>Percibida/Diseño:</strong> Funciona bien, pero la moda te hace sentir que es viejo.</p>
+                            <p><strong>Tecnológica:</strong> Aparece una tecnología superior (ej. del MP3 al Smartphone).</p>
+                        </div>
+                        <div class="pt-2 border-t border-amber-200">
+                            <a href="https://www.youtube.com/results?search_query=comprar+tirar+comprar+obsolescencia+programada" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-brand-700 font-semibold hover:underline">
+                                <i class="fa-brands fa-youtube text-red-600"></i> Ver fragmento del documental "Comprar, Tirar, Comprar"
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 3 -->
+            <div id="session-3" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">03</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 3: Selección de Producto y Análisis (Tarea 1)</h4>
+                            <p class="text-xs text-slate-500">Elegir en equipo el objeto a resucitar y completar el documento comparativo inicial.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-list-check text-brand-600 mr-1"></i> Tareas prácticas:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Brainstorming de selección del producto</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Propón opciones: cámaras digitales compactas, reproductores MP3, consolas portátiles antiguas, despertadores con alarma, GPS para coche, calculadoras científicas simples...</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Abrir carpeta en Google Drive y crear Google Docs</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">El / la Responsable Digital creará el archivo <code class="bg-slate-200 px-1 rounded text-slate-800">Ciclo_Vida_NombreGrupo.docx</code> y compartirá permisos de edición con todo el equipo.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Completar la Tabla de la Tarea 1</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Analizar el producto elegido desglosando cuándo tuvo éxito (Introducción/Crecimiento) y por qué cayó en desuso (Madurez/Declive).</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
+                        <h5 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-cloud-arrow-up text-brand-600"></i> Entregable Parcial S3
+                        </h5>
+                        <p class="text-xs text-slate-600">
+                            Descargar en formato PDF el avance de la <strong>Tarea 1</strong> y subirlo al entorno virtual de aprendizaje.
+                        </p>
+                        <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-xs space-y-1">
+                            <span class="font-semibold text-slate-700 block">Criterios Evaluados:</span>
+                            <span class="text-eco-700 font-medium cursor-pointer" onclick="openModal('CEv1.3')">• CEv 1.3 (Roles y trabajo en grupo)</span><br>
+                            <span class="text-eco-700 font-medium cursor-pointer" onclick="openModal('CEv2.1')">• CEv 2.1 (Ciclo de vida del producto)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 4 -->
+            <div id="session-4" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">04</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 4: Diagnóstico e Ideación del Rediseño (Tarea 2)</h4>
+                            <p class="text-xs text-slate-500">Investigar las fallas del producto original y aplicar técnicas creativas de mejora.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-brain text-brand-600 mr-1"></i> Técnicas de Ideación:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Diagnóstico de mercado</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">¿Por qué la gente dejó de usarlo? ¿Fue incómodo? ¿Carecía de batería recargable? ¿Utilizaba materiales plásticos poco ecológicos?</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Lluvia de ideas / Mapa Mental con Canva o MindMeister</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Propongan al menos 5 mejoras funcionales y sostenibles. Ejemplo: Añadir carga mediante pequeña placa solar, carcasa modular intercambiable de plástico reciclado, conectividad Bluetooth, etc.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Elección del Rediseño Final y Justificación</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Acordad cuál es la propuesta más innovadora y realista de construir/diseñar digitalmente.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 space-y-3">
+                        <h5 class="font-bold text-indigo-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-ruler text-indigo-600"></i> Herramientas Sugeridas
+                        </h5>
+                        <div class="space-y-2 text-xs text-indigo-900">
+                            <p>• <strong>Canva:</strong> Para crear mapas mentales de rediseño de manera rápida e intuitiva.</p>
+                            <p>• <strong>Google Docs:</strong> Para ir anotando los puntos 1, 2 y 3 de la Tarea 2 en la memoria técnica.</p>
+                        </div>
+                        <a href="https://www.canva.com/es_es/graficos/mapas-mentales/" target="_blank" class="inline-flex items-center gap-1 text-xs text-brand-700 font-semibold hover:underline pt-2">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Crear Mapa Mental en Canva
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 5 -->
+            <div id="session-5" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">05</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 5: Prototipado Digital del Producto Rediseñado</h4>
+                            <p class="text-xs text-slate-500">Crear la representación visual y técnica en 3D o diseño digital enriquecido.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-cubes text-brand-600 mr-1"></i> Elige una de las 3 opciones de Prototipado:
+                        </h5>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                                <strong class="text-slate-900 block text-sm"><i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Opción A: IA Generativa</strong>
+                                <p class="text-slate-600">Creación mediante Prompting técnico detallado con herramientas como Bing Image Creator o Leonardo AI.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                                <strong class="text-slate-900 block text-sm"><i class="fa-solid fa-cube text-blue-600"></i> Opción B: Modelado 3D</strong>
+                                <p class="text-slate-600">Modelado tridimensional en Tinkercad o SketchUp exportando captura o archivo .STL.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                                <strong class="text-slate-900 block text-sm"><i class="fa-solid fa-draw-polygon text-teal-600"></i> Opción C: Boceto Digital</strong>
+                                <p class="text-slate-600">Ilustración acotada y etiquetada con medidas en Canva o Inkscape.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <h6 class="font-bold text-xs uppercase tracking-wider text-slate-700">Requisito técnico clave:</h6>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Debéis especificar los materiales elegidos (ej. plástico PLA biodegradable, aluminio reciclado, madera sostenible) y justificar por qué son ecológicos e higiénicos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50/60 rounded-xl p-4 border border-purple-100 space-y-3">
+                        <h5 class="font-bold text-purple-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-laptop-code text-purple-600"></i> Tutorial Recomendado
+                        </h5>
+                        <p class="text-xs text-purple-900 leading-relaxed">
+                            Aprende a modelar formas geométricas sencillas o usar Tinkercad para presentar tu prototipo en 3D.
+                        </p>
+                        <a href="https://www.tinkercad.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-purple-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-purple-700 transition">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Tinkercad
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 6 -->
+            <div id="session-6" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">06</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 6: Campaña Publicitaria y Marketing Real</h4>
+                            <p class="text-xs text-slate-500">Diseñar el soporte publicitario con impacto visual, lenguaje inclusivo y psicología del color.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-rectangle-ad text-brand-600 mr-1"></i> Tareas de la Campaña:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Crear un Eslogan potente e inclusivo</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Debe ser pegadizo, respetuoso, libre de estereotipos sexistas y enfocado en la solución ecosocial.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Diseñar la pieza publicitaria principal</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Podéis elegir entre un <strong>Cartel digital de alto impacto</strong> (en Canva) o un <strong>Vídeo corto/Reel de 30 segundos</strong> (en CapCut/Canva).</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Aplicar Psicología del Color</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Usa verde para sostenibilidad/naturaleza, azul para confianza/tecnología, o naranja para creatividad/energía.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-teal-50/60 rounded-xl p-4 border border-teal-100 space-y-3">
+                        <h5 class="font-bold text-teal-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-video text-teal-600"></i> Recursos para Marketing
+                        </h5>
+                        <p class="text-xs text-teal-900">Herramientas gratuitas para editar vídeo y gráficos fácilmente:</p>
+                        <div class="flex flex-col gap-2 text-xs">
+                            <a href="https://www.capcut.com" target="_blank" class="text-brand-700 font-semibold hover:underline"><i class="fa-solid fa-scissors mr-1"></i> CapCut Online Video Editor</a>
+                            <a href="https://www.canva.com" target="_blank" class="text-brand-700 font-semibold hover:underline"><i class="fa-solid fa-palette mr-1"></i> Cartelería en Canva</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 7 -->
+            <div id="session-7" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">07</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 7: Preparación del Pitch y Soporte Visual (PDF)</h4>
+                            <p class="text-xs text-slate-500">Diseñar la presentación de 5 diapositivas y ensayar la exposición oral.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-file-pdf text-brand-600 mr-1"></i> Estructura de las 5 Diapositivas Clave:
+                        </h5>
+                        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <li class="p-2.5 bg-slate-50 rounded-lg border border-slate-200"><strong>Diapo 1:</strong> Portada del equipo + Producto original.</li>
+                            <li class="p-2.5 bg-slate-50 rounded-lg border border-slate-200"><strong>Diapo 2:</strong> Problemas y causas de su declive.</li>
+                            <li class="p-2.5 bg-slate-50 rounded-lg border border-slate-200"><strong>Diapo 3:</strong> Rediseño propuesto e ideas clave.</li>
+                            <li class="p-2.5 bg-slate-50 rounded-lg border border-slate-200"><strong>Diapo 4:</strong> Prototipo final y materiales ecológicos.</li>
+                            <li class="p-2.5 bg-slate-50 sm:col-span-2 rounded-lg border border-slate-200"><strong>Diapo 5:</strong> Campaña de marketing y solicitud de inversión.</li>
+                        </ol>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                            <strong class="text-xs font-bold text-slate-800 uppercase block">Ensayo técnico del Pitch (5 minutos máximos):</strong>
+                            <p class="text-xs text-slate-600">Repartid el tiempo de palabra equitativamente entre los miembros del equipo. Cuidad la postura corporal, entonación y contacto visual.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/60 rounded-xl p-4 border border-amber-200 space-y-3">
+                        <h5 class="font-bold text-amber-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-bullhorn text-amber-600"></i> ¿Qué es un Pitch?
+                        </h5>
+                        <p class="text-xs text-amber-900 leading-relaxed">
+                            Un <strong>Pitch</strong> es una presentación muy breve, clara y convincente diseñada para persuadir a un grupo de personas (inversores) de apoyar vuestro proyecto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session 8 -->
+            <div id="session-8" class="session-card hidden bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-lg">08</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Sesión 8: Exposición en Público ante Inversores y Coevaluación</h4>
+                            <p class="text-xs text-slate-500">Defender el proyecto en el Comité de Inversión y evaluar a los demás equipos.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">50 minutos</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h5 class="font-bold text-slate-800 text-sm uppercase tracking-wider">
+                            <i class="fa-solid fa-users-rectangle text-brand-600 mr-1"></i> Dinámica del Evento:
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">1. Transformación del Aula en "Comité de Inversión Tecnológica"</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Mientras un grupo expone, el resto del alumnado actúa como jueces e inversores.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">2. Exposición oral (5 min por grupo + 1 min preguntas)</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Demostrad convicción, lenguaje inclusivo y proyectad vuestras diapositivas o vídeo promocional.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <div>
+                                    <strong class="text-slate-900 block text-sm">3. Rellenar la Diana de Coevaluación e Historial de Autoevaluación</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">Puntua a los compañeros/as respetando el trabajo y el esfuerzo realizado.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-eco-50/60 rounded-xl p-4 border border-eco-200 space-y-3">
+                        <h5 class="font-bold text-eco-900 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-bullseye text-eco-600"></i> Diana de Coevaluación
+                        </h5>
+                        <p class="text-xs text-eco-900 leading-relaxed">
+                            Evaluarás del 1 al 4:
+                        </p>
+                        <ol class="text-xs text-eco-900 space-y-1 list-decimal list-inside">
+                            <li>Claridad y convicción del pitch.</li>
+                            <li>Innovación y sostenibilidad.</li>
+                            <li>Calidad visual del anuncio.</li>
+                            <li>Uso de lenguaje inclusivo.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources, Media & Tutorials Section -->
+        <section id="recursos" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-photo-film text-brand-600"></i>
+                    Biblioteca de Recursos, Vídeos e Ideas Multimedia
+                </h3>
+                <p class="text-sm text-slate-500">Tutoriales rápidos y guías para dominar las herramientas que necesitas en tu proyecto.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Tinkercad / 3D -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 hover:shadow-md transition space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">Tutorial: Prototipado 3D en Tinkercad</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Aprende a combinar formas básicas, agrupar objetos y recortar huecos para crear el modelo 3D de tu producto rediseñado.
+                    </p>
+                    <a href="https://www.youtube.com/results?search_query=tutorial+tinkercad+basico+espanol" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-800">
+                        <i class="fa-brands fa-youtube text-red-600"></i> Ver tutoriales en Youtube
+                    </a>
+                </div>
+
+                <!-- Card 2: Canva / Marketing -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 hover:shadow-md transition space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">Diseño de Cartelería con Canva</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Descubre cómo aplicar la psicología del color, elegir tipografías legibles y colocar tu eslogan para llamar la atención.
+                    </p>
+                    <a href="https://www.canva.com/es_es/aprende/diseno-grafico-principios-basicos/" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-800">
+                        <i class="fa-solid fa-book-open"></i> Guía de diseño de Canva
+                    </a>
+                </div>
+
+                <!-- Card 3: Pitching & Presentación -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 hover:shadow-md transition space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-microphone"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">Cómo hacer un Elevator Pitch de Exito</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Consejos prácticos para moderar los nervios, proyectar la voz, mirar al público y estructurar un mensaje convincente en 5 min.
+                    </p>
+                    <a href="https://www.youtube.com/results?search_query=como+hacer+un+elevator+pitch+ejemplos" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-800">
+                        <i class="fa-brands fa-youtube text-red-600"></i> Ejemplos de Pitch en vídeo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evaluation Rubrics Overview Section -->
+        <section id="evaluacion" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-award text-eco-600"></i>
+                    ¿Cómo se califica esta SdA? (Rigor Criterial)
+                </h3>
+                <p class="text-sm text-slate-500">Recuerda: solo se evalúan los Criterios de Evaluación. Los saberes son el medio para alcanzarlos.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <!-- CEv 1.3 Card -->
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900 text-sm">CEv 1.3</span>
+                        <span class="px-2 py-0.5 bg-brand-100 text-brand-800 rounded font-semibold">30% Nota</span>
+                    </div>
+                    <p class="text-slate-600"><strong>Trabajo en Equipo y Roles:</strong> Se evalúa mediante la observación del grupo, el cuaderno de equipo y la autoevaluación.</p>
+                </div>
+
+                <!-- CEv 2.1 Card -->
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900 text-sm">CEv 2.1</span>
+                        <span class="px-2 py-0.5 bg-eco-100 text-eco-800 rounded font-semibold">40% Nota</span>
+                    </div>
+                    <p class="text-slate-600"><strong>Análisis y Rediseño Sostenible:</strong> Evaluado mediante la memoria técnica de la Tarea 1 y el prototipo digital de la Tarea 2.</p>
+                </div>
+
+                <!-- CEv 3.2 Card -->
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900 text-sm">CEv 3.2</span>
+                        <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">30% Nota</span>
+                    </div>
+                    <p class="text-slate-600"><strong>Pitch y Anuncio Publicitario:</strong> Evaluado a través del soporte PDF, el cartel o vídeo promocional y la exposición oral.</p>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 py-8 px-4 border-t border-slate-800 mt-12 text-center text-xs">
-        <div class="max-w-7xl mx-auto space-y-3">
-            <p class="font-medium text-slate-300">
-                Situación de Aprendizaje SdA 2: <strong class="text-white">"Relanzamos Productos: Del Declive a la Innovación Sostenible"</strong>
-            </p>
-            <p>
-                Materia: <strong class="text-slate-200">Tecnología 4º ESO</strong> • Junta de Andalucía (Orden de 30 de mayo de 2023 - LOMLOE)
-            </p>
-            <p class="text-slate-500 text-[11px]">
-                Diseñado con criterio riguroso de evaluación criterial, Diseño Universal para el Aprendizaje (DUA) y perspectiva coeducativa.
-            </p>
-        </div>
-    </footer>
-
-    <!-- CURRICULAR POPUP MODAL (DESCRIPCIÓN OFICIAL LOMLOE ANDALUCÍA) -->
-    <div id="curriculumModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-2xl border border-slate-200">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-brand-700 to-slate-900 text-white p-5 flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-graduation-cap text-lg text-brand-300"></i>
-                    <h3 class="font-bold text-sm sm:text-base" id="modalTitle">Detalle Curricular Oficial (Andalucía)</h3>
+    <!-- MODAL FOR CURRICULAR ITEMS (POP-UP) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div id="modal-card" class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300 space-y-4">
+            <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span id="modal-tag" class="px-2.5 py-1 bg-brand-100 text-brand-700 font-bold text-xs rounded-md">
+                        Criterio
+                    </span>
+                    <h3 id="modal-title" class="text-lg font-bold text-slate-900">Código Curricular</h3>
                 </div>
-                <button onclick="toggleCurriculumModal()" class="text-slate-300 hover:text-white text-xl p-1 rounded-lg transition">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-
-            <!-- Modal Body -->
-            <div class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs leading-relaxed text-slate-700" id="modalBody">
-                <!-- Dynamic content inserted by JS -->
+            
+            <div id="modal-body" class="text-sm text-slate-600 space-y-3 leading-relaxed">
+                <!-- Content inserted dynamically via JS -->
             </div>
 
-            <!-- Modal Footer -->
-            <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
-                <button onclick="toggleCurriculumModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl font-bold text-xs hover:bg-slate-900 transition">
-                    Cerrar Consulta
+            <div class="pt-3 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-semibold hover:bg-brand-700 transition">
+                    Entendido
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC -->
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p>SdA 2: "Relanzamos Productos" • Tecnología 4º ESO • Decreto 102/2023 Junta de Andalucía</p>
+            <p class="text-slate-500">Diseñado para el aprendizaje activo, cooperativo e inclusivo bajo el enfoque DUA.</p>
+        </div>
+    </footer>
+
     <script>
-        // CURRICULAR DATABASE (LOMLOE ANDALUCÍA - TECNOLOGÍA 4º ESO)
-        const curriculumData = {
-            'CE 1': {
-                type: 'Competencia Específica',
-                code: 'CE 1',
-                title: 'Identificar y proponer problemas tecnológicos con iniciativa y creatividad',
-                description: 'Identificar y proponer problemas tecnológicos con iniciativa y creatividad, estudiando las necesidades de su entorno próximo y aplicando estrategias y procesos colaborativos e iterativos relativos a proyectos, para idear y planificar soluciones de manera eficiente, accesible, sostenible e innovadora.',
-                descriptors: 'STEM1, STEM2, CD1, CD3, CPSAA3, CPSAA4, CE1, CE3'
+        const curricularData = {
+            'CE1': {
+                tag: 'Competencia Específica 1',
+                title: 'CE 1: Planteamiento creativo y colaborativo',
+                body: 'Identificar y proponer problemas tecnológicos con iniciativa y creatividad, estudiando las necesidades de su entorno próximo y aplicando estrategias y procesos colaborativos e iterativos relativos a proyectos, para idear y planificar soluciones de manera eficiente, accesible, sostenible e innovadora.'
             },
-            'CE 2': {
-                type: 'Competencia Específica',
-                code: 'CE 2',
-                title: 'Aplicar técnicas y conocimientos interdisciplinares y analizar ciclo de vida',
-                description: 'Aplicar de forma apropiada y segura distintas técnicas y conocimientos interdisciplinares, utilizando procedimientos y recursos tecnológicos y analizando el ciclo de vida de productos para fabricar soluciones tecnológicas accesibles y sostenibles que den respuesta a necesidades planteadas.',
-                descriptors: 'STEM2, STEM5, CD2, CPSAA4, CC4, CCEC4'
+            'CE2': {
+                tag: 'Competencia Específica 2',
+                title: 'CE 2: Diseño, fabricación y ciclo de vida',
+                body: 'Aplicar de forma apropiada y segura distintas técnicas y conocimientos interdisciplinares, utilizando procedimientos y recursos tecnológicos y analizando el ciclo de vida de productos para fabricar soluciones tecnológicas accesibles y sostenibles que den respuesta a necesidades planteadas.'
             },
-            'CE 3': {
-                type: 'Competencia Específica',
-                code: 'CE 3',
-                title: 'Expresar, comunicar y difundir soluciones con lenguaje inclusivo',
-                description: 'Expresar, comunicar y difundir ideas, propuestas o soluciones tecnológicas en diferentes foros de manera efectiva, usando un lenguaje inclusivo y no sexista, empleando los recursos disponibles y aplicando los elementos y técnicas necesarias, para intercambiar la información de manera responsable y fomentar el trabajo en equipo.',
-                descriptors: 'CCL1, STEM4, CD3, CPSAA3, CCEC3'
+            'CE3': {
+                tag: 'Competencia Específica 3',
+                title: 'CE 3: Comunicación, expresión y difusión',
+                body: 'Expresar, comunicar y difundir ideas, propuestas o soluciones tecnológicas en diferentes foros de manera efectiva, usando un lenguaje inclusivo y no sexista, empleando los recursos disponibles y aplicando los elementos y técnicas necesarias, para intercambiar la información de manera responsable y fomentar el trabajo en equipo.'
             },
-            'CEv 1.3': {
-                type: 'Criterio de Evaluación (Calificable - 30%)',
-                code: 'CEv 1.3',
-                title: 'Trabajo en equipo, toma de decisiones y gestión emocional',
-                description: 'Mostrar interés en procesos de toma de decisiones, gestionando las emociones de forma adecuada, respetando las estructuras de gestión del grupo y la función de cada miembro para favorecer el éxito del proyecto en equipo.',
-                linkedCE: 'CE 1',
-                linkedSaberes: 'TEC.4.A.1.1, TEC.4.A.1.3, TEC.4.A.1.4'
+            'CEv1.3': {
+                tag: 'Criterio de Evaluación (30%)',
+                title: 'CEv 1.3: Gestión de Roles y Emociones',
+                body: 'Mostrar interés en procesos de toma de decisiones, gestionando las emociones de forma adecuada, respetando las estructuras de gestión del grupo y la función de cada miembro para favorecer el éxito del proyecto en equipo. (Vinculado a la CE 1).'
             },
-            'CEv 2.1': {
-                type: 'Criterio de Evaluación (Calificable - 40%)',
-                code: 'CEv 2.1',
-                title: 'Diseño, análisis de ciclo de vida y prototipado sostenible',
-                description: 'Diseñar y construir un producto que responda a una necesidad detectada, mediante la integración de operadores mecánicos, electrónicos o neumáticos, analizando su ciclo de vida y utilizando materiales y procesos eficientes.',
-                linkedCE: 'CE 2',
-                linkedSaberes: 'TEC.4.A.2.1, TEC.4.A.1.4, TEC.4.D.1'
+            'CEv2.1': {
+                tag: 'Criterio de Evaluación (40%)',
+                title: 'CEv 2.1: Rediseño, Ciclo de Vida y Eficiencia',
+                body: 'Diseñar y construir un producto que responda a una necesidad detectada, mediante la integración de operadores mecánicos, electrónicos o neumáticos, analizando su ciclo de vida y utilizando materiales y procesos eficientes. (Vinculado a la CE 2).'
             },
-            'CEv 3.2': {
-                type: 'Criterio de Evaluación (Calificable - 30%)',
-                code: 'CEv 3.2',
-                title: 'Difusión, Elevator Pitch e Impacto Visual Inclusivo',
-                description: 'Presentar y difundir las propuestas y soluciones tecnológicas de manera efectiva, cuidando la entonación, expresión, gestión del tiempo y adaptación al contexto, con lenguaje inclusivo, no sexista e impacto visual positivo.',
-                linkedCE: 'CE 3',
-                linkedSaberes: 'TEC.4.A.4.1'
+            'CEv3.2': {
+                tag: 'Criterio de Evaluación (30%)',
+                title: 'CEv 3.2: Pitch Oral e Impacto Inclusivo',
+                body: 'Presentar y difundir las propuestas y soluciones tecnológicas de manera efectiva, cuidando la entonación, expresión, gestión del tiempo y adaptación al contexto, con lenguaje inclusivo, no sexista e impacto visual positivo. (Vinculado a la CE 3).'
             },
             'TEC.4.A.1.1': {
-                type: 'Saber Básico (Bloque A)',
-                code: 'TEC.4.A.1.1',
-                title: 'Estrategias de gestión de proyectos colaborativos',
-                description: 'Estrategias de gestión de proyectos colaborativos y técnicas de resolución de problemas iterativas.'
+                tag: 'Saber Básico',
+                title: 'TEC.4.A.1.1: Gestión Colaborativa',
+                body: 'Estrategias de gestión de proyectos colaborativos y técnicas de resolución de problemas iterativas.'
             },
             'TEC.4.A.1.3': {
-                type: 'Saber Básico (Bloque A)',
-                code: 'TEC.4.A.1.3',
-                title: 'Técnicas de ideación',
-                description: 'Técnicas de ideación (SCAMPER, tormenta de ideas, mapas de empatía).'
+                tag: 'Saber Básico',
+                title: 'TEC.4.A.1.3: Técnicas de Ideación',
+                body: 'Técnicas de ideación (lluvia de ideas, mapas mentales, pensamiento metafórico o biónica).'
             },
             'TEC.4.A.1.4': {
-                type: 'Saber Básico (Bloque A)',
-                code: 'TEC.4.A.1.4',
-                title: 'Emprendimiento y perseverancia creativa',
-                description: 'Emprendimiento, perseverancia y creatividad en la resolución de problemas desde una perspectiva interdisciplinar y satisfacción e interés por la calidad del trabajo.'
+                tag: 'Saber Básico',
+                title: 'TEC.4.A.1.4: Emprendimiento y Creatividad',
+                body: 'Emprendimiento, perseverancia y creatividad en la resolución de problemas desde una perspectiva interdisciplinar de la actividad tecnológica y satisfacción e interés por el trabajo bien hecho.'
             },
             'TEC.4.A.2.1': {
-                type: 'Saber Básico (Bloque A)',
-                code: 'TEC.4.A.2.1',
-                title: 'Ciclo de vida de un producto y sus fases',
-                description: 'Ciclo de vida de un producto y sus fases (extracción de materias primas, fabricación, distribución, uso y fin de vida/reciclaje). Análisis sencillos.'
+                tag: 'Saber Básico',
+                title: 'TEC.4.A.2.1: Ciclo de Vida de Productos',
+                body: 'Ciclo de vida de un producto y sus fases (Introducción, Crecimiento, Madurez, Declive). Análisis sencillos.'
             },
             'TEC.4.A.4.1': {
-                type: 'Saber Básico (Bloque A)',
-                code: 'TEC.4.A.4.1',
-                title: 'Presentación, comunicación efectiva y lenguaje inclusivo',
-                description: 'Presentación y difusión del proyecto. Elementos, técnicas y herramientas. Comunicación efectiva (entonación, expresión, gestión del tiempo, adaptación del discurso y uso de lenguaje inclusivo y no sexista).'
+                tag: 'Saber Básico',
+                title: 'TEC.4.A.4.1: Difusión y Comunicación Inclusiva',
+                body: 'Presentación y difusión del proyecto. Elementos, técnicas y herramientas. Comunicación efectiva de entonación, expresión, gestión del tiempo, adaptación del discurso y uso de un lenguaje inclusivo, libre de estereotipos sexistas.'
+            },
+            'CCL1': {
+                tag: 'Descriptor Operativo',
+                title: 'CCL1: Competencia Lingüística Oral y Escrita',
+                body: 'Se expresa de forma oral, escrita o multimodal con coherencia, corrección y adecuación a los diferentes contextos sociales, participando con actitud cooperativa y respetuosa.'
+            },
+            'STEM2': {
+                tag: 'Descriptor Operativo',
+                title: 'STEM2: Pensamiento Científico e Indagación',
+                body: 'Utiliza el pensamiento científico para entender y explicar los fenómenos a su alrededor, planteándose preguntas y comprobando hipótesis mediante indagación y precisión.'
+            },
+            'STEM5': {
+                tag: 'Descriptor Operativo',
+                title: 'STEM5: Sostenibilidad y Consumo Responsable',
+                body: 'Emprende acciones fundamentadas para preservar el medio ambiente, aplicando principios éticos y valorando el impacto global y consumo responsable.'
+            },
+            'CD2': {
+                tag: 'Descriptor Operativo',
+                title: 'CD2: Entornos Digitales y Contenidos',
+                body: 'Gestiona su entorno personal digital para construir conocimiento y crear contenidos utilizando diversas herramientas informáticas.'
+            },
+            'CD3': {
+                tag: 'Descriptor Operativo',
+                title: 'CD3: Colaboración Virtual Activa',
+                body: 'Se comunica, participa y comparte información en plataformas virtuales de manera cívica, reflexiva y responsable.'
+            },
+            'CPSAA3': {
+                tag: 'Descriptor Operativo',
+                title: 'CPSAA3: Trabajo Cooperativo e Inclusión',
+                body: 'Comprende las perspectivas ajenas para participar activamente en el trabajo en grupo, distribuyendo tareas equitativamente.'
+            },
+            'CE1': {
+                tag: 'Descriptor Operativo',
+                title: 'CE1: Análisis de Oportunidades y Retos',
+                body: 'Analiza necesidades y oportunidades afrontando retos con sentido crítico y haciendo balance de sostenibilidad para crear valor.'
+            },
+            'CC4': {
+                tag: 'Descriptor Operativo',
+                title: 'CC4: Interdependencia y Estilo de Vida Ecosocial',
+                body: 'Comprende las relaciones de interdependencia y adopta un estilo de vida ecosocialmente responsable.'
             }
         };
 
-        // PROGRESS TRACKER LOGIC
-        const totalSessions = 8;
-        let completedSessions = JSON.parse(localStorage.getItem('sda2_progress')) || [];
+        function openModal(key) {
+            const data = curricularData[key];
+            if (!data) return;
 
-        function initProgress() {
-            completedSessions.forEach(sessionNum => {
-                const checkbox = document.getElementById(`check-session-${sessionNum}`);
-                if (checkbox) checkbox.checked = true;
-                updateBadge(sessionNum, true);
-            });
-            updateGlobalProgress();
+            document.getElementById('modal-tag').innerText = data.tag;
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-body').innerText = data.body;
 
-            // Load saved diario text
-            const savedDiario = localStorage.getItem('sda2_diario');
-            if (savedDiario) {
-                document.getElementById('diarioText').value = savedDiario;
-            }
+            const backdrop = document.getElementById('modal-backdrop');
+            const card = document.getElementById('modal-card');
+
+            backdrop.classList.remove('hidden');
+            document.body.classList.add('modal-active');
+            
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
         }
 
-        function toggleSessionCheck(sessionNum) {
-            const checkbox = document.getElementById(`check-session-${sessionNum}`);
-            if (checkbox.checked) {
-                if (!completedSessions.includes(sessionNum)) completedSessions.push(sessionNum);
-                updateBadge(sessionNum, true);
-            } else {
-                completedSessions = completedSessions.filter(num => num !== sessionNum);
-                updateBadge(sessionNum, false);
-            }
-            localStorage.setItem('sda2_progress', JSON.stringify(completedSessions));
-            updateGlobalProgress();
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const card = document.getElementById('modal-card');
+
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            backdrop.classList.add('opacity-0');
+
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                document.body.classList.remove('modal-active');
+            }, 300);
         }
 
-        function updateBadge(sessionNum, isDone) {
-            const badge = document.getElementById(`badge-session-${sessionNum}`);
-            if (badge) {
-                if (isDone) {
-                    badge.className = "text-[11px] px-2.5 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                    badge.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i>Completado';
-                } else {
-                    badge.className = "text-[11px] px-2 py-0.5 rounded font-bold bg-slate-200 text-slate-600";
-                    badge.innerText = "Pendiente";
-                }
-            }
-        }
-
-        function updateGlobalProgress() {
-            const count = completedSessions.length;
-            const percent = Math.round((count / totalSessions) * 100);
-
-            document.getElementById('headerProgressBar').style.width = `${percent}%`;
-            document.getElementById('headerProgressPercent').innerText = `${percent}%`;
-
-            document.getElementById('heroProgressBar').style.width = `${percent}%`;
-            document.getElementById('heroProgressText').innerText = `${count} de ${totalSessions} sesiones`;
-        }
-
-        // PHASE FILTERING
-        function filterPhase(phase) {
-            const allCards = document.querySelectorAll('.session-card');
-            const allHeaders = document.querySelectorAll('.phase-header');
-
-            // Reset button active classes
-            ['btnPhaseAll', 'btnPhase1', 'btnPhase2', 'btnPhase3'].forEach(id => {
-                const btn = document.getElementById(id);
-                btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+        function switchSession(sessionNum) {
+            // Hide all session cards
+            document.querySelectorAll('.session-card').forEach(card => {
+                card.classList.add('hidden');
             });
 
-            if (phase === 'all') {
-                document.getElementById('btnPhaseAll').className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition shadow-sm";
-                allCards.forEach(card => card.classList.remove('hidden'));
-                allHeaders.forEach(header => header.classList.remove('hidden'));
-            } else {
-                if (phase === 'fase1') document.getElementById('btnPhase1').className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition shadow-sm";
-                if (phase === 'fase2') document.getElementById('btnPhase2').className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition shadow-sm";
-                if (phase === 'fase3') document.getElementById('btnPhase3').className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white transition shadow-sm";
+            // Reset tab styles
+            document.querySelectorAll('.session-tab').forEach(tab => {
+                tab.classList.remove('bg-white', 'text-brand-700', 'shadow-sm');
+                tab.classList.add('text-slate-600');
+            });
 
-                allCards.forEach(card => {
-                    if (card.classList.contains(phase)) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
+            // Show target session
+            const targetSession = document.getElementById(`session-${sessionNum}`);
+            if (targetSession) {
+                targetSession.classList.remove('hidden');
+            }
 
-                allHeaders.forEach(header => header.classList.add('hidden'));
+            // Highlight target tab
+            const targetTab = document.getElementById(`tab-${sessionNum}`);
+            if (targetTab) {
+                targetTab.classList.add('bg-white', 'text-brand-700', 'shadow-sm');
+                targetTab.classList.remove('text-slate-600');
             }
         }
 
-        // CURRICULUM MODAL DISPLAY
-        function showCurriculumDetail(code) {
-            const data = curriculumData[code];
-            const modal = document.getElementById('curriculumModal');
-            const body = document.getElementById('modalBody');
-
-            if (data) {
-                body.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2.5 py-1 bg-brand-100 text-brand-800 font-bold rounded text-xs">${data.type}</span>
-                            <span class="font-extrabold text-slate-900 text-sm">${data.code}</span>
-                        </div>
-                        <h4 class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2">${data.title}</h4>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 text-xs leading-relaxed">
-                            <strong>Texto Oficial LOMLOE (Junta de Andalucía):</strong><br>
-                            "${data.description}"
-                        </div>
-                        ${data.descriptors ? `
-                            <div class="p-2.5 bg-blue-50 border border-blue-200 rounded-lg text-[11px] text-blue-900">
-                                <strong>Descriptores Operativos vinculados:</strong> ${data.descriptors}
-                            </div>
-                        ` : ''}
-                        ${data.linkedCE ? `
-                            <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-900">
-                                <strong>Evaluación Criterial:</strong> Evalúa directamente la <strong>${data.linkedCE}</strong>.
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            } else {
-                body.innerHTML = `<p class="text-slate-500">Información técnica de ${code}.</p>`;
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function toggleCurriculumModal() {
-            const modal = document.getElementById('curriculumModal');
-            if (modal.classList.contains('hidden')) {
-                // Default full list when opened from header
-                const body = document.getElementById('modalBody');
-                body.innerHTML = `
-                    <div class="space-y-4">
-                        <p class="text-slate-600 text-xs">
-                            A continuación se muestra el mapeo completo de elementos curriculares oficiales de la materia de <strong>Tecnología 4º ESO</strong> según la Orden de 30 de mayo de 2023 de la Junta de Andalucía para esta SdA 2:
-                        </p>
-                        <div class="space-y-3">
-                            <h5 class="font-bold text-slate-900 border-b pb-1 text-xs">Competencias Específicas (CE) y Criterios (CEv):</h5>
-                            <div class="grid gap-2">
-                                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                                    <strong class="text-brand-700 block">CE 1 → CEv 1.3 (Ponderación 30%)</strong>
-                                    <span>Gestión del trabajo en equipo, empatía y resolución de conflictos.</span>
-                                </div>
-                                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                                    <strong class="text-brand-700 block">CE 2 → CEv 2.1 (Ponderación 40%)</strong>
-                                    <span>Diseño del prototipo 2D/3D, ecodiseño y análisis del ciclo de vida.</span>
-                                </div>
-                                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                                    <strong class="text-brand-700 block">CE 3 → CEv 3.2 (Ponderación 30%)</strong>
-                                    <span>Exposición oral (Elevator Pitch), campaña publicitaria y lenguaje inclusivo.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
-
-        // ELEVATOR PITCH TIMER LOGIC
-        let timerInterval = null;
-        let timeLeft = 180; // 3 minutes
-
-        function startPitchTimer() {
-            if (timerInterval) return;
-            const timerDisplay = document.getElementById('pitchTimer');
-            const btn = document.getElementById('btnStartTimer');
-            btn.innerText = "En curso...";
-            btn.className = "px-2.5 py-1 bg-amber-500 text-white rounded text-xs font-bold transition";
-
-            timerInterval = setInterval(() => {
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    timerDisplay.innerText = "00:00";
-                    btn.innerText = "¡Tiempo!";
-                    btn.className = "px-2.5 py-1 bg-red-600 text-white rounded text-xs font-bold transition";
-                    alert("¡Tiempo concluido! Los 3 minutos del Elevator Pitch han finalizado.");
-                } else {
-                    timeLeft--;
-                    const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-                    const secs = String(timeLeft % 60).padStart(2, '0');
-                    timerDisplay.innerText = `${mins}:${secs}`;
-                }
-            }, 1000);
-        }
-
-        function resetPitchTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            timeLeft = 180;
-            document.getElementById('pitchTimer').innerText = "03:00";
-            const btn = document.getElementById('btnStartTimer');
-            btn.innerText = "Iniciar Ensayo";
-            btn.className = "px-2.5 py-1 bg-purple-600 text-white rounded text-xs font-bold hover:bg-purple-700 transition";
-        }
-
-        // DIARIO METACOGNITIVO LOCALSTORAGE
-        function saveDiario() {
-            const text = document.getElementById('diarioText').value;
-            localStorage.setItem('sda2_diario', text);
-            alert("¡Reflexión guardada correctamente en este navegador!");
-        }
-
-        // SCROLL HELPER
         function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
             }
         }
-
-        // INITIALIZE APP ON LOAD
-        window.onload = function() {
-            initProgress();
-        };
     </script>
 </body>
 </html>

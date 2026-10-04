@@ -1,36 +1,40 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SdA 2: Relanzamos Productos - Presentación en Aula</title>
+    <title>SdA 2: Relanzamos Productos | Tecnología 4º ESO</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
+                        tech: {
                             50: '#f0fdf4',
                             100: '#dcfce7',
                             500: '#22c55e',
                             600: '#16a34a',
                             700: '#15803d',
+                            900: '#14532d',
                         },
-                        tech: {
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
+                        brand: {
+                            blue: '#2563eb',
+                            purple: '#7c3aed',
+                            dark: '#0f172a',
+                            card: '#1e293b'
                         }
                     }
                 }
@@ -38,576 +42,747 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-            overflow: hidden;
-        }
         .slide {
             display: none;
             opacity: 0;
-            transform: translateY(12px) scale(0.99);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            transform: scale(0.98);
         }
         .slide.active {
             display: flex;
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: scale(1);
         }
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease;
-        }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-        }
-        /* Custom scrollbars for card contents if needed */
-        ::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb {
+        .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
         }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between select-none bg-slate-950 text-slate-100">
+<body class="bg-brand-dark text-slate-100 font-sans h-full flex flex-col justify-between overflow-hidden select-none">
 
-    <!-- Top Header -->
-    <header class="w-full px-6 py-4 flex items-center justify-between glass-panel z-20 border-b border-slate-800">
+    <!-- Top Navigation & Header -->
+    <header class="w-full bg-slate-900/80 backdrop-blur border-b border-slate-800 px-4 py-3 flex justify-between items-center z-50">
         <div class="flex items-center space-x-3">
-            <div class="bg-gradient-to-r from-emerald-500 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-emerald-500/20">
-                <i data-lucide="recycle" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="text-sm md:text-base font-bold bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
-                    Relanzamos Productos
-                </h1>
-                <p class="text-xs text-slate-400">Tecnología 4º ESO • Situación de Aprendizaje</p>
-            </div>
+            <span class="bg-gradient-to-r from-emerald-400 to-cyan-500 text-slate-950 font-bold px-2.5 py-1 rounded-lg text-xs tracking-wider uppercase">
+                Tecnología 4º ESO
+            </span>
+            <h1 class="text-sm md:text-base font-semibold text-slate-200 hidden sm:block">
+                SdA 2: Relanzamos Productos
+            </h1>
         </div>
 
-        <!-- Slide Indicators / Counter -->
-        <div class="flex items-center space-x-4">
-            <div class="hidden md:flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800 text-xs text-slate-300">
-                <span id="current-slide-num" class="font-bold text-emerald-400">1</span>
-                <span>/</span>
-                <span id="total-slides-num">6</span>
-            </div>
-            <button id="btn-fullscreen" onclick="toggleFullScreen()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Pantalla completa">
-                <i data-lucide="maximize" class="w-5 h-5"></i>
+        <!-- Slide Navigator Buttons -->
+        <div class="flex items-center space-x-2">
+            <button id="prevBtn" onclick="changeSlide(-1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition" title="Anterior (Flecha Izquierda)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span id="slideIndicator" class="text-xs md:text-sm font-medium px-3 py-1 bg-slate-800/80 rounded-md border border-slate-700 text-emerald-400">
+                Diapositiva 1 de 6
+            </span>
+            <button id="nextBtn" onclick="changeSlide(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition" title="Siguiente (Flecha Derecha / Espacio)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleTeacherNotes()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-xs flex items-center space-x-1" title="Notas Didácticas">
+                <i class="fa-solid fa-chalkboard-user text-emerald-400"></i>
+                <span class="hidden md:inline">Guía Profe</span>
+            </button>
+            <button onclick="toggleFullscreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Pantalla completa">
+                <i class="fa-solid fa-expand"></i>
             </button>
         </div>
     </header>
 
     <!-- Progress Bar -->
-    <div class="w-full bg-slate-900 h-1.5 relative overflow-hidden">
-        <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 h-full w-1/6 transition-all duration-300"></div>
+    <div class="w-full bg-slate-800 h-1.5">
+        <div id="progressBar" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 h-1.5 transition-all duration-300" style="width: 16.66%;"></div>
     </div>
 
-    <!-- MAIN SLIDES CONTAINER -->
-    <main class="flex-1 relative w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-center overflow-hidden">
+    <!-- Main Content Container (Slides Area) -->
+    <main class="flex-1 relative w-full max-w-7xl mx-auto p-4 md:p-6 flex flex-col justify-center overflow-y-auto custom-scrollbar">
 
-        <!-- SLIDE 1: Presentación y Reto -->
-        <section id="slide-1" class="slide active w-full flex-col justify-center items-center text-center max-w-4xl mx-auto space-y-6">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                <span>¡Bienvenidos a vuestra nueva Agencia Creativa!</span>
+        <!-- ================= SLIDE 1 ================= -->
+        <section class="slide active flex-col justify-between h-full space-y-6">
+            <div class="space-y-3 text-center md:text-left">
+                <div class="inline-flex items-center space-x-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-rocket"></i>
+                    <span>Presentación del Reto</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-heading text-white tracking-tight">
+                    ¡Vuestra Misión: <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Relanzar un Producto!</span>
+                </h2>
+                <p class="text-slate-300 text-sm md:text-base max-w-3xl">
+                    Asumiréis el rol de un <strong>equipo creativo de diseño y tecnología</strong>. Buscaréis un producto tecnológico antiguo o en desuso y le daréis una segunda vida mediante un rediseño moderno, útil y ecológico.
+                </p>
             </div>
 
-            <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                Relanzamos Productos:<br>
-                <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                    Del Declive a la Innovación Sostenible
-                </span>
-            </h2>
-
-            <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-                Muchos objetos tecnológicos del pasado molaban mucho, pero han quedado en el olvido.
-                Vuestra misión será <strong class="text-emerald-400">resucitarlos</strong> y convertirlos en productos inteligentes, ecológicos e inclusivos.
-            </p>
-
-            <!-- Retro vs Modern Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full pt-4">
-                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-3">
-                        <i data-lucide="radio" class="w-5 h-5"></i>
+            <!-- LO MÁS IMPORTANTE: PRODUCTO FINAL -->
+            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-2 border-emerald-500/40 rounded-2xl p-5 md:p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-3 bg-emerald-500 text-slate-950 rounded-xl font-bold text-xl">
+                        <i class="fa-solid fa-trophy"></i>
                     </div>
-                    <h3 class="font-bold text-white text-sm">1. El Objeto "Retro"</h3>
-                    <p class="text-xs text-slate-400 mt-1">Elegiréis un aparato antiguo que haya caído en desuso (Walkman, cámara de carrete, Tamagotchi...).</p>
+                    <div>
+                        <h3 class="text-xl font-bold font-heading text-white">LO QUE TENÉIS QUE LOGRAR (PRODUCTO FINAL)</h3>
+                        <p class="text-xs text-emerald-400 font-medium">Entregables finales requeridos al terminar las 8 sesiones</p>
+                    </div>
                 </div>
 
-                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
-                        <i data-lucide="leaf" class="w-5 h-5"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <!-- Entregable 1 -->
+                    <div class="bg-slate-950/60 border border-slate-700/60 p-4 rounded-xl flex flex-col justify-between hover:border-emerald-500/50 transition">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold mb-3">
+                                <i class="fa-solid fa-cube text-lg"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 text-sm md:text-base">1. Prototipo Digital Rediseñado</h4>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Un modelo visual o 3D de vuestra solución mejorada (diseñado en Tinkercad, Canva o generación asistida).
+                            </p>
+                        </div>
+                        <span class="mt-3 text-[11px] font-semibold text-emerald-400 bg-emerald-950/60 px-2 py-1 rounded inline-block w-fit">Ecológico + Funcional</span>
                     </div>
-                    <h3 class="font-bold text-white text-sm">2. Rediseño Ecológico</h3>
-                    <p class="text-xs text-slate-400 mt-1">Aplicaréis materiales sostenibles, energías limpias y facilidad para repararlo.</p>
-                </div>
 
-                <div class="glass-card p-4 rounded-2xl text-left border border-slate-800 hover:border-emerald-500/40">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3">
-                        <i data-lucide="box" class="w-5 h-5"></i>
+                    <!-- Entregable 2 -->
+                    <div class="bg-slate-950/60 border border-slate-700/60 p-4 rounded-xl flex flex-col justify-between hover:border-emerald-500/50 transition">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold mb-3">
+                                <i class="fa-solid fa-rectangle-ad text-lg"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 text-sm md:text-base">2. Anuncio Publicitario</h4>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Cartel digital impactante o vídeo promocional de corta duración con lenguaje inclusivo y sin estereotipos.
+                            </p>
+                        </div>
+                        <span class="mt-3 text-[11px] font-semibold text-cyan-400 bg-cyan-950/60 px-2 py-1 rounded inline-block w-fit">Anuncio Inclusivo</span>
                     </div>
-                    <h3 class="font-bold text-white text-sm">3. Prototipo Digital</h3>
-                    <p class="text-xs text-slate-400 mt-1">Diseñaréis el nuevo modelo en 2D/3D por ordenador y prepararéis su anuncio.</p>
+
+                    <!-- Entregable 3 -->
+                    <div class="bg-slate-950/60 border border-slate-700/60 p-4 rounded-xl flex flex-col justify-between hover:border-emerald-500/50 transition">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold mb-3">
+                                <i class="fa-solid fa-display text-lg"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-100 text-sm md:text-base">3. Defensa de 5 minutos</h4>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Presentación oral rápida en equipo ante la clase usando una presentación visual en PDF de 5 diapositivas.
+                            </p>
+                        </div>
+                        <span class="mt-3 text-[11px] font-semibold text-purple-400 bg-purple-950/60 px-2 py-1 rounded inline-block w-fit">Exposición Oral</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700">
+                    <span class="block text-xs text-slate-400">Duración</span>
+                    <strong class="text-sm text-slate-200">8 Sesiones</strong>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700">
+                    <span class="block text-xs text-slate-400">Agrupamiento</span>
+                    <strong class="text-sm text-slate-200">2 a 4 Alumnos/as</strong>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700">
+                    <span class="block text-xs text-slate-400">Audiencia</span>
+                    <strong class="text-sm text-slate-200">Comité de Inversores</strong>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700">
+                    <span class="block text-xs text-slate-400">Formato</span>
+                    <strong class="text-sm text-slate-200">Reto Tecnológico</strong>
                 </div>
             </div>
         </section>
 
-        <!-- SLIDE 2: ¿Qué vais a aprender? -->
-        <section id="slide-2" class="slide w-full flex-col justify-center space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Objetivos Clave</span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Qué vais a aprender en esta unidad?</h2>
-                <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">Cuatro conocimientos y habilidades prácticas que dominaréis al finalizar:</p>
+        <!-- ================= SLIDE 2 ================= -->
+        <section class="slide flex-col justify-between h-full space-y-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 bg-blue-500/10 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span>El Contexto Real</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold font-heading text-white">
+                    ¿Por qué cae un producto en desuso?
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm">
+                    Todos los aparatos tecnológicos siguen una trayectoria de vida en el mercado.
+                </p>
             </div>
 
+            <!-- Visual Lifecycle & Problem Concept -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Left: Las 4 fases del ciclo de vida -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+                    <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                        <span>Las 4 Fases del Ciclo de Vida</span>
+                    </h3>
+
+                    <div class="space-y-2.5">
+                        <div class="flex items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-xs flex items-center justify-center font-bold mr-3">1</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200">Lanzamiento / Introducción</h4>
+                                <p class="text-[11px] text-slate-400">Sale a la venta, pocas personas lo conocen.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold mr-3">2</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200">Crecimiento</h4>
+                                <p class="text-[11px] text-slate-400">Se vuelve popular y aumentan sus ventas rápidamente.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+                            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold mr-3">3</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200">Madurez</h4>
+                                <p class="text-[11px] text-slate-400">Casi todo el mundo lo tiene; el mercado se satura.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-2 rounded-lg bg-slate-950 border border-slate-800 border-red-500/30">
+                            <span class="w-6 h-6 rounded-full bg-red-500/20 text-red-400 text-xs flex items-center justify-center font-bold mr-3">4</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-100">Declive o Olvido <span class="text-red-400">(¡Aquí actuamos!)</span></h4>
+                                <p class="text-[11px] text-slate-400">Deja de venderse porque aparece otra tecnología superior.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Tipos de Desgaste / Obsolescencia y Cambio a Economía Circular -->
+                <div class="space-y-4 flex flex-col justify-between">
+                    <!-- Concept Box 1 -->
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider mb-2 flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                            <span>El Problema: El Desgaste Programado y Percibido</span>
+                        </h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Muchos objetos se rompen rápido o quedan pasados de moda a propósito para obligarnos a comprar más. Esto genera toneladas de <strong>basura electrónica</strong> perjudicial para el planeta.
+                        </p>
+                    </div>
+
+                    <!-- Concept Box 2 -->
+                    <div class="bg-gradient-to-r from-emerald-950/60 to-slate-900 border border-emerald-500/30 p-4 rounded-xl">
+                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center space-x-2">
+                            <i class="fa-solid fa-rotate text-emerald-400"></i>
+                            <span>Vuestra Solución: Economía Circular</span>
+                        </h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Cambiemos el modelo de <i>"comprar, usar y tirar"</i> por un modelo sostenible de <strong>reducir, reparar, reutilizar y rediseñar</strong> productos con mejores materiales y funciones.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example strip -->
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs flex flex-wrap justify-around items-center text-slate-400 gap-2">
+                <span>Ejemplos cotidianos:</span>
+                <span class="text-slate-200 font-medium"><i class="fa-solid fa-camera text-blue-400 mr-1"></i> Cámaras compactas</span>
+                <span class="text-slate-200 font-medium"><i class="fa-solid fa-music text-purple-400 mr-1"></i> Reproductores MP3</span>
+                <span class="text-slate-200 font-medium"><i class="fa-solid fa-gamepad text-emerald-400 mr-1"></i> Consolas antiguas</span>
+                <span class="text-slate-200 font-medium"><i class="fa-solid fa-location-dot text-amber-400 mr-1"></i> Navegadores GPS</span>
+            </div>
+        </section>
+
+        <!-- ================= SLIDE 3 ================= -->
+        <section class="slide flex-col justify-between h-full space-y-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 bg-purple-500/10 text-purple-400 border border-purple-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>¿Qué Vais a Aprender?</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold font-heading text-white">
+                    Habilidades Tecnológicas y Prácticas
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm">
+                    A lo largo del proyecto desarrollaréis conocimientos aplicados directamente al mundo real.
+                </p>
+            </div>
+
+            <!-- 4 Main Learning Pillars -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Learning 1 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
-                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl shrink-0">
-                        <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+                <!-- Pillar 1 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start space-x-4">
+                    <div class="p-3 bg-blue-500/20 text-blue-400 rounded-lg shrink-0">
+                        <i class="fa-solid fa-magnifying-glass-chart text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-white">Ciclo de Vida de los Productos</h3>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
-                            Aprenderéis qué pasa con un objeto desde que se extraen sus materiales hasta que se recicla o se tira. Entenderéis la causa de la obsolescencia.
+                        <h3 class="font-bold text-slate-100 text-sm">1. Análisis de Productos y Entorno</h3>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                            Aprenderéis a examinar por qué falla un objeto, cómo influye la tecnología en la sociedad y de qué forma elegir materiales sostenibles.
                         </p>
                     </div>
                 </div>
 
-                <!-- Learning 2 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
-                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl shrink-0">
-                        <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                <!-- Pillar 2 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start space-x-4">
+                    <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-lg shrink-0">
+                        <i class="fa-solid fa-pen-ruler text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-white">Técnicas Creativas de Innovación</h3>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
-                            Utilizaremos preguntas clave para reinventar el producto: <span class="text-indigo-300 font-medium">Sustituir piezas, Combinar funciones o Adaptar para personas con discapacidad.</span>
+                        <h3 class="font-bold text-slate-100 text-sm">2. Ideación y Prototipado Digital</h3>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                            Usaréis técnicas de creatividad (lluvia de ideas) y herramientas informáticas (modelado 3D o diseño digital) para dar forma visual a vuestras propuestas.
                         </p>
                     </div>
                 </div>
 
-                <!-- Learning 3 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
-                    <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl shrink-0">
-                        <i data-lucide="monitor" class="w-6 h-6"></i>
+                <!-- Pillar 3 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start space-x-4">
+                    <div class="p-3 bg-cyan-500/20 text-cyan-400 rounded-lg shrink-0">
+                        <i class="fa-solid fa-bullhorn text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-white">Diseño Digital 2D y 3D</h3>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
-                            Aprenderéis a usar programas de ordenador (como Tinkercad o Canva) para crear el boceto y la maqueta virtual tridimensional de vuestra invención.
+                        <h3 class="font-bold text-slate-100 text-sm">3. Marketing Ético e Inclusivo</h3>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                            Diseñaréis anuncios llamativos comunicando las ventajas ecosociales del producto sin usar lenguaje ni imágenes sexistas.
                         </p>
                     </div>
                 </div>
 
-                <!-- Learning 4 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-start space-x-4">
-                    <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl shrink-0">
-                        <i data-lucide="mega-phone" class="w-6 h-6"></i>
+                <!-- Pillar 4 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start space-x-4">
+                    <div class="p-3 bg-purple-500/20 text-purple-400 rounded-lg shrink-0">
+                        <i class="fa-solid fa-comments text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-white">Comunicación Express e Inclusiva</h3>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">
-                            Aprenderéis a presentar vuestras ideas de forma clara y convincente en solo 3 minutos, creando además anuncios libres de estereotipos.
+                        <h3 class="font-bold text-slate-100 text-sm">4. Comunicación Oral Efectiva</h3>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                            Aprenderéis a defender vuestra propuesta en público expresándoos de forma clara, controlando los tiempos y proyectando seguridad.
                         </p>
                     </div>
                 </div>
             </div>
+
+            <!-- Soft skill badge -->
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex items-center justify-between text-xs text-slate-300">
+                <span class="flex items-center space-x-2">
+                    <i class="fa-solid fa-users-gear text-emerald-400 text-base"></i>
+                    <span><strong>Trabajo Cooperativo:</strong> Aprenderéis a organizar tareas y resolver desacuerdos con respeto.</span>
+                </span>
+                <span class="hidden sm:inline-block bg-slate-800 px-2.5 py-1 rounded text-[11px] text-slate-400">4º ESO LOMLOE</span>
+            </div>
         </section>
 
-        <!-- SLIDE 3: Plan de Trabajo (8 Sesiones) -->
-        <section id="slide-3" class="slide w-full flex-col justify-center space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Paso a Paso</span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">El Camino del Proyecto (8 Sesiones)</h2>
-                <p class="text-xs sm:text-sm text-slate-400">Trabajaremos durante aproximadamente 3 semanas organizados en 3 fases clave:</p>
+        <!-- ================= SLIDE 4 ================= -->
+        <section class="slide flex-col justify-between h-full space-y-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Hoja de Ruta y Tareas</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold font-heading text-white">
+                    Las 8 Sesiones Paso a Paso
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm">
+                    Así organizaremos nuestro trabajo durante las próximas semanas:
+                </p>
             </div>
 
             <!-- Timeline Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Phase 1 -->
-                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-emerald-500 relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-bold px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-md">FASE 1</span>
-                            <span class="text-xs text-slate-400">Sesiones 1 - 2</span>
-                        </div>
-                        <h3 class="font-bold text-white text-base mb-2">Inicio y Diagnóstico</h3>
-                        <ul class="text-xs text-slate-300 space-y-2">
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                                <span>Ver productos icónicos del pasado.</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                                <span>Formar equipos de 4 personas y reparto de roles.</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                                <span>Elegir el producto retro a relanzar.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Phase 2 -->
-                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-indigo-500 relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-bold px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded-md">FASE 2</span>
-                            <span class="text-xs text-slate-400">Sesiones 3 - 6</span>
-                        </div>
-                        <h3 class="font-bold text-white text-base mb-2">Desarrollo y Diseño</h3>
-                        <ul class="text-xs text-slate-300 space-y-2">
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
-                                <span>Lluvia de ideas y mejoras ecológicas.</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
-                                <span>Modelado del prototipo en 2D / 3D.</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400 shrink-0"></i>
-                                <span>Creación del cartel o anuncio publicitario.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Phase 3 -->
-                <div class="glass-panel p-5 rounded-2xl border-t-4 border-t-purple-500 relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-bold px-2 py-1 bg-purple-500/20 text-purple-300 rounded-md">FASE 3</span>
-                            <span class="text-xs text-slate-400">Sesiones 7 - 8</span>
-                        </div>
-                        <h3 class="font-bold text-white text-base mb-2">Presentación y Cierre</h3>
-                        <ul class="text-xs text-slate-300 space-y-2">
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
-                                <span>Ensayo de la presentación breve (3 min).</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
-                                <span><strong>Evento Final:</strong> Presentación ante la clase.</span>
-                            </li>
-                            <li class="flex items-center space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400 shrink-0"></i>
-                                <span>Evaluación entre compañeros y reflexión.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 4: Entregables y Roles de Equipo -->
-        <section id="slide-4" class="slide w-full flex-col justify-center space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-cyan-400">Trabajo en Equipo</span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Qué debemos entregar y qué rol tendrás?</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Deliverables -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wide flex items-center space-x-2">
-                        <i data-lucide="folder-check" class="w-4 h-4"></i>
-                        <span>Los 3 Productos Finales</span>
-                    </h3>
-                    <div class="space-y-2">
-                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <span class="text-xs font-medium text-slate-200">1. Prototipo Digital (2D o 3D)</span>
-                            <span class="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded">Tinkercad / Canva</span>
-                        </div>
-                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <span class="text-xs font-medium text-slate-200">2. Ficha de Sostenibilidad</span>
-                            <span class="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded">Materiales y Reciclaje</span>
-                        </div>
-                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <span class="text-xs font-medium text-slate-200">3. Presentación Oral + Anuncio Inclusivo</span>
-                            <span class="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded">3 min. en clase</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Roles -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wide flex items-center space-x-2">
-                        <i data-lucide="users" class="w-4 h-4"></i>
-                        <span>Los 4 Roles de la Agencia (4 Alumnos)</span>
-                    </h3>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
-                            <p class="font-bold text-amber-400">Coordinación</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Controla los tiempos y el plan de trabajo.</p>
-                        </div>
-                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
-                            <p class="font-bold text-cyan-400">Diseño e Innovación</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Lidera el diseño 2D/3D del prototipo.</p>
-                        </div>
-                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
-                            <p class="font-bold text-emerald-400">Sostenibilidad</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Supervisa los materiales ecológicos.</p>
-                        </div>
-                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
-                            <p class="font-bold text-purple-400">Comunicación</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Dirige la presentación oral y el cartel.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 5: Evaluation Breakdown -->
-        <section id="slide-5" class="slide w-full flex-col justify-center space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Criterios Claros</span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">¿Cómo se evaluará tu nota?</h2>
-                <p class="text-xs sm:text-sm text-slate-400">La evaluación es transparente y valora tanto el resultado como el trabajo diario:</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Card 1 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-extrabold text-xl border border-emerald-500/30">
-                        40%
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-base">Prototipo y Ecodiseño</h3>
-                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                            Diseño digital 2D/3D bien elaborado, selección de materiales sostenibles y mejoras innovadoras aplicadas.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-extrabold text-xl border border-indigo-500/30">
-                        30%
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-base">Trabajo en Equipo</h3>
-                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                            Respeto por las funciones asignadas, resolución dialogada de dudas y apoyo entre compañeros.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 text-center space-y-3 relative overflow-hidden">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center font-extrabold text-xl border border-purple-500/30">
-                        30%
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-base">Presentación y Anuncio</h3>
-                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                            Claridad al hablar, ajuste al tiempo (3 minutos) y uso de un lenguaje gráfico inclusivo sin estereotipos.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
-                <i data-lucide="info" class="w-4 h-4 inline mr-1 text-indigo-400"></i>
-                También contarás con autoevaluación y evaluación entre equipos para valorar el esfuerzo de todos.
-            </div>
-        </section>
-
-        <!-- SLIDE 6: Misión de la Sesión 1 -->
-        <section id="slide-6" class="slide w-full flex-col justify-center space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">¡Manos a la Obra!</span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Tu Misión para Hoy (Sesión 1)</h2>
-                <p class="text-xs sm:text-sm text-slate-400">Pasos prácticos para completar antes de terminar la clase:</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-2.5 text-left">
                 <!-- Step 1 -->
-                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm">
-                        1
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded">SESIONES 1 - 2</span>
+                        <h3 class="text-xs font-bold text-slate-200 mt-2">Lanzamiento e Investigación</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">
+                            Creación de equipos y roles. Estudio del diseño, ciclo de vida y obsolescencia.
+                        </p>
                     </div>
-                    <h3 class="font-bold text-white text-sm">Formar el Equipo</h3>
-                    <p class="text-xs text-slate-400">Agrupaos en parejas o equipos de 4 personas y elegid las funciones iniciales.</p>
+                    <span class="text-[10px] text-slate-500 mt-2 border-t border-slate-800 pt-1">
+                        <i class="fa-solid fa-file-pdf mr-1 text-slate-400"></i> Ficha de roles
+                    </span>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 font-bold flex items-center justify-center text-sm">
-                        2
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div>
+                        <span class="text-[10px] font-bold text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded">SESIÓN 3</span>
+                        <h3 class="text-xs font-bold text-slate-200 mt-2">Elección de Producto</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">
+                            Lluvia de ideas y análisis del producto elegido. Completar la <strong>Tarea 1</strong>.
+                        </p>
                     </div>
-                    <h3 class="font-bold text-white text-sm">Elegir Objeto Retro</h3>
-                    <p class="text-xs text-slate-400">Seleccionad un producto en desuso (Walkman, Cámara analógica, Tamagotchi, Radio antigua...).</p>
+                    <span class="text-[10px] text-slate-500 mt-2 border-t border-slate-800 pt-1">
+                        <i class="fa-solid fa-file-lines mr-1 text-blue-400"></i> Entrega Tarea 1
+                    </span>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-2">
-                    <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center text-sm">
-                        3
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div>
+                        <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded">SESIONES 4 - 5</span>
+                        <h3 class="text-xs font-bold text-slate-200 mt-2">Rediseño y Prototipo</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">
+                            Generar ideas de mejora y construir el <strong>Prototipo Digital</strong> en 3D/diseño.
+                        </p>
                     </div>
-                    <h3 class="font-bold text-white text-sm">Mural de Ideas Iniciales</h3>
-                    <p class="text-xs text-slate-400">Responded en grupo: ¿Qué sabemos sobre por qué dejó de usarse y qué queremos mejorar?</p>
+                    <span class="text-[10px] text-slate-500 mt-2 border-t border-slate-800 pt-1">
+                        <i class="fa-solid fa-cube mr-1 text-emerald-400"></i> Archivo / Imagen 3D
+                    </span>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+                    <div>
+                        <span class="text-[10px] font-bold text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded">SESIONES 6 - 7</span>
+                        <h3 class="text-xs font-bold text-slate-200 mt-2">Campaña y Ensayo</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">
+                            Diseño del cartel/vídeo y preparación de la presentación visual en PDF de 5 diapositivas.
+                        </p>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-2 border-t border-slate-800 pt-1">
+                        <i class="fa-solid fa-image mr-1 text-cyan-400"></i> Cartel + PDF
+                    </span>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="bg-gradient-to-b from-purple-950/40 to-slate-900 border border-purple-500/40 p-3 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-purple-300 bg-purple-900/80 px-2 py-0.5 rounded">SESIÓN 8</span>
+                        <h3 class="text-xs font-bold text-white mt-2">¡El Gran Día! Exposición</h3>
+                        <p class="text-[11px] text-slate-300 mt-1">
+                            Presentación de 5 minutos ante los inversores (la clase) y coevaluación entre grupos.
+                        </p>
+                    </div>
+                    <span class="text-[10px] text-purple-300 mt-2 border-t border-purple-800 pt-1 font-semibold">
+                        <i class="fa-solid fa-star mr-1"></i> Evaluación Final
+                    </span>
                 </div>
             </div>
 
-            <!-- Action Button -->
-            <div class="text-center pt-2">
-                <button onclick="launchCelebration()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition transform active:scale-95 inline-flex items-center space-x-2 text-sm">
-                    <i data-lucide="rocket" class="w-4 h-4"></i>
-                    <span>¡Comenzar el Proyecto!</span>
-                </button>
+            <!-- Deliverable Summary Box -->
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+                <span><i class="fa-solid fa-folder-open text-amber-400 mr-2"></i> Carpeta compartida en Drive con todas las tareas al día.</span>
+                <span class="text-[11px] text-slate-400">Trabajo en clase (50 min/sesión)</span>
+            </div>
+        </section>
+
+        <!-- ================= SLIDE 5 ================= -->
+        <section class="slide flex-col justify-between h-full space-y-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 bg-teal-500/10 text-teal-400 border border-teal-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>Criterios Claves de Evaluación</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold font-heading text-white">
+                    ¿Cómo se Evalúa esta SdA?
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm">
+                    Evaluaré únicamente el grado de logro de vuestros <strong>Criterios de Evaluación</strong>.
+                </p>
+            </div>
+
+            <!-- 3 Criterion Cards with Percentages -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- CEv 1.3 -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded border border-emerald-800">Criterio 1.3</span>
+                            <span class="text-2xl font-black text-emerald-400 font-heading">30%</span>
+                        </div>
+                        <h3 class="font-bold text-slate-100 text-sm">Gestión del Trabajo en Equipo</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Respeto por los roles asignados, actitud participativa, adecuada gestión emocional y toma de decisiones sin generar conflictos.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center space-x-1">
+                        <i class="fa-solid fa-users text-emerald-400"></i>
+                        <span>Cuaderno + Observación en aula</span>
+                    </div>
+                </div>
+
+                <!-- CEv 2.1 -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded border border-cyan-800">Criterio 2.1</span>
+                            <span class="text-2xl font-black text-cyan-400 font-heading">40%</span>
+                        </div>
+                        <h3 class="font-bold text-slate-100 text-sm">Análisis y Prototipado Sostenible</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Comprensión del ciclo de vida y causas del declive, e innovación del prototipo digital incorporando criterios de eco-diseño.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center space-x-1">
+                        <i class="fa-solid fa-pen-ruler text-cyan-400"></i>
+                        <span>Documento Tarea 1 + Prototipo 3D</span>
+                    </div>
+                </div>
+
+                <!-- CEv 3.2 -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-purple-400 bg-purple-950 px-2.5 py-1 rounded border border-purple-800">Criterio 3.2</span>
+                            <span class="text-2xl font-black text-purple-400 font-heading">30%</span>
+                        </div>
+                        <h3 class="font-bold text-slate-100 text-sm">Presentación Oral y Campaña</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Claridad expositiva en la defensa oral (5 min), control del tiempo, lenguaje inclusivo e impacto visual de la pieza publicitaria.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center space-x-1">
+                        <i class="fa-solid fa-microphone text-purple-400"></i>
+                        <span>Exposición + Anuncio Publicitario</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Co-evaluation note -->
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-300 flex items-center space-x-3">
+                <i class="fa-solid fa-star text-amber-400 text-base"></i>
+                <span><strong>Coevaluación en la Sesión 8:</strong> Evaluaréis el trabajo de los otros grupos mediante una Diana Evaluativa. ¡Vuestra opinión también cuenta!</span>
+            </div>
+        </section>
+
+        <!-- ================= SLIDE 6 ================= -->
+        <section class="slide flex-col justify-between h-full space-y-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-play"></i>
+                    <span>¡Manos a la Obra!</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold font-heading text-white">
+                    Organización de Equipos y Roles
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm">
+                    Agrupaos en equipos de <strong>2 a 4 alumnos/as</strong> y asignad los siguientes roles internos:
+                </p>
+            </div>
+
+            <!-- Interactive Roles Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                <!-- Role 1 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-emerald-500/50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold mb-2">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100 text-xs md:text-sm">1. Coordinador/a</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                        Controla los tiempos de trabajo, asegura el cumplimiento de las entregas y coordina al grupo.
+                    </p>
+                </div>
+
+                <!-- Role 2 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-blue-500/50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold mb-2">
+                        <i class="fa-solid fa-file-pen"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100 text-xs md:text-sm">2. Secretario/a</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                        Redacta y organiza los documentos de las tareas 1 y 2 en Google Docs.
+                    </p>
+                </div>
+
+                <!-- Role 3 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-purple-500/50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold mb-2">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100 text-xs md:text-sm">3. Resp. Digital</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                        Gestiona los archivos en la nube, la carpeta compartida de Drive y las imágenes del prototipo.
+                    </p>
+                </div>
+
+                <!-- Role 4 -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-amber-500/50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold mb-2">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-100 text-xs md:text-sm">4. Portavoz</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                        Representa al equipo en las puestas en común y lidera la exposición oral final.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Checklist for Session 1 -->
+            <div class="bg-gradient-to-r from-emerald-950/80 to-slate-900 border border-emerald-500/40 p-4 rounded-xl">
+                <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>TAREA PARA LA SESIÓN DE HOY:</span>
+                </h4>
+                <ul class="text-xs text-slate-200 space-y-1.5 list-disc list-inside">
+                    <li>Formar vuestro equipo (2 a 4 miembros) y repartir los 4 roles.</li>
+                    <li>Crear la carpeta compartida en Google Drive con el nombre del equipo.</li>
+                    <li>Empezar a pensar en 3 productos antiguos o en desuso para la lluvia de ideas de la próxima sesión.</li>
+                </ul>
             </div>
         </section>
 
     </main>
 
-    <!-- Navigation Footer Controls -->
-    <footer class="w-full px-6 py-4 glass-panel z-20 border-t border-slate-800 flex items-center justify-between">
-        <button id="btn-prev" onclick="prevSlide()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold rounded-xl border border-slate-700 transition flex items-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            <span>Anterior</span>
-        </button>
+    <!-- Modal: Teacher Notes / Guía Pedagógica (LOMLOE) -->
+    <div id="teacherNotesModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex justify-end">
+        <div class="bg-slate-900 w-full max-w-md h-full p-6 border-l border-slate-800 overflow-y-auto custom-scrollbar flex flex-col justify-between">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                        <span>Guía Pedagógica del Docente</span>
+                    </div>
+                    <button onclick="toggleTeacherNotes()" class="text-slate-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
 
-        <!-- Slide Dots -->
-        <div id="dots-container" class="flex items-center space-x-2">
-            <!-- Dots dynamically highlighted by JS -->
+                <div class="space-y-3 text-xs text-slate-300">
+                    <p class="bg-slate-950 p-2.5 rounded border border-slate-800 text-slate-400">
+                        <strong>Materia:</strong> Tecnología 4º ESO (Andalucía)<br>
+                        <strong>SdA 2:</strong> RELANZAMOS PRODUCTOS<br>
+                        <strong>Normativa:</strong> LOMLOE - Junta de Andalucía
+                    </p>
+
+                    <div>
+                        <h4 class="font-bold text-emerald-400 uppercase mb-1">Competencias Específicas:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-400 text-[11px]">
+                            <li><strong>CE 1:</strong> Planteamiento creativo y colaborativo de soluciones.</li>
+                            <li><strong>CE 2:</strong> Diseño, fabricación y análisis del ciclo de vida.</li>
+                            <li><strong>CE 3:</strong> Comunicación oral, expresión y difusión no sexista.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-cyan-400 uppercase mb-1">Criterios de Evaluación Criteriales:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-400 text-[11px]">
+                            <li><strong>CEv 1.3 (30%):</strong> Gestión del equipo, roles y toma de decisiones.</li>
+                            <li><strong>CEv 2.1 (40%):</strong> Análisis del ciclo de vida y diseño de prototipo sostenible.</li>
+                            <li><strong>CEv 3.2 (30%):</strong> Presentación oral (pitch) e impacto visual de campaña.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-purple-400 uppercase mb-1">Principios DUA Aplicados:</h4>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            - Múltiples formas de motivación (elección libre del producto, metodología de retos).<br>
+                            - Múltiples formas de expresión (prototipo 3D, IA, boceto digital o vídeo publicitario).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="toggleTeacherNotes()" class="w-full mt-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition">
+                Cerrar Guía
+            </button>
         </div>
+    </div>
 
-        <button id="btn-next" onclick="nextSlide()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold rounded-xl transition flex items-center space-x-2 shadow-lg shadow-emerald-600/20">
-            <span>Siguiente</span>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-        </button>
+    <!-- Footer / Control Controls -->
+    <footer class="w-full bg-slate-900 border-t border-slate-800 px-4 py-2.5 flex justify-between items-center text-xs text-slate-400">
+        <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-keyboard text-slate-500"></i>
+            <span class="hidden sm:inline">Usa las teclas de flecha ◄ ► o Espacio para cambiar de diapositiva</span>
+        </div>
+        <div>
+            <span id="slideCounterText">Diapositiva 1 / 6</span>
+        </div>
     </footer>
 
+    <!-- JavaScript Navigation Logic -->
     <script>
-        let currentSlide = 1;
-        const totalSlides = 6;
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
 
-        const currentNumElem = document.getElementById('current-slide-num');
-        const totalNumElem = document.getElementById('total-slides-num');
-        const progressBar = document.getElementById('progress-bar');
-        const dotsContainer = document.getElementById('dots-container');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-
-        function initDots() {
-            dotsContainer.innerHTML = '';
-            for (let i = 1; i <= totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-emerald-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(i);
-                dot.title = `Ir a la diapositiva ${i}`;
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function updateUI() {
-            // Update slide visibility
-            for (let i = 1; i <= totalSlides; i++) {
-                const slideElem = document.getElementById(`slide-${i}`);
-                if (i === currentSlide) {
-                    slideElem.classList.add('active');
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
                 } else {
-                    slideElem.classList.remove('active');
+                    slide.classList.remove('active');
                 }
-            }
+            });
 
-            // Update numbers and progress
-            currentNumElem.textContent = currentSlide;
-            totalNumElem.textContent = totalSlides;
-            const progressPercent = (currentSlide / totalSlides) * 100;
-            progressBar.style.width = `${progressPercent}%`;
+            // Update Slide Indicator Texts
+            document.getElementById('slideIndicator').textContent = `Diapositiva ${currentSlide + 1} de ${totalSlides}`;
+            document.getElementById('slideCounterText').textContent = `Diapositiva ${currentSlide + 1} / ${totalSlides}`;
 
-            // Update buttons state
-            btnPrev.disabled = currentSlide === 1;
-            if (currentSlide === totalSlides) {
-                btnNext.innerHTML = `<span>Finalizar</span> <i data-lucide="check" class="w-4 h-4"></i>`;
-                btnNext.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
-                btnNext.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
-            } else {
-                btnNext.innerHTML = `<span>Siguiente</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
-                btnNext.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
-                btnNext.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
-            }
+            // Update Progress Bar Width
+            const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
 
-            initDots();
-            lucide.createIcons();
+            // Update Button States
+            document.getElementById('prevBtn').disabled = (currentSlide === 0);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides - 1);
         }
 
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateUI();
-            } else {
-                launchCelebration();
+        function changeSlide(direction) {
+            const nextIndex = currentSlide + direction;
+            if (nextIndex >= 0 && nextIndex < totalSlides) {
+                currentSlide = nextIndex;
+                updateSlide();
             }
         }
 
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateUI();
-            }
-        }
-
-        function goToSlide(slideIndex) {
-            if (slideIndex >= 1 && slideIndex <= totalSlides) {
-                currentSlide = slideIndex;
-                updateUI();
-            }
-        }
-
+        // Keyboard Controls
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                nextSlide();
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
             } else if (e.key === 'ArrowLeft') {
-                prevSlide();
+                e.preventDefault();
+                changeSlide(-1);
             }
         });
 
-        // Touch Swipe Navigation
+        // Touch Swipe Controls for Mobile/Tablets
         let touchStartX = 0;
         let touchEndX = 0;
 
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-        });
+        }, false);
 
         document.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
-        });
+        }, false);
 
         function handleSwipe() {
             const swipeThreshold = 50;
             if (touchEndX < touchStartX - swipeThreshold) {
-                nextSlide();
+                changeSlide(1); // Swipe Left -> Next
             }
             if (touchEndX > touchStartX + swipeThreshold) {
-                prevSlide();
+                changeSlide(-1); // Swipe Right -> Prev
             }
         }
 
-        function toggleFullScreen() {
+        // Toggle Teacher Notes Drawer
+        function toggleTeacherNotes() {
+            const modal = document.getElementById('teacherNotesModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => console.log(err));
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
@@ -615,18 +790,9 @@
             }
         }
 
-        function launchCelebration() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-
-        // Initialize icons and UI on startup
+        // Initialize presentation on load
         window.onload = function() {
-            lucide.createIcons();
-            updateUI();
+            updateSlide();
         };
     </script>
 </body>
