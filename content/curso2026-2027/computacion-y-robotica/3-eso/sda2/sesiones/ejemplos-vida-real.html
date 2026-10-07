@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Programación: Del Mundo Real a MakeCode Arcade</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Bloques tipo MakeCode CSS Custom Styles */
+        .block-shape {
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid rgba(0,0,0,0.25);
+            transition: all 0.2s ease;
+        }
+        
+        .block-shape:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        /* MakeCode Category Colors */
+        .mc-logic { background-color: #00A651; color: white; } /* Verde Condicionales */
+        .mc-loops { background-color: #2087E6; color: white; } /* Azul Bucles */
+        .mc-vars  { background-color: #E83A20; color: white; } /* Rojo/Naranja Variables */
+        .mc-sprites { background-color: #2B73B5; color: white; } /* Azul Sprites */
+        .mc-info   { background-color: #CF1D5D; color: white; } /* Rosa/Rojo Info */
+        .mc-game   { background-color: #8C40B8; color: white; } /* Morado Game */
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Pulse Animation for Active Execution */
+        @keyframes block-highlight {
+            0%, 100% { outline: 3px solid #F59E0B; }
+            50% { outline: 5px solid #FBBF24; box-shadow: 0 0 15px #F59E0B; }
+        }
+        .executing-highlight {
+            animation: block-highlight 1.2s infinite;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="bg-slate-950 border-b border-slate-800 px-4 py-3 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="gamepad-2" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+                        Aprende Programación: Mundo Real ➔ MakeCode Arcade
+                    </h1>
+                    <p class="text-xs text-slate-400">Exposición Dialogada para Aula (15 min) • Conceptos Fundamentales</p>
+                </div>
+            </div>
+
+            <!-- Global View Controls -->
+            <div class="flex items-center space-x-2 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                <span class="text-xs text-slate-400 px-2 font-medium">Modo Código:</span>
+                <button id="btn-mode-blocks" onclick="switchCodeView('blocks')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow">
+                    <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                    <span>Bloques MakeCode</span>
+                </button>
+                <button id="btn-mode-js" onclick="switchCodeView('js')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 text-slate-400 hover:text-white">
+                    <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                    <span>JavaScript Arcade</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION CASE TABS -->
+    <nav class="bg-slate-900 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex overflow-x-auto">
+            <button onclick="switchCase('traffic')" id="tab-traffic" class="case-tab flex-1 min-w-[240px] px-6 py-3.5 border-b-2 border-indigo-500 bg-slate-800/50 text-indigo-400 font-semibold text-sm flex items-center justify-center space-x-2 transition">
+                <i data-lucide="traffic-cone" class="w-4 h-4"></i>
+                <span>Caso 1: Semáforo Inteligente</span>
+                <span class="text-[10px] bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full border border-green-500/30">Condicionales</span>
+            </button>
+            <button onclick="switchCase('recommender')" id="tab-recommender" class="case-tab flex-1 min-w-[240px] px-6 py-3.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-semibold text-sm flex items-center justify-center space-x-2 transition">
+                <i data-lucide="music" class="w-4 h-4"></i>
+                <span>Caso 2: Algoritmo Recomendador</span>
+                <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">Bucles</span>
+            </button>
+            <button onclick="switchCase('atm')" id="tab-atm" class="case-tab flex-1 min-w-[240px] px-6 py-3.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-semibold text-sm flex items-center justify-center space-x-2 transition">
+                <i data-lucide="credit-card" class="w-4 h-4"></i>
+                <span>Caso 3: Cajero y Domótica</span>
+                <span class="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded-full border border-red-500/30">Variables</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: REAL-WORLD INTERACTIVE SIMULATOR (Col 7) -->
+        <section class="lg:col-span-7 flex flex-col space-y-4">
+            <div class="bg-slate-950 rounded-2xl border border-slate-800 p-5 shadow-xl flex-1 flex flex-col">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <h2 id="sim-title" class="text-lg font-bold text-slate-100">Simulador de Semáforo Inteligente</h2>
+                    </div>
+                    <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-md font-mono">Entorno Real</span>
+                </div>
+
+                <!-- SIMULATOR 1: TRAFFIC LIGHT -->
+                <div id="sim-container-traffic" class="sim-panel flex-1 flex flex-col justify-between space-y-6">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 relative overflow-hidden flex-1 flex flex-col justify-center items-center">
+                        <!-- Traffic Scene -->
+                        <div class="w-full max-w-md bg-slate-950 p-6 rounded-2xl border border-slate-800 relative flex flex-col md:flex-row items-center justify-around gap-6">
+                            <!-- Physical Traffic Light Structure -->
+                            <div class="bg-slate-900 border-4 border-slate-800 p-3 rounded-2xl flex flex-col space-y-3 shadow-2xl items-center w-24">
+                                <div id="light-red" class="w-12 h-12 rounded-full bg-red-950 border border-red-800/50 transition-all duration-300 flex items-center justify-center">
+                                    <div class="w-4 h-4 rounded-full bg-red-500/20"></div>
+                                </div>
+                                <div id="light-yellow" class="w-12 h-12 rounded-full bg-amber-950 border border-amber-800/50 transition-all duration-300 flex items-center justify-center">
+                                    <div class="w-4 h-4 rounded-full bg-amber-500/20"></div>
+                                </div>
+                                <div id="light-green" class="w-12 h-12 rounded-full bg-emerald-950 border border-emerald-800/50 transition-all duration-300 flex items-center justify-center">
+                                    <div class="w-4 h-4 rounded-full bg-emerald-500/20"></div>
+                                </div>
+                            </div>
+
+                            <!-- Visual Indicators / Sensor Feedback -->
+                            <div class="flex flex-col space-y-4 w-full max-w-[200px]">
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 flex items-center justify-between">
+                                    <span class="text-xs text-slate-400 flex items-center gap-1.5"><i data-lucide="car" class="w-4 h-4 text-indigo-400"></i> Coches</span>
+                                    <span id="display-cars" class="text-lg font-bold font-mono text-indigo-400">0</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 flex items-center justify-between">
+                                    <span class="text-xs text-slate-400 flex items-center gap-1.5"><i data-lucide="user" class="w-4 h-4 text-emerald-400"></i> Botón Peatón</span>
+                                    <span id="display-pedestrian" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-500">NO</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider block mb-1">Estado Detectado</span>
+                                    <span id="display-status-text" class="text-xs font-semibold text-amber-400">Bajo Tráfico ➔ Semáforo en Verde</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Controls for Simulation -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-4">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Controles de Sensores en Tiempo Real</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Car Sensor Slider -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-xs">
+                                    <label class="text-slate-300 font-medium flex items-center gap-1">
+                                        <i data-lucide="activity" class="w-3.5 h-3.5 text-indigo-400"></i> Sensor Flujo de Coches:
+                                    </label>
+                                    <span id="val-cars" class="font-bold text-indigo-400">0 / 10</span>
+                                </div>
+                                <input type="range" id="input-cars" min="0" max="10" value="0" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" oninput="updateTrafficSim()">
+                            </div>
+
+                            <!-- Pedestrian Sensor Button -->
+                            <div class="flex items-end">
+                                <button id="btn-pedestrian" onclick="togglePedestrian()" class="w-full py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
+                                    <i data-lucide="footprints" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Presionar Botón Peatón</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMULATOR 2: RECOMMENDER ALGORITHM -->
+                <div id="sim-container-recommender" class="sim-panel hidden flex-1 flex flex-col justify-between space-y-6">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex-1 flex flex-col space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Base de Datos de Canciones / Vídeos</h3>
+                            <button onclick="resetRecommender()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                                <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reiniciar
+                            </button>
+                        </div>
+
+                        <!-- Catalog Items -->
+                        <div id="recommender-catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
+                            <!-- Dynamic Content Inserted by JS -->
+                        </div>
+
+                        <!-- Filter & Output Display -->
+                        <div class="border-t border-slate-800 pt-3 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Tu Feed Generado por Bucle (For / While):
+                                </span>
+                                <span id="recommender-count" class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">0 recomendaciones</span>
+                            </div>
+                            <div id="recommender-feed" class="bg-slate-950 rounded-xl p-3 border border-slate-800 flex-1 overflow-y-auto space-y-2 min-h-[120px]">
+                                <p class="text-xs text-slate-500 text-center py-6">Haz clic en "Ejecutar Bucle Filtrador" para procesar la lista...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Loop Controls -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-[11px] text-slate-400 block mb-1">Filtrar por Likes mínimos:</label>
+                                <select id="filter-likes" class="w-full bg-slate-950 border border-slate-700 rounded-lg text-xs p-2 text-slate-200">
+                                    <option value="0">Más de 0 likes</option>
+                                    <option value="50">Más de 50 likes</option>
+                                    <option value="100">Más de 100 likes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-slate-400 block mb-1">Filtrar por Género:</label>
+                                <select id="filter-genre" class="w-full bg-slate-950 border border-slate-700 rounded-lg text-xs p-2 text-slate-200">
+                                    <option value="ALL">Todos los géneros</option>
+                                    <option value="Gaming">Gaming / Electrónica</option>
+                                    <option value="Pop">Pop / Urbano</option>
+                                    <option value="Lo-Fi">Lo-Fi / Estudio</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="runRecommenderLoop()" class="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-lg transition flex items-center justify-center space-x-1.5">
+                                    <i data-lucide="play" class="w-4 h-4 fill-white"></i>
+                                    <span>Ejecutar Bucle For</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMULATOR 3: ATM & SMART HOME -->
+                <div id="sim-container-atm" class="sim-panel hidden flex-1 flex flex-col justify-between space-y-6">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex-1 flex flex-col justify-center items-center">
+                        <div class="w-full max-w-sm bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                            <!-- ATM Screen -->
+                            <div class="bg-slate-900 border border-indigo-500/30 rounded-xl p-4 text-center space-y-2">
+                                <div class="text-[10px] text-indigo-400 font-mono tracking-widest uppercase">BANCO ARCADE MACRO</div>
+                                <div class="text-xs text-slate-400">Estado de Cuenta / Variables</div>
+                                <div class="py-2 bg-slate-950 rounded-lg border border-slate-800">
+                                    <span class="text-xs text-slate-400 block">Saldo Actual (saldo):</span>
+                                    <span id="atm-balance" class="text-2xl font-bold font-mono text-emerald-400">$100</span>
+                                </div>
+                                <div id="atm-screen-msg" class="text-xs font-medium text-amber-400 min-h-[1.25rem]">
+                                    Ingrese PIN (PIN Correcto: 1234)
+                                </div>
+                            </div>
+
+                            <!-- Keypad & Interactive PIN Input -->
+                            <div class="space-y-3">
+                                <div class="flex justify-center items-center space-x-2">
+                                    <input type="password" id="atm-pin-input" maxlength="4" placeholder="••••" readonly class="w-32 text-center text-lg font-mono tracking-widest bg-slate-900 border border-slate-700 rounded-lg py-1.5 text-white">
+                                    <button onclick="clearPin()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg text-slate-300">Borrar</button>
+                                </div>
+
+                                <!-- Keypad grid -->
+                                <div class="grid grid-cols-3 gap-2 max-w-[180px] mx-auto">
+                                    <button onclick="pressKey('1')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">1</button>
+                                    <button onclick="pressKey('2')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">2</button>
+                                    <button onclick="pressKey('3')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">3</button>
+                                    <button onclick="pressKey('4')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">4</button>
+                                    <button onclick="pressKey('5')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">5</button>
+                                    <button onclick="pressKey('6')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">6</button>
+                                    <button onclick="pressKey('7')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">7</button>
+                                    <button onclick="pressKey('8')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">8</button>
+                                    <button onclick="pressKey('9')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm">9</button>
+                                    <button onclick="pressKey('0')" class="col-span-3 bg-slate-800 hover:bg-slate-700 text-white font-bold py-1.5 rounded-lg text-sm">0</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Panel -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button onclick="validatePinAndWithdraw(20)" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow transition flex items-center justify-center space-x-1.5">
+                                <i data-lucide="banknote" class="w-4 h-4"></i>
+                                <span>Validar PIN y Retirar $20</span>
+                            </button>
+                            <button onclick="depositMoney(50)" class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow transition flex items-center justify-center space-x-1.5">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span>Ingresar / Sumar Variable +$50</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: MAKECODE ARCADE CODE & BLOCKS (Col 5) -->
+        <section class="lg:col-span-5 flex flex-col space-y-4">
+            <div class="bg-slate-950 rounded-2xl border border-slate-800 p-5 shadow-xl flex-1 flex flex-col">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="cpu" class="w-5 h-5 text-indigo-400"></i>
+                        <h2 class="text-base font-bold text-slate-100">Equivalente MakeCode Arcade</h2>
+                    </div>
+                    <span id="code-view-indicator" class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded font-mono">Modo Bloques</span>
+                </div>
+
+                <!-- BLOCKS VIEW MODE CONTAINER -->
+                <div id="view-blocks-container" class="flex-1 overflow-y-auto space-y-3 pr-1">
+                    <p class="text-xs text-slate-400 mb-2">Representación oficial por categorías de colores en MakeCode Arcade:</p>
+
+                    <!-- Dynamic Blocks structure loaded by active case -->
+                    <div id="blocks-display" class="space-y-3">
+                        <!-- Content dynamically updated -->
+                    </div>
+                </div>
+
+                <!-- JAVASCRIPT VIEW MODE CONTAINER -->
+                <div id="view-js-container" class="hidden flex-1 flex flex-col">
+                    <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 font-mono text-xs overflow-x-auto flex-1 text-slate-200 leading-relaxed shadow-inner">
+                        <pre id="js-code-display"><code>// Código JavaScript MakeCode Arcade</code></pre>
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div class="mt-4 pt-3 border-t border-slate-800 bg-slate-900/60 p-3.5 rounded-xl border">
+                    <div class="flex items-start space-x-2">
+                        <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-200 mb-1">¿Cómo se conecta con MakeCode Arcade?</h4>
+                            <p id="explanation-text" class="text-xs text-slate-400 leading-relaxed">
+                                Clic en los controles interactivos para ver cómo los datos reales se mapean a sprites, variables y bloques.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TEACHER FACILITATOR / DIALOGUE PANEL (EXPANDABLE AT BOTTOM) -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-3 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wide block">Guía para Exposición Dialogada (Docente)</span>
+                    <p id="teacher-question" class="text-xs text-slate-300 font-medium">¿Qué crees que pasaría con el flujo de tráfico si eliminamos la condición `else`?</p>
+                </div>
+            </div>
+
+            <button onclick="nextTeacherQuestion()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold border border-slate-700 transition shrink-0 flex items-center gap-1">
+                <span>Siguiente Pregunta Reflexiva</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // GLOBAL STATE
+        let activeCase = 'traffic'; // 'traffic', 'recommender', 'atm'
+        let codeViewMode = 'blocks'; // 'blocks', 'js'
+
+        // CASE 1: TRAFFIC LIGHT STATE
+        let carSensorValue = 0;
+        let isPedestrianPressed = false;
+
+        // CASE 2: RECOMMENDER STATE
+        const rawCatalog = [
+            { title: "Pixel Rush Theme", genre: "Gaming", likes: 120, sprite: "🎮" },
+            { title: "Chill Arcade Beat", genre: "Lo-Fi", likes: 45, sprite: "🎧" },
+            { title: "Retro Victory Pop", genre: "Pop", likes: 210, sprite: "⭐" },
+            { title: "8-Bit Dungeon Synth", genre: "Gaming", likes: 85, sprite: "👾" },
+            { title: "Synthwave Sunset", genre: "Pop", likes: 30, sprite: "🌅" },
+            { title: "Study Chords", genre: "Lo-Fi", likes: 95, sprite: "📚" }
+        ];
+
+        // CASE 3: ATM STATE
+        let currentBalance = 100;
+        let correctPin = "1234";
+        let enteredPin = "";
+        let pinAttemptsLeft = 3;
+
+        // TEACHER DIALOGUE QUESTIONS
+        const teacherQuestions = {
+            traffic: [
+                "¿Por qué es necesario usar un 'if' (condicional) en el semáforo en lugar de solo tiempos fijos?",
+                "Si conectamos este semáforo a MakeCode Arcade, ¿qué sprite representaría al sensor de tráfico?",
+                "¿Qué ocurriría si 2 sensores envían datos opuestos al mismo tiempo? ¿Cómo lo evalúa la condición?"
+            ],
+            recommender: [
+                "¿Por qué un bucle 'for' es más eficiente que escribir un 'if' individual para cada canción?",
+                "Si la lista tuviera 1,000 elementos, ¿cambiaría la estructura de nuestro bucle?",
+                "En MakeCode Arcade, ¿cómo podemos almacenar una colección de Sprites similares para recorrerlos?"
+            ],
+            atm: [
+                "¿Qué diferencia existe entre declarar una variable 'saldo' y cambiar su valor dinámicamente?",
+                "¿Por qué es crítico validar el PIN con un condicional ANTES de modificar la variable saldo?",
+                "¿Qué bloque de MakeCode Arcade usarías para mostrar el saldo en pantalla? (Hint: `info.setScore()`)"
+            ]
+        };
+        let currentQuestionIdx = 0;
+
+        // INITIALIZATION
+        window.onload = function() {
+            lucide.createIcons();
+            renderCatalog();
+            updateTrafficSim();
+            updateTeacherQuestion();
+            renderCodeViews();
+        };
+
+        // NAVIGATION LOGIC
+        function switchCase(caseName) {
+            activeCase = caseName;
+
+            // Update Tabs UI
+            document.querySelectorAll('.case-tab').forEach(tab => {
+                tab.classList.remove('border-indigo-500', 'bg-slate-800/50', 'text-indigo-400');
+                tab.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            const activeTab = document.getElementById(`tab-${caseName}`);
+            activeTab.classList.remove('border-transparent', 'text-slate-400');
+            activeTab.classList.add('border-indigo-500', 'bg-slate-800/50', 'text-indigo-400');
+
+            // Hide/Show Sim Panels
+            document.querySelectorAll('.sim-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`sim-container-${caseName}`).classList.remove('hidden');
+
+            // Update Title
+            const titles = {
+                traffic: "Simulador de Semáforo Inteligente (Condicionales)",
+                recommender: "Algoritmo Recomendador de Música (Bucles y Arrays)",
+                atm: "Cajero Automático y Domótica (Variables y Validación)"
+            };
+            document.getElementById('sim-title').innerText = titles[caseName];
+
+            currentQuestionIdx = 0;
+            updateTeacherQuestion();
+            renderCodeViews();
+        }
+
+        function switchCodeView(mode) {
+            codeViewMode = mode;
+            const btnBlocks = document.getElementById('btn-mode-blocks');
+            const btnJs = document.getElementById('btn-mode-js');
+            const indicator = document.getElementById('code-view-indicator');
+
+            if (mode === 'blocks') {
+                btnBlocks.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow";
+                btnJs.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+                document.getElementById('view-blocks-container').classList.remove('hidden');
+                document.getElementById('view-js-container').classList.add('hidden');
+                indicator.innerText = "Modo Bloques";
+            } else {
+                btnJs.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow";
+                btnBlocks.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center space-x-1.5 text-slate-400 hover:text-white";
+                document.getElementById('view-blocks-container').classList.add('hidden');
+                document.getElementById('view-js-container').classList.remove('hidden');
+                indicator.innerText = "JavaScript Arcade";
+            }
+        }
+
+        // CASE 1: TRAFFIC SIMULATOR LOGIC
+        function updateTrafficSim() {
+            carSensorValue = parseInt(document.getElementById('input-cars').value);
+            document.getElementById('val-cars').innerText = `${carSensorValue} / 10`;
+            document.getElementById('display-cars').innerText = carSensorValue;
+
+            const lightRed = document.getElementById('light-red');
+            const lightYellow = document.getElementById('light-yellow');
+            const lightGreen = document.getElementById('light-green');
+            const statusText = document.getElementById('display-status-text');
+
+            // Reset light visual effects
+            lightRed.className = "w-12 h-12 rounded-full bg-red-950 border border-red-800/50 transition-all duration-300 flex items-center justify-center";
+            lightYellow.className = "w-12 h-12 rounded-full bg-amber-950 border border-amber-800/50 transition-all duration-300 flex items-center justify-center";
+            lightGreen.className = "w-12 h-12 rounded-full bg-emerald-950 border border-emerald-800/50 transition-all duration-300 flex items-center justify-center";
+
+            // Evaluate conditional logic
+            if (isPedestrianPressed || carSensorValue > 5) {
+                // RED LIGHT ACTIVE (Stop traffic for pedestrians or heavy traffic management)
+                lightRed.className = "w-12 h-12 rounded-full bg-red-600 border-2 border-red-400 shadow-[0_0_20px_rgba(239,68,68,0.8)] transition-all duration-300 flex items-center justify-center";
+                statusText.innerText = isPedestrianPressed ? "Peatón en espera ➔ Semáforo ROJO" : "Tráfico Alto (>5) ➔ Semáforo ROJO";
+                statusText.className = "text-xs font-semibold text-red-400";
+            } else if (carSensorValue >= 3 && carSensorValue <= 5) {
+                // YELLOW LIGHT ACTIVE
+                lightYellow.className = "w-12 h-12 rounded-full bg-amber-500 border-2 border-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.8)] transition-all duration-300 flex items-center justify-center";
+                statusText.innerText = "Tráfico Moderado ➔ Semáforo AMARILLO";
+                statusText.className = "text-xs font-semibold text-amber-400";
+            } else {
+                // GREEN LIGHT ACTIVE
+                lightGreen.className = "w-12 h-12 rounded-full bg-emerald-500 border-2 border-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.8)] transition-all duration-300 flex items-center justify-center";
+                statusText.innerText = "Tráfico Fluido ➔ Semáforo VERDE";
+                statusText.className = "text-xs font-semibold text-emerald-400";
+            }
+
+            renderCodeViews();
+        }
+
+        function togglePedestrian() {
+            isPedestrianPressed = !isPedestrianPressed;
+            const btn = document.getElementById('btn-pedestrian');
+            const display = document.getElementById('display-pedestrian');
+
+            if (isPedestrianPressed) {
+                btn.className = "w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow transition flex items-center justify-center space-x-2";
+                display.innerText = "SÍ (PRESIONADO)";
+                display.className = "text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else {
+                btn.className = "w-full py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2";
+                display.innerText = "NO";
+                display.className = "text-xs px-2 py-0.5 rounded font-bold bg-slate-800 text-slate-500";
+            }
+            updateTrafficSim();
+        }
+
+        // CASE 2: RECOMMENDER LOGIC
+        function renderCatalog() {
+            const container = document.getElementById('recommender-catalog');
+            container.innerHTML = rawCatalog.map((item, idx) => `
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-base">${item.sprite}</span>
+                        <div>
+                            <div class="font-semibold text-slate-200">${item.title}</div>
+                            <div class="text-[10px] text-slate-400">${item.genre}</div>
+                        </div>
+                    </div>
+                    <button onclick="addLike(${idx})" class="flex items-center space-x-1 px-2 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded text-amber-400 hover:text-amber-300 transition">
+                        <i data-lucide="thumbs-up" class="w-3 h-3"></i>
+                        <span class="font-bold">${item.likes}</span>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addLike(idx) {
+            rawCatalog[idx].likes += 10;
+            renderCatalog();
+        }
+
+        function resetRecommender() {
+            rawCatalog[0].likes = 120;
+            rawCatalog[1].likes = 45;
+            rawCatalog[2].likes = 210;
+            rawCatalog[3].likes = 85;
+            rawCatalog[4].likes = 30;
+            rawCatalog[5].likes = 95;
+            renderCatalog();
+            document.getElementById('recommender-feed').innerHTML = '<p class="text-xs text-slate-500 text-center py-6">Haz clic en "Ejecutar Bucle Filtrador" para procesar la lista...</p>';
+            document.getElementById('recommender-count').innerText = "0 recomendaciones";
+        }
+
+        function runRecommenderLoop() {
+            const minLikes = parseInt(document.getElementById('filter-likes').value);
+            const genre = document.getElementById('filter-genre').value;
+            const feedContainer = document.getElementById('recommender-feed');
+
+            feedContainer.innerHTML = '';
+            let recommended = [];
+
+            // Execute Loop logic simulation
+            for (let i = 0; i < rawCatalog.length; i++) {
+                let song = rawCatalog[i];
+                if (song.likes >= minLikes && (genre === 'ALL' || song.genre === genre)) {
+                    recommended.push(song);
+                }
+            }
+
+            document.getElementById('recommender-count').innerText = `${recommended.length} recomendaciones`;
+
+            if (recommended.length === 0) {
+                feedContainer.innerHTML = `<p class="text-xs text-amber-400/80 text-center py-6">Ninguna canción cumple la condición del bucle.</p>`;
+                return;
+            }
+
+            recommended.forEach((song, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-indigo-500/30 rounded-lg p-2.5 flex items-center justify-between text-xs animate-fadeIn";
+                card.style.animationDelay = `${idx * 0.1}s`;
+                card.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="text-base">${song.sprite}</span>
+                        <div>
+                            <span class="font-bold text-slate-100">${song.title}</span>
+                            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded ml-2">${song.genre}</span>
+                        </div>
+                    </div>
+                    <span class="text-amber-400 font-bold flex items-center gap-1">
+                        <i data-lucide="heart" class="w-3 h-3 fill-amber-400"></i> ${song.likes}
+                    </span>
+                `;
+                feedContainer.appendChild(card);
+            });
+            lucide.createIcons();
+            renderCodeViews();
+        }
+
+        // CASE 3: ATM LOGIC
+        function pressKey(num) {
+            if (enteredPin.length < 4) {
+                enteredPin += num;
+                document.getElementById('atm-pin-input').value = enteredPin;
+            }
+        }
+
+        function clearPin() {
+            enteredPin = "";
+            document.getElementById('atm-pin-input').value = "";
+        }
+
+        function validatePinAndWithdraw(amount) {
+            const msgBox = document.getElementById('atm-screen-msg');
+            
+            if (enteredPin !== correctPin) {
+                pinAttemptsLeft--;
+                if (pinAttemptsLeft <= 0) {
+                    msgBox.innerText = "❌ Tarjeta Bloqueada. Demasiados intentos.";
+                    msgBox.className = "text-xs font-bold text-red-500 min-h-[1.25rem]";
+                } else {
+                    msgBox.innerText = `❌ PIN Incorrecto. Intentos restantes: ${pinAttemptsLeft}`;
+                    msgBox.className = "text-xs font-semibold text-red-400 min-h-[1.25rem]";
+                }
+                clearPin();
+                renderCodeViews();
+                return;
+            }
+
+            // PIN IS CORRECT -> Check Variable balance
+            if (currentBalance >= amount) {
+                currentBalance -= amount;
+                document.getElementById('atm-balance').innerText = `$${currentBalance}`;
+                msgBox.innerText = `✅ Éxito: Retirados $${amount}. Saldo actualizado.`;
+                msgBox.className = "text-xs font-semibold text-emerald-400 min-h-[1.25rem]";
+            } else {
+                msgBox.innerText = "⚠️ Saldo insuficiente en la variable.";
+                msgBox.className = "text-xs font-semibold text-amber-400 min-h-[1.25rem]";
+            }
+            clearPin();
+            renderCodeViews();
+        }
+
+        function depositMoney(amount) {
+            currentBalance += amount;
+            document.getElementById('atm-balance').innerText = `$${currentBalance}`;
+            const msgBox = document.getElementById('atm-screen-msg');
+            msgBox.innerText = `💵 Depósito recibido: +$${amount} agregados al saldo.`;
+            msgBox.className = "text-xs font-semibold text-indigo-400 min-h-[1.25rem]";
+            renderCodeViews();
+        }
+
+        // CODE RENDERER (MAKECODE BLOCKS + JAVASCRIPT)
+        function renderCodeViews() {
+            const blocksContainer = document.getElementById('blocks-display');
+            const jsCodeContainer = document.getElementById('js-code-display');
+            const expText = document.getElementById('explanation-text');
+
+            if (activeCase === 'traffic') {
+                expText.innerText = "El semáforo evalúa continuamente la condición usando 'if' y 'else if'. Si el número de coches es mayor a 5 o se pulsa el botón, el condicional activa la luz roja en MakeCode Arcade.";
+                
+                blocksContainer.innerHTML = `
+                    <!-- Event Loop Block -->
+                    <div class="block-shape mc-game p-3 font-mono text-xs">
+                        <div class="font-bold mb-2 flex items-center gap-1.5">
+                            <i data-lucide="repeat" class="w-3.5 h-3.5"></i> al actualizar el juego (game.onUpdate)
+                        </div>
+                        <div class="ml-3 space-y-2 border-l-2 border-white/20 pl-2">
+                            
+                            <!-- Logic IF Block -->
+                            <div class="block-shape mc-logic p-2.5 ${isPedestrianPressed || carSensorValue > 5 ? 'executing-highlight' : ''}">
+                                <div class="font-bold flex items-center gap-1">
+                                    <span>si</span>
+                                    <span class="bg-black/20 px-1.5 py-0.5 rounded text-[11px]">sensorCoches > 5 O botonPeaton == verdadero</span>
+                                    <span>hacer</span>
+                                </div>
+                                <div class="ml-3 my-1.5 p-1.5 bg-black/20 rounded font-semibold text-[11px] flex items-center gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-red-500"></span> cambiarSemaforoA("ROJO")
+                                </div>
+
+                                <div class="font-bold my-1">sino si <span class="bg-black/20 px-1.5 py-0.5 rounded text-[11px]">sensorCoches >= 3</span> hacer</div>
+                                <div class="ml-3 my-1.5 p-1.5 bg-black/20 rounded font-semibold text-[11px] flex items-center gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> cambiarSemaforoA("AMARILLO")
+                                </div>
+
+                                <div class="font-bold my-1">sino</div>
+                                <div class="ml-3 my-1.5 p-1.5 bg-black/20 rounded font-semibold text-[11px] flex items-center gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> cambiarSemaforoA("VERDE")
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+
+                jsCodeContainer.innerHTML = `<code><span class="text-purple-400">game</span>.<span class="text-blue-400">onUpdate</span>(<span class="text-red-400">function</span> () {
+    <span class="text-slate-500">// Evaluamos los datos de los sensores con un condicional</span>
+    <span class="text-green-400">if</span> (sensorCoches > <span class="text-amber-300">5</span> || botonPeaton) {
+        <span class="text-blue-300">semaforo</span>.<span class="text-blue-400">setImage</span>(imgRed);
+        <span class="text-purple-300">info</span>.<span class="text-blue-400">setScore</span>(<span class="text-amber-300">0</span>); <span class="text-slate-500">// Detener flujo</span>
+    } <span class="text-green-400">else if</span> (sensorCoches >= <span class="text-amber-300">3</span>) {
+        <span class="text-blue-300">semaforo</span>.<span class="text-blue-400">setImage</span>(imgYellow);
+    } <span class="text-green-400">else</span> {
+        <span class="text-blue-300">semaforo</span>.<span class="text-blue-400">setImage</span>(imgGreen);
+        <span class="text-purple-300">info</span>.<span class="text-blue-400">changeScoreBy</span>(<span class="text-amber-300">1</span>);
+    }
+});</code>`;
+
+            } else if (activeCase === 'recommender') {
+                expText.innerText = "El bucle 'for' recorre la lista completa de canciones una por una. En cada paso verifica los likes y añade solo los elementos que coinciden con los gustos del usuario.";
+
+                blocksContainer.innerHTML = `
+                    <!-- Loop Block -->
+                    <div class="block-shape mc-loops p-3 font-mono text-xs executing-highlight">
+                        <div class="font-bold mb-2 flex items-center gap-1.5">
+                            <i data-lucide="repeat" class="w-3.5 h-3.5"></i> para elemento 'cancion' de la lista 'catalogo'
+                        </div>
+                        <div class="ml-3 space-y-2 border-l-2 border-white/20 pl-2">
+                            
+                            <!-- Logic IF inside loop -->
+                            <div class="block-shape mc-logic p-2">
+                                <div class="font-bold flex items-center gap-1 text-[11px]">
+                                    <span>si</span>
+                                    <span class="bg-black/20 px-1.5 py-0.5 rounded">likesDe(cancion) >= likesMinimos</span>
+                                </div>
+                                <div class="ml-3 my-1.5 p-1.5 bg-black/20 rounded font-semibold text-[11px]">
+                                    añadir 'cancion' a listaRecomendados
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Display Block -->
+                    <div class="block-shape mc-sprites p-2.5 font-mono text-xs">
+                        <span class="font-bold">mostrarListaEnPantalla(listaRecomendados)</span>
+                    </div>
+                `;
+
+                jsCodeContainer.innerHTML = `<code><span class="text-slate-500">// Recorrer el array de Sprites / Canciones</span>
+<span class="text-green-400">let</span> listaRecomendados: <span class="text-yellow-300">string</span>[] = [];
+
+<span class="text-blue-400">for</span> (<span class="text-green-400">let</span> i = <span class="text-amber-300">0</span>; i < catalogo.length; i++) {
+    <span class="text-green-400">let</span> cancion = catalogo[i];
+    
+    <span class="text-slate-500">// Filtrar por propiedad likes</span>
+    <span class="text-green-400">if</span> (cancion.likes >= minLikes) {
+        listaRecomendados.<span class="text-blue-400">push</span>(cancion.titulo);
+    }
+}
+<span class="text-purple-400">game</span>.<span class="text-blue-400">splash</span>(<span class="text-amber-300">"Feed listo: "</span> + listaRecomendados.length);</code>`;
+
+            } else if (activeCase === 'atm') {
+                expText.innerText = "Las variables almacenan valores que cambian con el tiempo (como 'saldo' e 'intentosPIN'). Con los botones podemos sumar o restar datos a la variable mediante validación condicional.";
+
+                blocksContainer.innerHTML = `
+                    <!-- Variable Initialization -->
+                    <div class="block-shape mc-vars p-2.5 font-mono text-xs">
+                        <span class="font-bold">fijar <span class="bg-black/20 px-1 rounded">saldo</span> a 100</span>
+                    </div>
+
+                    <!-- On Button Press Event -->
+                    <div class="block-shape mc-game p-3 font-mono text-xs">
+                        <div class="font-bold mb-2">al pulsar el botón [A] (Retirar)</div>
+                        <div class="ml-3 space-y-2 border-l-2 border-white/20 pl-2">
+                            
+                            <div class="block-shape mc-logic p-2">
+                                <div class="font-bold text-[11px]">si <span class="bg-black/20 px-1 rounded">PIN_Ingresado == 1234</span> hacer</div>
+                                <div class="ml-2 my-1">
+                                    <div class="block-shape mc-vars p-1.5 my-1 text-[11px]">
+                                        cambiar <span class="bg-black/20 px-1 rounded">saldo</span> por -20
+                                    </div>
+                                    <div class="block-shape mc-info p-1.5 text-[11px]">
+                                        mostrar marcador de saldo (info.setScore)
+                                    </div>
+                                </div>
+                                <div class="font-bold text-[11px] my-1">sino</div>
+                                <div class="ml-2 my-1 bg-black/20 p-1.5 rounded text-[11px]">
+                                    mostrar "PIN Incorrecto"
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+
+                jsCodeContainer.innerHTML = `<code><span class="text-slate-500">// Declaración de variables de estado global</span>
+<span class="text-green-400">let</span> saldo = <span class="text-amber-300">100</span>;
+<span class="text-green-400">let</span> pinCorrecto = <span class="text-amber-300">1234</span>;
+
+<span class="text-purple-400">controller</span>.<span class="text-blue-300">A</span>.<span class="text-blue-400">onEvent</span>(<span class="text-purple-300">ControllerButtonEvent</span>.<span class="text-blue-300">Pressed</span>, <span class="text-red-400">function</span> () {
+    <span class="text-green-400">if</span> (pinIngresado == pinCorrecto) {
+        <span class="text-green-400">if</span> (saldo >= <span class="text-amber-300">20</span>) {
+            saldo -= <span class="text-amber-300">20</span>;
+            <span class="text-purple-300">info</span>.<span class="text-blue-400">setScore</span>(saldo); <span class="text-slate-500">// Mostrar en interfaz de MakeCode</span>
+        }
+    } <span class="text-green-400">else</span> {
+        <span class="text-purple-400">game</span>.<span class="text-blue-400">showLongText</span>(<span class="text-amber-300">"PIN Incorrecto"</span>, <span class="text-purple-300">DialogLayout</span>.<span class="text-blue-300">Bottom</span>);
+    }
+});</code>`;
+            }
+
+            lucide.createIcons();
+        }
+
+        // TEACHER QUESTION SWITCHER
+        function updateTeacherQuestion() {
+            const list = teacherQuestions[activeCase];
+            document.getElementById('teacher-question').innerText = list[currentQuestionIdx];
+        }
+
+        function nextTeacherQuestion() {
+            const list = teacherQuestions[activeCase];
+            currentQuestionIdx = (currentQuestionIdx + 1) % list.length;
+            updateTeacherQuestion();
+        }
+    </script>
+</body>
+</html>
