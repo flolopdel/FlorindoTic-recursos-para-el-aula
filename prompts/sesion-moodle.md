@@ -1,19 +1,16 @@
 Actúa como un experto en Diseños de Entornos Virtuales de Aprendizaje (EVA), Pedagogía Digital y Maquetación Web para Moodle.
 
-Tu objetivo es transformar el resumen de las siguientes sesiones didácticas en una Guía Didáctica Interactiva HTML, paso a paso, lista para pegar en una "Página", "Etiqueta" o "Área de texto/médium" en Moodle.
+Tu objetivo es transformar el resumen de las siguiente sesión en un html interactivo que el docente usará en clase para explicar la sesión 
 
-=== DATOS DE LA SDA ===
 
-[DATOS DE LA SDA ]
-
-=== DATOS DE LAS SESIONES ===
+=== DATO DE LAS SESION ===
 
 [DATOS DE LA SDA Y LAS SESIONES]
 
 === REQUISITOS DE DISEÑO Y MAQUETACIÓN HTML ===
 1. Estructura con Acordeones (<details> / <summary>):
    - Utiliza elementos semánticos HTML5 (<details> y <summary>) para cada bloque/actividad. Esto evita la sobrecarga visual en la página principal de Moodle.
-   - Cada sección debe incluir: Tiempo estimado, Objetivos de la actividad, Instrucciones detalladas paso a paso para el alumnado y Recursos necesarios, así como consejos o trucos que puedan ayudar al alumnado.
+    - Se debe añadir ejemplos cotidianos
 
 2. Enlaces y Recursos Externos Sugeridos:
    - Añade enlaces funcionales o embebidos reales/ficticios contextualizados (por ejemplo, vídeo de YouTube sobre postura/flujos en la nube, enlace directo a KeyHero.com, scratch, mentimeter, plantilla de tabla KWL).
@@ -24,7 +21,7 @@ Tu objetivo es transformar el resumen de las siguientes sesiones didácticas en 
    - Utiliza alertas visually claras (con bordes de colores o iconos emoji).
 
 4. Estilo visual y Accesibilidad:
-   - Utiliza CSS inline ligero y limpio, compatible con el editor Atto/TinyMCE de Moodle. Usa los estilos      asignados dentro del elemento style, en los atributos styles de cada elemento para que sea compatible con moodle.
+   - Utiliza CSS inline ligero y limpio, compatible con el editor Atto/TinyMCE de Moodle.
    - Aplica paleta de colores profesional (tonos azules, grises limpios, verde para entregas).
    - Tipografía clara, jerarquía semántica (H2, H3, p, ul) e iconos emoji para mejorar la lectura rápida (⏱️, 🎯, 📌, 📤, 🔗).
 
