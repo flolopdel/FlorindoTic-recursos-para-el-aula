@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Digital | Mecanografía, Ofimática y Google Drive</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        finger1: '#ef4444', // Meñique izq (Rojo)
+                        finger2: '#f97316', // Anular izq (Naranja)
+                        finger3: '#eab308', // Corazón izq (Amarillo)
+                        finger4: '#22c55e', // Índice izq (Verde)
+                        finger5: '#3b82f6', // Pulgares (Azul)
+                        finger6: '#06b6d4', // Índice der (Cian)
+                        finger7: '#8b5cf6', // Corazón der (Púrpura)
+                        finger8: '#ec4899', // Anular der (Rosa)
+                        finger9: '#64748b', // Meñique der (Gris)
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .key {
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .key:active, .key.active-key {
+            transform: translateY(2px);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .drive-dropzone.dragover {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        /* Custom scrollbar for better visual feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased overflow-x-hidden">
+
+    <!-- Encabezado Principal -->
+    <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-600 rounded-lg shadow-inner">
+                        <i class="fa-solid fa-laptop-code text-2xl text-indigo-200"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight sm:text-xl">Campus Digital Interactivo</h1>
+                        <p class="text-xs text-indigo-200">Mecanografía, Ofimática Básica y Guía de Google Drive</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="hidden md:inline-block text-xs bg-indigo-800/60 px-3 py-1.5 rounded-full border border-indigo-500/30">
+                        <i class="fa-solid fa-graduation-cap text-yellow-400 mr-1.5"></i> Módulo de Aprendizaje Práctico
+                    </span>
+                    <button onclick="toggleHelpModal()" class="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span class="hidden sm:inline">¿Cómo usar la web?</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal Informativo de Ayuda -->
+    <div id="helpModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="toggleHelpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-3 text-indigo-600 mb-4">
+                <i class="fa-solid fa-circle-info text-2xl"></i>
+                <h3 class="text-xl font-bold text-slate-800">Guía para el Alumnado</h3>
+            </div>
+            <p class="text-sm text-slate-600 mb-4">
+                Esta aplicación web interactiva está diseñada como una consulta permanente y taller interactivo. Si olvidas cómo hacer un proceso o dónde se sitúa una tecla, utiliza las pestañas superiores:
+            </p>
+            <ul class="space-y-2 text-xs text-slate-700 mb-6">
+                <li class="flex items-start gap-2"><i class="fa-solid fa-keyboard text-indigo-500 mt-0.5"></i> <span><b>Mecanografía:</b> Pulsa o pasa el cursor sobre las teclas para ver qué dedo utilizar y practica en tiempo real.</span></li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-desktop text-indigo-500 mt-0.5"></i> <span><b>Ofimática Básica:</b> Aprende qué es el Sistema Operativo y la diferencia crucial entre Navegador y Buscador.</span></li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-folder-open text-indigo-500 mt-0.5"></i> <span><b>Directorios Locales:</b> Entiende cómo guardar y examinar carpetas en tu equipo informático.</span></li>
+                <li class="flex items-start gap-2"><i class="fa-brands fa-google-drive text-indigo-500 mt-0.5"></i> <span><b>Google Drive:</b> Practica en el simulador en vivo creando carpetas, moviendo archivos y exportando PDF.</span></li>
+            </ul>
+            <button onclick="toggleHelpModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition text-sm">
+                ¡Entendido, empezar a explorar!
+            </button>
+        </div>
+    </div>
+
+    <!-- Navegación por Pestañas -->
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-16 z-30">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 scrollbar-none" id="tabContainer">
+                <button onclick="switchTab('teclado')" id="tab-teclado" class="tab-btn active px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap flex items-center gap-2 transition bg-indigo-50 text-indigo-700">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>Teclado y Mecanografía</span>
+                </button>
+                <button onclick="switchTab('ofimatica')" id="tab-ofimatica" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-desktop"></i>
+                    <span>Conceptos de Ofimática</span>
+                </button>
+                <button onclick="switchTab('directorios')" id="tab-directorios" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-folder-tree"></i>
+                    <span>Guardar y Examinar Carpetas</span>
+                </button>
+                <button onclick="switchTab('drive')" id="tab-drive" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition">
+                    <i class="fa-brands fa-google-drive text-emerald-600"></i>
+                    <span>Google Drive Práctico</span>
+                </button>
+                <button onclick="switchTab('atajos')" id="tab-atajos" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Atajos y Casos Reales</span>
+                </button>
+                <button onclick="switchTab('test')" id="tab-test" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Ponte a Prueba</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- PESTAÑA 1: TECLADO Y MECANOGRAFÍA -->
+        <section id="sec-teclado" class="tab-content block space-y-6">
+            <!-- Introducción y Leyenda de Dedos -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-keyboard text-indigo-600"></i> Teclado Español QWERTY y Posición Mecanográfica
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-1">
+                            Haz clic en cualquier tecla del teclado interactivo o presiona las teclas de tu teclado físico para identificar la postura correcta de los dedos.
+                        </p>
+                    </div>
+                    <!-- Guía de color por dedo -->
+                    <div class="flex flex-wrap items-center gap-1.5 text-xs font-medium">
+                        <span class="px-2 py-1 rounded bg-red-100 text-red-800 border border-red-200">Meñique Izq</span>
+                        <span class="px-2 py-1 rounded bg-orange-100 text-orange-800 border border-orange-200">Anular Izq</span>
+                        <span class="px-2 py-1 rounded bg-yellow-100 text-yellow-800 border border-yellow-200">Corazón Izq</span>
+                        <span class="px-2 py-1 rounded bg-green-100 text-green-800 border border-green-200">Índice Izq</span>
+                        <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 border border-blue-200">Pulgares</span>
+                        <span class="px-2 py-1 rounded bg-cyan-100 text-cyan-800 border border-cyan-200">Índice Der</span>
+                        <span class="px-2 py-1 rounded bg-purple-100 text-purple-800 border border-purple-200">Corazón Der</span>
+                        <span class="px-2 py-1 rounded bg-pink-100 text-pink-800 border border-pink-200">Anular Der</span>
+                        <span class="px-2 py-1 rounded bg-slate-200 text-slate-800 border border-slate-300">Meñique Der</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Teclado Interactivo -->
+            <div class="bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-xl border border-slate-800 overflow-x-auto">
+                <div class="min-w-[780px] space-y-2 select-none" id="keyboardContainer">
+                    
+                    <!-- Fila 1: Números y Símbolos -->
+                    <div class="flex gap-1.5 justify-center">
+                        <button data-key="º" data-finger="finger1" class="key w-10 h-11 bg-red-900/50 border border-red-700/50 text-red-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-red-700/80"><span>º</span><span class="text-[9px] opacity-75">ª \</span></button>
+                        <button data-key="1" data-finger="finger1" class="key w-10 h-11 bg-red-900/50 border border-red-700/50 text-red-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-red-700/80"><span>1</span><span class="text-[9px] opacity-75">! |</span></button>
+                        <button data-key="2" data-finger="finger2" class="key w-10 h-11 bg-orange-900/50 border border-orange-700/50 text-orange-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-orange-700/80"><span>2</span><span class="text-[9px] opacity-75">" @</span></button>
+                        <button data-key="3" data-finger="finger3" class="key w-10 h-11 bg-yellow-900/50 border border-yellow-700/50 text-yellow-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-yellow-700/80"><span>3</span><span class="text-[9px] opacity-75">· #</span></button>
+                        <button data-key="4" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-green-700/80"><span>4</span><span class="text-[9px] opacity-75">$ ~</span></button>
+                        <button data-key="5" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-green-700/80"><span>5</span><span class="text-[9px] opacity-75">%</span></button>
+                        <button data-key="6" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-cyan-700/80"><span>6</span><span class="text-[9px] opacity-75">&</span></button>
+                        <button data-key="7" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-cyan-700/80"><span>7</span><span class="text-[9px] opacity-75">/</span></button>
+                        <button data-key="8" data-finger="finger7" class="key w-10 h-11 bg-purple-900/50 border border-purple-700/50 text-purple-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-purple-700/80"><span>8</span><span class="text-[9px] opacity-75">(</span></button>
+                        <button data-key="9" data-finger="finger8" class="key w-10 h-11 bg-pink-900/50 border border-pink-700/50 text-pink-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-pink-700/80"><span>9</span><span class="text-[9px] opacity-75">)</span></button>
+                        <button data-key="0" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>0</span><span class="text-[9px] opacity-75">=</span></button>
+                        <button data-key="'" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>'</span><span class="text-[9px] opacity-75">?</span></button>
+                        <button data-key="¿" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>¿</span><span class="text-[9px] opacity-75">¡</span></button>
+                        <button data-key="Backspace" data-finger="finger9" class="key w-20 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700"><i class="fa-solid fa-delete-left mr-1"></i> Borrar</button>
+                    </div>
+
+                    <!-- Fila 2: QWERTY -->
+                    <div class="flex gap-1.5 justify-center">
+                        <button data-key="Tab" data-finger="finger1" class="key w-14 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700"><i class="fa-solid fa-right-left mr-1"></i> Tab</button>
+                        <button data-key="q" data-finger="finger1" class="key w-10 h-11 bg-red-900/50 border border-red-700/50 text-red-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-red-700/80">Q</button>
+                        <button data-key="w" data-finger="finger2" class="key w-10 h-11 bg-orange-900/50 border border-orange-700/50 text-orange-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-orange-700/80">W</button>
+                        <button data-key="e" data-finger="finger3" class="key w-10 h-11 bg-yellow-900/50 border border-yellow-700/50 text-yellow-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-yellow-700/80">E</button>
+                        <button data-key="r" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-green-700/80">R</button>
+                        <button data-key="t" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-green-700/80">T</button>
+                        <button data-key="y" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-cyan-700/80">Y</button>
+                        <button data-key="u" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-cyan-700/80">U</button>
+                        <button data-key="i" data-finger="finger7" class="key w-10 h-11 bg-purple-900/50 border border-purple-700/50 text-purple-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-purple-700/80">I</button>
+                        <button data-key="o" data-finger="finger8" class="key w-10 h-11 bg-pink-900/50 border border-pink-700/50 text-pink-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-pink-700/80">O</button>
+                        <button data-key="p" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-slate-700">P</button>
+                        <button data-key="`" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>`</span><span class="text-[9px] opacity-75">^ [</span></button>
+                        <button data-key="+" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>+</span><span class="text-[9px] opacity-75">* ]</span></button>
+                        <button data-key="Enter" data-finger="finger9" class="key w-16 h-11 bg-indigo-600 border border-indigo-500 text-white rounded-lg flex items-center justify-center text-xs font-bold hover:bg-indigo-500">Enter ↵</button>
+                    </div>
+
+                    <!-- Fila 3: Fila Guía (ASDF JKLÑ) -->
+                    <div class="flex gap-1.5 justify-center">
+                        <button data-key="CapsLock" data-finger="finger1" class="key w-16 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700">Bloq Mayús</button>
+                        <button data-key="a" data-finger="finger1" class="key w-10 h-11 bg-red-600 border-2 border-red-400 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg hover:bg-red-500">A</button>
+                        <button data-key="s" data-finger="finger2" class="key w-10 h-11 bg-orange-600 border-2 border-orange-400 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg hover:bg-orange-500">S</button>
+                        <button data-key="d" data-finger="finger3" class="key w-10 h-11 bg-yellow-600 border-2 border-yellow-400 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg hover:bg-yellow-500">D</button>
+                        <button data-key="f" data-finger="finger4" class="key w-10 h-11 bg-green-600 border-2 border-green-300 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg relative hover:bg-green-500">F<span class="absolute bottom-1 w-2 h-0.5 bg-white/80 rounded"></span></button>
+                        <button data-key="g" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-green-700/80">G</button>
+                        <button data-key="h" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-cyan-700/80">H</button>
+                        <button data-key="j" data-finger="finger6" class="key w-10 h-11 bg-cyan-600 border-2 border-cyan-300 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg relative hover:bg-cyan-500">J<span class="absolute bottom-1 w-2 h-0.5 bg-white/80 rounded"></span></button>
+                        <button data-key="k" data-finger="finger7" class="key w-10 h-11 bg-purple-600 border-2 border-purple-400 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg hover:bg-purple-500">K</button>
+                        <button data-key="l" data-finger="finger8" class="key w-10 h-11 bg-pink-600 border-2 border-pink-400 text-white rounded-lg flex items-center justify-center text-sm font-black shadow-lg hover:bg-pink-500">L</button>
+                        <button data-key="ñ" data-finger="finger9" class="key w-10 h-11 bg-slate-700 border-2 border-slate-400 text-white rounded-lg flex items-center justify-center text-sm font-black hover:bg-slate-600">Ñ</button>
+                        <button data-key="´" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>´</span><span class="text-[9px] opacity-75">¨ {</span></button>
+                        <button data-key="ç" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>Ç</span><span class="text-[9px] opacity-75">}</span></button>
+                    </div>
+
+                    <!-- Fila 4: Inferior -->
+                    <div class="flex gap-1.5 justify-center">
+                        <button data-key="Shift" data-finger="finger1" class="key w-20 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700"><i class="fa-solid fa-arrow-up-long mr-1"></i> Mayús</button>
+                        <button data-key="<" data-finger="finger1" class="key w-10 h-11 bg-red-900/50 border border-red-700/50 text-red-200 rounded-lg flex items-center justify-center text-xs font-bold hover:bg-red-700/80">&lt; &gt;</button>
+                        <button data-key="z" data-finger="finger1" class="key w-10 h-11 bg-red-900/50 border border-red-700/50 text-red-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-red-700/80">Z</button>
+                        <button data-key="x" data-finger="finger2" class="key w-10 h-11 bg-orange-900/50 border border-orange-700/50 text-orange-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-orange-700/80">X</button>
+                        <button data-key="c" data-finger="finger3" class="key w-10 h-11 bg-yellow-900/50 border border-yellow-700/50 text-yellow-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-yellow-700/80">C</button>
+                        <button data-key="v" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-green-700/80">V</button>
+                        <button data-key="b" data-finger="finger4" class="key w-10 h-11 bg-green-900/50 border border-green-700/50 text-green-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-green-700/80">B</button>
+                        <button data-key="n" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-cyan-700/80">N</button>
+                        <button data-key="m" data-finger="finger6" class="key w-10 h-11 bg-cyan-900/50 border border-cyan-700/50 text-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold hover:bg-cyan-700/80">M</button>
+                        <button data-key="," data-finger="finger7" class="key w-10 h-11 bg-purple-900/50 border border-purple-700/50 text-purple-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-purple-700/80"><span>,</span><span class="text-[9px] opacity-75">;</span></button>
+                        <button data-key="." data-finger="finger8" class="key w-10 h-11 bg-pink-900/50 border border-pink-700/50 text-pink-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-pink-700/80"><span>.</span><span class="text-[9px] opacity-75">:</span></button>
+                        <button data-key="-" data-finger="finger9" class="key w-10 h-11 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg flex flex-col items-center justify-center text-xs font-semibold hover:bg-slate-700"><span>-</span><span class="text-[9px] opacity-75">_</span></button>
+                        <button data-key="ShiftRight" data-finger="finger9" class="key w-28 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700"><i class="fa-solid fa-arrow-up-long mr-1"></i> Mayús Der</button>
+                    </div>
+
+                    <!-- Fila 5: Espacio, Alt Gr y Control -->
+                    <div class="flex gap-1.5 justify-center">
+                        <button data-key="Control" data-finger="finger1" class="key w-16 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700">Ctrl</button>
+                        <button data-key="Alt" data-finger="finger5" class="key w-14 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700">Alt</button>
+                        <button data-key=" " data-finger="finger5" class="key w-64 h-11 bg-blue-600/80 border-2 border-blue-400 text-white rounded-lg flex items-center justify-center text-xs font-bold tracking-wider hover:bg-blue-500 shadow-md">BARRA ESPACIADORA (Pulgares)</button>
+                        <button data-key="AltGraph" data-finger="finger5" class="key w-16 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700">Alt Gr</button>
+                        <button data-key="ControlRight" data-finger="finger9" class="key w-16 h-11 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center text-xs font-medium hover:bg-slate-700">Ctrl</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ficha Didáctica de la Tecla Seleccionada -->
+            <div id="keyInfoCard" class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 shadow-sm transition">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-indigo-600 text-white rounded-xl text-2xl font-bold w-12 h-12 flex items-center justify-center shadow" id="keyCardBadge">
+                        F
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-indigo-950" id="keyCardTitle">Tecla de la Fila Guía: "F"</h3>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-200 text-indigo-800 font-semibold" id="keyCardFinger">Índice Izquierdo</span>
+                        </div>
+                        <p class="text-sm text-slate-700 mt-1" id="keyCardDesc">
+                            La tecla <b>F</b> tiene una pequeña muesca de relieve para que tu dedo índice izquierdo se posicione de forma táctil sin mirar el teclado.
+                        </p>
+                        <div class="mt-3 text-xs bg-white p-3 rounded-xl border border-indigo-100 flex items-center gap-2 text-slate-600" id="keyCardTip">
+                            <i class="fa-solid fa-lightbulb text-amber-500 text-base"></i>
+                            <span><b>Consejo práctico:</b> Coloca los dedos índice izquierdo en 'F' e índice derecho en 'J' para empezar siempre la escritura.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrenador Práctico de Mecanografía Integrado -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-stopwatch text-indigo-600"></i> Práctica Guiada de Mecanografía en Español
+                        </h3>
+                        <p class="text-xs text-slate-500">Escribe la frase que aparece a continuación. Observa tus pulsaciones y precisión.</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs font-semibold">
+                        <div class="bg-slate-100 px-3 py-1.5 rounded-lg"><span class="text-slate-500">Velocidad:</span> <span id="wpmDisplay" class="text-indigo-600 font-bold text-sm">0</span> PPM</div>
+                        <div class="bg-slate-100 px-3 py-1.5 rounded-lg"><span class="text-slate-500">Precisión:</span> <span id="accuracyDisplay" class="text-emerald-600 font-bold text-sm">100%</span></div>
+                        <button onclick="resetTypingTest()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Reiniciar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Muestra de texto objetivo -->
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-lg font-mono tracking-wide leading-relaxed select-none" id="typingPrompt">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Input de usuario -->
+                <input type="text" id="typingInput" placeholder="Haz clic aquí y comienza a escribir..." 
+                    class="w-full px-4 py-3 border-2 border-indigo-200 rounded-xl font-mono text-base focus:border-indigo-600 focus:outline-none transition shadow-inner">
+
+                <div class="text-xs text-slate-500 flex items-center gap-2">
+                    <i class="fa-solid fa-info-circle text-indigo-500"></i>
+                    <span>Sugerencia: Intenta no mirar el teclado físico mientras escribes. Utiliza la guía de colores superior.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: CONCEPTOS DE OFIMÁTICA -->
+        <section id="sec-ofimatica" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-desktop text-indigo-600"></i> Ofimática Básica y Conceptos Clave
+                </h2>
+                <p class="text-sm text-slate-600">
+                    Comprender la diferencia entre el sistema operativo, los programas y la navegación por Internet es el primer paso para dominar el ordenador.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tarjeta: ¿Qué es un Sistema Operativo? -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">1. ¿Qué es un Sistema Operativo (S.O.)?</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        El <b>Sistema Operativo</b> es el programa principal que coordina y gestiona todo el hardware (pantalla, teclado, ratón, memoria) y permite que funcionen tus programas.
+                    </p>
+                    <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-xs text-amber-900 mb-4">
+                        <i class="fa-solid fa-lightbulb text-amber-600 mr-1"></i> <b>Ejemplo cotidiano:</b> Piensa en el S.O. como el <i>director de una orquesta</i> o el <i>gerente de una casa</i>. Sin él, los instrumentos (programas) no sabrían cuándo o cómo sonar.
+                    </div>
+                    <div class="border-t border-slate-100 pt-3">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">Sistemas Operativos Frecuentes:</span>
+                        <div class="flex flex-wrap gap-2 text-xs font-medium">
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg border border-blue-200"><i class="fa-brands fa-windows mr-1"></i> Windows</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg border border-slate-300"><i class="fa-brands fa-apple mr-1"></i> macOS</span>
+                            <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200"><i class="fa-brands fa-android mr-1"></i> Android</span>
+                            <span class="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-lg border border-purple-200"><i class="fa-brands fa-linux mr-1"></i> Linux</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta: Navegadores vs Buscadores -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-compass"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">2. Navegador vs. Buscador (¡Diferencia clave!)</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                        Es uno de los errores más comunes. No son lo mismo:
+                    </p>
+                    <ul class="space-y-3 text-xs text-slate-700 mb-4">
+                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <b class="text-indigo-600 block text-sm mb-1"><i class="fa-solid fa-window-maximize"></i> Navegador Web (Programa):</b>
+                            Es la aplicación que abres en tu PC para entrar a Internet (Ej: <i>Google Chrome, Microsoft Edge, Mozilla Firefox, Safari</i>).
+                            <br><span class="text-slate-500 italic">Analogía: Es el coche que te permite viajar por la carretera.</span>
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <b class="text-emerald-600 block text-sm mb-1"><i class="fa-solid fa-magnifying-glass"></i> Buscador Web (Página Web):</b>
+                            Es un sitio web al que accedes para encontrar información cuando no sabes la dirección exacta (Ej: <i>Google.com, Bing, DuckDuckGo</i>).
+                            <br><span class="text-slate-500 italic">Analogía: Es el GPS o el mapa de carreteras.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Demostración interactiva de la Barra de Direcciones -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-globe text-indigo-600"></i> Anatomía de la Barra de Navegación del Navegador
+                </h3>
+                <p class="text-xs text-slate-600">
+                    En la parte superior de tu navegador siempre existe una <b>Barra de Direcciones URL</b>. Puedes escribir una página directa (como <code>www.google.com</code>) o escribir tu búsqueda directamente.
+                </p>
+
+                <!-- Simulación de barra de dirección del navegador -->
+                <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 flex items-center gap-3">
+                    <div class="flex gap-1.5 text-slate-400 text-sm">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </div>
+                    <div class="flex-grow bg-white border border-slate-300 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-inner text-xs sm:text-sm">
+                        <i class="fa-solid fa-lock text-emerald-600"></i>
+                        <span class="text-slate-400 font-mono">https://</span>
+                        <input type="text" id="demoUrlInput" value="drive.google.com" class="w-full focus:outline-none font-mono text-slate-800" readonly>
+                        <span class="bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded text-[10px]">URL Directa</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 3: DIRECTORIOS Y ARCHIVOS LOCALES -->
+        <section id="sec-directorios" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-tree text-indigo-600"></i> Directorios, Carpetas y Guardado de Archivos
+                </h2>
+                <p class="text-sm text-slate-600">
+                    Aprende a estructurar carpetas en tu ordenador local, guardar un documento en una ruta concreta y examinar tus archivos para subirlos a plataformas.
+                </p>
+            </div>
+
+            <!-- Explicación interactiva con Árbol de Carpetas -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Taller Paso a Paso -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk text-indigo-600"></i> Cómo Guardar en un Directorio Específico
+                    </h3>
+                    <ol class="space-y-3 text-xs text-slate-700">
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-[10px] flex-shrink-0">1</span>
+                            <div><b>Abre la opción Guardar como:</b> En cualquier programa (Word, PDF, Dibujo), ve a <i>Archivo &gt; Guardar como...</i></div>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-[10px] flex-shrink-0">2</span>
+                            <div><b>Examina el directorio objetivo:</b> Utiliza el panel izquierdo para seleccionar el disco o carpeta principal (Ejemplo: <i>Documentos</i>).</div>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-[10px] flex-shrink-0">3</span>
+                            <div><b>Crea o abre la subcarpeta:</b> Haz doble clic en la carpeta de la asignatura o tema (Ej: <i>Informatica_2026</i>).</div>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-[10px] flex-shrink-0">4</span>
+                            <div><b>Pon un nombre claro:</b> Asigna un nombre descriptivo (Ej: <code>Practica_Mecanografia_Juan.pdf</code>) y pulsa <i>Guardar</i>.</div>
+                        </li>
+                    </ol>
+
+                    <div class="pt-2 border-t border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-xs mb-2">Simulador de Subida: Examinar archivos en local</h4>
+                        <div class="p-4 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl text-center space-y-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-500"></i>
+                            <p class="text-xs text-slate-600">Prueba la acción de examinar directorios en tu PC real:</p>
+                            <label class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg cursor-pointer transition shadow">
+                                <i class="fa-solid fa-folder-open mr-1.5"></i> Examinar carpetas de mi PC...
+                                <input type="file" id="localFileInput" class="hidden" onchange="handleFileSelectDemo(event)">
+                            </label>
+                            <div id="fileSelectFeedback" class="text-xs font-mono text-emerald-700 hidden mt-2 bg-emerald-50 p-2 rounded border border-emerald-200">
+                                <!-- Info de archivo seleccionado -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visor interactivo de estructura de directorios -->
+                <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-sitemap text-amber-400"></i> Árbol de Directorios Recomendado
+                        </h3>
+                        <span class="text-[10px] bg-slate-800 px-2.5 py-1 rounded-full text-slate-400">Buena Práctica</span>
+                    </div>
+
+                    <div class="font-mono text-xs space-y-2 text-slate-300">
+                        <div class="flex items-center gap-2 text-amber-400 font-bold">
+                            <i class="fa-solid fa-hard-drive"></i>
+                            <span>Este Equipo / Mis Documentos</span>
+                        </div>
+                        <div class="pl-4 space-y-2 border-l border-slate-800 ml-2">
+                            <div class="flex items-center gap-2 text-indigo-300">
+                                <i class="fa-solid fa-folder"></i>
+                                <span>📁 Curso_Escolar_2026</span>
+                            </div>
+                            <div class="pl-4 space-y-2 border-l border-slate-800 ml-2">
+                                <div class="flex items-center gap-2 text-emerald-300">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                    <span>📂 Asignatura_Informática</span>
+                                </div>
+                                <div class="pl-4 space-y-1.5 border-l border-slate-800 ml-2 text-slate-400">
+                                    <div class="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition">
+                                        <i class="fa-regular fa-file-pdf text-red-400"></i>
+                                        <span>Apuntes_Teclado_Mecanografia.pdf</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition">
+                                        <i class="fa-regular fa-file-word text-blue-400"></i>
+                                        <span>Ejercicios_Google_Drive.docx</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 text-amber-300">
+                                    <i class="fa-solid fa-folder"></i>
+                                    <span>📁 Asignatura_Lengua</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-xs text-slate-300 leading-relaxed">
+                        <i class="fa-solid fa-circle-exclamation text-amber-400 mr-1"></i>
+                        <b>Regla de Oro:</b> No guardes todo en el "Escritorio" o en "Descargas". Mantener carpetas organizadas por curso o proyecto evita la pérdida de información.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 4: GOOGLE DRIVE PRÁCTICO -->
+        <section id="sec-drive" class="tab-content hidden space-y-6">
+            <!-- Introducción de Google Drive -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-brands fa-google-drive text-emerald-600 text-2xl"></i> Taller Interactivo de Google Drive
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-1">
+                            Practica en este entorno interactivo en vivo todas las acciones esenciales de Google Drive: crear carpetas, crear documentos, moverlos y descargarlos como PDF.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                            <i class="fa-solid fa-bolt mr-1"></i> Entorno de Pruebas Seguro
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout del Simulador de Drive -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-4 min-h-[500px]">
+                
+                <!-- Barra Lateral Izquierda de Drive -->
+                <div class="bg-slate-50 border-r border-slate-200 p-4 space-y-4">
+                    <!-- Botón + Nuevo -->
+                    <div class="relative">
+                        <button onclick="toggleDriveNewMenu()" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-100 rounded-2xl shadow-sm text-slate-700 font-bold text-sm flex items-center justify-start gap-3 transition">
+                            <i class="fa-solid fa-plus text-xl text-indigo-600"></i>
+                            <span>Nuevo</span>
+                        </button>
+                        <!-- Menú Desplegable Nuevo -->
+                        <div id="driveNewMenu" class="hidden absolute top-14 left-0 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-20 py-2 text-xs">
+                            <button onclick="driveCreateFolderPrompt()" class="w-full px-4 py-2.5 text-left hover:bg-slate-100 flex items-center gap-2 text-slate-700 font-medium">
+                                <i class="fa-solid fa-folder-plus text-amber-500 text-base"></i> Nueva Carpeta
+                            </button>
+                            <hr class="my-1 border-slate-100">
+                            <button onclick="driveCreateDocPrompt()" class="w-full px-4 py-2.5 text-left hover:bg-slate-100 flex items-center gap-2 text-slate-700 font-medium">
+                                <i class="fa-solid fa-file-word text-blue-500 text-base"></i> Documento de Google
+                            </button>
+                            <button onclick="triggerDriveUploadSim()" class="w-full px-4 py-2.5 text-left hover:bg-slate-100 flex items-center gap-2 text-slate-700 font-medium">
+                                <i class="fa-solid fa-file-arrow-up text-emerald-500 text-base"></i> Subir Archivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Navegación Drive -->
+                    <div class="space-y-1 text-xs font-semibold text-slate-600">
+                        <button onclick="renderDrivePath('')" class="w-full px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 flex items-center gap-2">
+                            <i class="fa-solid fa-hard-drive"></i> Mi unidad
+                        </button>
+                        <button class="w-full px-3 py-2 rounded-xl hover:bg-slate-200/60 flex items-center gap-2 text-slate-500 cursor-not-allowed" title="Simulación interactiva simplificada">
+                            <i class="fa-solid fa-users"></i> Compartido conmigo
+                        </button>
+                        <button class="w-full px-3 py-2 rounded-xl hover:bg-slate-200/60 flex items-center gap-2 text-slate-500 cursor-not-allowed">
+                            <i class="fa-solid fa-clock"></i> Reciente
+                        </button>
+                        <button class="w-full px-3 py-2 rounded-xl hover:bg-slate-200/60 flex items-center gap-2 text-slate-500 cursor-not-allowed">
+                            <i class="fa-solid fa-trash"></i> Papelera
+                        </button>
+                    </div>
+
+                    <!-- Cuadro de ayuda en Drive -->
+                    <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100 text-[11px] text-indigo-900 space-y-1">
+                        <p class="font-bold"><i class="fa-solid fa-circle-question mr-1"></i> Tareas a Practicar:</p>
+                        <ul class="list-disc pl-4 space-y-0.5 text-indigo-800">
+                            <li>Crear una carpeta.</li>
+                            <li>Crear un Documento dentro.</li>
+                            <li>Mover un archivo de sitio.</li>
+                            <li>Descargar como PDF.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Área Central del Explorador Drive -->
+                <div class="md:col-span-3 p-4 sm:p-6 flex flex-col justify-between bg-slate-50/50">
+                    <div>
+                        <!-- Migas de Pan (Breadcrumb) y Acciones -->
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                            <div class="flex items-center gap-2 text-sm font-bold text-slate-700" id="driveBreadcrumbs">
+                                <span onclick="renderDrivePath('')" class="hover:underline cursor-pointer text-indigo-600">Mi Unidad</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="text-slate-400" id="driveItemCount">0 elementos</span>
+                            </div>
+                        </div>
+
+                        <!-- Rejilla de Contenido de Drive -->
+                        <div id="driveFileGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 min-h-[220px]">
+                            <!-- Generado dinámicamente con JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Barra de Información/Acciones del Elemento Seleccionado -->
+                    <div id="driveActionToolbar" class="mt-6 p-4 bg-white border border-slate-200 rounded-xl shadow-sm hidden transition">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div id="selectedItemIcon" class="text-2xl text-indigo-600">
+                                    <i class="fa-solid fa-file"></i>
+                                </div>
+                                <div>
+                                    <h4 id="selectedItemName" class="font-bold text-sm text-slate-800">Nombre del archivo</h4>
+                                    <p id="selectedItemMeta" class="text-xs text-slate-500">Documento de Google</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                <button onclick="openDriveDocEditor()" id="btnEditDoc" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium">
+                                    <i class="fa-solid fa-pen-to-square mr-1"></i> Abrir / Editar
+                                </button>
+                                <button onclick="downloadAsPDF()" id="btnDownloadPDF" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium">
+                                    <i class="fa-solid fa-file-pdf mr-1"></i> Descargar como PDF
+                                </button>
+                                <button onclick="promptMoveDriveItem()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition font-medium border border-slate-300">
+                                    <i class="fa-solid fa-folder-arrow-right mr-1"></i> Mover a...
+                                </button>
+                                <button onclick="deleteDriveItem()" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Editor de Documento de Google Simulado -->
+            <div id="driveDocEditorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+                <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-file-word text-blue-600 text-2xl"></i>
+                            <input type="text" id="docEditorTitle" value="Sin título" class="font-bold text-base text-slate-800 border-b border-transparent hover:border-slate-300 focus:border-indigo-600 focus:outline-none px-1">
+                        </div>
+                        <button onclick="closeDocEditor()" class="text-slate-400 hover:text-slate-600 text-xl">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Barra de herramientas simulada de Docs -->
+                    <div class="bg-slate-100 p-2 rounded-lg flex items-center gap-2 text-xs text-slate-600 mb-3 border border-slate-200">
+                        <button onclick="downloadAsPDFCurrentModal()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded transition flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Archivo &gt; Descargar PDF
+                        </button>
+                        <span class="text-slate-300">|</span>
+                        <button class="p-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-bold"></i></button>
+                        <button class="p-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-italic"></i></button>
+                        <button class="p-1 hover:bg-slate-200 rounded"><i class="fa-solid fa-underline"></i></button>
+                        <span class="text-slate-400 text-[10px] ml-auto"><i class="fa-solid fa-cloud text-emerald-500 mr-1"></i> Cambios guardados automáticamente</span>
+                    </div>
+
+                    <!-- Contenido editable -->
+                    <textarea id="docEditorContent" class="w-full flex-grow p-4 border border-slate-200 rounded-xl font-sans text-sm leading-relaxed focus:outline-none focus:border-indigo-500 shadow-inner resize-none min-h-[200px]" placeholder="Escribe el texto de tu documento escolar o trabajo aquí..."></textarea>
+
+                    <div class="flex justify-between items-center mt-4 border-t border-slate-100 pt-3">
+                        <p class="text-xs text-slate-500">Puedes simular la descarga directa en PDF para guardar el resultado.</p>
+                        <button onclick="saveAndCloseDocEditor()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition">
+                            Guardar y Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 5: ATAJOS Y CASOS COTIDIANOS -->
+        <section id="sec-atajos" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-amber-500"></i> Combinaciones de Teclas y Soluciones Cotidianas
+                </h2>
+                <p class="text-sm text-slate-600">
+                    Los atajos de teclado te ahorran horas de trabajo. Utiliza este buscador para recordar qué teclas pulsar cuando se te olvide una acción.
+                </p>
+                
+                <!-- Buscador de Atajos -->
+                <div class="mt-4 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                    <input type="text" id="shortcutSearch" onkeyup="filterShortcuts()" placeholder="Busca un atajo (Ej: copiar, pegar, deshacer, imprimir, buscar...)" 
+                        class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:border-indigo-600 focus:outline-none transition">
+                </div>
+            </div>
+
+            <!-- Tabla de Atajos Imprevisibles / Frecuentes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="shortcutContainer">
+                
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Ctrl + C
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Copiar</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Copia el texto o archivo seleccionado al portapapeles sin borrar el original.</p>
+                    </div>
+                </div>
+
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Ctrl + V
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Pegar</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Pega en la posición actual lo último que hayas copiado o cortado.</p>
+                    </div>
+                </div>
+
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Ctrl + Z
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Deshacer (¡Salvavidas!)</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Deshace la última acción. Ideal si borraste un párrafo por error.</p>
+                    </div>
+                </div>
+
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Ctrl + E
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Seleccionar Todo</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Selecciona todo el texto de la página o documento de una sola vez.</p>
+                    </div>
+                </div>
+
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Ctrl + F
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Buscar Texto</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Abre el cuadro de búsqueda para encontrar una palabra dentro de una web o PDF.</p>
+                    </div>
+                </div>
+
+                <div class="shortcut-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm">
+                        Alt + Tab
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cambiar de Ventana</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Pasa rápidamente de una aplicación abierta a otra sin usar el ratón.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Situaciones Cotidianas Prácticas -->
+            <div class="bg-indigo-900 text-white rounded-2xl p-6 shadow-xl space-y-4">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i> Resolución de Situaciones Cotidianas
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-indigo-800/80 p-4 rounded-xl border border-indigo-700 space-y-1">
+                        <span class="font-bold text-amber-300 block">Situación 1: "He borrado por error la mitad de mi trabajo"</span>
+                        <p class="text-indigo-100">No cierres el programa. Pulsa inmediatamente <b>Ctrl + Z</b> en Windows (o Cmd + Z en Mac) tantas veces como sea necesario para recuperarlo.</p>
+                    </div>
+                    <div class="bg-indigo-800/80 p-4 rounded-xl border border-indigo-700 space-y-1">
+                        <span class="font-bold text-amber-300 block">Situación 2: "Necesito enviar mi trabajo en PDF para que no se mueva el formato"</span>
+                        <p class="text-indigo-100">En Google Drive o Microsoft Word, ve a <i>Archivo &gt; Descargar &gt; Documento PDF (.pdf)</i> antes de adjuntarlo en un correo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 6: PONTE A PRUEBA -->
+        <section id="sec-test" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-600"></i> Cuestionario Interactivo de Autoevaluación
+                </h2>
+                <p class="text-sm text-slate-600">
+                    Responde a estas preguntas cotidianas para comprobar si tienes claros los conceptos de mecanografía, informática básica y Google Drive.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6" id="quizContainer">
+                <!-- Pregunta 1 -->
+                <div class="quiz-item space-y-2 border-b border-slate-100 pb-5">
+                    <h4 class="font-bold text-sm text-slate-800">1. ¿En qué teclas de la fila guía deben descansar los dedos índices para comenzar a escribir?</h4>
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q1" value="a" class="text-indigo-600">
+                            <span>A) En las teclas A y L.</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q1" value="b" class="text-indigo-600">
+                            <span>B) En las teclas F y J (las que tienen las marcas relieve).</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q1" value="c" class="text-indigo-600">
+                            <span>C) En la barra espaciadora.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="quiz-item space-y-2 border-b border-slate-100 pb-5">
+                    <h4 class="font-bold text-sm text-slate-800">2. ¿Cuál es la diferencia entre Google Chrome y el buscador de Google?</h4>
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q2" value="a" class="text-indigo-600">
+                            <span>A) Son exactamente lo mismo.</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q2" value="b" class="text-indigo-600">
+                            <span>B) Chrome es el navegador (el programa) y el buscador es el sitio web para hacer búsquedas.</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q2" value="c" class="text-indigo-600">
+                            <span>C) Chrome es un sistema operativo como Windows.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="quiz-item space-y-2 border-b border-slate-100 pb-5">
+                    <h4 class="font-bold text-sm text-slate-800">3. Si quieres descargar un trabajo desde Google Drive para enviarlo a tu profesor sin que se desconfigure el formato, ¿qué formato es recomendable?</h4>
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q3" value="a" class="text-indigo-600">
+                            <span>A) Documento PDF (.pdf).</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q3" value="b" class="text-indigo-600">
+                            <span>B) Archivo de texto plano (.txt).</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+                            <input type="radio" name="q3" value="c" class="text-indigo-600">
+                            <span>C) Imagen PNG (.png).</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="evaluateQuiz()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition shadow">
+                        Corregir Cuestionario
+                    </button>
+                    <div id="quizResult" class="text-sm font-bold"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Campus Digital de Competencias Básicas en Informática, Mecanografía y Google Drive.</p>
+            <p class="text-slate-500">Diseñado para el aprendizaje activo del alumnado.</p>
+        </div>
+    </footer>
+
+    <!-- Notificación Toast Dinámica -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl text-xs flex items-center gap-2 border border-slate-700 hidden z-50 animate-bounce">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base" id="toastIcon"></i>
+        <span id="toastMsg">Mensaje de notificación</span>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL DE LÓGICA INTERACTIVA -->
+    <script>
+        // Estado Global de la aplicación
+        let currentTab = 'teclado';
+
+        // Base de Datos de Información de Teclas
+        const keyDatabase = {
+            'a': { title: 'Tecla A (Fila Guía)', finger: 'Meñique Izquierdo', desc: 'Posición de reposo para el meñique izquierdo.' },
+            's': { title: 'Tecla S (Fila Guía)', finger: 'Anular Izquierdo', desc: 'Posición de reposo para el anular izquierdo.' },
+            'd': { title: 'Tecla D (Fila Guía)', finger: 'Corazón Izquierdo', desc: 'Posición de reposo para el dedo corazón izquierdo.' },
+            'f': { title: 'Tecla F (Fila Guía con Muesca)', finger: 'Índice Izquierdo', desc: 'Tiene una muesca táctil en relieve para posicionar la mano izquierda sin mirar.' },
+            'j': { title: 'Tecla J (Fila Guía con Muesca)', finger: 'Índice Derecho', desc: 'Tiene la otra muesca táctil para el índice derecho.' },
+            'k': { title: 'Tecla K (Fila Guía)', finger: 'Corazón Derecho', desc: 'Posición de reposo para el dedo corazón derecho.' },
+            'l': { title: 'Tecla L (Fila Guía)', finger: 'Anular Derecho', desc: 'Posición de reposo para el dedo anular derecho.' },
+            'ñ': { title: 'Tecla Ñ (Español)', finger: 'Meñique Derecho', desc: 'Tecla característica de nuestro teclado. La pulsa el meñique derecho.' },
+            ' ': { title: 'Barra Espaciadora', finger: 'Pulgar Izquierdo / Derecho', desc: 'Utiliza preferentemente el pulgar de la mano opuesta a la última tecla pulsada.' },
+            'Enter': { title: 'Tecla Enter / Intro', finger: 'Meñique Derecho', desc: 'Salto de línea o confirmación de comandos.' },
+            'Backspace': { title: 'Tecla Borrar', finger: 'Meñique Derecho', desc: 'Elimina el carácter inmediatamente anterior al cursor.' },
+            'AltGraph': { title: 'Tecla Alt Gr', finger: 'Pulgar Derecho', desc: 'Permite escribir el tercer carácter de una tecla (ej: @, #, €).' }
+        };
+
+        // Cambiar de Pestaña
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-indigo-50', 'text-indigo-700', 'font-semibold');
+                btn.classList.add('text-slate-600');
+            });
+
+            const targetContent = document.getElementById(`sec-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'bg-indigo-50', 'text-indigo-700', 'font-semibold');
+                targetBtn.classList.remove('text-slate-600');
+            }
+        }
+
+        function toggleHelpModal() {
+            const modal = document.getElementById('helpModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function showToast(msg, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            toastIcon.className = isSuccess ? 'fa-solid fa-circle-check text-emerald-400 text-base' : 'fa-solid fa-circle-exclamation text-amber-400 text-base';
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Frases para el Entrenador de Mecanografía
+        const typingPhrases = [
+            "la organizacion de archivos en carpetas es fundamental para la ofimatica.",
+            "los dedos f y j tienen muescas tactiles para colocar las manos.",
+            "google drive permite guardar documentos en la nube y exportarlos a pdf."
+        ];
+        let currentPhraseIdx = 0;
+        let typingStartTime = null;
+
+        function initTypingTest() {
+            const promptEl = document.getElementById('typingPrompt');
+            const targetText = typingPhrases[currentPhraseIdx];
+            promptEl.innerHTML = targetText.split('').map((char, idx) => `<span id="char-${idx}">${char}</span>`).join('');
+            document.getElementById('typingInput').value = '';
+            typingStartTime = null;
+            document.getElementById('wpmDisplay').textContent = '0';
+            document.getElementById('accuracyDisplay').textContent = '100%';
+        }
+
+        function resetTypingTest() {
+            currentPhraseIdx = (currentPhraseIdx + 1) % typingPhrases.length;
+            initTypingTest();
+            showToast("Nueva frase de práctica cargada.");
+        }
+
+        document.getElementById('typingInput')?.addEventListener('input', (e) => {
+            const inputVal = e.target.value;
+            const targetText = typingPhrases[currentPhraseIdx];
+
+            if (!typingStartTime && inputVal.length > 0) {
+                typingStartTime = new Date();
+            }
+
+            let correctCount = 0;
+            for (let i = 0; i < targetText.length; i++) {
+                const charSpan = document.getElementById(`char-${i}`);
+                if (!charSpan) continue;
+
+                if (i < inputVal.length) {
+                    if (inputVal[i] === targetText[i]) {
+                        charSpan.className = 'bg-emerald-200 text-emerald-900 font-bold px-0.5 rounded';
+                        correctCount++;
+                    } else {
+                        charSpan.className = 'bg-rose-200 text-rose-900 font-bold px-0.5 rounded underline decoration-rose-500';
+                    }
+                } else if (i === inputVal.length) {
+                    charSpan.className = 'bg-indigo-200 text-indigo-900 font-bold px-0.5 rounded animate-pulse';
+                } else {
+                    charSpan.className = '';
+                }
+            }
+
+            // Calcular precisión
+            const accuracy = inputVal.length > 0 ? Math.round((correctCount / inputVal.length) * 100) : 100;
+            document.getElementById('accuracyDisplay').textContent = `${accuracy}%`;
+
+            // Calcular PPM (Palabras por Minuto)
+            if (typingStartTime && inputVal.length > 0) {
+                const timeInMinutes = (new Date() - typingStartTime) / 60000;
+                const words = inputVal.length / 5;
+                const wpm = Math.round(words / (timeInMinutes || 0.01));
+                document.getElementById('wpmDisplay').textContent = wpm < 300 ? wpm : 0;
+            }
+
+            // Si completa la frase
+            if (inputVal === targetText) {
+                showToast("¡Enhorabuena! Frase completada correctamente.", true);
+                setTimeout(resetTypingTest, 2000);
+            }
+        });
+
+        // Interacción visual con el teclado virtual
+        document.querySelectorAll('#keyboardContainer .key').forEach(keyBtn => {
+            keyBtn.addEventListener('click', () => {
+                const keyVal = keyBtn.getAttribute('data-key');
+                inspectKey(keyVal);
+            });
+        });
+
+        // Escuchador de teclado físico real
+        window.addEventListener('keydown', (e) => {
+            if (currentTab !== 'teclado') return;
+
+            const pressedKey = e.key;
+            const keyButton = document.querySelector(`#keyboardContainer .key[data-key="${CSS.escape(pressedKey)}"]`) ||
+                              document.querySelector(`#keyboardContainer .key[data-key="${CSS.escape(pressedKey.toLowerCase())}"]`);
+
+            if (keyButton) {
+                keyButton.classList.add('active-key', 'bg-indigo-500', 'text-white');
+                setTimeout(() => {
+                    keyButton.classList.remove('active-key', 'bg-indigo-500', 'text-white');
+                }, 200);
+                inspectKey(pressedKey);
+            }
+        });
+
+        function inspectKey(keyVal) {
+            const cardTitle = document.getElementById('keyCardTitle');
+            const cardFinger = document.getElementById('keyCardFinger');
+            const cardDesc = document.getElementById('keyCardDesc');
+            const cardBadge = document.getElementById('keyCardBadge');
+
+            const info = keyDatabase[keyVal.toLowerCase()] || keyDatabase[keyVal] || {
+                title: `Tecla "${keyVal.toUpperCase()}"`,
+                finger: 'Según distribución QWERTY',
+                desc: `Pulsación de carácter "${keyVal}". Mantén las muñecas elevadas para mayor agilidad.`
+            };
+
+            cardBadge.textContent = keyVal.length > 1 ? keyVal.substring(0, 2).toUpperCase() : keyVal.toUpperCase();
+            cardTitle.textContent = info.title;
+            cardFinger.textContent = info.finger;
+            cardDesc.textContent = info.desc;
+        }
+
+        function handleFileSelectDemo(event) {
+            const file = event.target.files[0];
+            const feedback = document.getElementById('fileSelectFeedback');
+            if (file) {
+                feedback.classList.remove('hidden');
+                feedback.innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i> Archivo examinado desde PC: <b>${file.name}</b> (${Math.round(file.size/1024)} KB)`;
+                showToast(`Archivo "${file.name}" preparado para subida.`);
+            }
+        }
+
+        // Datos del Simulador de Google Drive
+        let driveData = [
+            { id: '1', name: 'Asignatura_Informática', type: 'folder', parent: '' },
+            { id: '2', name: 'Apuntes_Mecanografía.docx', type: 'doc', parent: '', content: 'Resumen de posiciones de dedos:\n- Fila Guía: ASDF JKLÑ\n- Pulgares: Barra Espaciadora.' },
+            { id: '3', name: 'Practica_Google_Drive.docx', type: 'doc', parent: '1', content: 'Ejercicio de Google Drive:\n1. Crear una carpeta.\n2. Mover este archivo dentro.' }
+        ];
+        let currentDrivePath = '';
+        let selectedDriveItemId = null;
+
+        function renderDriveGrid() {
+            const grid = document.getElementById('driveFileGrid');
+            const items = driveData.filter(item => item.parent === currentDrivePath);
+            document.getElementById('driveItemCount').textContent = `${items.length} elemento(s)`;
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400 space-y-2">
+                        <i class="fa-solid fa-folder-open text-4xl"></i>
+                        <p class="text-xs">Esta carpeta está vacía. Haz clic en "<b>+ Nuevo</b>" para agregar elementos.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = items.map(item => {
+                const isSelected = item.id === selectedDriveItemId;
+                const borderClass = isSelected ? 'border-2 border-indigo-600 bg-indigo-50/60' : 'border border-slate-200 bg-white hover:border-indigo-300';
+                
+                let iconHtml = '';
+                if (item.type === 'folder') {
+                    iconHtml = '<i class="fa-solid fa-folder text-3xl text-amber-500"></i>';
+                } else if (item.type === 'doc') {
+                    iconHtml = '<i class="fa-solid fa-file-word text-3xl text-blue-500"></i>';
+                } else if (item.type === 'pdf') {
+                    iconHtml = '<i class="fa-solid fa-file-pdf text-3xl text-red-500"></i>';
+                }
+
+                return `
+                    <div onclick="selectDriveItem('${item.id}')" ondblclick="openDriveItem('${item.id}')" 
+                        class="p-3.5 rounded-xl shadow-sm ${borderClass} cursor-pointer transition flex flex-col justify-between h-28 relative group">
+                        <div class="flex items-start justify-between">
+                            ${iconHtml}
+                            <span class="text-[10px] text-slate-400 capitalize">${item.type}</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-xs text-slate-800 truncate" title="${item.name}">${item.name}</p>
+                            <p class="text-[10px] text-slate-400">Google Drive</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectDriveItem(id) {
+            selectedDriveItemId = id;
+            renderDriveGrid();
+
+            const item = driveData.find(i => i.id === id);
+            const toolbar = document.getElementById('driveActionToolbar');
+            if (item) {
+                toolbar.classList.remove('hidden');
+                document.getElementById('selectedItemName').textContent = item.name;
+                document.getElementById('selectedItemMeta').textContent = item.type === 'folder' ? 'Carpeta de Drive' : 'Documento';
+                
+                // Habilitar o deshabilitar edición/descarga según tipo
+                document.getElementById('btnEditDoc').style.display = item.type === 'doc' ? 'inline-flex' : 'none';
+                document.getElementById('btnDownloadPDF').style.display = item.type === 'doc' ? 'inline-flex' : 'none';
+            }
+        }
+
+        function openDriveItem(id) {
+            const item = driveData.find(i => i.id === id);
+            if (!item) return;
+
+            if (item.type === 'folder') {
+                currentDrivePath = item.id;
+                selectedDriveItemId = null;
+                document.getElementById('driveActionToolbar').classList.add('hidden');
+                updateDriveBreadcrumbs();
+                renderDriveGrid();
+            } else if (item.type === 'doc') {
+                openDriveDocEditor();
+            }
+        }
+
+        function updateDriveBreadcrumbs() {
+            const bread = document.getElementById('driveBreadcrumbs');
+            if (!currentDrivePath) {
+                bread.innerHTML = `<span onclick="renderDrivePath('')" class="hover:underline cursor-pointer text-indigo-600">Mi Unidad</span>`;
+            } else {
+                const folder = driveData.find(i => i.id === currentDrivePath);
+                bread.innerHTML = `
+                    <span onclick="renderDrivePath('')" class="hover:underline cursor-pointer text-indigo-600">Mi Unidad</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    <span class="text-slate-800">${folder ? folder.name : 'Carpeta'}</span>
+                `;
+            }
+        }
+
+        function renderDrivePath(pathId) {
+            currentDrivePath = pathId;
+            selectedDriveItemId = null;
+            document.getElementById('driveActionToolbar').classList.add('hidden');
+            updateDriveBreadcrumbs();
+            renderDriveGrid();
+        }
+
+        function toggleDriveNewMenu() {
+            const menu = document.getElementById('driveNewMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function driveCreateFolderPrompt() {
+            toggleDriveNewMenu();
+            const name = prompt("Escribe el nombre para la nueva carpeta:", "Nueva Carpeta Escolar");
+            if (name && name.trim()) {
+                const newFolder = {
+                    id: Date.now().toString(),
+                    name: name.trim(),
+                    type: 'folder',
+                    parent: currentDrivePath
+                };
+                driveData.push(newFolder);
+                renderDriveGrid();
+                showToast(`Carpeta "${name}" creada correctamente en Drive.`);
+            }
+        }
+
+        function driveCreateDocPrompt() {
+            toggleDriveNewMenu();
+            const name = prompt("Nombre para el nuevo Documento de Google:", "Documento sin título");
+            if (name && name.trim()) {
+                const newDocName = name.trim().endsWith('.docx') ? name.trim() : `${name.trim()}.docx`;
+                const newDoc = {
+                    id: Date.now().toString(),
+                    name: newDocName,
+                    type: 'doc',
+                    parent: currentDrivePath,
+                    content: 'Escribe aquí el contenido de tu tarea...'
+                };
+                driveData.push(newDoc);
+                renderDriveGrid();
+                showToast(`Documento "${newDocName}" creado en Drive.`);
+            }
+        }
+
+        function triggerDriveUploadSim() {
+            toggleDriveNewMenu();
+            showToast("Simulación de subida: examinando archivos del equipo...");
+            const simulatedName = "Trabajo_Escolar_Subido.docx";
+            const newDoc = {
+                id: Date.now().toString(),
+                name: simulatedName,
+                type: 'doc',
+                parent: currentDrivePath,
+                content: 'Archivo subido correctamente desde el directorio local.'
+            };
+            driveData.push(newDoc);
+            renderDriveGrid();
+            showToast(`¡Archivo "${simulatedName}" subido con éxito!`);
+        }
+
+        function openDriveDocEditor() {
+            const item = driveData.find(i => i.id === selectedDriveItemId);
+            if (!item || item.type !== 'doc') return;
+
+            document.getElementById('docEditorTitle').value = item.name.replace('.docx', '');
+            document.getElementById('docEditorContent').value = item.content || '';
+            document.getElementById('driveDocEditorModal').classList.remove('hidden');
+        }
+
+        function closeDocEditor() {
+            document.getElementById('driveDocEditorModal').classList.add('hidden');
+        }
+
+        function saveAndCloseDocEditor() {
+            const item = driveData.find(i => i.id === selectedDriveItemId);
+            if (item) {
+                const titleVal = document.getElementById('docEditorTitle').value.trim();
+                item.name = titleVal.endsWith('.docx') ? titleVal : `${titleVal}.docx`;
+                item.content = document.getElementById('docEditorContent').value;
+                renderDriveGrid();
+                showToast("Cambios guardados en Google Drive.");
+            }
+            closeDocEditor();
+        }
+
+        // Descargar PDF Simulado
+        function downloadAsPDF() {
+            const item = driveData.find(i => i.id === selectedDriveItemId);
+            if (!item) return;
+
+            const pdfName = item.name.replace('.docx', '.pdf');
+            showToast(`Descargando "${pdfName}" en formato PDF...`, true);
+
+            // Crear elemento descargable real en navegador
+            const element = document.createElement('a');
+            const fileContent = `=== DOCUMENTO EXPORTADO A PDF ===\n\nTítulo: ${item.name}\nFecha: ${new Date().toLocaleDateString()}\n\nContenido:\n${item.content || 'Sin contenido'}`;
+            const file = new Blob([fileContent], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = pdfName;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function downloadAsPDFCurrentModal() {
+            const titleVal = document.getElementById('docEditorTitle').value.trim();
+            const pdfName = `${titleVal}.pdf`;
+            const contentVal = document.getElementById('docEditorContent').value;
+
+            const element = document.createElement('a');
+            const fileContent = `=== DOCUMENTO PDF (GOOGLE DRIVE) ===\n\nTítulo: ${titleVal}\n\n${contentVal}`;
+            const file = new Blob([fileContent], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = pdfName;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            showToast(`Descargado "${pdfName}" correctamente.`);
+        }
+
+        function promptMoveDriveItem() {
+            const item = driveData.find(i => i.id === selectedDriveItemId);
+            if (!item) return;
+
+            const folders = driveData.filter(i => i.type === 'folder' && i.id !== item.id);
+            if (folders.length === 0) {
+                alert("Primero debes crear una carpeta a la cual mover este archivo.");
+                return;
+            }
+
+            let folderListStr = folders.map((f, idx) => `${idx + 1}. ${f.name}`).join('\n');
+            let choice = prompt(`Selecciona el número de la carpeta destino a la que deseas mover "${item.name}":\n\n${folderListStr}`);
+
+            if (choice) {
+                const folderIdx = parseInt(choice) - 1;
+                if (folders[folderIdx]) {
+                    item.parent = folders[folderIdx].id;
+                    selectedDriveItemId = null;
+                    document.getElementById('driveActionToolbar').classList.add('hidden');
+                    renderDriveGrid();
+                    showToast(`Archivo movido a la carpeta "${folders[folderIdx].name}".`);
+                } else {
+                    alert("Selección no válida.");
+                }
+            }
+        }
+
+        function deleteDriveItem() {
+            if (!selectedDriveItemId) return;
+            const item = driveData.find(i => i.id === selectedDriveItemId);
+            if (confirm(`¿Seguro que deseas eliminar "${item.name}"?`)) {
+                driveData = driveData.filter(i => i.id !== selectedDriveItemId);
+                selectedDriveItemId = null;
+                document.getElementById('driveActionToolbar').classList.add('hidden');
+                renderDriveGrid();
+                showToast("Elemento enviado a la papelera.");
+            }
+        }
+
+        function filterShortcuts() {
+            const query = document.getElementById('shortcutSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.shortcut-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function evaluateQuiz() {
+            let score = 0;
+            const total = 3;
+
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+
+            if (q1 === 'b') score++;
+            if (q2 === 'b') score++;
+            if (q3 === 'a') score++;
+
+            const resultEl = document.getElementById('quizResult');
+            if (score === total) {
+                resultEl.className = 'text-sm font-bold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200';
+                resultEl.textContent = `¡Perfecto! Has acertado ${score} de ${total} preguntas. ¡Excelente nivel!`;
+            } else {
+                resultEl.className = 'text-sm font-bold text-amber-600 bg-amber-50 p-2.5 rounded-xl border border-amber-200';
+                resultEl.textContent = `Has acertado ${score} de ${total} preguntas. Repasa los módulos para afianzar conceptos.`;
+            }
+        }
+
+        window.onload = function() {
+            initTypingTest();
+            renderDriveGrid();
+            inspectKey('f');
+        };
+    </script>
+</body>
+</html>
