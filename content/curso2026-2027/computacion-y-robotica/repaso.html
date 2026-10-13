@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scratch Repaso - Portal Interactivo de Aprendizaje</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Fredoka', 'cursive'],
+          },
+          colors: {
+            scratch: {
+              orange: '#FFAB19',
+              blue: '#4C97FF',
+              purple: '#9966FF',
+              magenta: '#CF63CF',
+              teal: '#0FBD8C',
+              cyan: '#5CB1D6',
+              yellow: '#FFBF00',
+              green: '#59C059',
+              var: '#FF8C1A',
+              dark: '#1E1E2E'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Estilos de Bloques Scratch */
+    .sb-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-family: 'Fredoka', cursive;
+      font-size: 0.875rem;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+      margin: 2px 0;
+      user-select: none;
+    }
+    .sb-events { background-color: #FFBF00; color: #402c00; }
+    .sb-motion { background-color: #4C97FF; }
+    .sb-looks { background-color: #9966FF; }
+    .sb-sound { background-color: #CF63CF; }
+    .sb-pen { background-color: #0FBD8C; }
+    .sb-sensing { background-color: #5CB1D6; }
+    .sb-control { background-color: #FFAB19; }
+    .sb-operators { background-color: #59C059; }
+    .sb-variables { background-color: #FF8C1A; }
+
+    .sb-input {
+      background: white;
+      color: #333;
+      border-radius: 9999px;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Speech bubble */
+    .speech-bubble {
+      position: relative;
+      background: #ffffff;
+      border-radius: .4em;
+      color: #1e293b;
+      padding: 8px 12px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+    }
+    .speech-bubble:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: #ffffff;
+      border-bottom: 0;
+      border-left: 0;
+      margin-left: -5px;
+      margin-bottom: -10px;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-full flex flex-col">
+
+  <!-- Header / Navbar -->
+  <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center font-display font-bold text-2xl text-white shadow-lg shadow-orange-500/20">
+            🐱
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl text-white tracking-wide">Scratch Repaso</h1>
+            <p class="text-xs text-slate-400">Aprende programación por bloques</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="hidden md:flex space-x-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
+          <button onclick="switchTab('proyectos')" id="tab-proyectos" class="nav-btn active px-4 py-1.5 rounded-lg text-sm font-semibold transition-all bg-amber-500 text-slate-950 shadow">
+            📚 Prácticas (15)
+          </button>
+          <button onclick="switchTab('simuladores')" id="tab-simuladores" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all">
+            🎮 Lab Interactivo
+          </button>
+          <button onclick="switchTab('escenario')" id="tab-escenario" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all">
+            📐 Rejilla $X,Y$
+          </button>
+          <button onclick="switchTab('bloques')" id="tab-bloques" class="nav-btn px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all">
+            🧩 Guía Bloques
+          </button>
+        </nav>
+
+        <!-- Progress Counter -->
+        <div class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">
+          <span class="text-xs text-slate-400 font-medium">Progreso:</span>
+          <span id="progress-text" class="text-xs font-bold text-amber-400">0 / 15</span>
+          <div class="w-16 bg-slate-700 h-2 rounded-full overflow-hidden">
+            <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-orange-500 h-full w-0 transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="md:hidden flex overflow-x-auto border-t border-slate-800 p-2 gap-2 bg-slate-900">
+      <button onclick="switchTab('proyectos')" class="px-3 py-1 text-xs font-bold rounded-lg bg-amber-500 text-slate-950 whitespace-nowrap">📚 Prácticas</button>
+      <button onclick="switchTab('simuladores')" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">🎮 Simuladores</button>
+      <button onclick="switchTab('escenario')" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">📐 Escenario XY</button>
+      <button onclick="switchTab('bloques')" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">🧩 Bloques</button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- SECCIÓN 1: CATÁLOGO DE PRÁCTICAS -->
+    <section id="sec-proyectos" class="space-y-6">
+
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 p-6 md:p-8 text-slate-950 shadow-2xl">
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-block px-3 py-1 bg-slate-950/20 backdrop-blur rounded-full text-xs font-extrabold uppercase tracking-wider mb-3">Pensamiento Computacional</span>
+          <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight leading-none mb-3">
+            Aprende a programar por bloques con Scratch
+          </h2>
+          <p class="text-slate-900 text-sm md:text-base font-medium leading-relaxed">
+            Explora las guías paso a paso, comprende el pseudocódigo, pon a prueba los algoritmos y guarda tu progreso en el portfolio digital.
+          </p>
+        </div>
+        <div class="absolute -right-8 -bottom-12 text-9xl opacity-20 pointer-events-none font-display">
+          🐱
+        </div>
+      </div>
+
+      <!-- Search and Filter Bar -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-between items-center bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+        <div class="relative w-full sm:w-80">
+          <input type="text" id="search-input" onkeyup="filterProjects()" placeholder="Buscar práctica (ej. Dado, Dibujar, Gato)..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 pl-9 text-sm text-white focus:outline-none focus:border-amber-400">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+          <button onclick="filterCategory('all')" class="cat-filter active px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-500 text-slate-950">Todos</button>
+          <button onclick="filterCategory('fundamentos')" class="cat-filter px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200">Fundamentos</button>
+          <button onclick="filterCategory('dibujo')" class="cat-filter px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200">Lápiz y Dibujo</button>
+          <button onclick="filterCategory('juegos')" class="cat-filter px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200">Juegos e Interacción</button>
+          <button onclick="filterCategory('variables')" class="cat-filter px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200">Variables y Math</button>
+        </div>
+      </div>
+
+      <!-- Grid of Projects -->
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Generado dinámicamente con JavaScript -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: SIMULADORES E INTERACTIVOS -->
+    <section id="sec-simuladores" class="hidden space-y-8">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="font-display text-2xl font-bold text-white flex items-center gap-2">
+          <span>🎮</span> Laboratorio de Simuladores Scratch
+        </h2>
+        <p class="text-slate-400 text-sm">Prueba en vivo la lógica de los programas descritos en el documento.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- SIMULADOR 1: Polígonos -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-extrabold text-emerald-400 tracking-wider uppercase">Extensión Lápiz</span>
+              <h3 class="font-display font-bold text-xl text-white">Dibujar Polígonos Regulares</h3>
+            </div>
+            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-2.5 py-1 rounded-full font-bold">Fórmula Geometría</span>
+          </div>
+          <p class="text-xs text-slate-300">
+            Aplica el algoritmo del documento: <code class="text-amber-300 bg-slate-900 px-1 py-0.5 rounded">Ángulo = 360 / Lados</code> y <code class="text-amber-300 bg-slate-900 px-1 py-0.5 rounded">Pasos = 60 - Lados</code>.
+          </p>
+          <div class="flex items-center gap-3">
+            <label class="text-xs font-bold text-slate-300">Nº de lados:</label>
+            <input type="number" id="poly-sides" value="5" min="3" max="12" class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-center text-amber-400 font-bold focus:outline-none">
+            <button onclick="drawPolygon()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-lg text-xs transition">
+              ✏️ Ejecutar Scratch Lápiz
+            </button>
+          </div>
+          <div class="relative bg-slate-900 rounded-xl border border-slate-700 h-64 flex items-center justify-center overflow-hidden">
+            <canvas id="poly-canvas" width="300" height="220" class="bg-slate-950 rounded-lg"></canvas>
+            <div id="poly-info" class="absolute bottom-2 left-2 bg-slate-800/90 border border-slate-700 text-slate-300 text-xs px-3 py-1 rounded-md font-mono">
+              Esperando ejecución...
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULADOR 2: Dado Virtual -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-extrabold text-amber-400 tracking-wider uppercase">Variables y Azar</span>
+              <h3 class="font-display font-bold text-xl text-white">Dado Virtual Interactivos</h3>
+            </div>
+            <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-2.5 py-1 rounded-full font-bold">Aleatorio (1 a 6)</span>
+          </div>
+          <p class="text-xs text-slate-300">
+            Guarda el número aleatorio en la variable <span class="text-orange-400 font-bold">"dado"</span>, emite sonido y cambia el disfraz.
+          </p>
+          <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-400">Variable [dado]:</span>
+              <span id="dice-var-display" class="bg-orange-500 text-slate-950 font-extrabold text-sm px-3 py-0.5 rounded">0</span>
+            </div>
+            <button onclick="rollDice()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-2">
+              🎲 Tirar Dado
+            </button>
+          </div>
+
+          <div class="bg-slate-900 rounded-xl border border-slate-700 h-52 flex items-center justify-center relative p-4">
+            <div id="dice-sprite" class="flex flex-col items-center gap-3">
+              <div id="dice-speech" class="speech-bubble text-xs hidden">
+                ¡Ha salido un 6! 🎲
+              </div>
+              <div id="dice-visual" class="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-xl flex items-center justify-center text-4xl text-slate-950 font-black border-4 border-amber-300 transition-transform duration-200">
+                ?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULADOR 3: Calculadora -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-extrabold text-blue-400 tracking-wider uppercase">Sensores y Variables</span>
+              <h3 class="font-display font-bold text-xl text-white">Calculadora del Profesor</h3>
+            </div>
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs px-2.5 py-1 rounded-full font-bold">Suma, Resta, Mult, Div</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-400 font-bold block mb-1">Variable Número 1:</label>
+              <input type="number" id="calc-n1" value="12" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white font-bold text-center">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 font-bold block mb-1">Variable Número 2:</label>
+              <input type="number" id="calc-n2" value="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white font-bold text-center">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="calculate('+')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">➕ Suma</button>
+            <button onclick="calculate('-')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">➖ Resta</button>
+            <button onclick="calculate('*')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">✖️ Mult</button>
+            <button onclick="calculate('/')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">➗ Div</button>
+          </div>
+
+          <div class="bg-slate-900 rounded-xl border border-slate-700 p-4 flex items-center gap-4">
+            <div class="text-4xl">👨‍🏫</div>
+            <div>
+              <p class="text-xs text-slate-400 font-medium">Profesor dice:</p>
+              <p id="calc-result" class="text-sm font-bold text-amber-300">"Elige una operación para calcular el resultado."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULADOR 4: Adivinar Número -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-extrabold text-purple-400 tracking-wider uppercase">Estructuras Condicionales</span>
+              <h3 class="font-display font-bold text-xl text-white">Adivina el Número (1 al 15)</h3>
+            </div>
+            <button onclick="resetGuessGame()" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1 rounded-lg">Reiniciar</button>
+          </div>
+          <p class="text-xs text-slate-300">
+            El ordenador genera un número aleatorio. Responde y Scratch te guiará si es más grande o más pequeño.
+          </p>
+
+          <div class="bg-slate-900 rounded-xl border border-slate-700 p-4 flex items-center gap-4">
+            <div class="text-4xl">🤖</div>
+            <div class="flex-1">
+              <p id="guess-message" class="text-sm font-semibold text-white">"¡He pensado un número del 1 al 15! ¿Lo adivinas?"</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <input type="number" id="guess-input" min="1" max="15" placeholder="Tu número (1-15)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+            <button onclick="makeGuess()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-5 py-2 rounded-lg text-xs">
+              Comprobar
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: REJILLA DE COORDENADAS XY -->
+    <section id="sec-escenario" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="font-display text-2xl font-bold text-white flex items-center gap-2">
+          <span>📐</span> El Escenario y las Coordenadas ($X, Y$)
+        </h2>
+        <p class="text-slate-400 text-sm">
+          El escenario de Scratch mide <strong>480 x 360 píxeles</strong>. El centro es la posición $(0,0)$.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Stage Canvas Explorer -->
+        <div class="lg:col-span-2 bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-display font-bold text-lg text-white">Simulador de Posición del Ratón</h3>
+            <div class="flex gap-4 font-mono text-xs bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+              <span class="text-amber-400">X: <strong id="stage-x">0</strong></span>
+              <span class="text-cyan-400">Y: <strong id="stage-y">0</strong></span>
+            </div>
+          </div>
+
+          <div class="relative bg-slate-950 rounded-xl border border-slate-700 overflow-hidden flex items-center justify-center p-2 cursor-crosshair">
+            <canvas id="stage-grid-canvas" width="480" height="360" class="max-w-full h-auto bg-slate-900 rounded-lg shadow-inner"></canvas>
+          </div>
+          <p class="text-xs text-slate-400 text-center">
+            👈 Mueve el ratón sobre la pantalla para ver el cambio exacto de coordenadas $(X,Y)$ como en Scratch.
+          </p>
+        </div>
+
+        <!-- Coordinates Summary Card -->
+        <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 class="font-display font-bold text-lg text-white mb-3">Límites del Escenario</h3>
+            <ul class="space-y-3 text-xs text-slate-300">
+              <li class="p-3 bg-slate-900 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                <span>Eje Horizontal ($X$ Izquierda)</span>
+                <span class="font-bold font-mono text-amber-400">-240 px</span>
+              </li>
+              <li class="p-3 bg-slate-900 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                <span>Eje Horizontal ($X$ Derecha)</span>
+                <span class="font-bold font-mono text-amber-400">+240 px</span>
+              </li>
+              <li class="p-3 bg-slate-900 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                <span>Eje Vertical ($Y$ Abajo)</span>
+                <span class="font-bold font-mono text-cyan-400">-180 px</span>
+              </li>
+              <li class="p-3 bg-slate-900 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                <span>Eje Vertical ($Y$ Arriba)</span>
+                <span class="font-bold font-mono text-cyan-400">+180 px</span>
+              </li>
+              <li class="p-3 bg-slate-900 rounded-xl border border-amber-500/30 bg-amber-500/5 flex items-center justify-between">
+                <span class="font-bold text-amber-300">Punto Central ($X,Y$)</span>
+                <span class="font-bold font-mono text-amber-300">(0, 0)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 text-xs text-slate-400 space-y-1">
+            <span class="font-bold text-white block">💡 Dato Clave de Examen:</span>
+            <p>La diferencia entre <strong>IR A (x, y)</strong> y <strong>DESPLAZAR EN 1 SEG A (x, y)</strong> es que IR salta al instante, mientras que DESPLAZAR realiza una animación fluida en el tiempo indicado.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: GUÍA DE BLOQUES SCRATCH -->
+    <section id="sec-bloques" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="font-display text-2xl font-bold text-white flex items-center gap-2">
+          <span>🧩</span> Guía de Colores y Tipos de Bloques
+        </h2>
+        <p class="text-slate-400 text-sm">Identifica cada categoría de instrucciones por su color oficial en Scratch.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-amber-400"></div>
+            <h3 class="font-display font-bold text-white text-base">Eventos (Amarillo)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Inician la ejecución del código. Dan respuesta a eventos del teclado, ratón o la bandera verde.</p>
+          <div class="sb-block sb-events">al hacer clic en 🚩</div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
+            <h3 class="font-display font-bold text-white text-base">Movimiento (Azul)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Controlan las coordenadas $X,Y$, orientación, giros y rebotes en el borde.</p>
+          <div class="sb-block sb-motion">mover <span class="sb-input">10</span> pasos</div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-purple-500"></div>
+            <h3 class="font-display font-bold text-white text-base">Apariencia (Morado)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Cambian disfraces, escenarios, tamaños, efectos visuales y muestran mensajes.</p>
+          <div class="sb-block sb-looks">cambiar disfraz a <span class="sb-input">disfraz2</span></div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+            <h3 class="font-display font-bold text-white text-base">Extensión Lápiz (Verde Agua)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Permite borrar la pantalla, bajar el lápiz para dibujar o subirlo para no pintar.</p>
+          <div class="sb-block sb-pen">bajar lápiz</div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-orange-500"></div>
+            <h3 class="font-display font-bold text-white text-base">Control (Naranja)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Bucles (`repetir`, `por siempre`), pausas (`esperar`) y bifurcaciones condicionales (`si... entonces`).</p>
+          <div class="sb-block sb-control">por siempre</div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 rounded-full bg-amber-600"></div>
+            <h3 class="font-display font-bold text-white text-base">Variables (Naranja Oscuro)</h3>
+          </div>
+          <p class="text-xs text-slate-300">Contenedores de información para almacenar puntos, respuestas, números o estados.</p>
+          <div class="sb-block sb-variables">dar a <span class="sb-input">puntos</span> el valor <span class="sb-input">0</span></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal para Detalle / Pseudocódigo de Práctica -->
+  <div id="modal-project" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+        <div class="flex items-center gap-3">
+          <span id="modal-icon" class="text-2xl"></span>
+          <div>
+            <h3 id="modal-title" class="font-display font-bold text-lg text-white"></h3>
+            <span id="modal-category" class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold"></span>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 text-sm">
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">📌 Descripción y Objetivos</h4>
+          <p id="modal-description" class="text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">📝 Pseudocódigo / Esquema de Trabajo</h4>
+          <pre id="modal-pseudocode" class="bg-slate-950 p-4 rounded-xl text-slate-300 font-mono text-xs border border-slate-800 overflow-x-auto whitespace-pre-wrap"></pre>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-2">🧩 Vista de Bloques Representativos</h4>
+          <div id="modal-blocks" class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+            <!-- Bloques Scratch renderizados aquí -->
+          </div>
+        </div>
+
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-xs text-amber-300 space-y-1">
+          <strong class="block text-amber-200">💡 Recordatorio de Entrega:</strong>
+          <p>Recuerda guardar la práctica como "Práctica X", pulsar "Compartir" e insertar el proyecto en tu portfolio digital copiando el enlace/código.</p>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-700 bg-slate-900/50 flex justify-between items-center">
+        <button id="modal-check-btn" onclick="toggleCompletedModal()" class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition"></button>
+        <button onclick="closeModal()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <p> Scratch Repaso - Guía Didáctica de Programación por Bloques</p>
+      <p class="text-slate-400">Desarrollado para el aprendizaje de pensamiento computacional</p>
+    </div>
+  </footer>
+
+  <script>
+    // DATA BASE DE LAS 15 PRÁCTICAS DEL DOCUMENTO
+    const projectsData = [
+      {
+        id: 1,
+        title: "Primeros Pasos con Scratch",
+        category: "fundamentos",
+        icon: "🚀",
+        desc: "Creación de cuenta, verificación por correo, configuración de idioma, nombrado de archivo 'Práctica X' e inserción en portfolio digital mediante código de enlace.",
+        pseudocode: "1. Registrarse en scratch.mit.edu\n2. Verificar cuenta por email\n3. Crear nuevo proyecto\n4. Configurar Idioma\n5. Completar tutoriales base (Empezar, Añadir objeto, Añadir fondo, Animar, Teclas flechas)",
+        blocks: [
+          { type: 'events', text: 'al hacer clic en 🚩' },
+          { type: 'looks', text: 'decir [¡Hola Scratch!] por [2] segundos' }
+        ]
+      },
+      {
+        id: 2,
+        title: "Gato Coordenadas",
+        category: "fundamentos",
+        icon: "🐱",
+        desc: "El personaje se desplaza dibujando un cuadrado en el escenario sobre la rejilla 'xy-grid' y regresa a su origen.",
+        pseudocode: "1. Colocar el personaje en origen (0,0)\n2. Orientar hacia arriba y mover\n3. Orientar hacia la izquierda y mover\n4. Orientar hacia abajo y mover\n5. Orientar hacia la derecha y mover",
+        blocks: [
+          { type: 'events', text: 'al hacer clic en 🚩' },
+          { type: 'motion', text: 'ir a x: [0] y: [0]' },
+          { type: 'motion', text: 'apuntar en dirección [0]' },
+          { type: 'motion', text: 'desplazar en [1] segs a x: [0] y: [100]' },
+          { type: 'motion', text: 'apuntar en dirección [-90]' },
+          { type: 'motion', text: 'desplazar en [1] segs a x: [-100] y: [100]' }
+        ]
+      },
+      {
+        id: 3,
+        title: "Bailarina e Interacción",
+        category: "juegos",
+        icon: "💃",
+        desc: "La bailarina sigue al ratón al pulsar espacio. Cambia de disfraz y advierte si choca con el borde; saluda si toca a la princesa.",
+        pseudocode: "Al pulsar Tecla Espacio:\n  Mover hacia ratón\n  Si toca el borde -> Cambiar disfraz y decir 'Ten cuidado'\n  Si toca a Princesa -> Cambiar disfraz y saludar",
+        blocks: [
+          { type: 'events', text: 'al presionar tecla [espacio]' },
+          { type: 'motion', text: 'apuntar hacia [puntero del ratón]' },
+          { type: 'motion', text: 'mover [10] pasos' },
+          { type: 'control', text: 'si <¿tocando [borde]?> entonces' },
+          { type: 'looks', text: '  decir [¡Ten cuidado!] por [2] segundos' }
+        ]
+      },
+      {
+        id: 4,
+        title: "Vamos a Dibujar (Lápiz)",
+        category: "dibujo",
+        icon: "✏️",
+        desc: "Uso de la extensión Lápiz para borrar la pantalla, bajar lápiz, deslizar para pintar un cuadrado o triángulo y emitir sonido en cada esquina.",
+        pseudocode: "1. Añadir extensión Lápiz\n2. Borrar todo\n3. Bajar Lápiz\n4. Repetir 4 veces:\n   Mover 100 pasos\n   Tocar sonido\n   Girar 90 grados\n5. Subir Lápiz",
+        blocks: [
+          { type: 'pen', text: 'borrar todo' },
+          { type: 'pen', text: 'bajar lápiz' },
+          { type: 'control', text: 'repetir [4]' },
+          { type: 'motion', text: '  mover [100] pasos' },
+          { type: 'sound', text: '  iniciar sonido [Pop]' },
+          { type: 'motion', text: '  girar ↻ [90] grados' }
+        ]
+      },
+      {
+        id: 5,
+        title: "Dado Virtual",
+        category: "variables",
+        icon: "🎲",
+        desc: "Lanzador de dado con generación de número aleatorio entre 1 y 6 almacenado en una variable, con sonido y cambio de disfraz.",
+        pseudocode: "Al hacer clic en el personaje:\n  Variable dado = número aleatorio entre 1 y 6\n  Cambiar disfraz a (dado)\n  Reproducir sonido de tirada\n  Decir (dado)",
+        blocks: [
+          { type: 'events', text: 'al hacer clic en este objeto' },
+          { type: 'variables', text: 'fijar [dado] a (número aleatorio entre [1] y [6])' },
+          { type: 'looks', text: 'cambiar disfraz a (dado)' },
+          { type: 'looks', text: 'decir (dado) por [2] segundos' }
+        ]
+      },
+      {
+        id: 6,
+        title: "Calculadora de Sumas",
+        category: "variables",
+        icon: "🧮",
+        desc: "Profesor interactivo que pide dos números al usuario usando sensores, almacena en variables y realiza la suma al presionar el botón de operación.",
+        pseudocode: "1. Preguntar 'Número 1' y guardar en variable Num1\n2. Preguntar 'Número 2' y guardar en variable Num2\n3. Al pulsar botón +, calcular Resultado = Num1 + Num2\n4. Decir 'El resultado es ' + Resultado",
+        blocks: [
+          { type: 'sensing', text: 'preguntar [Introduce el primer número] y esperar' },
+          { type: 'variables', text: 'fijar [Num1] a (respuesta)' },
+          { type: 'sensing', text: 'preguntar [Introduce el segundo número] y esperar' },
+          { type: 'variables', text: 'fijar [Num2] a (respuesta)' },
+          { type: 'looks', text: 'decir (unir [El resultado es ] ((Num1) + (Num2)))' }
+        ]
+      },
+      {
+        id: 7,
+        title: "Dibujar Polígonos Regulares",
+        category: "dibujo",
+        icon: "📐",
+        desc: "Algoritmo general para trazar polígonos calculando el ángulo interno (360 / número de lados) y la longitud proporcional de los pasos.",
+        pseudocode: "1. Preguntar '¿Número de lados?'\n2. Variable Angulo = 360 / Lados\n3. Variable Pasos = 60 - Lados\n4. Borrar todo y Bajar Lápiz\n5. Repetir (Lados) veces:\n   Mover (Pasos)\n   Girar (Angulo) grados\n6. Subir Lápiz",
+        blocks: [
+          { type: 'sensing', text: 'preguntar [¿Cuántos lados tiene el polígono?] y esperar' },
+          { type: 'variables', text: 'fijar [lados] a (respuesta)' },
+          { type: 'variables', text: 'fijar [angulo] a ((360) / (lados))' },
+          { type: 'control', text: 'repetir (lados)' },
+          { type: 'motion', text: '  mover [(60) - (lados)] pasos' },
+          { type: 'motion', text: '  girar ↻ (angulo) grados' }
+        ]
+      },
+      {
+        id: 8,
+        title: "Propiedades de los Materiales (Hardware)",
+        category: "juegos",
+        icon: "💻",
+        desc: "Juego educativo interactivo donde el personaje se desplaza por la pantalla con las flechas del teclado y muestra información al tocar componentes del PC.",
+        pseudocode: "Al iniciar:\n  Decir 'Usa las flechas para moverte'\nPor siempre:\n  Si tocando [Placa Base] -> Decir 'Tarjeta de circuito principal...'\n  Si tocando [Disco Duro] -> Decir 'Almacenamiento magnético/óptico...'\n  Si tocando [Tarjeta Sonido] -> Decir 'Control de salida audio...'",
+        blocks: [
+          { type: 'control', text: 'por siempre' },
+          { type: 'control', text: '  si <¿tocando [Disco Duro]?> entonces' },
+          { type: 'looks', text: '    decir [Elemento de almacenamiento de datos...] por [3] segs' }
+        ]
+      },
+      {
+        id: 9,
+        title: "Servicios de Internet (Las 6 Puertas)",
+        category: "juegos",
+        icon: "🌐",
+        desc: "Escenario con 6 puertas de colores (WWW, Correo, Web Social, Streaming, Noticias, Comercio). Al colisionar, cambia de fondo y muestra la definición del servicio.",
+        pseudocode: "Por siempre:\n  Si tocando el color de Puerta WWW -> Cambiar fondo a Info_WWW y mostrar texto\n  Esperar 3 segundos\n  Cambiar fondo a Escenario Puertas",
+        blocks: [
+          { type: 'control', text: 'por siempre' },
+          { type: 'control', text: '  si <¿tocando el color [#FF0000]?> entonces' },
+          { type: 'looks', text: '    cambiar fondo a [Info WWW]' },
+          { type: 'control', text: '    esperar [3] segundos' },
+          { type: 'looks', text: '    cambiar fondo a [Puertas Principal]' }
+        ]
+      },
+      {
+        id: 10,
+        title: "La Princesa y el Castillo",
+        category: "juegos",
+        icon: "🏰",
+        desc: "Juego con llaves, fantasmas y puertas. Recoger la llave permite entrar al castillo. Evitar al fantasma que se clona si choca contigo.",
+        pseudocode: "Mover princesa con flechas\nSi toca Fantasma -> Volver al inicio (0,0) y Clonar Fantasma\nSi toca Llave -> Habilitar acceso a Castillo",
+        blocks: [
+          { type: 'control', text: 'si <¿tocando [Fantasma]?> entonces' },
+          { type: 'motion', text: '  ir a x: [-200] y: [-100]' },
+          { type: 'control', text: '  crear clon de [Fantasma]' }
+        ]
+      },
+      {
+        id: 11,
+        title: "Contar Elementos (Sellar Lápiz)",
+        category: "dibujo",
+        icon: "🔢",
+        desc: "Juego didáctico para infantil/primaria usando la instrucción 'Sellar' del bloque lápiz para duplicar imágenes visuales y contar elementos.",
+        pseudocode: "1. Variable contador = 0\n2. Repetir N veces:\n   Mover personaje a posición aleatoria\n   Ejecutar bloque Sellar\n   Sumar 1 a contador",
+        blocks: [
+          { type: 'variables', text: 'fijar [contador] a [0]' },
+          { type: 'control', text: 'repetir [5]' },
+          { type: 'motion', text: '  ir a posición aleatoria' },
+          { type: 'pen', text: '  sellar' },
+          { type: 'variables', text: '  cambiar [contador] por [1]' }
+        ]
+      },
+      {
+        id: 12,
+        title: "Adivinar Número Aleatorio",
+        category: "variables",
+        icon: "🤖",
+        desc: "El ordenador piensa un número aleatorio del 1 al 15. El usuario intenta adivinarlo mientras recibe pistas ('El número es más grande' / 'El número es más pequeño').",
+        pseudocode: "NumeroSecreto = Aleatorio(1, 15)\nRepetir hasta acertado:\n  Preguntar '¿Qué número he pensado?'\n  Si respuesta = NumeroSecreto -> '¡Acertado!'\n  Si respuesta < NumeroSecreto -> 'El número es más grande'\n  Si respuesta > NumeroSecreto -> 'El número es más pequeño'",
+        blocks: [
+          { type: 'variables', text: 'fijar [secreto] a (número aleatorio entre [1] y [15])' },
+          { type: 'control', text: 'repetir hasta que <(respuesta) = (secreto)>' },
+          { type: 'sensing', text: '  preguntar [¿Qué número he pensado?] y esperar' },
+          { type: 'control', text: '  si <(respuesta) < (secreto)> entonces' },
+          { type: 'looks', text: '    decir [El número es más grande] por [2] segs' }
+        ]
+      },
+      {
+        id: 13,
+        title: "Mover y Salto de Obstáculos",
+        category: "juegos",
+        icon: "🦘",
+        desc: "Control de personaje lateral con flechas e incorporación de física simple de salto al presionar la barra espaciadora para esquivar rocas que aparecen al azar.",
+        pseudocode: "Al presionar Tecla Espacio:\n  Repetir 10 veces: Sumar 10 a Y (Subir)\n  Repetir 10 veces: Restar 10 a Y (Bajar)\nRoca:\n  Aparecer en X aleatorio y moverse horizontalmente",
+        blocks: [
+          { type: 'events', text: 'al presionar tecla [espacio]' },
+          { type: 'control', text: 'repetir [10]' },
+          { type: 'motion', text: '  cambiar y por [10]' },
+          { type: 'control', text: 'repetir [10]' },
+          { type: 'motion', text: '  cambiar y por [-10]' }
+        ]
+      },
+      {
+        id: 14,
+        title: "Lluvia de Albóndigas",
+        category: "juegos",
+        icon: "🍝",
+        desc: "Juego basado en la película de 2009. Creen 5 objetos de comida que caen a diferentes velocidades. Un canasto abajo atrapa la comida y suma puntos.",
+        pseudocode: "Para cada objeto de comida:\n  Fijar tamaño a 50%\n  Por siempre:\n    Ir a X aleatorio, Y top (180)\n    Caer reduciendo Y según velocidad\n    Si toca el suelo o el canasto -> Reiniciar posición arriba y sumar punto",
+        blocks: [
+          { type: 'looks', text: 'fijar tamaño al [50]%' },
+          { type: 'control', text: 'por siempre' },
+          { type: 'motion', text: '  cambiar y por [-5]' },
+          { type: 'control', text: '  si <¿tocando [Cesta]?> entonces' },
+          { type: 'variables', text: '    cambiar [puntos] por [1]' }
+        ]
+      },
+      {
+        id: 15,
+        title: "El Laberinto",
+        category: "juegos",
+        icon: "🌀",
+        desc: "Navegación de una bola por las paredes del laberinto manejada con las teclas. Si toca la pared rebotará hacia atrás; el objetivo es tocar la meta roja.",
+        pseudocode: "Por siempre:\n  Mover según teclas flechas\n  Si tocando color de la pared -> Mover -10 pasos (Rebote)\n  Si tocando color Rojo -> Decir '¡Victoria!' y pasar de nivel",
+        blocks: [
+          { type: 'control', text: 'por siempre' },
+          { type: 'control', text: '  si <¿tocando el color [pared]?> entonces' },
+          { type: 'motion', text: '    mover [-10] pasos' },
+          { type: 'control', text: '  si <¿tocando el color [#FF0000]?> entonces' },
+          { type: 'looks', text: '    decir [¡Has ganado!] por [2] segs' }
+        ]
+      }
+    ];
+
+    // ESTADO LOCAL
+    let completedProjects = JSON.parse(localStorage.getItem('scratch_completed') || '[]');
+    let activeFilter = 'all';
+    let currentModalId = null;
+
+    // INICIALIZACIÓN DE LA APLICACIÓN
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProjects();
+      updateProgressDisplay();
+      initCoordinatesCanvas();
+      initPolygonCanvas();
+    });
+
+    // RENDERIZADO DE TARJETAS DE PRÁCTICAS
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      const searchVal = document.getElementById('search-input').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = projectsData.filter(p => {
+        const matchesCategory = activeFilter === 'all' || p.category === activeFilter;
+        const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-medium">No se encontraron prácticas con los filtros seleccionados.</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const isDone = completedProjects.includes(p.id);
+        const card = document.createElement('div');
+        card.className = `bg-slate-800 rounded-2xl border ${isDone ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-slate-700'} p-5 flex flex-col justify-between hover:border-amber-400/50 transition-all shadow-lg group`;
+
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex justify-between items-start">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xl shadow">
+                ${p.icon}
+              </div>
+              <button onclick="toggleCompleted(${p.id}, event)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${isDone ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-700'}">
+                ${isDone ? '✓ Listo' : '⚪ Pendiente'}
+              </button>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Práctica ${p.id}</span>
+              <h3 class="font-display font-bold text-lg text-white group-hover:text-amber-300 transition">${p.title}</h3>
+            </div>
+
+            <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">${p.desc}</p>
+          </div>
+
+          <div class="pt-4 mt-4 border-t border-slate-700/60 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400 capitalize">${p.category}</span>
+            <button onclick="openModal(${p.id})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+              🔍 Ver Detalle
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // GESTIÓN DE PROGRESO
+    function toggleCompleted(id, e) {
+      if(e) e.stopPropagation();
+      if (completedProjects.includes(id)) {
+        completedProjects = completedProjects.filter(item => item !== id);
+      } else {
+        completedProjects.push(id);
+      }
+      localStorage.setItem('scratch_completed', JSON.stringify(completedProjects));
+      renderProjects();
+      updateProgressDisplay();
+      if (currentModalId === id) updateModalCheckButton();
+    }
+
+    function updateProgressDisplay() {
+      const count = completedProjects.length;
+      const total = projectsData.length;
+      const percentage = (count / total) * 100;
+      document.getElementById('progress-text').innerText = `${count} / ${total}`;
+      document.getElementById('progress-bar').style.width = `${percentage}%`;
+    }
+
+    // MODAL DETALLES
+    function openModal(id) {
+      const p = projectsData.find(item => item.id === id);
+      if (!p) return;
+      currentModalId = id;
+
+      document.getElementById('modal-icon').innerText = p.icon;
+      document.getElementById('modal-title').innerText = `Práctica ${p.id}: ${p.title}`;
+      document.getElementById('modal-category').innerText = p.category.toUpperCase();
+      document.getElementById('modal-description').innerText = p.desc;
+      document.getElementById('modal-pseudocode').innerText = p.pseudocode;
+
+      // Render bloques
+      const blocksContainer = document.getElementById('modal-blocks');
+      blocksContainer.innerHTML = '';
+      p.blocks.forEach(b => {
+        const div = document.createElement('div');
+        div.className = `sb-block sb-${b.type}`;
+        div.innerText = b.text;
+        blocksContainer.appendChild(div);
+      });
+
+      updateModalCheckButton();
+      document.getElementById('modal-project').classList.remove('hidden');
+    }
+
+    function updateModalCheckButton() {
+      const isDone = completedProjects.includes(currentModalId);
+      const btn = document.getElementById('modal-check-btn');
+      if (isDone) {
+        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        btn.innerText = "✓ Marcada como Completada";
+      } else {
+        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950";
+        btn.innerText = "⚪ Marcar como Completada";
+      }
+    }
+
+    function toggleCompletedModal() {
+      if (currentModalId) toggleCompleted(currentModalId);
+    }
+
+    function closeModal() {
+      document.getElementById('modal-project').classList.add('hidden');
+      currentModalId = null;
+    }
+
+    // FILTROS Y NAVEGACIÓN
+    function filterProjects() {
+      renderProjects();
+    }
+
+    function filterCategory(cat) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-filter').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-slate-950');
+        btn.classList.add('bg-slate-700', 'text-slate-200');
+      });
+      event.target.classList.remove('bg-slate-700', 'text-slate-200');
+      event.target.classList.add('bg-amber-500', 'text-slate-950');
+      renderProjects();
+    }
+
+    function switchTab(tabId) {
+      ['proyectos', 'simuladores', 'escenario', 'bloques'].forEach(t => {
+        document.getElementById(`sec-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-${t}`);
+        if(btn) {
+          btn.classList.remove('bg-amber-500', 'text-slate-950', 'shadow');
+          btn.classList.add('text-slate-300');
+        }
+      });
+      document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if(activeBtn) {
+        activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'shadow');
+        activeBtn.classList.remove('text-slate-300');
+      }
+
+      if(tabId === 'escenario') drawCoordinatesGrid(0,0);
+    }
+
+    // SIMULADOR 1: CANVAS DIBUJAR POLÍGONOS
+    function initPolygonCanvas() {
+      drawPolygon();
+    }
+
+    function drawPolygon() {
+      const sides = parseInt(document.getElementById('poly-sides').value) || 5;
+      const canvas = document.getElementById('poly-canvas');
+      const ctx = canvas.getContext('2d');
+      const info = document.getElementById('poly-info');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const angle = (360 / sides);
+      const steps = Math.max(20, 100 - sides * 6);
+
+      info.innerText = `Lados: ${sides} | Ángulo Giro: ${angle.toFixed(1)}° | Pasos: ${steps}`;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 25;
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#0FBD8C';
+      ctx.lineWidth = 3;
+
+      for (let i = 0; i < sides; i++) {
+        const rad = (i * angle - 90) * (Math.PI / 180);
+        const x = centerX + radius * Math.cos(rad);
+        const y = centerY + radius * Math.sin(rad);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // Dibujar personaje centro
+      ctx.fillStyle = '#FFAB19';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // SIMULADOR 2: DADO VIRTUAL
+    function rollDice() {
+      const diceVisual = document.getElementById('dice-visual');
+      const diceSpeech = document.getElementById('dice-speech');
+      const diceVar = document.getElementById('dice-var-display');
+
+      diceVisual.classList.add('animate-spin');
+      diceSpeech.classList.add('hidden');
+
+      // Tono de sonido sintetizado en navegador
+      playBeep(440, 0.1);
+
+      setTimeout(() => {
+        const result = Math.floor(Math.random() * 6) + 1;
+        diceVisual.classList.remove('animate-spin');
+        diceVisual.innerText = result;
+        diceVar.innerText = result;
+
+        diceSpeech.innerText = `¡Ha salido el ${result}! 🎲`;
+        diceSpeech.classList.remove('hidden');
+        playBeep(600, 0.15);
+      }, 400);
+    }
+
+    // SIMULADOR 3: CALCULADORA
+    function calculate(op) {
+      const n1 = parseFloat(document.getElementById('calc-n1').value) || 0;
+      const n2 = parseFloat(document.getElementById('calc-n2').value) || 0;
+      const resultEl = document.getElementById('calc-result');
+
+      let res = 0;
+      if (op === '+') res = n1 + n2;
+      else if (op === '-') res = n1 - n2;
+      else if (op === '*') res = n1 * n2;
+      else if (op === '/') {
+        if (n1 < n2) {
+          resultEl.innerText = "⚠️ Aviso Scratch: El primer número es menor que el segundo. Comprobación realizada.";
+          return;
+        }
+        res = n2 !== 0 ? (n1 / n2).toFixed(2) : "Indefinido";
+      }
+
+      resultEl.innerText = `El resultado de la operación es: ${res}`;
+      playBeep(520, 0.1);
+    }
+
+    // SIMULADOR 4: ADIVINAR NÚMERO
+    let secretNum = Math.floor(Math.random() * 15) + 1;
+
+    function resetGuessGame() {
+      secretNum = Math.floor(Math.random() * 15) + 1;
+      document.getElementById('guess-message').innerText = "¡He pensado un número del 1 al 15! ¿Lo adivinas?";
+      document.getElementById('guess-input').value = '';
+    }
+
+    function makeGuess() {
+      const input = parseInt(document.getElementById('guess-input').value);
+      const msg = document.getElementById('guess-message');
+
+      if (isNaN(input)) return;
+
+      if (input === secretNum) {
+        msg.innerText = `🎉 ¡ACERTADO! El número era ${secretNum}. ¡Bien hecho!`;
+        playBeep(800, 0.2);
+      } else if (input < secretNum) {
+        msg.innerText = `💡 Pista: El número que he pensado es MÁS GRANDE que ${input}.`;
+        playBeep(300, 0.1);
+      } else {
+        msg.innerText = `💡 Pista: El número que he pensado es MÁS PEQUEÑO que ${input}.`;
+        playBeep(300, 0.1);
+      }
+    }
+
+    // CANVAS REJILLA DE COORDENADAS $X, Y$
+    function initCoordinatesCanvas() {
+      const canvas = document.getElementById('stage-grid-canvas');
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Convertir coordenadas Canvas a Coordenadas Scratch (-240 a 240, -180 a 180)
+        const scratchX = Math.round((mouseX / canvas.width) * 480 - 240);
+        const scratchY = Math.round(180 - (mouseY / canvas.height) * 360);
+
+        document.getElementById('stage-x').innerText = scratchX;
+        document.getElementById('stage-y').innerText = scratchY;
+
+        drawCoordinatesGrid(mouseX, mouseY, scratchX, scratchY);
+      });
+    }
+
+    function drawCoordinatesGrid(mX = 240, mY = 180, sX = 0, sY = 0) {
+      const canvas = document.getElementById('stage-grid-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Fondo rejilla
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      for(let x = 0; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for(let y = 0; y < h; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // Ejes centrales (0,0)
+      ctx.strokeStyle = '#FFAB19';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(w/2, 0); ctx.lineTo(w/2, h); ctx.stroke(); // Eje Y
+      ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke(); // Eje X
+
+      // Texto de bordes
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px monospace';
+      ctx.fillText('(-240, 180)', 5, 12);
+      ctx.fillText('(240, 180)', w - 65, 12);
+      ctx.fillText('(-240, -180)', 5, h - 5);
+      ctx.fillText('(240, -180)', w - 65, h - 5);
+      ctx.fillText('(0,0)', w/2 + 5, h/2 - 5);
+
+      // Dibujar punto de ratón/personaje
+      ctx.fillStyle = '#4C97FF';
+      ctx.beginPath();
+      ctx.arc(mX, mY, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Etiqueta flotante
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px Fredoka';
+      ctx.fillText(`(${sX}, ${sY})`, mX + 12, mY - 8);
+    }
+
+    // AUDIO SINTETIZADO (Web Audio API)
+    function playBeep(freq, duration) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Ignorar si el audio no está interactuado aún
+      }
+    }
+  </script>
+</body>
+</html>

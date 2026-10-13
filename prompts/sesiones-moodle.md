@@ -13,15 +13,17 @@ Tu objetivo es transformar el resumen de las siguientes sesiones didácticas en 
 === REQUISITOS DE DISEÑO Y MAQUETACIÓN HTML ===
 1. Estructura con Acordeones (<details> / <summary>):
    - Utiliza elementos semánticos HTML5 (<details> y <summary>) para cada bloque/actividad. Esto evita la sobrecarga visual en la página principal de Moodle.
-   - Cada sección debe incluir: Tiempo estimado, Objetivos de la actividad, Instrucciones detalladas paso a paso para el alumnado y Recursos necesarios, así como consejos o trucos que puedan ayudar al alumnado.
+   - Cada sección debe incluir: Objetivos de la actividad, Instrucciones detalladas paso a paso para el alumnado y Recursos necesarios, así como consejos o trucos que puedan ayudar al alumnado.
 
 2. Enlaces y Recursos Externos Sugeridos:
-   - Añade enlaces funcionales o embebidos reales/ficticios contextualizados (por ejemplo, vídeo de YouTube sobre postura/flujos en la nube, enlace directo a KeyHero.com, scratch, mentimeter, plantilla de tabla KWL).
+   - Añade enlaces funcionales o embebidos reales/ficticios contextualizados (por ejemplo, vídeo de YouTube sobre postura/flujos en la nube, enlace directo a KeyHero.com, scratch, mentimeter).
    - Asegúrate de que los enlaces externos se abran en una nueva pestaña (target="_blank" rel="noopener noreferrer").
+    - Si el documento origen tiene algún enlace de referencia intenta conservarlo.
 
 3. Integración con Moodle (LMS):
    - Añade un bloque visual o cajas informativas de "Acción Moodle" señalando cuándo el alumnado debe salir de esta página para interactuar con otro módulo de Moodle (p. ej., "Accede a la Tarea: Entrega KWL", "Sube tu captura a la Galería o Tarea X", "Usa la Wiki del curso").
    - Utiliza alertas visually claras (con bordes de colores o iconos emoji).
+    - Las tareas deben tener el prefijo Tarea x.1, x.2, etc. Siendo x el número de la sda, ej. en la SdA2, x tendría el valor 2 y la tarea sería Tarea 2.1, Tarea 2.2, etc..
 
 4. Estilo visual y Accesibilidad:
    - Utiliza CSS inline ligero y limpio, compatible con el editor Atto/TinyMCE de Moodle. Usa los estilos      asignados dentro del elemento style, en los atributos styles de cada elemento para que sea compatible con moodle.
@@ -29,5 +31,5 @@ Tu objetivo es transformar el resumen de las siguientes sesiones didácticas en 
    - Tipografía clara, jerarquía semántica (H2, H3, p, ul) e iconos emoji para mejorar la lectura rápida (⏱️, 🎯, 📌, 📤, 🔗).
 
 === ENTREGABLES ===
-1. Código HTML completo y limpio listo para copiar y pegar en el modo código (HTML) del editor de Moodle.
+1. Código HTML completo y limpio listo para copiar y pegar en el modo código (HTML) del editor de Moodle. El código debe de iniciar con etiquetas de contenidos div obviar las etiquetas principales html, head, body, etc. Los estilos deben de ser inline evitando la etiqueta style.
 2. Un apartado breve al final con "Recomendaciones de configuración en Moodle" (módulos extra a crear: Tareas, Foros, Glosarios, etc.).

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 2: Código en Acción - Videojuegos Sostenibles (1º ESO)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        tech: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slide-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-hidden-left {
+            opacity: 0;
+            transform: translateX(-60px) scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+        .slide-hidden-right {
+            opacity: 0;
+            transform: translateX(60px) scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+        .slide-active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            position: relative;
+            width: 100%;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Encabezado Superior -->
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/60 sticky top-0 z-50 px-4 py-3 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div class="flex items-center space-x-3">
+                <span class="bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black px-2.5 py-1 rounded-lg text-xs tracking-wider uppercase">
+                    1º ESO | Computación y Robótica
+                </span>
+                <h1 class="text-sm sm:text-base font-bold text-slate-200 truncate">
+                    SdA 2: Código en Acción
+                </h1>
+            </div>
+            
+            <!-- Barra de Progreso e Indicador de Diapositiva -->
+            <div class="flex items-center space-x-4 w-full sm:w-auto justify-between sm:justify-end">
+                <div class="flex items-center space-x-1.5 text-xs font-semibold text-emerald-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700">
+                    <i class="fa-solid fa-layer-group text-emerald-400"></i>
+                    <span>Diapositiva <span id="current-slide-num">1</span> de 6</span>
+                </div>
+                <div class="w-28 sm:w-36 bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-emerald-400 to-teal-400 h-full w-1/6 transition-all duration-300"></div>
+                </div>
+                <button id="fullscreen-btn" onclick="toggleFullScreen()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-700 transition" title="Pantalla completa">
+                    <i class="fa-solid fa-expand text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ÁREA PRINCIPAL DE CONTENIDO / SLIDES -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full relative">
+        <div id="slides-container" class="w-full relative min-h-[520px] flex items-center">
+
+            <!-- DIAPOSITIVA 1: Presentación y Reto Sostenible -->
+            <section id="slide-1" class="slide-transition slide-active">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                    <!-- Decoración de fondo -->
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>Situación de Aprendizaje 2</span>
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
+                        Código en Acción: <br>
+                        <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+                            Videojuegos e Historias Interactivas
+                        </span>
+                    </h2>
+
+                    <p class="text-slate-300 text-base sm:text-lg mb-8 max-w-3xl leading-relaxed">
+                        ¿Cansado de solo jugar? Es hora de dar el salto: vamos a pasar de <strong>usuarios pasivos</strong> a <strong>creadores de tecnología</strong> con conciencia ecológica y social.
+                    </p>
+
+                    <!-- Tarjeta del Gran Reto -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-900/90 border-l-4 border-emerald-400 p-5 sm:p-6 rounded-r-xl shadow-inner mb-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-emerald-500/20 p-3 rounded-xl text-emerald-400 shrink-0">
+                                <i class="fa-solid fa-earth-americas text-2xl sm:text-3xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-emerald-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-1">
+                                    El Gran Reto de Clase
+                                </h3>
+                                <p class="text-white font-medium text-sm sm:text-base leading-snug">
+                                    ¿Cómo podemos concienciar al instituto sobre los problemas del planeta (reciclaje, ahorro de energía o cuidado de la naturaleza) creando nuestro propio videojuego o historia interactiva?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-slate-900/50 p-3.5 rounded-xl border border-slate-700/50 flex items-center space-x-3">
+                            <i class="fa-solid fa-users text-teal-400 text-xl"></i>
+                            <span class="text-xs sm:text-sm text-slate-300 font-medium">Trabajo en parejas o tríos</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-3.5 rounded-xl border border-slate-700/50 flex items-center space-x-3">
+                            <i class="fa-solid fa-cubes text-emerald-400 text-xl"></i>
+                            <span class="text-xs sm:text-sm text-slate-300 font-medium">Programación por bloques (Scratch)</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-3.5 rounded-xl border border-slate-700/50 flex items-center space-x-3">
+                            <i class="fa-solid fa-award text-amber-400 text-xl"></i>
+                            <span class="text-xs sm:text-sm text-slate-300 font-medium">Feria de Videojuegos Sostenibles</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIAPOSITIVA 2: El Producto Final (Lo más importante) -->
+            <section id="slide-2" class="slide-transition slide-hidden-right">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl">
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                                Objective Principal
+                            </span>
+                            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-2">
+                                ¿Qué vas a conseguir al final?
+                            </h2>
+                        </div>
+                        <div class="bg-amber-500/20 text-amber-300 text-xs font-semibold px-4 py-2 rounded-xl border border-amber-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-bullseye text-base"></i>
+                            <span>Tu meta principal en esta SdA</span>
+                        </div>
+                    </div>
+
+                    <!-- El Gran Producto Final Destacado -->
+                    <div class="bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 border-2 border-emerald-500/60 rounded-2xl p-6 mb-6 shadow-lg">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="bg-emerald-500 text-slate-950 p-2 rounded-lg font-black">
+                                <i class="fa-solid fa-trophy text-lg"></i>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white">
+                                Tu Videojuego o Historia Interactiva Sostenible
+                            </h3>
+                        </div>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Diseñarás y programarás con tu equipo un proyecto funcional en <strong>Scratch</strong> que ayude a salvar el medio ambiente. El proyecto se publicará en el <em>Estudio Virtual del Aula</em> y lo presentarás en vivo ante tus compañeros/as.
+                        </p>
+                    </div>
+
+                    <!-- Requisitos del Producto Final (Interactive Cards) -->
+                    <h3 class="text-slate-300 font-semibold text-sm uppercase tracking-wider mb-3">
+                        Características obligatorias del proyecto:
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition">
+                            <div class="text-emerald-400 text-xl mb-2"><i class="fa-solid fa-gamepad"></i></div>
+                            <h4 class="text-white font-bold text-sm mb-1">Interactividad</h4>
+                            <p class="text-slate-400 text-xs">Personaje controlado por teclado o ratón con movimiento fluido.</p>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition">
+                            <div class="text-teal-400 text-xl mb-2"><i class="fa-solid fa-code-branch"></i></div>
+                            <h4 class="text-white font-bold text-sm mb-1">Lógica y Reglas</h4>
+                            <p class="text-slate-400 text-xs">Detección de choques, marcador de puntos y tiempo límite.</p>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition">
+                            <div class="text-cyan-400 text-xl mb-2"><i class="fa-solid fa-leaf"></i></div>
+                            <h4 class="text-white font-bold text-sm mb-1">Tema Ambiental</h4>
+                            <p class="text-slate-400 text-xs">Mensaje claro sobre reciclaje, energía limpia o cuidado de la naturaleza.</p>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition">
+                            <div class="text-amber-400 text-xl mb-2"><i class="fa-solid fa-copyright"></i></div>
+                            <h4 class="text-white font-bold text-sm mb-1">Recursos Libres</h4>
+                            <p class="text-slate-400 text-xs">Uso ético de imágenes y sonidos con licencias abiertas y sin copia.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIAPOSITIVA 3: ¿Qué vas a aprender? -->
+            <section id="slide-3" class="slide-transition slide-hidden-right">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl">
+                    <div class="mb-6">
+                        <span class="bg-tech-500/10 text-tech-500 border border-tech-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                            Conocimientos y Habilidades
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-2">
+                            Lo que vas a aprender en esta aventura
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Columna 1: Los 4 Pilares del Pensamiento Computacional -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700">
+                            <h3 class="text-emerald-400 font-bold text-base mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-brain"></i>
+                                <span>Aprender a pensar como un/a programador/a</span>
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/60">
+                                    <div class="text-white font-semibold text-xs sm:text-sm flex justify-between">
+                                        <span>1. Descomposición</span>
+                                        <span class="text-emerald-400 text-xs">Dividir el problema</span>
+                                    </div>
+                                    <p class="text-slate-400 text-xs mt-1">Dividir un juego complejo en partes más pequeñas y fáciles.</p>
+                                </div>
+
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/60">
+                                    <div class="text-white font-semibold text-xs sm:text-sm flex justify-between">
+                                        <span>2. Reconocer Patrones</span>
+                                        <span class="text-emerald-400 text-xs">Buscar repetidos</span>
+                                    </div>
+                                    <p class="text-slate-400 text-xs mt-1">Descubrir acciones que se repiten para usar bucles.</p>
+                                </div>
+
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/60">
+                                    <div class="text-white font-semibold text-xs sm:text-sm flex justify-between">
+                                        <span>3. Abstracción</span>
+                                        <span class="text-emerald-400 text-xs">Filtrar lo importante</span>
+                                    </div>
+                                    <p class="text-slate-400 text-xs mt-1">Quedarse solo con lo esencial e ignorar lo innecesario.</p>
+                                </div>
+
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/60">
+                                    <div class="text-white font-semibold text-xs sm:text-sm flex justify-between">
+                                        <span>4. Diseñar Algoritmos</span>
+                                        <span class="text-emerald-400 text-xs">Pasos ordenados</span>
+                                    </div>
+                                    <p class="text-slate-400 text-xs mt-1">Crear listas exactas de instrucciones que la máquina entienda.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna 2: Conceptos Clave de Programación y Ciudadanía Digital -->
+                        <div class="space-y-4">
+                            <!-- Bloque Programación -->
+                            <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700">
+                                <h3 class="text-teal-400 font-bold text-base mb-3 flex items-center space-x-2">
+                                    <i class="fa-solid fa-laptop-code"></i>
+                                    <span>Programación por Bloques</span>
+                                </h3>
+                                <ul class="text-xs sm:text-sm text-slate-300 space-y-2">
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                        <span><strong>Secuencias y Bucles:</strong> Hacer que las acciones se ejecuten en orden o repetidamente.</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                        <span><strong>Condicionales y Sensores:</strong> Tomar decisiones cuando dos objetos se chocan ("si toca plástico...").</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                                        <span><strong>Variables:</strong> Guardar datos cambiantes como los Puntos o el Tiempo restante.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Bloque Ciberseguridad y Ética -->
+                            <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700">
+                                <h3 class="text-cyan-400 font-bold text-base mb-3 flex items-center space-x-2">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Ciudadanía Digital y Licencias Libre</span>
+                                </h3>
+                                <ul class="text-xs sm:text-sm text-slate-300 space-y-2">
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>
+                                        <span><strong>Derechos de Autor:</strong> Usar música e imágenes libres (Creative Commons / Dominio Público).</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>
+                                        <span><strong>Salud Digital y Seguridad:</strong> Proteger tus datos de acceso y mantener una buena postura.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIAPOSITIVA 4: Las Tareas (Secuencia de Trabajo) -->
+            <section id="slide-4" class="slide-transition slide-hidden-right">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl">
+                    <div class="mb-6">
+                        <span class="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                            Plan de Trabajo (18 Sesiones)
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-2">
+                            ¿Qué tareas vamos a realizar?
+                        </h2>
+                    </div>
+
+                    <!-- Pestañas o Pasos de la Hoja de Ruta -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- FASE 1 -->
+                        <div class="bg-slate-900/90 p-5 rounded-2xl border-t-4 border-emerald-400 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-md">FASE 1</span>
+                                    <span class="text-xs text-slate-400">Sesiones 1 - 5</span>
+                                </div>
+                                <h3 class="text-white font-bold text-base mb-2">Diseño y Lógica sin Ordenador</h3>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li>• Dinámica del "Robot Humano" para entender las órdenes exactas.</li>
+                                    <li>• Redacción de pasos lógicos (pseudocódigo).</li>
+                                    <li>• Dibujo de <strong>Diagramas de Flujo</strong> en papel antes de encender la pantalla.</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-emerald-400 font-medium">
+                                <i class="fa-solid fa-pen-ruler mr-1"></i> Entrega: Diagrama del juego
+                            </div>
+                        </div>
+
+                        <!-- FASE 2 -->
+                        <div class="bg-slate-900/90 p-5 rounded-2xl border-t-4 border-teal-400 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold bg-teal-500/20 text-teal-400 px-2.5 py-1 rounded-md">FASE 2</span>
+                                    <span class="text-xs text-slate-400">Sesiones 6 - 12</span>
+                                </div>
+                                <h3 class="text-white font-bold text-base mb-2">Programación y Prácticas en Scratch</h3>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li>• Movimientos y coordenadas ($X, Y$).</li>
+                                    <li>• Programación de choques, sonidos y animación de disfraces.</li>
+                                    <li>• Búsqueda de sonidos e imágenes libres de derechos.</li>
+                                    <li>• Añadir marcador de Puntos y Tiempo con variables.</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-teal-400 font-medium">
+                                <i class="fa-solid fa-bug mr-1"></i> Corrección de errores
+                            </div>
+                        </div>
+
+                        <!-- FASE 3 -->
+                        <div class="bg-slate-900/90 p-5 rounded-2xl border-t-4 border-cyan-400 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-md">FASE 3</span>
+                                    <span class="text-xs text-slate-400">Sesiones 13 - 18</span>
+                                </div>
+                                <h3 class="text-white font-bold text-base mb-2">Proyecto Final y Presentación</h3>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li>• Creación del videojuego ODS definitivo en pareja/trío.</li>
+                                    <li>• Publicación en el Estudio Virtual.</li>
+                                    <li>• <strong>Feria de Videojuegos:</strong> Exposición oral de 2 minutos explicando la lógica y el mensaje ecológico.</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-cyan-400 font-medium">
+                                <i class="fa-solid fa-microphone mr-1"></i> Presentación en directo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIAPOSITIVA 5: Metodología y Cómo te Evaluaremos -->
+            <section id="slide-5" class="slide-transition slide-hidden-right">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl">
+                    <div class="mb-6">
+                        <span class="bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                            Normas de Aula y Evaluación
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-2">
+                            ¿Cómo trabajamos y cómo evaluamos?
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Método de Trabajo -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700">
+                            <h3 class="text-emerald-400 font-bold text-base mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-rotate text-lg"></i>
+                                <span>La Rutina de Trabajo: Pienso - Programo - Pruebo</span>
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3 bg-slate-800 p-3 rounded-xl">
+                                    <span class="bg-emerald-500 text-slate-950 font-bold text-xs px-2 py-1 rounded">1</span>
+                                    <div>
+                                        <h4 class="text-white text-xs font-bold">PIENSO</h4>
+                                        <p class="text-slate-400 text-xs">Analizo el problema y dibujo la solución en papel.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 bg-slate-800 p-3 rounded-xl">
+                                    <span class="bg-teal-500 text-slate-950 font-bold text-xs px-2 py-1 rounded">2</span>
+                                    <div>
+                                        <h4 class="text-white text-xs font-bold">PROGRAMO</h4>
+                                        <p class="text-slate-400 text-xs">Coloco y encajo los bloques en Scratch.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 bg-slate-800 p-3 rounded-xl">
+                                    <span class="bg-cyan-500 text-slate-950 font-bold text-xs px-2 py-1 rounded">3</span>
+                                    <div>
+                                        <h4 class="text-white text-xs font-bold">PRUEBO</h4>
+                                        <p class="text-slate-400 text-xs">Ejecuto el código, detecto fallos y los corrijo sin miedo a equivocarme.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Evaluación Criterial LOMLOE -->
+                        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700">
+                            <h3 class="text-amber-400 font-bold text-base mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-clipboard-check text-lg"></i>
+                                <span>¿En qué se fijará el profesorado?</span>
+                            </h3>
+
+                            <div class="space-y-2 text-xs sm:text-sm text-slate-300">
+                                <div class="p-2.5 bg-slate-800 rounded-lg flex items-center justify-between border-l-2 border-emerald-400">
+                                    <span>Lógica de código (secuencias, bucles, condicionales)</span>
+                                    <span class="font-bold text-emerald-400">25%</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-800 rounded-lg flex items-center justify-between border-l-2 border-teal-400">
+                                    <span>Juego funcional y trabajo cooperativo en equipo</span>
+                                    <span class="font-bold text-teal-400">30%</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-800 rounded-lg flex items-center justify-between border-l-2 border-cyan-400">
+                                    <span>Comprensión de ordenadores y programas</span>
+                                    <span class="font-bold text-cyan-400">15%</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-800 rounded-lg flex items-center justify-between border-l-2 border-blue-400">
+                                    <span>Salud digital y ciberseguridad</span>
+                                    <span class="font-bold text-blue-400">15%</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-800 rounded-lg flex items-center justify-between border-l-2 border-indigo-400">
+                                    <span>Respeto a derechos de autor y licencias libres</span>
+                                    <span class="font-bold text-indigo-400">15%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIAPOSITIVA 6: ¡Listos para empezar! (Checklist interactiva) -->
+            <section id="slide-6" class="slide-transition slide-hidden-right">
+                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-6 sm:p-10 shadow-2xl text-center">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-full text-xs font-bold mb-4">
+                        <i class="fa-solid fa-rocket"></i>
+                        <span>¡Empieza el reto!</span>
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-black text-white mb-3">
+                        ¿Preparados para crear?
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-6">
+                        Antes de empezar la primera sesión, revisa si tienes claras las claves del proyecto marcando las casillas:
+                    </p>
+
+                    <!-- Checklist interactiva -->
+                    <div class="max-w-xl mx-auto text-left space-y-3 mb-8">
+                        <label class="flex items-center space-x-3 bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500 transition">
+                            <input type="checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" onchange="updateCheckCount()">
+                            <span class="text-xs sm:text-sm text-slate-200">Sé que debo crear un videojuego o historia sobre sostenibilidad.</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500 transition">
+                            <input type="checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" onchange="updateCheckCount()">
+                            <span class="text-xs sm:text-sm text-slate-200">Sé que trabajaré en pareja/trío compartiendo responsabilidades.</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500 transition">
+                            <input type="checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" onchange="updateCheckCount()">
+                            <span class="text-xs sm:text-sm text-slate-200">Sé que aplicaré la rutina "Pienso - Programo - Pruebo".</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500 transition">
+                            <input type="checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer" onchange="updateCheckCount()">
+                            <span class="text-xs sm:text-sm text-slate-200">Sé que expondré mi proyecto en la Feria de Videojuegos Sostenibles.</span>
+                        </label>
+                    </div>
+
+                    <!-- Mensaje de motivación -->
+                    <div id="ready-message" class="hidden bg-emerald-500/20 border border-emerald-500/40 p-4 rounded-xl text-emerald-300 font-bold text-sm max-w-xl mx-auto animate-bounce">
+                        🎉 ¡Excelente! Estás listo para comenzar con la Sesión 1: "El Robot Humano".
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+    <footer class="bg-slate-800/90 backdrop-blur border-t border-slate-700/60 p-4 sticky bottom-0 z-50">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <!-- Botón Anterior -->
+            <button id="prev-btn" onclick="prevSlide()" class="bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed text-white px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center space-x-2 transition shadow-lg">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="hidden sm:inline">Anterior</span>
+            </button>
+
+            <!-- Indicadores de Puntos (Dots) -->
+            <div class="flex items-center space-x-2" id="dots-container">
+                <button onclick="goToSlide(1)" class="w-3 h-3 rounded-full bg-emerald-400 transition-all duration-300 scale-125" title="Diapositiva 1"></button>
+                <button onclick="goToSlide(2)" class="w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" title="Diapositiva 2"></button>
+                <button onclick="goToSlide(3)" class="w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" title="Diapositiva 3"></button>
+                <button onclick="goToSlide(4)" class="w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" title="Diapositiva 4"></button>
+                <button onclick="goToSlide(5)" class="w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" title="Diapositiva 5"></button>
+                <button onclick="goToSlide(6)" class="w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300" title="Diapositiva 6"></button>
+            </div>
+
+            <!-- Botón Siguiente -->
+            <button id="next-btn" onclick="nextSlide()" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center space-x-2 transition shadow-lg shadow-emerald-500/20">
+                <span class="hidden sm:inline">Siguiente</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        function updateSlideUI() {
+            // Actualizar número e indicador
+            document.getElementById('current-slide-num').innerText = currentSlide;
+            document.getElementById('progress-bar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+            // Actualizar visibilidad de diapositivas
+            for (let i = 1; i <= totalSlides; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                if (i === currentSlide) {
+                    slide.className = "slide-transition slide-active";
+                } else if (i < currentSlide) {
+                    slide.className = "slide-transition slide-hidden-left";
+                } else {
+                    slide.className = "slide-transition slide-hidden-right";
+                }
+            }
+
+            // Actualizar estado de botones Anterior / Siguiente
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentSlide === totalSlides) {
+                nextBtn.innerHTML = `<span>Finalizar</span> <i class="fa-solid fa-check"></i>`;
+            } else {
+                nextBtn.innerHTML = `<span class="hidden sm:inline">Siguiente</span> <i class="fa-solid fa-arrow-right"></i>`;
+            }
+
+            // Actualizar puntos (dots)
+            const dotsContainer = document.getElementById('dots-container');
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i + 1 === currentSlide) {
+                    dots[i].className = "w-3 h-3 rounded-full bg-emerald-400 transition-all duration-300 scale-125";
+                } else {
+                    dots[i].className = "w-3 h-3 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300";
+                }
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlideUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlideUI();
+            }
+        }
+
+        function goToSlide(slideNum) {
+            if (slideNum >= 1 && slideNum <= totalSlides) {
+                currentSlide = slideNum;
+                updateSlideUI();
+            }
+        }
+
+        // Navegación con teclado (Flecha Izquierda y Derecha, Espacio)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Toggle Pantalla Completa
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Error al activar pantalla completa: " + err.message);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Contador de checklist en Diapositiva 6
+        function updateCheckCount() {
+            const checkboxes = document.querySelectorAll('#slide-6 input[type="checkbox"]');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const readyMsg = document.getElementById('ready-message');
+            if (checkedCount === checkboxes.length) {
+                readyMsg.classList.remove('hidden');
+            } else {
+                readyMsg.classList.add('hidden');
+            }
+        }
+
+        // Inicialización al cargar la página
+        window.onload = function() {
+            updateSlideUI();
+        };
+    </script>
+</body>
+</html>

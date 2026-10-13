@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA Tecnología 4º ESO - Relanzamos Productos: El Diseño</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for radar analysis -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
+        .card-glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .dark-glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); }
+        .tab-active { border-bottom: 3px solid #6366f1; color: #4f46e5; font-weight: 700; }
+        .pulse-glow { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Top Navigation & Curricular Header -->
+    <header class="gradient-bg text-white shadow-xl sticky top-0 z-50 border-b border-indigo-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-indigo-600 rounded-xl shadow-lg">
+                        <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-400/30">LOMLOE Andalucía</span>
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-emerald-500/30 text-emerald-200 px-2 py-0.5 rounded-full">Tecnología 4º ESO</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-0.5">SdA: "Relanzamos Productos" — Sesión 1: El Diseño</h1>
+                    </div>
+                </div>
+
+                <!-- Timer & Curriculum Modal Button -->
+                <div class="flex items-center space-x-3">
+                    <div class="hidden md:flex items-center bg-slate-800/80 px-3.5 py-1.5 rounded-xl border border-slate-700 text-slate-300 text-xs font-medium">
+                        <i data-lucide="clock" class="w-4 h-4 mr-1.5 text-amber-400"></i>
+                        <span>Tiempo de Sesión: <strong class="text-white">50 min</strong></span>
+                    </div>
+                    <button onclick="toggleCurriculumModal()" class="flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl transition shadow-md hover:shadow-indigo-500/25">
+                        <i data-lucide="file-check" class="w-4 h-4"></i>
+                        <span>Mapeo Curricular LOMLOE</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Session Sequence Timeline Tabs -->
+            <div class="flex overflow-x-auto space-x-2 mt-4 pt-2 border-t border-slate-700/60 no-scrollbar">
+                <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white transition whitespace-nowrap bg-slate-800/60">
+                    <span class="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">1</span>
+                    <span>1. Introducción y Reto (15m)</span>
+                </button>
+                <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white transition whitespace-nowrap bg-slate-800/60">
+                    <span class="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold">2</span>
+                    <span>2. Teórica: El Diseño (25m)</span>
+                </button>
+                <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white transition whitespace-nowrap bg-slate-800/60">
+                    <span class="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold">3</span>
+                    <span>3. Debate Relámpago (10m)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+
+        <!-- ========================================================================= -->
+        <!-- TAB 1: INTRODUCCIÓN Y RETO + REPARTO DE ROLES (15 MIN) -->
+        <!-- ========================================================================= -->
+        <section id="tab1" class="tab-content space-y-6">
+            
+            <!-- Banner Introducción y Motivación -->
+            <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute right-0 top-0 bottom-0 opacity-10 pointer-events-none p-8 flex items-center">
+                    <i data-lucide="sparkles" class="w-64 h-64 text-white"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center space-x-2 bg-indigo-500/30 text-indigo-200 px-3 py-1 rounded-full text-xs font-medium mb-3 border border-indigo-400/20">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-300"></i>
+                        <span>Fase 1: Activación y Organización del Equipo</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">🚀 Reto Oficial: "Relanzamos Productos"</h2>
+                    <p class="text-indigo-100 text-sm sm:text-base leading-relaxed">
+                        ¿Os habéis preguntado por qué tantos productos cotidianos acaban rotos, son incómodos o contaminan en exceso? Vuestro estudio de diseño industrial rediseñará un producto cotidiano para hacerlo <strong>más funcional, ergonómico y ecosostenible</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Panel interactivo de Organización de Equipos y Asignación de Roles -->
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200/80">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 mb-6 border-b border-slate-200 gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                            <i data-lucide="users" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                            Configurador de Equipo y Roles Oficiales
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Formad equipos de 2 a 4 miembros y asignad los roles técnicos según normativa LOMLOE (TEC.4.A.1.1 y CEv 1.3).</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input type="text" id="teamNameInput" placeholder="Nombre de vuestro estudio/equipo..." class="px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none w-full md:w-64">
+                    </div>
+                </div>
+
+                <!-- Grid de Roles Oficiales -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Role 1: Coordinador/a -->
+                    <div class="border-2 border-indigo-100 hover:border-indigo-500 rounded-2xl p-4 bg-indigo-50/40 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">👑</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded-md">Coordinador/a</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">Control e Integración</h4>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">Supervisa tiempos, garantiza el cumplimiento del plan y resuelve conflictos respetando al equipo.</p>
+                            <div class="mt-3 pt-2 border-t border-indigo-100 text-[11px] text-indigo-900 font-medium">
+                                📌 Competencia: <strong>CPSAA3 / CE1</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Alumno/a:</label>
+                            <input type="text" id="role-coordinador" placeholder="Escribe el nombre..." oninput="updateTeamSummary()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Role 2: Secretario/a -->
+                    <div class="border-2 border-emerald-100 hover:border-emerald-500 rounded-2xl p-4 bg-emerald-50/40 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">📝</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-md">Secretario/a</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">Documentación Técnica</h4>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">Redacta la memoria técnica, actas de reuniones y registra todas las decisiones del diseño.</p>
+                            <div class="mt-3 pt-2 border-t border-emerald-100 text-[11px] text-emerald-900 font-medium">
+                                📌 Competencia: <strong>CCL1 / CEv 3.1</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Alumno/a:</label>
+                            <input type="text" id="role-secretario" placeholder="Escribe el nombre..." oninput="updateTeamSummary()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Role 3: Responsable Digital -->
+                    <div class="border-2 border-blue-100 hover:border-blue-500 rounded-2xl p-4 bg-blue-50/40 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">💻</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-blue-200 text-blue-800 px-2 py-0.5 rounded-md">Resp. Digital</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">Entorno y Archivos</h4>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">Crea la estructura de carpetas en Google Drive y gestiona los archivos CAD/3D y presentaciones.</p>
+                            <div class="mt-3 pt-2 border-t border-blue-100 text-[11px] text-blue-900 font-medium">
+                                📌 Competencia: <strong>CD2 / CEv 5.1</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Alumno/a:</label>
+                            <input type="text" id="role-digital" placeholder="Escribe el nombre..." oninput="updateTeamSummary()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Role 4: Portavoz -->
+                    <div class="border-2 border-amber-100 hover:border-amber-500 rounded-2xl p-4 bg-amber-50/40 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">📢</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-200 text-amber-800 px-2 py-0.5 rounded-md">Portavoz</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">Comunicación Efectiva</h4>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">Representa al grupo en las puestas en común usando un lenguaje técnico e inclusivo.</p>
+                            <div class="mt-3 pt-2 border-t border-amber-100 text-[11px] text-amber-900 font-medium">
+                                📌 Competencia: <strong>CCL1 / CEv 3.2</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Alumno/a:</label>
+                            <input type="text" id="role-portavoz" placeholder="Escribe el nombre..." oninput="updateTeamSummary()" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Resumen de equipo y checklist digital -->
+                <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div id="teamCheckBadge" class="p-2 bg-slate-200 text-slate-600 rounded-lg">
+                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h5 id="teamStatusText" class="text-sm font-bold text-slate-800">Estado del Equipo: Incompleto</h5>
+                            <p class="text-xs text-slate-500">Rellenad los nombres para habilitar el Acta Oficial del Equipo.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateTeamCard()" id="btnGenerateTeam" disabled class="px-4 py-2 bg-slate-300 text-slate-500 font-medium text-xs rounded-xl cursor-not-allowed transition flex items-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Generar Ficha de Equipo (Google Drive Checklist)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: EXPOSICIÓN TEÓRICA PARTICIPATIVA - EL DISEÑO (25 MIN) -->
+        <!-- ========================================================================= -->
+        <section id="tab2" class="tab-content hidden space-y-6">
+            
+            <!-- Intro Teórica -->
+            <div class="bg-indigo-900 text-white rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider bg-indigo-700 text-indigo-200 px-3 py-1 rounded-full border border-indigo-500/30">Fase 2: Fundamentación Técnica</span>
+                    <h2 class="text-2xl font-bold mt-2">📐 Los Requisitos del Diseño de una Solución Óptima</h2>
+                    <p class="text-indigo-100 text-sm mt-1 max-w-2xl">
+                        Un buen diseño no es solo "bonito". En Tecnología analizamos cuatro pilares clave que determinan el éxito de un producto técnico. Haz clic en cada pilar para explorar sus criterios clave.
+                    </p>
+                </div>
+                <div class="flex items-center space-x-2 bg-indigo-800/80 p-3 rounded-xl border border-indigo-700 shrink-0">
+                    <i data-lucide="book-open" class="w-8 h-8 text-amber-300"></i>
+                    <span class="text-xs font-semibold text-indigo-100">Saberes Básicos:<br><strong class="text-white">TEC.4.A.2 / TEC.4.D.1</strong></span>
+                </div>
+            </div>
+
+            <!-- Grid Interactivo de Criterios del Diseño -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Pilar 1: Funcionalidad -->
+                <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-slate-200 hover:border-indigo-500 transition group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 bg-indigo-100 text-indigo-700 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition">
+                                <i data-lucide="sliders" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">1. Funcionalidad</h3>
+                                <span class="text-xs text-indigo-600 font-semibold">¿Resuelve el problema?</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Practicidad</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Asegura que el objeto cumple de manera precisa, eficaz y fiable con el objetivo principal para el que fue diseñado, sin fallos prematuros ni redundancias innecesarias.
+                    </p>
+                    <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 border border-indigo-100">
+                        <strong>💡 Ejemplo en clase:</strong> Un bolígrafo cuya tinta fluye de manera uniforme, no se derrama al presionar y mantiene la bola libre de atascos.
+                    </div>
+                </div>
+
+                <!-- Pilar 2: Factibilidad -->
+                <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-slate-200 hover:border-emerald-500 transition group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition">
+                                <i data-lucide="wrench" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">2. Factibilidad</h3>
+                                <span class="text-xs text-emerald-600 font-semibold">¿Es viable fabricarlo?</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Técnica & Sostenibilidad</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Analiza la viabilidad económica, la selección responsable de materiales (TEC.4.A.2.2), los procesos de fabricación disponilidad (impresión 3D, mecanizado) y su huella ecológica.
+                    </p>
+                    <div class="bg-emerald-50 p-3 rounded-xl text-xs text-emerald-900 border border-emerald-100">
+                        <strong>💡 Ejemplo en clase:</strong> Elegir PLA reciclable o filamento biodegradable para imprimir un soporte en el aula en lugar de plásticos derivados del petróleo.
+                    </div>
+                </div>
+
+                <!-- Pilar 3: Ergonomía -->
+                <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-slate-200 hover:border-amber-500 transition group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 bg-amber-100 text-amber-700 rounded-xl group-hover:bg-amber-600 group-hover:text-white transition">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">3. Ergonomía</h3>
+                                <span class="text-xs text-amber-600 font-semibold">¿Es cómodo y accesible?</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Confort & Inclusión</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Adapta el objeto a la anatomía humana, previniendo la fatiga, lesiones o incomodidades. Incorpora principios de accesibilidad universal y diseño para todas las personas (DUA).
+                    </p>
+                    <div class="bg-amber-50 p-3 rounded-xl text-xs text-amber-900 border border-amber-100">
+                        <strong>💡 Ejemplo en clase:</strong> La empuñadura de una mochila con tirantes acolchados transpirables ajustables que distribuyen el peso en los hombros.
+                    </div>
+                </div>
+
+                <!-- Pilar 4: Biónica -->
+                <div class="bg-white rounded-2xl p-5 shadow-md border-2 border-slate-200 hover:border-purple-500 transition group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 bg-purple-100 text-purple-700 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition">
+                                <i data-lucide="leaf" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">4. Biónica</h3>
+                                <span class="text-xs text-purple-600 font-semibold">¿Inspirado en la naturaleza?</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Innovación Biomimética</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Consiste en estudiar las soluciones que la biología ha perfeccionado tras millones de años de evolución y aplicarlas al diseño e ingeniería de objetos humanos.
+                    </p>
+                    <div class="bg-purple-50 p-3 rounded-xl text-xs text-purple-900 border border-purple-100">
+                        <strong>💡 Ejemplo en clase:</strong> El Velcro (inspirado en los frutos de bardana) o la morfología del Tren Bala (inspirada en el pico aerodinámico del Martín Pescador).
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Mini-Game Interactivo de Afianzamiento Teórico (Comprueba tu Conocimiento) -->
+            <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-800">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="gamepad-2" class="w-5 h-5 text-amber-400"></i>
+                        <h3 class="font-bold text-base">Desafío Relámpago: ¿A qué pilar corresponde cada requisito?</h3>
+                    </div>
+                    <span id="quizScore" class="text-xs font-bold bg-amber-400/20 text-amber-300 px-3 py-1 rounded-full border border-amber-400/30">Puntuación: 0/4</span>
+                </div>
+
+                <div class="space-y-3" id="quizContainer">
+                    <!-- Dynamic Question Items -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: CIERRE Y SÍNTESIS - DEBATE RELÁMPAGO (10 MIN) -->
+        <!-- ========================================================================= -->
+        <section id="tab3" class="tab-content hidden space-y-6">
+            
+            <!-- Banner Sintesis -->
+            <div class="bg-gradient-to-r from-emerald-900 via-teal-800 to-slate-900 text-white rounded-2xl p-6 shadow-xl">
+                <div class="max-w-3xl">
+                    <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/30 text-emerald-200 px-3 py-1 rounded-full border border-emerald-400/20">Fase 3: Evaluación Criterial y Debate</span>
+                    <h2 class="text-2xl font-bold mt-2">🗣️ Debate Relámpago: Analizador Didáctico de Objetos</h2>
+                    <p class="text-emerald-100 text-sm mt-1">
+                        Seleccionad un objeto cotidiano del aula y evaluad con objetividad técnica si cumple sus requisitos de diseño. Generad vuestra gráfica para compartir en la puesta en común.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tool de Análisis de Objeto -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Inputs & Sliders de Análisis (7 cols) -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-md border border-slate-200 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center">
+                            <i data-lucide="package-search" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                            1. Selecciona o Escribe el Objeto
+                        </h3>
+                        <select id="objectSelect" onchange="handleObjectSelectChange()" class="text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 font-medium">
+                            <option value="Mochila Escolar">🎒 Mochila Escolar</option>
+                            <option value="Bolígrafo de Plástico">🖊️ Bolígrafo de Plástico</option>
+                            <option value="Silla de Aula">🪑 Silla de Aula</option>
+                            <option value="Botella de Agua">🧴 Botella de Agua Térmica</option>
+                            <option value="Auriculares de Diadema">🎧 Auriculares de Diadema</option>
+                            <option value="custom">✏️ Otro Objeto (Personalizado)...</option>
+                        </select>
+                    </div>
+
+                    <div id="customObjectDiv" class="hidden">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del Objeto Personalizado:</label>
+                        <input type="text" id="customObjectName" placeholder="Ej. Estuche, Ratón de ordenador..." class="w-full text-xs p-2 border border-slate-300 rounded-xl">
+                    </div>
+
+                    <!-- Sliders de Valoración -->
+                    <div class="space-y-4 pt-2">
+                        
+                        <!-- Slider 1: Funcionalidad -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span class="flex items-center"><i data-lucide="sliders" class="w-3.5 h-3.5 mr-1 text-indigo-600"></i> Funcionalidad Práctica:</span>
+                                <span id="val-func" class="text-indigo-600 font-bold">7 / 10</span>
+                            </div>
+                            <input type="range" id="slider-func" min="1" max="10" value="7" oninput="updateEvaluationChart()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <p class="text-[11px] text-slate-500 mt-0.5">¿Cumple su función principal de forma eficiente y duradera?</p>
+                        </div>
+
+                        <!-- Slider 2: Factibilidad -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span class="flex items-center"><i data-lucide="wrench" class="w-3.5 h-3.5 mr-1 text-emerald-600"></i> Factibilidad & Sostenibilidad:</span>
+                                <span id="val-fact" class="text-emerald-600 font-bold">5 / 10</span>
+                            </div>
+                            <input type="range" id="slider-fact" min="1" max="10" value="5" oninput="updateEvaluationChart()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                            <p class="text-[11px] text-slate-500 mt-0.5">¿Materiales ecológicos/reciclables? ¿Fabricación viable?</p>
+                        </div>
+
+                        <!-- Slider 3: Ergonomía -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span class="flex items-center"><i data-lucide="user-check" class="w-3.5 h-3.5 mr-1 text-amber-600"></i> Ergonomía & Confort:</span>
+                                <span id="val-ergo" class="text-amber-600 font-bold">6 / 10</span>
+                            </div>
+                            <input type="range" id="slider-ergo" min="1" max="10" value="6" oninput="updateEvaluationChart()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+                            <p class="text-[11px] text-slate-500 mt-0.5">¿Es cómodo al tacto y uso prolongado? ¿Evita molestias?</p>
+                        </div>
+
+                        <!-- Slider 4: Biónica / Estética -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span class="flex items-center"><i data-lucide="leaf" class="w-3.5 h-3.5 mr-1 text-purple-600"></i> Estética e Inspiración Biónica:</span>
+                                <span id="val-bion" class="text-purple-600 font-bold">4 / 10</span>
+                            </div>
+                            <input type="range" id="slider-bion" min="1" max="10" value="4" oninput="updateEvaluationChart()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                            <p class="text-[11px] text-slate-500 mt-0.5">¿Aporta diseño innovador basado en estructuras de la naturaleza?</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Cuadro de Propuesta de Mejora -->
+                    <div class="pt-3 border-t border-slate-200">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">💡 Propuesta de Rediseño del Equipo para el Debate:</label>
+                        <textarea id="proposalText" rows="2" placeholder="Ejemplo: Sustituir el agarre de plástico rígido por silicona ergonómica estriada basada en la piel de tiburón para mejorar el agarre..." class="w-full text-xs p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Radar Chart Visual & Diagnostic (5 cols) -->
+                <div class="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-sm text-slate-200 flex items-center">
+                                <i data-lucide="pie-chart" class="w-4 h-4 mr-2 text-indigo-400"></i>
+                                Perfil del Objeto Analizado
+                            </h4>
+                            <span id="overallScoreBadge" class="text-xs font-extrabold bg-indigo-500 text-white px-3 py-1 rounded-full">
+                                Índice: 5.5/10
+                            </span>
+                        </div>
+
+                        <!-- Canvas para Radar Chart -->
+                        <div class="relative w-full h-56 flex items-center justify-center">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+
+                        <!-- Diagnóstico Automático -->
+                        <div id="diagnosticCard" class="mt-4 bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 text-xs">
+                            <span class="font-bold text-amber-400 block mb-1">🔍 Diagnóstico Técnico:</span>
+                            <p id="diagnosticOutput" class="text-slate-300 leading-relaxed">
+                                El objeto requiere una intervención prioritaria en <strong>Biónica</strong> y <strong>Factibilidad</strong> para elevar su valor competitivo y sostenibilidad.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                        <span>CEv evaluado: <strong>1.1, 2.1, 6.1</strong></span>
+                        <button onclick="window.print()" class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1">
+                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                            <span>Imprimir Ficha</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal de Mapeo Curricular LOMLOE (Junta de Andalucía) -->
+    <div id="curriculumModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 space-y-6">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-100 text-indigo-700 rounded-xl">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900">Concreción Curricular Oficial — Tecnología 4º ESO</h3>
+                        <p class="text-xs text-slate-500">Decreto 102/2023 / Orden de 30 de mayo de 2023 (Junta de Andalucía)</p>
+                    </div>
+                </div>
+                <button onclick="toggleCurriculumModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Tabla Resumen Mapeo Criterios -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                            <th class="p-3">Competencia Específica (CE)</th>
+                            <th class="p-3">Criterios de Evaluación (CEv)</th>
+                            <th class="p-3">Saberes Básicos</th>
+                            <th class="p-3">Descriptores Operativos</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-slate-700">
+                        <tr>
+                            <td class="p-3 font-semibold text-indigo-900">
+                                <strong>CE 1.</strong> Idear y planificar soluciones tecnológicas con iniciativa y trabajo colaborativo.
+                            </td>
+                            <td class="p-3">
+                                <span class="font-bold text-slate-900">1.1.</span> Idear soluciones emprendedoras.<br>
+                                <span class="font-bold text-slate-900">1.3.</span> Respetar roles y estructuras del grupo.
+                            </td>
+                            <td class="p-3 font-mono text-[11px]">TEC.4.A.1.1<br>TEC.4.A.1.3</td>
+                            <td class="p-3 font-semibold text-slate-600">STEM1, CPSAA3, CE1, CE3</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-emerald-900">
+                                <strong>CE 2.</strong> Seleccionar materiales y técnicas eficientes analizando el ciclo de vida.
+                            </td>
+                            <td class="p-3">
+                                <span class="font-bold text-slate-900">2.1.</span> Diseñar productos integrando operadores y ergonomía.
+                            </td>
+                            <td class="p-3 font-mono text-[11px]">TEC.4.A.2.2<br>TEC.4.A.3.1</td>
+                            <td class="p-3 font-semibold text-slate-600">STEM2, STEM5, CD2, CC4</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-amber-900">
+                                <strong>CE 3.</strong> Comunicar y difundir ideas con lenguaje inclusivo e impacto visual.
+                            </td>
+                            <td class="p-3">
+                                <span class="font-bold text-slate-900">3.1.</span> Trabajo ético y eficaz en entornos digitales.<br>
+                                <span class="font-bold text-slate-900">3.2.</span> Presentación con lenguaje inclusivo.
+                            </td>
+                            <td class="p-3 font-mono text-[11px]">TEC.4.A.4.1</td>
+                            <td class="p-3 font-semibold text-slate-600">CCL1, STEM4, CD3, CCEC3</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-purple-900">
+                                <strong>CE 6.</strong> Analizar impacto ecosocial y aplicar criterios de sostenibilidad.
+                            </td>
+                            <td class="p-3">
+                                <span class="font-bold text-slate-900">6.1.</span> Uso responsable y diseño ecosocial.
+                            </td>
+                            <td class="p-3 font-mono text-[11px]">TEC.4.D.1</td>
+                            <td class="p-3 font-semibold text-slate-600">STEM5, CD4, CC4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Principios DUA -->
+            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 space-y-2 text-xs text-indigo-950">
+                <h4 class="font-bold text-indigo-900 text-sm flex items-center">
+                    <i data-lucide="accessibility" class="w-4 h-4 mr-1.5 text-indigo-600"></i>
+                    Principios del Diseño Universal para el Aprendizaje (DUA) Incorporados
+                </h4>
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                    <li><strong>Múltiples formas de Representación (Principio I):</strong> Combinación de gráficos interactivos de radar, textos estructurados, ejemplos prácticos visuales y autoevaluación guiada.</li>
+                    <li><strong>Múltiples formas de Acción y Expresión (Principio II):</strong> Asignación clara de roles con diferentes vías de aportación (portavoz, redactor/a, responsable digital, coordinador/a).</li>
+                    <li><strong>Múltiples formas de Compromiso (Principio III):</strong> Gamificación mediante el analizador de objetos cotidiano y reto real conectado con el entorno del alumnado.</li>
+                </ul>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="toggleCurriculumModal()" class="px-5 py-2 bg-slate-800 text-white rounded-xl text-xs font-semibold hover:bg-slate-700">
+                    Cerrar Ventana
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-4 text-center text-xs border-t border-slate-800">
+        <p>Asesoría Pedagógica de Tecnología 4º ESO — Conforme a la normativa LOMLOE de Andalucía.</p>
+    </footer>
+
+    <!-- Interactive Logic Script -->
+    <script>
+        // Lucide Icons initialization
+        lucide.createIcons();
+
+        // Global Chart Reference
+        let radarChartInstance = null;
+
+        // Quiz Questions Data
+        const quizData = [
+            {
+                text: "1. Incorporar tirantes acolchados transpirables a una mochila para evitar dolores de espalda.",
+                options: ["Funcionalidad", "Factibilidad", "Ergonomía", "Biónica"],
+                correct: "Ergonomía"
+            },
+            {
+                text: "2. Estudiar la estructura del pico del Martín Pescador para diseñar el frontal del Tren Bala.",
+                options: ["Funcionalidad", "Factibilidad", "Ergonomía", "Biónica"],
+                correct: "Biónica"
+            },
+            {
+                text: "3. Elegir filamento reciclado PLA para la impresora 3D ajustando el coste de producción.",
+                options: ["Funcionalidad", "Factibilidad", "Ergonomía", "Biónica"],
+                correct: "Factibilidad"
+            },
+            {
+                text: "4. Garantizar que la válvula antigoteo de un termo no pierda ni una sola gota al volcarse.",
+                options: ["Funcionalidad", "Factibilidad", "Ergonomía", "Biónica"],
+                correct: "Funcionalidad"
+            }
+        ];
+
+        let quizUserAnswers = {};
+
+        // Document Ready Initializer
+        window.onload = function() {
+            renderQuiz();
+            initRadarChart();
+            updateTeamSummary();
+        };
+
+        // Tab Switching Functionality
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-slate-800/60', 'text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-slate-800/60', 'text-slate-300');
+            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+
+            if (tabId === 'tab3' && radarChartInstance) {
+                setTimeout(() => radarChartInstance.resize(), 100);
+            }
+        }
+
+        // Toggle Curriculum Modal
+        function toggleCurriculumModal() {
+            const modal = document.getElementById('curriculumModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Team Roles Tracker Logic
+        function updateTeamSummary() {
+            const coord = document.getElementById('role-coordinador').value.trim();
+            const sec = document.getElementById('role-secretario').value.trim();
+            const dig = document.getElementById('role-digital').value.trim();
+            const port = document.getElementById('role-portavoz').value.trim();
+            const btn = document.getElementById('btnGenerateTeam');
+            const badge = document.getElementById('teamCheckBadge');
+            const statusText = document.getElementById('teamStatusText');
+
+            const count = [coord, sec, dig, port].filter(n => n.length > 0).length;
+
+            if (count >= 2) {
+                btn.disabled = false;
+                btn.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+                btn.classList.add('bg-emerald-600', 'text-white', 'hover:bg-emerald-500', 'shadow-md', 'pulse-glow');
+                badge.className = "p-2 bg-emerald-100 text-emerald-600 rounded-lg";
+                statusText.innerHTML = `Equipo Configurado (${count}/4 miembros) — ¡Listos para el Reto!`;
+            } else {
+                btn.disabled = true;
+                btn.className = "px-4 py-2 bg-slate-300 text-slate-500 font-medium text-xs rounded-xl cursor-not-allowed transition flex items-center space-x-2";
+                badge.className = "p-2 bg-slate-200 text-slate-600 rounded-lg";
+                statusText.innerHTML = `Estado del Equipo: Incompleto (Mínimo 2 integrantes)`;
+            }
+        }
+
+        // Downloadable Team Card Trigger
+        function generateTeamCard() {
+            const teamName = document.getElementById('teamNameInput').value.trim() || 'Estudio Tecnológico';
+            const coord = document.getElementById('role-coordinador').value.trim() || 'Por asignar';
+            const sec = document.getElementById('role-secretario').value.trim() || 'Por asignar';
+            const dig = document.getElementById('role-digital').value.trim() || 'Por asignar';
+            const port = document.getElementById('role-portavoz').value.trim() || 'Por asignar';
+
+            const text = `ACTA DE CONSTITUCIÓN DE EQUIPO — RETO "RELANZAMOS PRODUCTOS"
+Materia: Tecnología 4º ESO (LOMLOE Andalucía)
+Nombre del Equipo: ${teamName}
+--------------------------------------------------
+👑 Coordinador/a: ${coord} (Gestión del tiempo y plan)
+📝 Secretario/a: ${sec} (Memoria técnica y actas)
+💻 Responsable Digital: ${dig} (Estructura Google Drive y CAD)
+📢 Portavoz: ${port} (Comunicación oral inclusiva)
+--------------------------------------------------
+Checklist Google Drive Oficial:
+[ ] Crear carpeta principal: 4ESO_TEC_${teamName.replace(/\s+/g, '_')}
+[ ] Subcarpetas: /01_Investigacion, /02_Bocetos_CAD, /03_Memoria, /04_Presentacion
+[ ] Dar permisos de edición al docente.`;
+
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Acta_Equipo_${teamName.replace(/\s+/g, '_')}.txt`;
+            link.click();
+        }
+
+        // Render Interactive Quiz
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'p-3 bg-slate-800 rounded-xl border border-slate-700/80 text-xs';
+
+                let optsHtml = '';
+                q.options.forEach(opt => {
+                    optsHtml += `
+                        <button onclick="checkQuizAnswer(${idx}, '${opt}')" id="q-${idx}-${opt}" class="quiz-btn px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition text-xs">
+                            ${opt}
+                        </button>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <p class="font-medium text-slate-200 mb-2">${q.text}</p>
+                    <div class="flex flex-wrap gap-2">${optsHtml}</div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        // Check Quiz Answer
+        function checkQuizAnswer(qIdx, selectedOpt) {
+            const question = quizData[qIdx];
+            quizUserAnswers[qIdx] = selectedOpt;
+
+            question.options.forEach(opt => {
+                const btn = document.getElementById(`q-${qIdx}-${opt}`);
+                btn.disabled = true;
+                if (opt === question.correct) {
+                    btn.className = "quiz-btn px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-xs";
+                } else if (opt === selectedOpt && selectedOpt !== question.correct) {
+                    btn.className = "quiz-btn px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs line-through opacity-70";
+                } else {
+                    btn.className = "quiz-btn px-3 py-1.5 bg-slate-800 text-slate-500 rounded-lg text-xs opacity-50";
+                }
+            });
+
+            // Calculate Score
+            let correctCount = 0;
+            Object.keys(quizUserAnswers).forEach(idx => {
+                if (quizUserAnswers[idx] === quizData[idx].correct) correctCount++;
+            });
+
+            document.getElementById('quizScore').innerText = `Puntuación: ${correctCount}/${quizData.length}`;
+        }
+
+        // Object Analyzer logic
+        function handleObjectSelectChange() {
+            const sel = document.getElementById('objectSelect').value;
+            const customDiv = document.getElementById('customObjectDiv');
+            if (sel === 'custom') {
+                customDiv.classList.remove('hidden');
+            } else {
+                customDiv.classList.add('hidden');
+            }
+            updateEvaluationChart();
+        }
+
+        // Initialize Radar Chart
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Funcionalidad', 'Factibilidad', 'Ergonomía', 'Biónica/Estética'],
+                    datasets: [{
+                        label: 'Desempeño del Diseño',
+                        data: [7, 5, 6, 4],
+                        backgroundColor: 'rgba(99, 102, 241, 0.35)',
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#818cf8',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.15)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.15)' },
+                            pointLabels: {
+                                color: '#e2e8f0',
+                                font: { size: 10, weight: '600' }
+                            },
+                            ticks: {
+                                display: false,
+                                min: 0,
+                                max: 10
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            updateEvaluationChart();
+        }
+
+        // Update Radar Chart & Generate Diagnosis
+        function updateEvaluationChart() {
+            const func = parseInt(document.getElementById('slider-func').value);
+            const fact = parseInt(document.getElementById('slider-fact').value);
+            const ergo = parseInt(document.getElementById('slider-ergo').value);
+            const bion = parseInt(document.getElementById('slider-bion').value);
+
+            document.getElementById('val-func').innerText = func + ' / 10';
+            document.getElementById('val-fact').innerText = fact + ' / 10';
+            document.getElementById('val-ergo').innerText = ergo + ' / 10';
+            document.getElementById('val-bion').innerText = bion + ' / 10';
+
+            if (radarChartInstance) {
+                radarChartInstance.data.datasets[0].data = [func, fact, ergo, bion];
+                radarChartInstance.update();
+            }
+
+            const avg = ((func + fact + ergo + bion) / 4).toFixed(1);
+            document.getElementById('overallScoreBadge').innerText = `Índice: ${avg}/10`;
+
+            // Diagnostic Output
+            let lowestPillar = 'Funcionalidad';
+            let lowestVal = func;
+
+            if (fact < lowestVal) { lowestPillar = 'Factibilidad & Sostenibilidad'; lowestVal = fact; }
+            if (ergo < lowestVal) { lowestPillar = 'Ergonomía'; lowestVal = ergo; }
+            if (bion < lowestVal) { lowestPillar = 'Biónica e Inspiración Natural'; lowestVal = bion; }
+
+            const outputEl = document.getElementById('diagnosticOutput');
+            outputEl.innerHTML = `
+                El objeto analizado obtiene un nivel general de <strong>${avg}/10</strong>. Su punto crítico es <strong>${lowestPillar}</strong> (${lowestVal}/10). Vuestro rediseño en la SdA debe priorizar este pilar aplicando soluciones técnicas sostenibles.
+            `;
+        }
+    </script>
+</body>
+</html>
