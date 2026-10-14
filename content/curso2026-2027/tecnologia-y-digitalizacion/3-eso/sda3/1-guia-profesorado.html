@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 3: Un Aula del Futuro | Tecnología y Digitalización 3º ESO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#035485',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        andalucia: {
+                            50: '#f0fdf4',
+                            500: '#16a34a',
+                            600: '#15803d',
+                            700: '#166534',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            border-bottom-color: #0284c7;
+            color: #0284c7;
+            font-weight: 600;
+            background-color: #f0f9ff;
+        }
+        .acronym-badge {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .acronym-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-100 selection:text-brand-900">
+
+    <!-- Encabezado Institucional Junta de Andalucía & Materia -->
+    <header class="bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 text-white shadow-lg border-b-4 border-andalucia-500 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-andalucia-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-emerald-500/30">
+                                <i class="fa-solid fa-check-circle mr-1"></i>Normativa LOMLOE - Junta de Andalucía
+                            </span>
+                            <span class="bg-brand-500/20 text-brand-200 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-brand-500/30">
+                                I.E.S. Villa de Mijas
+                            </span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">
+                            SdA 3: Un Aula del Futuro
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-300">
+                            Tecnología y Digitalización • 3º ESO • Temporalización: 17 Horas
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-800/80 p-2 rounded-xl border border-slate-700 text-xs">
+                    <div class="text-right px-2">
+                        <p class="text-slate-400">Año Académico</p>
+                        <p class="font-bold text-slate-200">2026 / 2027</p>
+                    </div>
+                    <div class="h-8 w-px bg-slate-700"></div>
+                    <div class="px-2">
+                        <p class="text-slate-400">Diseño Digital</p>
+                        <p class="font-bold text-amber-400"><i class="fa-solid fa-cubes mr-1"></i>Floorplanner + Canva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas de Navegación -->
+        <div class="bg-slate-900/90 border-t border-slate-800 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto no-scrollbar py-1">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-300 hover:text-white border-b-2 border-transparent transition-all duration-150 rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-compass text-brand-500"></i>
+                    <span>Visión General & Justificación</span>
+                </button>
+                <button onclick="switchTab('tab-sequence')" id="btn-tab-sequence" class="tab-btn px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-300 hover:text-white border-b-2 border-transparent transition-all duration-150 rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-list-check text-purple-400"></i>
+                    <span>Secuenciación Didáctica (17h)</span>
+                </button>
+                <button onclick="switchTab('tab-mapping')" id="btn-tab-mapping" class="tab-btn px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-300 hover:text-white border-b-2 border-transparent transition-all duration-150 rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-network-wired text-emerald-400"></i>
+                    <span>Mapeo Curricular Oficial</span>
+                </button>
+                <button onclick="switchTab('tab-dua')" id="btn-tab-dua" class="tab-btn px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-300 hover:text-white border-b-2 border-transparent transition-all duration-150 rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-universal-access text-amber-400"></i>
+                    <span>Medidas DUA & Inclusión</span>
+                </button>
+                <button onclick="switchTab('tab-evaluation')" id="btn-tab-evaluation" class="tab-btn px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-300 hover:text-white border-b-2 border-transparent transition-all duration-150 rounded-t-lg flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-square-poll-vertical text-rose-400"></i>
+                    <span>Evaluación Criterial</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- PESTAÑA 1: VISIÓN GENERAL Y JUSTIFICACIÓN -->
+        <section id="tab-overview" class="tab-content space-y-6">
+            <!-- Banner Introductorio con Reto y Producto Final -->
+            <div class="bg-gradient-to-br from-brand-900 via-slate-900 to-brand-800 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-slate-100 text-9xl pointer-events-none">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <div class="relative z-10 max-w-4xl space-y-4">
+                    <div class="inline-flex items-center gap-2 bg-amber-400/20 text-amber-300 text-xs px-3 py-1 rounded-full border border-amber-400/30">
+                        <i class="fa-solid fa-rocket"></i> Desafío de Innovación Educativa
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                        Rediseñando nuestro espacio de aprendizaje para el siglo XXI
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        El alumnado asumirá el rol de un equipo de consultoría arquitectónica y tecnológica. Su reto consistirá en transformar un aula tradicional de su propio centro educativo en una verdadera **"Aula del Futuro"**, zonificada y equipada con tecnologías emergentes, fomentando la ergonomía, la creatividad y la sostenibilidad.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-4 text-xs font-medium">
+                        <div class="bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 flex items-center gap-3">
+                            <i class="fa-solid fa-bullseye text-brand-400 text-lg"></i>
+                            <div>
+                                <p class="text-slate-400">Producto Final</p>
+                                <p class="text-slate-100 font-semibold">Cartel Promocional + Plano 2D/3D (Floorplanner & Canva)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 flex items-center gap-3">
+                            <i class="fa-solid fa-clock text-amber-400 text-lg"></i>
+                            <div>
+                                <p class="text-slate-400">Duración Estimada</p>
+                                <p class="text-slate-100 font-semibold">17 Sesiones lectivas (Horas)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 flex items-center gap-3">
+                            <i class="fa-solid fa-users text-emerald-400 text-lg"></i>
+                            <div>
+                                <p class="text-slate-400">Metodología Principal</p>
+                                <p class="text-slate-100 font-semibold">Aprendizaje Basado en Proyectos (ABP) y Design Thinking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fases del Proceso y Justificación Pedagógica -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Justificación Curricular y Pedagógica -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="p-2 bg-brand-50 text-brand-600 rounded-lg">
+                            <i class="fa-solid fa-book-bookmark text-lg"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Justificación Normativa y Contexto</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Esta Situación de Aprendizaje conecta de forma directa con los problemas del entorno del alumnado de 3º de ESO. Permite pasar de la abstracción del dibujo técnico a la aplicación práctica mediante el análisis directo de espacios reales. 
+                    </p>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        A través de una secuencia estructurada, el alumnado adquiere destrezas fundamentales en **representación gráfica normalizada** (vistas, escalas y acotación), para posteriormente dar el salto al **diseño asistido por ordenador (CAD)** con la herramienta <span class="font-semibold text-brand-600">Floorplanner</span> y finalizar con la **comunicación multimedia responsable** utilizando <span class="font-semibold text-brand-600">Canva</span>.
+                    </p>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-3.5 rounded-r-xl text-xs text-amber-900 flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-amber-600 text-base mt-0.5"></i>
+                        <div>
+                            <span class="font-bold">Aviso pedagógico sobre la evaluación:</span> En cumplimiento estricto con la normativa de la Junta de Andalucía (LOMLOE), la calificación del alumnado se fundamenta **exclusivamente en los Criterios de Evaluación**. Los Saberes Básicos son los medios procedimentales y conceptuales para desarrollar los desempeños.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Fases Clave del Proyecto -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                            <i class="fa-solid fa-route text-lg"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Estructura en 4 Fases Didácticas</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-bold text-xs px-2.5 py-1 rounded-lg">Fase 1</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 text-sm">Boceto preliminar y toma de medidas (Activación)</h4>
+                                <p class="text-xs text-slate-500">Croquis a mano alzada del aula actual con instrumental de medida real.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-bold text-xs px-2.5 py-1 rounded-lg">Fase 2</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 text-sm">Plano técnico a escala debidamente acotado (Aplicación)</h4>
+                                <p class="text-xs text-slate-500">Dibujo de precisión aplicando escalas normalizadas y reglas de acotación.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-bold text-xs px-2.5 py-1 rounded-lg">Fase 3</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 text-sm">Propuesta digital interactiva con Floorplanner (Exploración)</h4>
+                                <p class="text-xs text-slate-500">Modelado 2D y simulación 3D del Aula del Futuro zonificada y equipada.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-bold text-xs px-2.5 py-1 rounded-lg">Fase 4</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 text-sm">Cartel promocional y difusión pública (Conclusión)</h4>
+                                <p class="text-xs text-slate-500">Diseño publicitario en Canva, elevator pitch y coevaluación del grupo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen de Concreción Curricular (Badges Clicables con Popups) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                            <i class="fa-solid fa-cubes-stacked text-lg"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Elementos Curriculares Asociados (Haz clic para ver detalle)</h3>
+                    </div>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-medium">
+                        <i class="fa-solid fa-mouse-pointer mr-1"></i>Interactivos
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Competencias Específicas -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Competencias Específicas</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="showAcronymModal('TYD.3.1')" class="acronym-badge bg-sky-100 text-sky-800 hover:bg-sky-200 border border-sky-300 font-semibold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-sky-600"></i> TYD.3.1
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.2')" class="acronym-badge bg-sky-100 text-sky-800 hover:bg-sky-200 border border-sky-300 font-semibold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-sky-600"></i> TYD.3.2
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.4')" class="acronym-badge bg-sky-100 text-sky-800 hover:bg-sky-200 border border-sky-300 font-semibold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-sky-600"></i> TYD.3.4
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.6')" class="acronym-badge bg-sky-100 text-sky-800 hover:bg-sky-200 border border-sky-300 font-semibold text-xs px-2.5 py-1 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-sky-600"></i> TYD.3.6
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criterios de Evaluación -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Criterios de Evaluación</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="showAcronymModal('TYD.3.1.1')" class="acronym-badge bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-semibold text-xs px-2 py-1 rounded-lg">
+                                Criterio 1.1
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-semibold text-xs px-2 py-1 rounded-lg">
+                                Criterio 1.2
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.2.1')" class="acronym-badge bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-semibold text-xs px-2 py-1 rounded-lg">
+                                Criterio 2.1
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-semibold text-xs px-2 py-1 rounded-lg">
+                                Criterio 4.1
+                            </button>
+                            <button onclick="showAcronymModal('TYD.3.6.3')" class="acronym-badge bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-semibold text-xs px-2 py-1 rounded-lg">
+                                Criterio 6.3
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Saberes Básicos -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Saberes Básicos (Medios)</h4>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button onclick="showAcronymModal('TYD.3.A.1')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.A.1</button>
+                            <button onclick="showAcronymModal('TYD.3.A.2')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.A.2</button>
+                            <button onclick="showAcronymModal('TYD.3.A.5')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.A.5</button>
+                            <button onclick="showAcronymModal('TYD.3.B.1')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.B.1</button>
+                            <button onclick="showAcronymModal('TYD.3.B.2')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.B.2</button>
+                            <button onclick="showAcronymModal('TYD.3.B.3')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.B.3</button>
+                            <button onclick="showAcronymModal('TYD.3.D.2')" class="acronym-badge bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-xs px-2 py-0.5 rounded">TYD.3.D.2</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: SECUENCIACIÓN DIDÁCTICA -->
+        <section id="tab-sequence" class="tab-content hidden space-y-6">
+            <!-- Barra de Filtros y Búsqueda -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <span class="text-xs font-bold uppercase text-slate-400">Filtrar por Fase:</span>
+                    <select id="filter-phase" onchange="filterActivities()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2 focus:ring-brand-500 focus:border-brand-500 font-medium">
+                        <option value="all">Todas las Fases (17h)</option>
+                        <option value="estructuracion">Fundamentación Previa (Vistas, Escalas, Acotación - 9h)</option>
+                        <option value="fase1">Fase 1: Boceto y Medición (1h)</option>
+                        <option value="fase2">Fase 2: Representación a Escala (1h)</option>
+                        <option value="fase3">Fase 3: Diseño Digital Floorplanner (4h)</option>
+                        <option value="fase4">Fase 4: Cartel y Comunicación (2h)</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <i class="fa-solid fa-clock text-amber-500"></i>
+                    <span>Total: <strong class="text-slate-800">17 Horas Lectivas</strong> perfectamente temporizadas</span>
+                </div>
+            </div>
+
+            <!-- Lista de Actividades Secuenciadas -->
+            <div class="space-y-4" id="activities-container">
+
+                <!-- Actividad 1 -->
+                <div class="activity-card bg-white rounded-2xl p-5 border border-slate-200 shadow-sm transition-all hover:border-brand-300" data-phase="estructuracion">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-blue-100 text-blue-800 font-extrabold text-xs px-3 py-1.5 rounded-xl border border-blue-200">
+                                ACT 1
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Representación de vistas normalizadas</h3>
+                                    <span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded font-medium">Estructuración</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>2 Horas</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Identificación y dibujo a mano alzada (con plantilla) de alzado, planta y perfil a partir de perspectiva isométrica.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Criterio 1.2</button>
+                            <span class="text-xs text-slate-400">Observación Directa</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Motivación:</p>
+                            <p class="text-slate-600">Simulador 3D interactivo en pantalla gigante para rotar cubos y visualizar caras ocultas tipo Minecraft.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-screwdriver-wrench text-brand-500 mr-1"></i>Recursos e Interactivos:</p>
+                            <p class="text-slate-600">Ficha propia + Interactivos 3D (<a href="https://www.educacionplastica.net/3dcube_model/vistas_3d_2x2.html" target="_blank" class="text-brand-600 underline">EducacionPlastica.net</a>).</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-universal-access text-amber-500 mr-1"></i>Andamiaje DUA:</p>
+                            <p class="text-slate-600">Plantillas pautadas con rejilla isométrica y modelos físicos manipulables en 3D.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 2 -->
+                <div class="activity-card bg-white rounded-2xl p-5 border border-slate-200 shadow-sm transition-all hover:border-brand-300" data-phase="estructuracion">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-blue-100 text-blue-800 font-extrabold text-xs px-3 py-1.5 rounded-xl border border-blue-200">
+                                ACT 2
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Cálculo e interpretación de escalas</h3>
+                                    <span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded font-medium">Estructuración</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>4 Horas</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Resolución de situaciones-problema para tomar decisiones sobre escalas de reducción y ampliación.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Criterio 1.2</button>
+                            <span class="text-xs text-slate-400">Observación Directa</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Motivación:</p>
+                            <p class="text-slate-600">"El error del arquitecto": Análisis de vídeos de construcciones reales donde falló la escala.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-screwdriver-wrench text-brand-500 mr-1"></i>Recursos e Interactivos:</p>
+                            <p class="text-slate-600">Fichas del departamento y actividades digitales de Amplify Classroom.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-universal-access text-amber-500 mr-1"></i>Andamiaje DUA:</p>
+                            <p class="text-slate-600">Calculadoras de escala online y reglas graduadas físicas escaladas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 3 -->
+                <div class="activity-card bg-white rounded-2xl p-5 border border-slate-200 shadow-sm transition-all hover:border-brand-300" data-phase="estructuracion">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-blue-100 text-blue-800 font-extrabold text-xs px-3 py-1.5 rounded-xl border border-blue-200">
+                                ACT 3
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Normalización de la acotación técnica</h3>
+                                    <span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded font-medium">Estructuración</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>3 Horas</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Aplicación de las reglas fundamentales de acotación (líneas de cota, auxilares, flechas y cifras) en planos técnicos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Criterio 1.2</button>
+                            <span class="text-xs text-slate-400">Observación Directa</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Motivación:</p>
+                            <p class="text-slate-600">Reto "Detectiva de errores": Encontrar fallos de acotación en un plano manipulado.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-screwdriver-wrench text-brand-500 mr-1"></i>Recursos e Interactivos:</p>
+                            <p class="text-slate-600">Ficha técnica del departamento con guías de reglas ISO/UNE.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-universal-access text-amber-500 mr-1"></i>Andamiaje DUA:</p>
+                            <p class="text-slate-600">Infografía resumen con las 10 reglas de oro de la acotación siempre visible.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 4 (FASE 1) -->
+                <div class="activity-card bg-white rounded-2xl p-5 border-2 border-brand-300 shadow-sm transition-all" data-phase="fase1">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-sm">
+                                FASE 1
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Boceto y toma de medidas del aula actual</h3>
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-medium">Activación</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>1 Hora</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Medición real en grupos cooperativos del aula física del centro y realización de un croquis manual preliminar.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Criterio 4.1</button>
+                            <span class="text-xs text-slate-400">Observación Directa</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Motivación:</p>
+                            <p class="text-slate-600">Lanzamiento del Reto: "¿Es cómoda nuestra clase? ¿Cómo la mejoraría la tecnología de un Youtuber/Streamer?".</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-screwdriver-wrench text-brand-500 mr-1"></i>Recursos e Instrucciones:</p>
+                            <p class="text-slate-600">Cintas métricas, flexómetros, lápiz, papel de borrador y tabla rígida.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-users-gear text-emerald-600 mr-1"></i>Estrategia Cooperativa:</p>
+                            <p class="text-slate-600">Roles asignados: Medidor/a principal, Anotador/a de datos y Dibujante de croquis.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 5 (FASE 2) -->
+                <div class="activity-card bg-white rounded-2xl p-5 border-2 border-brand-300 shadow-sm transition-all" data-phase="fase2">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-sm">
+                                FASE 2
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Plano del aula a escala normalizada y acotado</h3>
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded font-medium">Aplicación</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>1 Hora</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Paso del croquis a plano técnico formal respetando escala de reducción idónea (1:50 o 1:100) con acotación completa.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Criterio 4.1</button>
+                            <span class="text-xs text-slate-400">Rúbrica Técnica</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Motivación:</p>
+                            <p class="text-slate-600">Presentación de planos reales de arquitectura escolar contemporánea.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-screwdriver-wrench text-brand-500 mr-1"></i>Recursos Necesarios:</p>
+                            <p class="text-slate-600">Papel formato A4, escuadra, cartabón, regla milimetrada e intrucciones normalizadas.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-universal-access text-amber-500 mr-1"></i>Andamiaje DUA:</p>
+                            <p class="text-slate-600">Uso opcional de papel milimetrado para facilitar la traslación de proporciones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 6 (FASE 3) -->
+                <div class="activity-card bg-white rounded-2xl p-5 border-2 border-brand-300 shadow-sm transition-all" data-phase="fase3">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-sm">
+                                FASE 3
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Diseño digital 2D/3D con Floorplanner</h3>
+                                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded font-medium">Exploración / Creación</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>4 Horas</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Creación de la propuesta digital del Aula del Futuro zonificada (Zona Presentar, Investigar, Crear, Interactuar, Desarrollar) usando Floorplanner.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button onclick="showAcronymModal('TYD.3.1.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 1.1</button>
+                            <button onclick="showAcronymModal('TYD.3.2.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 2.1</button>
+                            <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 4.1</button>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Gancho / Gaming & Tech:</p>
+                            <p class="text-slate-600">Simulación interactiva 3D tipo "The Sims": Renderizado en tiempo real de su propia aula con gafas VR / visualizador digital.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-laptop text-brand-500 mr-1"></i>Herramientas Digitales:</p>
+                            <p class="text-slate-600">Ordenadores de aula / portátiles y plataforma Web Floorplanner con cuentas educativas.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-seedling text-emerald-600 mr-1"></i>Criterios de Sostenibilidad:</p>
+                            <p class="text-slate-600">Zonificación con eficiencia energética, aprovechamiento de luz natural y materiales reciclables.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad 7 (FASE 4) -->
+                <div class="activity-card bg-white rounded-2xl p-5 border-2 border-brand-300 shadow-sm transition-all" data-phase="fase4">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-start gap-3">
+                            <span class="bg-brand-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-sm">
+                                FASE 4
+                            </span>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="font-bold text-slate-800 text-base">Cartel promocional (Canva) y Presentación Pública</h3>
+                                    <span class="bg-rose-100 text-rose-800 text-xs px-2 py-0.5 rounded font-medium">Conclusión / Difusión</span>
+                                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>2 Horas</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Elaboración de cartel infográfico en Canva con captura 3D del diseño, justificación técnica y Elevator Pitch de 2 minutos por equipo.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button onclick="showAcronymModal('TYD.3.1.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 1.1</button>
+                            <button onclick="showAcronymModal('TYD.3.2.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 2.1</button>
+                            <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 4.1</button>
+                            <button onclick="showAcronymModal('TYD.3.6.3')" class="acronym-badge bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded border border-emerald-200 font-medium">Crit. 6.3</button>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-bullhorn text-rose-500 mr-1"></i>Difusión & Elevator Pitch:</p>
+                            <p class="text-slate-600">Presentación al estilo "Startup": Convencer al Equipo Directivo de implementar el diseño en el centro.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-compact-disc text-brand-500 mr-1"></i>Soberanía Digital & Licencias:</p>
+                            <p class="text-slate-600">Exportación en formato PDF/PNG y almacenamiento seguro en Google Classroom / Séneca con licencias Creative Commons.</p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
+                            <p class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-comments-dollar text-amber-500 mr-1"></i>Coevaluación del Alumnado:</p>
+                            <p class="text-slate-600">Formulario simplificado de valoración entre iguales (rúbrica compartida en diana de evaluación).</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PESTAÑA 3: MAPEO CURRICULAR LOMLOE -->
+        <section id="tab-mapping" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Matriz de Alineación Curricular (Andalucía - LOMLOE)</h3>
+                        <p class="text-xs text-slate-500">Mapeo estricto entre Criterios de Evaluación, Saberes Básicos, Descriptores Operativos del Perfil de Salida y Actividades.</p>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-shield-halved mr-1"></i>Trazabilidad 100% Garantizada
+                    </span>
+                </div>
+
+                <!-- Tabla Matricial Responsiva -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-3">Competencia Específica</th>
+                                <th class="p-3">Criterios de Evaluación</th>
+                                <th class="p-3">Saberes Básicos (Medios)</th>
+                                <th class="p-3">Descriptores Operativos</th>
+                                <th class="p-3 text-center">Actividades Vinculadas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <!-- Fila 1 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <button onclick="showAcronymModal('TYD.3.1')" class="acronym-badge bg-sky-100 text-sky-800 px-2 py-1 rounded font-bold">TYD.3.1</button>
+                                    <p class="text-[11px] text-slate-500 mt-1">Búsqueda, análisis e investigación técnica.</p>
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <button onclick="showAcronymModal('TYD.3.1.1')" class="acronym-badge bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold block">Criterio 1.1</button>
+                                    <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold block">Criterio 1.2</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('TYD.3.A.1')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.A.1</button>
+                                        <button onclick="showAcronymModal('TYD.3.A.2')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.A.2</button>
+                                        <button onclick="showAcronymModal('TYD.3.A.5')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.A.5</button>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('CCL3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CCL3</button>
+                                        <button onclick="showAcronymModal('STEM2')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">STEM2</button>
+                                        <button onclick="showAcronymModal('CD1')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CD1</button>
+                                        <button onclick="showAcronymModal('CE1')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CE1</button>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded font-semibold border border-slate-200">Actividades 1, 2, 3, 6, 7</span>
+                                </td>
+                            </tr>
+
+                            <!-- Fila 2 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <button onclick="showAcronymModal('TYD.3.2')" class="acronym-badge bg-sky-100 text-sky-800 px-2 py-1 rounded font-bold">TYD.3.2</button>
+                                    <p class="text-[11px] text-slate-500 mt-1">Trabajo en equipo y diseño de soluciones creativas.</p>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showAcronymModal('TYD.3.2.1')" class="acronym-badge bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold block">Criterio 2.1</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('TYD.3.A.5')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.A.5</button>
+                                        <button onclick="showAcronymModal('TYD.3.B.1')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.B.1</button>
+                                        <button onclick="showAcronymModal('TYD.3.B.2')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.B.2</button>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('STEM1')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">STEM1</button>
+                                        <button onclick="showAcronymModal('STEM3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">STEM3</button>
+                                        <button onclick="showAcronymModal('CPSAA3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CPSAA3</button>
+                                        <button onclick="showAcronymModal('CE3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CE3</button>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded font-semibold border border-slate-200">Actividades 6, 7</span>
+                                </td>
+                            </tr>
+
+                            <!-- Fila 3 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <button onclick="showAcronymModal('TYD.3.4')" class="acronym-badge bg-sky-100 text-sky-800 px-2 py-1 rounded font-bold">TYD.3.4</button>
+                                    <p class="text-[11px] text-slate-500 mt-1">Representación gráfica, simulación CAD y comunicación.</p>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold block">Criterio 4.1</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('TYD.3.B.1')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.B.1</button>
+                                        <button onclick="showAcronymModal('TYD.3.B.2')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.B.2</button>
+                                        <button onclick="showAcronymModal('TYD.3.B.3')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.B.3</button>
+                                        <button onclick="showAcronymModal('TYD.3.D.2')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.D.2</button>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('CCL1')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CCL1</button>
+                                        <button onclick="showAcronymModal('STEM4')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">STEM4</button>
+                                        <button onclick="showAcronymModal('CD3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CD3</button>
+                                        <button onclick="showAcronymModal('CCEC3')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CCEC3</button>
+                                        <button onclick="showAcronymModal('CCEC4')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CCEC4</button>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded font-semibold border border-slate-200">Actividades 4, 5, 6, 7</span>
+                                </td>
+                            </tr>
+
+                            <!-- Fila 4 -->
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-3 font-semibold text-slate-800">
+                                    <button onclick="showAcronymModal('TYD.3.6')" class="acronym-badge bg-sky-100 text-sky-800 px-2 py-1 rounded font-bold">TYD.3.6</button>
+                                    <p class="text-[11px] text-slate-500 mt-1">Organización y almacenamiento digital seguro.</p>
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="showAcronymModal('TYD.3.6.3')" class="acronym-badge bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold block">Criterio 6.3</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('TYD.3.D.2')" class="acronym-badge bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">TYD.3.D.2</button>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="showAcronymModal('CD2')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CD2</button>
+                                        <button onclick="showAcronymModal('CD4')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CD4</button>
+                                        <button onclick="showAcronymModal('CPSAA4')" class="acronym-badge bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">CPSAA4</button>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded font-semibold border border-slate-200">Actividad 7 (Entrega digital)</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 4: MEDIDAS DUA Y DIVERSIDAD -->
+        <section id="tab-dua" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-md">
+                <h2 class="text-xl font-extrabold flex items-center gap-2">
+                    <i class="fa-solid fa-universal-access text-2xl"></i>
+                    Diseño Universal para el Aprendizaje (DUA) e Inclusión Digital
+                </h2>
+                <p class="text-xs sm:text-sm text-amber-100 mt-1">
+                    Estrategias concretas para derribar barreras de aprendizaje en el diseño técnico y las herramientas digitales en 3º de ESO.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Principio 1: Múltiples Formas de Representación -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                            <i class="fa-solid fa-eye text-base"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">1. Múltiples Formas de Representación</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Modelos 3D Manipulables:** Uso de piezas de madera/plástico y visores 3D digitales antes del dibujo técnico en papel.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Soportes Visuales y Vídeo-Tutoriales:** Vídeos de corta duración con subtítulos para el manejo de Floorplanner y Canva.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Glosario Términos Fácil:** Explicación visual interactiva de conceptos como "escala", "acotación" o "alzado".</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Principio 2: Múltiples Formas de Acción y Expresión -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                            <i class="fa-solid fa-pen-ruler text-base"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">2. Acción y Expresión (Andamiaje)</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Plantillas Pautadas:** Hojas de trabajo con cuadrícula isométrica o milimetrada para alumnado con dificultades motrices o visoperceptivas.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Formatos de Exposición Flexibles:** Opción de realizar el Elevator Pitch en vivo o mediante grabación de audio/vídeo explicativo previo.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Calculadora Digital de Escalas:** Apoyo interactivo para comprobar operaciones matemáticas de proporción.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Principio 3: Múltiples Formas de Compromiso -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                            <i class="fa-solid fa-heart-pulse text-base"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">3. Múltiples Formas de Compromiso</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Elección de Temática de Zona:** El grupo decide qué zonas del Aula del Futuro personalizar (zona de robótica, estudio de podcast, zona relax).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Roles Cooperativos Rotativos:** Asignación clara de funciones adaptadas a las fortalezas individuales (Gestor/a, Diseñador/a CAD, Portavoz).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                            <span>**Autoevaluación Guiada:** Dianas de aprendizaje sencillas para monitorizar la progresión personal sin sobrecarga.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 5: EVALUACIÓN CRITERIAL -->
+        <section id="tab-evaluation" class="tab-content hidden space-y-6">
+            <!-- Aviso Normativo -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-emerald-600 text-white rounded-xl">
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-emerald-900 text-sm">Evaluación 100% Criterial (Junta de Andalucía)</h3>
+                        <p class="text-xs text-emerald-700">Selecciona los indicadores superados para calcular la estimación del desempeño en esta SdA.</p>
+                    </div>
+                </div>
+                <div class="bg-white px-4 py-2 rounded-xl border border-emerald-300 text-center shadow-sm">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Calificación SdA</p>
+                    <p id="calc-score" class="text-xl font-extrabold text-emerald-600">0.0 / 10</p>
+                </div>
+            </div>
+
+            <!-- Lista de Cotejo Interactiva -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-list-check text-brand-500 mr-2"></i>Lista de Cotejo Interactiva por Criterios de Evaluación
+                </h3>
+
+                <div class="space-y-3" id="checklist-container">
+                    <!-- Criterio 1.1 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                        <input type="checkbox" onchange="updateScore()" class="checklist-item mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer" data-weight="2.0">
+                        <div class="flex-1 text-xs">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="showAcronymModal('TYD.3.1.1')" class="acronym-badge bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Criterio 1.1</button>
+                                <span class="text-slate-500 font-medium">(Ponderación: 20%)</span>
+                            </div>
+                            <p class="text-slate-700 font-medium mt-1">Define el problema de rediseño del aula buscando y filtrando información sobre distribución de espacios e iluminación en fuentes fiables.</p>
+                        </div>
+                    </div>
+
+                    <!-- Criterio 1.2 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                        <input type="checkbox" onchange="updateScore()" class="checklist-item mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer" data-weight="2.0">
+                        <div class="flex-1 text-xs">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="showAcronymModal('TYD.3.1.2')" class="acronym-badge bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Criterio 1.2</button>
+                                <span class="text-slate-500 font-medium">(Ponderación: 20%)</span>
+                            </div>
+                            <p class="text-slate-700 font-medium mt-1">Comprende y analiza planos de objetos/espacios habituales aplicando técnicas de acotación normalizada y cálculo de escalas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Criterio 2.1 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                        <input type="checkbox" onchange="updateScore()" class="checklist-item mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer" data-weight="2.5">
+                        <div class="flex-1 text-xs">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="showAcronymModal('TYD.3.2.1')" class="acronym-badge bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Criterio 2.1</button>
+                                <span class="text-slate-500 font-medium">(Ponderación: 25%)</span>
+                            </div>
+                            <p class="text-slate-700 font-medium mt-1">Diseña una propuesta innovadora y sostenible para el Aula del Futuro, integrando criterios de ergonomía y trabajo cooperativo.</p>
+                        </div>
+                    </div>
+
+                    <!-- Criterio 4.1 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                        <input type="checkbox" onchange="updateScore()" class="checklist-item mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer" data-weight="2.5">
+                        <div class="flex-1 text-xs">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="showAcronymModal('TYD.3.4.1')" class="acronym-badge bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Criterio 4.1</button>
+                                <span class="text-slate-500 font-medium">(Ponderación: 25%)</span>
+                            </div>
+                            <p class="text-slate-700 font-medium mt-1">Representa y comunica la propuesta técnica mediante croquis a mano alzada, plano acotado a escala, diseño en Floorplanner y cartel en Canva.</p>
+                        </div>
+                    </div>
+
+                    <!-- Criterio 6.3 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
+                        <input type="checkbox" onchange="updateScore()" class="checklist-item mt-1 h-4 w-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer" data-weight="1.0">
+                        <div class="flex-1 text-xs">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button onclick="showAcronymModal('TYD.3.6.3')" class="acronym-badge bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Criterio 6.3</button>
+                                <span class="text-slate-500 font-medium">(Ponderación: 10%)</span>
+                            </div>
+                            <p class="text-slate-700 font-medium mt-1">Organiza la documentación técnica digital del proyecto de forma estructurada en la plataforma del centro aplicando almacenamiento seguro.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Síntesis de Rúbrica Holística -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-table-cells text-purple-500 mr-2"></i>Niveles de Desempeño Holístico (Rúbrica)
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl space-y-2">
+                        <span class="bg-rose-600 text-white font-bold text-[10px] px-2 py-0.5 rounded">INICIADO (1 - 4)</span>
+                        <h4 class="font-bold text-rose-900">En Proceso</h4>
+                        <p class="text-rose-800 leading-relaxed">Muestra dificultades para aplicar escalas o acotación en planos manuales. Requiere ayuda constante para usar Floorplanner o Canva.</p>
+                    </div>
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
+                        <span class="bg-amber-600 text-white font-bold text-[10px] px-2 py-0.5 rounded">MEDIO (5 - 6)</span>
+                        <h4 class="font-bold text-amber-900">Aceptable</h4>
+                        <p class="text-amber-800 leading-relaxed">Elabora el croquis y plano a escala con precisión básica. Utiliza Floorplanner para crear un diseño 2D/3D funcional pero poco zonificado.</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                        <span class="bg-blue-600 text-white font-bold text-[10px] px-2 py-0.5 rounded">AVANZADO (7 - 8)</span>
+                        <h4 class="font-bold text-blue-900">Notable</h4>
+                        <p class="text-blue-800 leading-relaxed">Aplica correctamente la acotación y escalas normalizadas. Diseña un aula bien zonificada en Floorplanner y presenta un cartel claro en Canva.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                        <span class="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5 rounded">EXCELENTE (9 - 10)</span>
+                        <h4 class="font-bold text-emerald-900">Sobresaliente</h4>
+                        <p class="text-emerald-800 leading-relaxed">Plano acotado impecable. Propuesta innovadora y altamente sostenible en Floorplanner 3D. Excelente comunicación digital y trabajo cooperativo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL POPUP PARA SIGLAS Y ELEMENTOS CURRICULARES -->
+    <div id="acronym-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in duration-150">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span id="modal-type-badge" class="bg-brand-100 text-brand-800 font-bold text-xs px-2.5 py-1 rounded-lg">
+                        Elemento Curricular
+                    </span>
+                    <h3 id="modal-title" class="font-extrabold text-slate-800 text-lg">
+                        TYD.3.1.1
+                    </h3>
+                </div>
+                <button onclick="closeAcronymModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="modal-subtitle">Descripción Oficial Junta de Andalucía</p>
+                <div id="modal-description" class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    Cargando información oficial...
+                </div>
+            </div>
+            <div class="pt-2 text-right">
+                <button onclick="closeAcronymModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition-all">
+                    Entendido / Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CURRICULUM_DATA = {
+            // Competencias Específicas
+            'TYD.3.1': {
+                type: 'Competencia Específica',
+                title: 'TYD.3.1 - Búsqueda e Investigación Técnica',
+                desc: 'Buscar y seleccionar la información adecuada proveniente de diversas fuentes, de manera crítica y segura, aplicando procesos de investigación, métodos de análisis de productos y experimentando con herramientas de simulación, para definir problemas tecnológicos e iniciar procesos de creación de soluciones a partir de la información obtenida.'
+            },
+            'TYD.3.2': {
+                type: 'Competencia Específica',
+                title: 'TYD.3.2 - Trabajo Cooperativo y Resolución de Problemas',
+                desc: 'Abordar problemas tecnológicos con autonomía y actitud creativa, aplicando conocimientos interdisciplinares y trabajando de forma cooperativa y colaborativa, para diseñar y planificar soluciones a un problema o necesidad de forma eficaz, innovadora y sostenible.'
+            },
+            'TYD.3.4': {
+                type: 'Competencia Específica',
+                title: 'TYD.3.4 - Representación Gráfica y Comunicación',
+                desc: 'Describir, representar e intercambiar ideas o soluciones a problemas tecnológicos o digitales, utilizando medios de representación, simbología y vocabulario adecuados, así como los instrumentos y recursos disponibles, valorando la utilidad de las herramientas digitales para comunicar y difundir información y propuestas.'
+            },
+            'TYD.3.6': {
+                type: 'Competencia Específica',
+                title: 'TYD.3.6 - Entorno Digital y Almacenamiento Seguro',
+                desc: 'Comprender los fundamentos del funcionamiento de los dispositivos y aplicaciones habituales de su entorno digital de aprendizaje, analizando sus componentes y funciones y ajustándolos a sus necesidades para hacer un uso más eficiente y seguro de los mismos y para detectar y resolver problemas técnicos sencillos.'
+            },
+
+            // Criterios de Evaluación
+            'TYD.3.1.1': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio TYD.3.1.1',
+                desc: 'Definir problemas o necesidades planteadas, buscando y contrastando información procedente de diferentes fuentes fácilmente accesibles de manera crítica y segura, evaluando su fiabilidad y pertinencia.'
+            },
+            'TYD.3.1.2': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio TYD.3.1.2',
+                desc: 'Comprender y examinar productos tecnológicos de uso habitual a través del análisis de objetos y sistemas, empleando el método científico y utilizando herramientas elementales de simulación en la construcción de conocimiento.'
+            },
+            'TYD.3.2.1': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio TYD.3.2.1',
+                desc: 'Idear y diseñar soluciones eficaces, innovadoras y sostenibles a problemas definidos, introduciendo la aplicación de conceptos, técnicas y procedimientos interdisciplinares, así como criterios de sostenibilidad con actitud emprendedora, perseverante y creativa.'
+            },
+            'TYD.3.4.1': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio TYD.3.4.1',
+                desc: 'Representar y comunicar el proceso de creación de un producto, desde su diseño hasta su difusión, elaborando documentación técnica y gráfica con la ayuda o no de herramientas digitales, empleando los formatos y el vocabulario técnico adecuados, de manera colaborativa, tanto presencialmente como en remoto.'
+            },
+            'TYD.3.6.3': {
+                type: 'Criterio de Evaluación',
+                title: 'Criterio TYD.3.6.3',
+                desc: 'Organizar la información de manera estructurada, aplicando técnicas de almacenamiento seguro.'
+            },
+
+            // Saberes Básicos
+            'TYD.3.A.1': {
+                type: 'Saber Básico',
+                title: 'TYD.3.A.1 - Marcos de Resolución de Problemas',
+                desc: 'Estrategias, técnicas y marcos de resolución de problemas sencillos en diferentes contextos y sus fases.'
+            },
+            'TYD.3.A.2': {
+                type: 'Saber Básico',
+                title: 'TYD.3.A.2 - Búsqueda Crítica de Información',
+                desc: 'Estrategias de búsqueda crítica de información durante la investigación y definición de problemas sencillos planteados.'
+            },
+            'TYD.3.A.5': {
+                type: 'Saber Básico',
+                title: 'TYD.3.A.5 - Emprendimiento y Creatividad',
+                desc: 'Emprendimiento, resiliencia, perseverancia y creatividad para abordar problemas sencillos desde una perspectiva interdisciplinar.'
+            },
+            'TYD.3.B.1': {
+                type: 'Saber Básico',
+                title: 'TYD.3.B.1 - Técnicas de Representación Gráfica',
+                desc: 'Técnicas de representación gráfica: acotación y escalas. Boceto y croquis. Proyección cilíndrica ortogonal para la representación de objetos: vistas normalizadas de una pieza.'
+            },
+            'TYD.3.B.2': {
+                type: 'Saber Básico',
+                title: 'TYD.3.B.2 - Aplicaciones CAD 2D/3D',
+                desc: 'Aplicaciones CAD en dos y tres dimensiones para la representación de esquemas, circuitos, planos y objetos básicos (ej. Floorplanner).'
+            },
+            'TYD.3.B.3': {
+                type: 'Saber Básico',
+                title: 'TYD.3.B.3 - Difusión Digital Multimedia',
+                desc: 'Herramientas digitales para la elaboración, publicación y difusión de documentación técnica e información multimedia relativa a proyectos sencillos (ej. Canva).'
+            },
+            'TYD.3.D.2': {
+                type: 'Saber Básico',
+                title: 'TYD.3.D.2 - Edición de Contenidos y Propiedad Intelectual',
+                desc: 'Herramientas de edición y creación de contenidos: instalación, configuración y uso responsable. Propiedad intelectual y licencias.'
+            },
+
+            // Descriptores Operativos del Perfil de Salida
+            'CCL1': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CCL1 - Comunicación Lingüística',
+                desc: 'Se expresa de forma oral, escrita o multimodal con coherencia, corrección y adecuación a los diferentes contextos sociales.'
+            },
+            'CCL3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CCL3 - Búsqueda Crítica de Información',
+                desc: 'Localiza, selecciona y contrasta de manera autónoma información procedente de diferentes fuentes evaluando su fiabilidad.'
+            },
+            'STEM1': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'STEM1 - Razonamiento Matemático',
+                desc: 'Utiliza métodos inductivos y deductivos propios del razonamiento matemático para resolver problemas prácticos.'
+            },
+            'STEM2': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'STEM2 - Pensamiento Científico y Técnico',
+                desc: 'Utiliza el pensamiento científico para entender y explicar fenómenos, comprobando hipótesis mediante experimentación.'
+            },
+            'STEM3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'STEM3 - Desarrollo de Prototipos',
+                desc: 'Plantea y desarrolla proyectos diseñando, fabricando y evaluando prototipos para resolver problemas de forma creativa y en equipo.'
+            },
+            'STEM4': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'STEM4 - Transmisión de Procesos Técnicos',
+                desc: 'Interpreta y transmite los elementos más relevantes de procesos tecnológicos de forma clara y precisa en diferentes formatos gráficos.'
+            },
+            'CD1': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CD1 - Búsqueda Digital Segura',
+                desc: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad y fiabilidad, archivándolos y reutilizándolos.'
+            },
+            'CD2': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CD2 - Creación de Contenidos Digitales',
+                desc: 'Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales.'
+            },
+            'CD3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CD3 - Interacción y Colaboración Virtual',
+                desc: 'Se comunica, participa y colabora compartiendo contenidos mediante herramientas o plataformas virtuales de forma responsable.'
+            },
+            'CD4': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CD4 - Seguridad y Salud Digital',
+                desc: 'Identifica riesgos y adopta medidas preventivas al usar tecnologías digitales para proteger dispositivos, datos y salud.'
+            },
+            'CE1': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CE1 - Análisis de Necesidades y Retos',
+                desc: 'Analiza necesidades y oportunidades y afronta retos con sentido crítico, haciendo balance de su sostenibilidad.'
+            },
+            'CE3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CE3 - Creación de Ideas Innovadoras',
+                desc: 'Desarrolla el proceso de creación de ideas valiosas utilizando estrategias ágiles de planificación y gestión de prototipos.'
+            },
+            'CPSAA3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CPSAA3 - Trabajo Cooperativo',
+                desc: 'Comprende proactivamente las perspectivas de las demás personas y las incorpora al aprendizaje en equipo.'
+            },
+            'CPSAA4': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CPSAA4 - Autoevaluación del Aprendizaje',
+                desc: 'Realiza autoevaluaciones sobre su proceso de aprendizaje buscando fuentes fiables para obtener conclusiones.'
+            },
+            'CCEC3': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CCEC3 - Expresión Creativa',
+                desc: 'Expresa ideas y opiniones por medio de producciones culturales y técnicas integrando la creatividad.'
+            },
+            'CCEC4': {
+                type: 'Descriptor Operativo (Perfil de Salida)',
+                title: 'CCEC4 - Uso Creativo de Medios Audiovisuales',
+                desc: 'Conoce, selecciona y utiliza con creatividad diversos medios y soportes técnicos y visuales para la creación de productos.'
+            }
+        };
+
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos de pestaña
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Desactivar estilos activos en botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostrar pestaña seleccionada
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+            }
+
+            // Activar botón seleccionado
+            const selectedBtn = document.getElementById('btn-' + tabId);
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+            }
+        }
+
+        function filterActivities() {
+            const filterValue = document.getElementById('filter-phase').value;
+            const activityCards = document.querySelectorAll('.activity-card');
+
+            activityCards.forEach(card => {
+                if (filterValue === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    const cardPhase = card.getAttribute('data-phase');
+                    if (cardPhase === filterValue) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function showAcronymModal(code) {
+            const modal = document.getElementById('acronym-modal');
+            const typeBadge = document.getElementById('modal-type-badge');
+            const titleEl = document.getElementById('modal-title');
+            const descEl = document.getElementById('modal-description');
+
+            const item = CURRICULUM_DATA[code];
+
+            if (item) {
+                typeBadge.textContent = item.type;
+                titleEl.textContent = item.title;
+                descEl.innerHTML = item.desc;
+            } else {
+                typeBadge.textContent = 'Elemento Curricular';
+                titleEl.textContent = code;
+                descEl.textContent = 'Descripción curricular oficial del elemento seleccionado.';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeAcronymModal() {
+            const modal = document.getElementById('acronym-modal');
+            modal.classList.add('hidden');
+        }
+
+        // Cerrar modal al pulsar Escape o hacer clic fuera del contenido
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAcronymModal();
+            }
+        });
+
+        document.getElementById('acronym-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAcronymModal();
+            }
+        });
+
+        function updateScore() {
+            const checkboxes = document.querySelectorAll('.checklist-item');
+            let currentScore = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    const weight = parseFloat(cb.getAttribute('data-weight') || 0);
+                    currentScore += weight;
+                }
+            });
+
+            const scoreDisplay = document.getElementById('calc-score');
+            scoreDisplay.textContent = currentScore.toFixed(1) + ' / 10';
+            
+            if (currentScore >= 9) {
+                scoreDisplay.className = 'text-xl font-extrabold text-emerald-600';
+            } else if (currentScore >= 5) {
+                scoreDisplay.className = 'text-xl font-extrabold text-blue-600';
+            } else {
+                scoreDisplay.className = 'text-xl font-extrabold text-rose-600';
+            }
+        }
+    </script>
+</body>
+</html>
