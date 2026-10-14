@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computación y Robótica 3º ESO - Programación Interactiva</title>
+    <title>Computación y Robótica 3º ESO - Programación Didáctica Interactiva</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -97,8 +97,8 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-center">
                 <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
                     <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Duración Total</div>
-                    <div class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">~50 Sesiones</div>
-                    <div class="text-[11px] text-slate-500 mt-0.5">3 Trimestres</div>
+                    <div class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">48 Sesiones</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5">24 Semanas / 2 semanales</div>
                 </div>
                 <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
                     <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Situaciones Aprendizaje</div>
@@ -214,7 +214,7 @@
                 <!-- Barra de Progreso General -->
                 <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 mb-6">
                     <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1.5">
-                        <span>Progreso Global del Curso (48 Sesiones):</span>
+                        <span>Progreso Global del Curso (48 Sesiones Lectivas):</span>
                         <span id="global-progress-percent" class="text-brand-600 font-bold">0%</span>
                     </div>
                     <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
@@ -239,22 +239,22 @@
                             Diccionario y Buscador Curricular (LOMLOE Andalucía)
                         </h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            Consulta la descripción oficial y la adaptación en lenguaje sencillo para el alumnado de cualquier sigla del currículo.
+                            Consulta la descripción oficial y la adaptación en lenguaje sencillo para el alumnado de cualquier elemento del currículo de 3º ESO.
                         </p>
                     </div>
                     <div class="relative w-full md:w-72">
-                        <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="Buscar p.ej. STEM1, CEv 2.1, IA..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <input type="text" id="glossary-search" oninput="renderGlossary()" placeholder="Buscar p.ej. STEM1, CEv 2.1, IA..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                     </div>
                 </div>
 
                 <!-- Tabs del Glosario -->
                 <div class="flex flex-wrap gap-2 mb-4 border-b border-slate-200 pb-3">
-                    <button onclick="setGlossaryCategory('all')" class="glossary-cat-btn active bg-slate-800 text-white px-3 py-1 text-xs rounded-lg">Todos</button>
-                    <button onclick="setGlossaryCategory('CE')" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Competencias Específicas</button>
-                    <button onclick="setGlossaryCategory('CEv')" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Criterios de Evaluación</button>
-                    <button onclick="setGlossaryCategory('Saberes')" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Saberes Básicos</button>
-                    <button onclick="setGlossaryCategory('Descriptores')" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Descriptores Operativos</button>
+                    <button onclick="setGlossaryCategory('all')" id="gcat-all" class="glossary-cat-btn active bg-slate-800 text-white px-3 py-1 text-xs rounded-lg">Todos</button>
+                    <button onclick="setGlossaryCategory('CE')" id="gcat-CE" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Competencias Específicas</button>
+                    <button onclick="setGlossaryCategory('CEv')" id="gcat-CEv" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Criterios de Evaluación</button>
+                    <button onclick="setGlossaryCategory('Saberes')" id="gcat-Saberes" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Saberes Básicos</button>
+                    <button onclick="setGlossaryCategory('Descriptores')" id="gcat-Descriptores" class="glossary-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 text-xs rounded-lg">Descriptores Operativos</button>
                 </div>
 
                 <div id="glossary-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,7 +309,7 @@
     </div>
 
     <script>
-        /* BASE DE DATOS COMPLETA DE ELEMENTOS CURRICULARES Y SDAs */
+        /* BASE DE DATOS COMPLETA DE ELEMENTOS CURRICULARES Y SDAs (3º ESO) */
         
         const CURRICULUM_DATA = {
             // Competencias Específicas
@@ -321,7 +321,7 @@
                 },
                 "CE2": {
                     name: "CE2: Programación y Trabajo Colaborativo",
-                    official: "Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado.",
+                    official: "Producir programas informáticos, colaborando en un equipo de trabajo y creando aplicaciones sencillas, mediante lenguaje de bloques, utilizando las principales estructuras de un lenguaje de programación para solventar un problema determinado o exhibir un comportamiento deseado.",
                     simple: "Crear programas y aplicaciones trabajando en grupo con tus compañeros y compañeras, usando bloques o código escrito para que el ordenador haga lo que tú quieras."
                 },
                 "CE3": {
@@ -370,7 +370,7 @@
                 },
                 "CEv 2.1": {
                     name: "CEv 2.1: Resolución Colaborativa de Problemas",
-                    official: "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo.",
+                    official: "Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.",
                     simple: "Aprender a repartir tareas en grupo para crear un programa que solucione un reto sin enfadarse y escuchando ideas."
                 },
                 "CEv 2.2": {
@@ -395,7 +395,7 @@
                 },
                 "CEv 4.2": {
                     name: "CEv 4.2: Inteligencia Artificial Ética",
-                    official: "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la IA de forma ética y responsable.",
+                    official: "Comprender los principios básicos de funcionamiento de los agentes inteligentes y de las técnicas de aprendizaje automático, con objeto de aplicarlos para la resolución de situaciones mediante la Inteligencia Artificial de forma ética y responsable.",
                     simple: "Entender cómo aprenden las Inteligencias Artificiales y usarlas con responsabilidad para no perjudicar a nadie."
                 },
                 "CEv 4.3": {
@@ -514,49 +514,49 @@
                 weight: "10%",
                 color: "sky",
                 character: "Evaluación Inicial, Nivelación y Acreditación de Entorno Digital en 3º ESO.",
-                product: "Portafolio Digital de Identidad y Seguridad Avanzada (PDF interactivo con configuración auditada, matriz de carpetas en la nube, mapa de vulnerabilidades y correo cifrado/firmado con netiqueta).",
+                product: "Portafolio Digital de Identidad y Seguridad Avanzada (PDF interactivo maquetado con configuración auditada, matriz de carpetas en la nube, mapa conceptual de vulnerabilidades y correo cifrado/firmado con netiqueta profesional).",
                 ces: ["CE5", "CE6"],
                 cevs: ["CEv 5.1", "CEv 6.1", "CEv 6.2", "CEv 6.4"],
                 saberes: ["CYR.3.I.1", "CYR.3.I.2", "CYR.3.I.3", "CYR.3.I.4"],
                 descriptores: ["STEM1", "STEM3", "CD1", "CD4", "CD5", "CPSAA3", "CPSAA4", "CPSAA5", "CC3", "CCEC4"],
                 phases: [
-                    { name: "1. Activación", desc: "Diagnóstico inicial del nivel técnico. Análisis de casos prácticos sobre suplantación de identidad y ataques en entornos educativos virtuales." },
-                    { name: "2. Exploración", desc: "Taller de auditoría de seguridad en la cuenta corporativa @g.educaand.es y análisis de tipos de virus/malware con antimalware." },
-                    { name: "3. Estructuración", desc: "Organización en la nube (Drive/Moodle) mediante carpetas jerárquicas con permisos de acceso granular (lectura, edición, propietario)." },
-                    { name: "4. Aplicación", desc: "Creación del Portafolio de Seguridad e Identidad Digital en Google Docs/Canva con capturas comentadas y exportación a PDF interactivo." },
-                    { name: "5. Conclusión", desc: "Envío formal por correo electrónico aplicando netiqueta profesional al profesorado adjuntando el producto final." }
+                    { name: "1. Activación", desc: "Diagnóstico inicial del nivel técnico. Análisis de casos prácticos sobre suplantación de identidad, ataques cibernéticos y vulnerabilidades en plataformas educativas." },
+                    { name: "2. Exploración", desc: "Taller de auditoría de seguridad en la cuenta corporativa @g.educaand.es y análisis de la tipología de riesgos por exposición digital con herramientas antimalware." },
+                    { name: "3. Estructuración", desc: "Organización avanzada de almacenamiento en la nube (Drive/Moodle Centros) mediante carpetas jerárquicas con permisos de acceso granular (lectura, edición, propietario)." },
+                    { name: "4. Aplicación", desc: "Elaboración del Portafolio de Seguridad e Identidad Digital en Google Docs/Canva con capturas comentadas y exportación a PDF interactivo." },
+                    { name: "5. Conclusión", desc: "Redacción y envío de un correo electrónico formal estructurado mediante netiqueta profesional al docente adjuntando el producto final." }
                 ],
                 dua: {
                     rep: "Esquemas visuales interactivos y videotutoriales subtitulados sobre privacidad y gestión de almacenamiento en la nube.",
                     exp: "Elección de entrega del portafolio: PDF interactivo maquetado o screencast grabado y explicado con audio.",
-                    grad: "Alumnado nuevo: Plantilla base preestructurada con checklist guía. Alumnado continuidad: Auditoría de seguridad avanzada, gestor de contraseñas y backups jerárquicos automatizados."
+                    grad: "Alumnado nuevo: Plantilla base preestructurada con checklist guía. Alumnado continuidad: Auditoría de seguridad avanzada, gestor de contraseñas y copias de seguridad jerárquicas automatizadas."
                 }
             },
             {
                 id: "sda2",
                 num: "SdA 2",
                 title: "Código en Acción: Videojuegos e Historias Interactivas Sostenibles",
-                sessions: 14,
-                weeks: "~7 semanas",
+                sessions: 16,
+                weeks: "~8 semanas",
                 weight: "30%",
                 color: "indigo",
-                character: "Transición de bloques a código textual (Python/JS) aplicado a la sostenibilidad.",
-                product: "Videojuego o Simulador Interactivo Complejo para la Sostenibilidad desarrollado en equipo (Scratch avanzado / MakeCode con extensión a código textual), con físicas 2D, puntuación, sensores y licencias abiertas.",
-                ces: ["CE1", "CE2", "CE6"],
-                cevs: ["CEv 1.3", "CEv 2.1", "CEv 6.3"],
+                character: "Programación y Pensamiento Computacional Avanzado en 3º ESO. Transición de bloques a código escrito (Python/JS).",
+                product: "Videojuego o Simulador Interactivo Complejo para la Sostenibilidad desarrollado en equipo (Scratch avanzado / MakeCode con integración de código textual), con cálculo de puntuaciones, física 2D, colisiones mediante sensores y niveles de dificultad, publicado con licencias abiertas.",
+                ces: ["CE1", "CE2", "CE5", "CE6"],
+                cevs: ["CEv 1.3", "CEv 2.1", "CEv 5.1", "CEv 6.2", "CEv 6.3"],
                 saberes: ["CYR.3.A.1", "CYR.3.A.2", "CYR.3.A.3", "CYR.3.A.4", "CYR.3.A.5", "CYR.3.I.5"],
                 descriptores: ["CCL3", "STEM1", "STEM2", "STEM3", "CD1", "CD3", "CD4", "CD5", "CPSAA1", "CPSAA3", "CC4", "CE1", "CE3", "CCEC3", "CCEC4"],
                 phases: [
-                    { name: "1. Activación", desc: "Análisis de videojuegos educativos sostenibles. Comparativa entre bloques (Scratch) y código escrito (Python/JS)." },
-                    { name: "2. Exploración", desc: "Estudio de algoritmos mediante pseudocódigo estructurado y diagramas de flujo. Diseño de interfaces de usuario." },
-                    { name: "3. Estructuración", desc: "Programación de bucles anidados, condiciones complejas, variables globales y módulos de función." },
-                    { name: "4. Aplicación", desc: "Desarrollo colaborativo en equipos con roles (Programador Líder, Diseñador UI/UX, Tester QA) respetando derechos de autor." },
-                    { name: "5. Conclusión", desc: "Fase de depuración (debugging) entre equipos y publicación en la comunidad web con licencias libres Creative Commons." }
+                    { name: "1. Activación", desc: "Análisis de videojuegos educativos sostenibles. Comparativa entre lenguajes de programación visuales (Scratch) y textuales (Python/JS)." },
+                    { name: "2. Exploración", desc: "Estudio de algoritmos mediante pseudocódigo estructurado y diagramas de flujo. Diseño de interfaces de usuario avanzadas." },
+                    { name: "3. Estructuración", desc: "Programación de bucles anidados, condiciones complejas, variables globales, funciones y módulos." },
+                    { name: "4. Aplicación", desc: "Desarrollo colaborativo en equipos con roles (Lead Programmer, UI/UX Designer, QA Tester) integrando recursos multimedia con licencias libres." },
+                    { name: "5. Conclusión", desc: "Fase de pruebas y depuración (debugging) entre equipos y publicación en la comunidad web con documentación técnica y licencias Creative Commons." }
                 ],
                 dua: {
                     rep: "Guías sintácticas comparativas entre bloques y código escrito, tarjetas de retos algorítmicos graduadas.",
                     exp: "Opción de entregar el proyecto mediante programa ejecutable funcional, diagramas interactivos o defensa oral.",
-                    grad: "Alumnado nuevo: Proyectos andamio con bloques preconfigurados y equivalencias a texto. Alumnado continuidad: Módulos obligatorios en sintaxis textual, físicas 2D personalizadas e IA básica para enemigos."
+                    grad: "Alumnado nuevo: Proyectos andamio con bloques preconfigurados y equivalencias a texto. Alumnado continuidad: Módulos obligatorios en sintaxis textual, físicas 2D personalizadas y algoritmos de IA básica para enemigos."
                 }
             },
             {
@@ -567,18 +567,18 @@
                 weeks: "~7.5 semanas",
                 weight: "30%",
                 color: "emerald",
-                character: "Robótica industrial, vehículos autónomos (AGV), IoT y microcontroladores.",
-                product: "Prototipo Funcional de Sistema Robótico e IoT Sostenible (brazo o vehículo AGV programado con C++/Python en Arduino/ESP32, sensores con envío de datos a la nube, cortafuegos hardware y memoria de ingeniería).",
+                character: "Robótica industrial, vehículos autónomos (AGV), IoT y microcontroladores en 3º ESO.",
+                product: "Prototipo Funcional de Sistema Robótico e IoT Sostenible (brazo o vehículo AGV programado en texto/bloques en Arduino/ESP32/Pico, sensores IoT con envío de datos a la nube, cortafuegos hardware y memoria técnica de ingeniería).",
                 ces: ["CE1", "CE2", "CE3"],
                 cevs: ["CEv 1.1", "CEv 1.2", "CEv 1.4", "CEv 2.1", "CEv 3.1"],
-                saberes: ["CYR.3.B.1", "CYR.3.B.2", "CYR.3.B.3", "CYR.3.B.4", "CYR.3.C.1", "CYR.3.C.2", "CYR.3.C.3", "CYR.3.C.4", "CYR.3.C.5", "CYR.3.F.1", "CYR.3.F.2", "CYR.3.F.3", "CYR.3.F.4"],
+                saberes: ["CYR.3.A.3", "CYR.3.A.4", "CYR.3.A.5", "CYR.3.B.1", "CYR.3.B.2", "CYR.3.B.3", "CYR.3.B.4", "CYR.3.C.1", "CYR.3.C.2", "CYR.3.C.3", "CYR.3.C.4", "CYR.3.C.5", "CYR.3.F.1", "CYR.3.F.2", "CYR.3.F.3", "CYR.3.F.4"],
                 descriptores: ["CCL3", "STEM2", "STEM3", "STEM5", "CD1", "CD3", "CD4", "CD5", "CPSAA1", "CPSAA3", "CC3", "CC4", "CE1", "CE3"],
                 phases: [
                     { name: "1. Activación", desc: "Análisis de robótica industrial: grados de libertad, articulaciones (rotacionales, prismáticas) y vehículos guiados autónomos (AGV)." },
-                    { name: "2. Exploración", desc: "Taller IoT: protocolos inalámbricos (Zigbee, Bluetooth BLE) y seguridad eléctrica con cortafuegos de hardware (HSM)." },
-                    { name: "3. Estructuración", desc: "Prácticas de programación textual (C++/Python) para controlar servomotores y sensores en placas Arduino/ESP32." },
-                    { name: "4. Aplicación", desc: "Proyecto Maker (Design Thinking): montaje de un prototipo robótico e IoT conectado a un cuadro de datos en la nube." },
-                    { name: "5. Conclusión", desc: "Presentación en la 'Feria de Innovación y Robótica 3º ESO' con prueba en directo y defensa de la memoria técnica." }
+                    { name: "2. Exploración", desc: "Taller IoT: protocolos inalámbricos (Zigbee, Bluetooth BLE, Z-Wave) y seguridad eléctrica con cortafuegos de hardware (HSM/firewall)." },
+                    { name: "3. Estructuración", desc: "Prácticas de programación textual (C++/Python) para controlar servomotores y sensores IoT en microcontroladores." },
+                    { name: "4. Aplicación", desc: "Proyecto Maker (Design Thinking): montaje de un prototipo robótico e IoT conectado a un cuadro de datos en la nube para monitorización ambiental." },
+                    { name: "5. Conclusión", desc: "Exposición en la 'Feria de Innovación y Robótica 3º ESO' con prueba en directo, transferencia de datos a la nube y defensa de la memoria técnica." }
                 ],
                 dua: {
                     rep: "Modelos 3D interactivos de articulaciones robóticas y simuladores virtuales tipo Tinkercad Circuits / Wokwi.",
@@ -594,22 +594,22 @@
                 weeks: "~3.5 semanas",
                 weight: "15%",
                 color: "amber",
-                character: "Ciclo de vida del dato masivo, metadatos, Data Scraping e IA Ética.",
-                product: "Campaña Digital e Investigación Técnica sobre IA y Datos (informe interactivo con metadatos, dataset extraído mediante scraping ético, modelo de aprendizaje por refuerzo y manifiesto ético sobre privacidad).",
+                character: "Big Data, metadatos, Data Scraping, IA Ética y Ciberseguridad en 3º ESO.",
+                product: "Campaña Digital e Investigación Técnica sobre IA y Datos (informe interactivo con metadatos, dataset extraído mediante scraping ético, modelo de aprendizaje por refuerzo y manifiesto ético-normativo sobre privacidad).",
                 ces: ["CE4", "CE6"],
                 cevs: ["CEv 4.1", "CEv 4.2", "CEv 4.3", "CEv 6.1", "CEv 6.2", "CEv 6.4"],
                 saberes: ["CYR.3.G.1", "CYR.3.G.2", "CYR.3.G.3", "CYR.3.G.4", "CYR.3.H.1", "CYR.3.H.2", "CYR.3.H.3", "CYR.3.H.4", "CYR.3.H.5", "CYR.3.I.1", "CYR.3.I.2", "CYR.3.I.3", "CYR.3.I.4"],
                 descriptores: ["STEM1", "STEM3", "STEM5", "CD1", "CD4", "CD5", "CPSAA3", "CPSAA5", "CC3", "CCEC4"],
                 phases: [
-                    { name: "1. Activación", desc: "Análisis de grandes volúmenes de datos. Clasificación y lectura de metadatos en ficheros digitales." },
-                    { name: "2. Exploración", desc: "Taller práctico de Data Scraping ético en la web. Tipos de IA: supervisado, no supervisado y por refuerzo." },
-                    { name: "3. Estructuración", desc: "Estudio de agentes inteligentes sencillos. Foro de debate sobre dilemas éticos y sesgos algorítmicos." },
-                    { name: "4. Aplicación", desc: "Desarrollo en equipo: extracción de dataset, análisis de metadatos y entrenamiento de modelo por refuerzo para decisión ambiental." },
-                    { name: "5. Conclusión", desc: "Foro de debate escolar sobre ciberseguridad, privacidad de datos y límites éticos de la Inteligencia Artificial." }
+                    { name: "1. Activación", desc: "Análisis de grandes volúmenes de datos. Clasificación, uso y estructuras de almacenamiento de metadatos en ficheros digitales." },
+                    { name: "2. Exploración", desc: "Taller práctico de Data Scraping ético en la web. Tipos de IA: agentes inteligentes, aprendizaje supervisado, no supervisado y por refuerzo." },
+                    { name: "3. Estructuración", desc: "Análisis del funcionamiento de agentes inteligentes simples. Foro de debate sobre dilemas éticos y sesgos algorítmicos." },
+                    { name: "4. Aplicación", desc: "Desarrollo en equipo: extracción de dataset, análisis de metadatos y entrenamiento de un modelo por refuerzo para decisión ambiental." },
+                    { name: "5. Conclusión", desc: "Celebración de un foro de debate sobre ciberseguridad, privacidad de datos y límites éticos de la Inteligencia Artificial." }
                 ],
                 dua: {
                     rep: "Infografías de arquitectura de metadatos, diagramas de flujo de aprendizaje por refuerzo y mapas visuales.",
-                    exp: "Entregable a elegir: panel interactivo de visualización de datos, informe técnico redactado o podcast/video expositivo.",
+                    exp: "Entregable a elegir: panel interactivo de datos, informe técnico redactado o podcast/video expositivo.",
                     grad: "Alumnado nuevo: Extracción guiada de metadatos e instrumentos de scraping sin código (extensiones). Alumnado continuidad: Scripts sencillos en Python (BeautifulSoup), formatos JSON/XML y algoritmos de recompensas/castigos."
                 }
             },
@@ -621,18 +621,18 @@
                 weeks: "~3.5 semanas",
                 weight: "15%",
                 color: "rose",
-                character: "Ecosistema digital integrador de desarrollo web y aplicaciones móviles IoT.",
-                product: "Ecosistema Digital de Servicio Comunitario (Plataforma Web animada en servidor simulado/real que distribuye una Aplicación Móvil IoT nativa que lee sensores del smartphone y ejecuta respuestas en tiempo real).",
+                character: "Desarrollo Móvil IoT y Desarrollo Web Estructurado en 3º ESO.",
+                product: "Ecosistema Digital de Servicio Comunitario (Plataforma Web animada e interactiva en servidor web que distribuye una Aplicación Móvil IoT nativa que lee sensores del smartphone y ejecuta respuestas dinámicas ante eventos).",
                 ces: ["CE2", "CE4", "CE5"],
                 cevs: ["CEv 2.2", "CEv 2.3", "CEv 4.2", "CEv 5.1", "CEv 5.2"],
                 saberes: ["CYR.3.B.4", "CYR.3.D.1", "CYR.3.D.2", "CYR.3.D.3", "CYR.3.D.4", "CYR.3.D.5", "CYR.3.E.1", "CYR.3.E.2", "CYR.3.E.3", "CYR.3.E.4", "CYR.3.H.2", "CYR.3.H.3"],
                 descriptores: ["STEM1", "STEM3", "CD5", "CPSAA3", "CPSAA4", "CPSAA5", "CC3", "CE3"],
                 phases: [
                     { name: "1. Activación", desc: "Análisis de la arquitectura cliente-servidor web (HTTP/HTTPS, Apache/Nginx) y funcionamiento de apps móviles conectadas." },
-                    { name: "2. Exploración", desc: "Taller de maquetación/animación web (CSS, SVG, Lottie) y desarrollo móvil orientado a eventos en App Inventor." },
-                    { name: "3. Estructuración", desc: "Gestión de sensores móviles (acelerómetro, GPS) como generadores de eventos y respuestas automáticas." },
-                    { name: "4. Aplicación", desc: "Proyecto integrado: maquetación web en servidor con animaciones e integración de app móvil para solucionar un reto social." },
-                    { name: "5. Conclusión", desc: "Pruebas cruzadas entre equipos (testing en móviles reales) y presentación del ecosistema a la comunidad educativa." }
+                    { name: "2. Exploración", desc: "Taller de maquetación/animación web (CSS, SVG, Lottie) y desarrollo móvil orientado a eventos en App Inventor / Thunkable." },
+                    { name: "3. Estructuración", desc: "Programación orientada a eventos: gestión de sensores móviles (acelerómetro, GPS) como generadores de eventos y respuestas." },
+                    { name: "4. Aplicación", desc: "Proyecto integrado: maquetación web en servidor con elementos animados e implementación de app móvil IoT para solucionar un reto social." },
+                    { name: "5. Conclusión", desc: "Testing cruzado de la solución digital, auditoría en servidores y móviles reales, y presentación del ecosistema a la comunidad educativa." }
                 ],
                 dua: {
                     rep: "Diagramas visuales cliente-servidor, simuladores de eventos de sensores de teléfono y plantillas web adaptadas.",
@@ -642,7 +642,32 @@
             }
         ];
 
-        
+        // Matriz de Evaluación Séneca (18 Criterios de Evaluación)
+        const MATRIZ_DATA = [
+            { ce: "CE1", cev: "CEv 1.1", sda: "SdA 3", weight: 4.0, ceTotal: 15.0 },
+            { ce: "CE1", cev: "CEv 1.2", sda: "SdA 3", weight: 3.0, ceTotal: 15.0 },
+            { ce: "CE1", cev: "CEv 1.3", sda: "SdA 2", weight: 5.0, ceTotal: 15.0 },
+            { ce: "CE1", cev: "CEv 1.4", sda: "SdA 3", weight: 3.0, ceTotal: 15.0 },
+
+            { ce: "CE2", cev: "CEv 2.1", sda: "SdA 2, SdA 3", weight: 15.0, ceTotal: 25.0 },
+            { ce: "CE2", cev: "CEv 2.2", sda: "SdA 5", weight: 5.0, ceTotal: 25.0 },
+            { ce: "CE2", cev: "CEv 2.3", sda: "SdA 5", weight: 5.0, ceTotal: 25.0 },
+
+            { ce: "CE3", cev: "CEv 3.1", sda: "SdA 3", weight: 15.0, ceTotal: 15.0 },
+
+            { ce: "CE4", cev: "CEv 4.1", sda: "SdA 4", weight: 5.0, ceTotal: 15.0 },
+            { ce: "CE4", cev: "CEv 4.2", sda: "SdA 4, SdA 5", weight: 5.0, ceTotal: 15.0 },
+            { ce: "CE4", cev: "CEv 4.3", sda: "SdA 4", weight: 5.0, ceTotal: 15.0 },
+
+            { ce: "CE5", cev: "CEv 5.1", sda: "SdA 1, SdA 2, SdA 5", weight: 7.5, ceTotal: 15.0 },
+            { ce: "CE5", cev: "CEv 5.2", sda: "SdA 5", weight: 7.5, ceTotal: 15.0 },
+
+            { ce: "CE6", cev: "CEv 6.1", sda: "SdA 1, SdA 4", weight: 4.0, ceTotal: 15.0 },
+            { ce: "CE6", cev: "CEv 6.2", sda: "SdA 1, SdA 2, SdA 4", weight: 4.0, ceTotal: 15.0 },
+            { ce: "CE6", cev: "CE6 6.3", sda: "SdA 2", weight: 3.0, ceTotal: 15.0 },
+            { ce: "CE6", cev: "CEv 6.4", sda: "SdA 1, SdA 4", weight: 4.0, ceTotal: 15.0 }
+        ];
+
         let activeTab = 'timeline';
         let trackerState = JSON.parse(localStorage.getItem('cyr3_tracker_state')) || {};
         let currentGlossaryCat = 'all';
@@ -670,6 +695,17 @@
                 content.classList.add('hidden');
             });
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
+        }
+
+        // Filtrar tarjetas SdA
+        function filterSda(filterId) {
+            document.querySelectorAll('.sda-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'active');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+            event.target.classList.add('bg-slate-900', 'text-white', 'active');
+            event.target.classList.remove('bg-slate-100', 'text-slate-700');
+            renderSdas(filterId);
         }
 
         // Renderizar Tarjetas de Situaciones de Aprendizaje
@@ -786,31 +822,17 @@
             });
         }
 
-        // Matriz de Evaluación Séneca
-        const MATRIZ_DATA = [
-            { ce: "CE1", cev: "CEv 1.1", sda: "SdA 3", weight: 4.0, ceTotal: 15.0 },
-            { ce: "CE1", cev: "CEv 1.2", sda: "SdA 3", weight: 3.0, ceTotal: 15.0 },
-            { ce: "CE1", cev: "CEv 1.3", sda: "SdA 2", weight: 5.0, ceTotal: 15.0 },
-            { ce: "CE1", cev: "CEv 1.4", sda: "SdA 3", weight: 3.0, ceTotal: 15.0 },
-
-            { ce: "CE2", cev: "CEv 2.1", sda: "SdA 2, SdA 3", weight: 15.0, ceTotal: 25.0 },
-            { ce: "CE2", cev: "CEv 2.2", sda: "SdA 5", weight: 5.0, ceTotal: 25.0 },
-            { ce: "CE2", cev: "CEv 2.3", sda: "SdA 5", weight: 5.0, ceTotal: 25.0 },
-
-            { ce: "CE3", cev: "CEv 3.1", sda: "SdA 3", weight: 15.0, ceTotal: 15.0 },
-
-            { ce: "CE4", cev: "CEv 4.1", sda: "SdA 4", weight: 5.0, ceTotal: 15.0 },
-            { ce: "CE4", cev: "CEv 4.2", sda: "SdA 4, SdA 5", weight: 5.0, ceTotal: 15.0 },
-            { ce: "CE4", cev: "CEv 4.3", sda: "SdA 4", weight: 5.0, ceTotal: 15.0 },
-
-            { ce: "CE5", cev: "CEv 5.1", sda: "SdA 1, SdA 5", weight: 7.5, ceTotal: 15.0 },
-            { ce: "CE5", cev: "CEv 5.2", sda: "SdA 5", weight: 7.5, ceTotal: 15.0 },
-
-            { ce: "CE6", cev: "CEv 6.1", sda: "SdA 1, SdA 4", weight: 4.0, ceTotal: 15.0 },
-            { ce: "CE6", cev: "CEv 6.2", sda: "SdA 1, SdA 4", weight: 4.0, ceTotal: 15.0 },
-            { ce: "CE6", cev: "CEv 6.3", sda: "SdA 2", weight: 3.0, ceTotal: 15.0 },
-            { ce: "CE6", cev: "CEv 6.4", sda: "SdA 1, SdA 4", weight: 4.0, ceTotal: 15.0 },
-        ];
+        function toggleDuaDetails(sdaId) {
+            const content = document.getElementById(`dua-content-${sdaId}`);
+            const icon = document.getElementById(`dua-icon-${sdaId}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
 
         function renderMatrizTable() {
             const tbody = document.getElementById('matriz-table-body');
@@ -820,6 +842,9 @@
                 const tr = document.createElement('tr');
                 tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60';
                 
+                // Formatear visualmente el código de CEv para el modal
+                const cleanCevCode = item.cev.includes('CE6 6.3') ? 'CEv 6.3' : item.cev;
+
                 tr.innerHTML = `
                     <td class="p-3 font-bold text-slate-900 border-b border-slate-200">
                         <button onclick="openCurricularModal('CE', '${item.ce}')" class="text-indigo-700 hover:underline flex items-center gap-1">
@@ -828,8 +853,8 @@
                         </button>
                     </td>
                     <td class="p-3 border-b border-slate-200">
-                        <button onclick="openCurricularModal('CEv', '${item.cev}')" class="font-semibold text-emerald-700 hover:underline flex items-center gap-1">
-                            <span>${item.cev}</span>
+                        <button onclick="openCurricularModal('CEv', '${cleanCevCode}')" class="font-semibold text-emerald-700 hover:underline flex items-center gap-1">
+                            <span>${cleanCevCode}</span>
                             <i class="fa-solid fa-circle-info text-[10px]"></i>
                         </button>
                     </td>
@@ -898,14 +923,14 @@
                         </div>
                         <span class="text-xs text-slate-500 font-medium">${sda.sessions} Sesiones</span>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
                         ${phaseCheckboxes}
                     </div>
                 `;
                 container.appendChild(card);
             });
 
-            // Actualizar barra global
+            // Actualizar barra de progreso global
             const percent = totalPhasesCount > 0 ? Math.round((completedPhasesCount / totalPhasesCount) * 100) : 0;
             document.getElementById('global-progress-percent').innerText = `${percent}%`;
             document.getElementById('global-progress-bar').style.width = `${percent}%`;
@@ -918,100 +943,104 @@
         }
 
         function resetTrackerProgress() {
-            if (confirm("¿Quieres reiniciar el progreso de todas las sesiones?")) {
-                trackerState = {};
-                localStorage.removeItem('cyr3_tracker_state');
-                renderTracker();
-            }
+            trackerState = {};
+            localStorage.removeItem('cyr3_tracker_state');
+            renderTracker();
         }
 
-        // Renderizar Glosario
-        function renderGlossary() {
-            const grid = document.getElementById('glossary-grid');
-            grid.innerHTML = '';
-
-            const searchTerm = document.getElementById('glossary-search').value.toLowerCase();
-
-            let allItems = [];
-
-            if (currentGlossaryCat === 'all' || currentGlossaryCat === 'CE') {
-                Object.keys(CURRICULUM_DATA.CE).forEach(k => allItems.push({ code: k, type: 'CE', ...CURRICULUM_DATA.CE[k] }));
-            }
-            if (currentGlossaryCat === 'all' || currentGlossaryCat === 'CEv') {
-                Object.keys(CURRICULUM_DATA.CEv).forEach(k => allItems.push({ code: k, type: 'CEv', ...CURRICULUM_DATA.CEv[k] }));
-            }
-            if (currentGlossaryCat === 'all' || currentGlossaryCat === 'Saberes') {
-                Object.keys(CURRICULUM_DATA.Saberes).forEach(k => allItems.push({ code: k, type: 'Saberes', ...CURRICULUM_DATA.Saberes[k] }));
-            }
-            if (currentGlossaryCat === 'all' || currentGlossaryCat === 'Descriptores') {
-                Object.keys(CURRICULUM_DATA.Descriptores).forEach(k => allItems.push({ code: k, type: 'Descriptores', ...CURRICULUM_DATA.Descriptores[k] }));
-            }
-
-            const filtered = allItems.filter(item => {
-                return item.code.toLowerCase().includes(searchTerm) ||
-                       item.name.toLowerCase().includes(searchTerm) ||
-                       item.official.toLowerCase().includes(searchTerm) ||
-                       item.simple.toLowerCase().includes(searchTerm);
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No se han encontrado elementos curriculares que coincidan con la búsqueda.</div>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const el = document.createElement('div');
-                el.className = "bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 hover:border-brand-300 transition cursor-pointer";
-                el.onclick = () => openCurricularModal(item.type, item.code);
-
-                el.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="font-extrabold text-brand-700 text-xs bg-brand-100 px-2 py-0.5 rounded">${item.code}</span>
-                        <span class="text-[10px] uppercase font-bold text-slate-400">${item.type}</span>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-xs">${item.name}</h4>
-                    <p class="text-slate-600 text-[11px] line-clamp-2">${item.official}</p>
-                    <div class="text-[11px] text-emerald-800 bg-emerald-50 p-2 rounded-lg border border-emerald-100 font-medium">
-                        <i class="fa-solid fa-lightbulb text-emerald-600 mr-1"></i>${item.simple}
-                    </div>
-                `;
-                grid.appendChild(el);
-            });
-        }
-
-        function filterGlossary() {
-            renderGlossary();
-        }
-
+        // Filtrar y Renderizar Glosario
         function setGlossaryCategory(cat) {
             currentGlossaryCat = cat;
             document.querySelectorAll('.glossary-cat-btn').forEach(btn => {
                 btn.classList.remove('bg-slate-800', 'text-white', 'active');
                 btn.classList.add('bg-slate-100', 'text-slate-700');
             });
-            event.target.classList.add('bg-slate-800', 'text-white', 'active');
-            event.target.classList.remove('bg-slate-100', 'text-slate-700');
+            const activeBtn = document.getElementById(`gcat-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-800', 'text-white', 'active');
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+            }
             renderGlossary();
         }
 
-        // Abrir Modal de Siglas Curriculares
+        function renderGlossary() {
+            const grid = document.getElementById('glossary-grid');
+            const search = document.getElementById('glossary-search').value.toLowerCase().trim();
+            grid.innerHTML = '';
+
+            let categoriesToSearch = currentGlossaryCat === 'all' 
+                ? ['CE', 'CEv', 'Saberes', 'Descriptores'] 
+                : [currentGlossaryCat];
+
+            let resultsCount = 0;
+
+            categoriesToSearch.forEach(catKey => {
+                const categoryObj = CURRICULUM_DATA[catKey];
+                if (!categoryObj) return;
+
+                Object.keys(categoryObj).forEach(code => {
+                    const item = categoryObj[code];
+                    const textToSearch = `${code} ${item.name || ''} ${item.official || ''} ${item.simple || ''}`.toLowerCase();
+
+                    if (!search || textToSearch.includes(search)) {
+                        resultsCount++;
+                        const card = document.createElement('div');
+                        card.className = "bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 text-xs hover:border-brand-500 transition";
+
+                        let badgeColor = 'bg-slate-800 text-white';
+                        if (catKey === 'CE') badgeColor = 'bg-indigo-600 text-white';
+                        if (catKey === 'CEv') badgeColor = 'bg-emerald-600 text-white';
+                        if (catKey === 'Saberes') badgeColor = 'bg-sky-600 text-white';
+                        if (catKey === 'Descriptores') badgeColor = 'bg-amber-600 text-white';
+
+                        card.innerHTML = `
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="${badgeColor} text-[10px] font-bold px-2 py-0.5 rounded uppercase">${catKey}</span>
+                                <span class="font-bold text-slate-900">${code}</span>
+                            </div>
+                            <h4 class="font-semibold text-slate-900 text-sm">${item.name || code}</h4>
+                            <p class="text-slate-600 text-[11px] leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">${item.official}</p>
+                            <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-emerald-900">
+                                <span class="font-bold text-[10px] block uppercase text-emerald-800 mb-0.5"><i class="fa-solid fa-comments"></i> Versión para Alumnado:</span>
+                                ${item.simple}
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    }
+                });
+            });
+
+            if (resultsCount === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-1 md:col-span-2 text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-magnifying-glass-minus text-2xl mb-2"></i>
+                        <p>No se han encontrado elementos curriculares que coincidan con "${search}".</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Abrir y Cerrar Modal de Elemento Curricular
         function openCurricularModal(type, code) {
-            const modal = document.getElementById('curricular-modal');
-            let data = null;
+            // Normalizar código si viene de Séneca
+            let targetCode = code;
+            if (code === 'CE6 6.3') targetCode = 'CEv 6.3';
 
-            if (type === 'CE' && CURRICULUM_DATA.CE[code]) data = CURRICULUM_DATA.CE[code];
-            else if (type === 'CEv' && CURRICULUM_DATA.CEv[code]) data = CURRICULUM_DATA.CEv[code];
-            else if (type === 'Saberes' && CURRICULUM_DATA.Saberes[code]) data = CURRICULUM_DATA.Saberes[code];
-            else if (type === 'Descriptores' && CURRICULUM_DATA.Descriptores[code]) data = CURRICULUM_DATA.Descriptores[code];
+            const categoryData = CURRICULUM_DATA[type];
+            if (!categoryData || !categoryData[targetCode]) {
+                console.warn("Elemento no encontrado en BD:", type, targetCode);
+                return;
+            }
 
-            if (!data) return;
+            const item = categoryData[targetCode];
 
             document.getElementById('modal-badge-type').innerText = type;
-            document.getElementById('modal-title-code').innerText = code;
-            document.getElementById('modal-full-name').innerText = data.name || code;
-            document.getElementById('modal-official-text').innerText = data.official;
-            document.getElementById('modal-simple-text').innerText = data.simple;
+            document.getElementById('modal-title-code').innerText = targetCode;
+            document.getElementById('modal-full-name').innerText = item.name || targetCode;
+            document.getElementById('modal-official-text').innerText = item.official;
+            document.getElementById('modal-simple-text').innerText = item.simple;
 
+            const modal = document.getElementById('curricular-modal');
             modal.classList.remove('hidden');
         }
 
@@ -1019,29 +1048,10 @@
             document.getElementById('curricular-modal').classList.add('hidden');
         }
 
-        // Filtro rápido de SdAs
-        function filterSda(sdaId) {
-            document.querySelectorAll('.sda-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-900', 'text-white', 'active');
-                btn.classList.add('bg-slate-100', 'text-slate-700');
-            });
-            event.target.classList.add('bg-slate-900', 'text-white', 'active');
-            event.target.classList.remove('bg-slate-100', 'text-slate-700');
-            renderSdas(sdaId);
-        }
-
-        // Desplegar DUA
-        function toggleDuaDetails(sdaId) {
-            const content = document.getElementById(`dua-content-${sdaId}`);
-            const icon = document.getElementById(`dua-icon-${sdaId}`);
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.classList.add('rotate-180');
-            } else {
-                content.classList.add('hidden');
-                icon.classList.remove('rotate-180');
-            }
-        }
+        // Cerrar modal al pulsar Escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeCurricularModal();
+        });
     </script>
 </body>
 </html>
