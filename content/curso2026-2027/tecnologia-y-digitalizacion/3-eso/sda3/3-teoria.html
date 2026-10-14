@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expresión Gráfica y Dibujo Técnico | Unidad Didáctica Interactiva</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Banner de la Junta de Andalucía & Asignatura -->
+    <header class="bg-gradient-to-r from-blue-900 via-brand-700 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/20">
+                    <i class="fa-solid font-pen-ruler text-2xl text-amber-400"></i>
+                </div>
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-blue-200 font-semibold block">Tecnología y Expresión Gráfica</span>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Dibujo Técnico e Interpretación de Planos</h1>
+                </div>
+            </div>
+
+            <!-- Menú rápido de herramientas y temas -->
+            <nav class="flex items-center space-x-2 text-sm">
+                <button onclick="scrollToSection('quiz-section')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-lg transition duration-200 flex items-center space-x-1.5 shadow-md">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Autoevaluación</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Submarco Didáctico / Barra Informativa -->
+    <div class="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs sm:text-sm text-amber-900">
+        <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-graduation-cap text-amber-600"></i>
+                <span><strong>Material Didáctico Accesible:</strong> Diseñado para el alumnado de Secundaria y Bachillerato.</span>
+            </div>
+            <div class="flex items-center space-x-4 text-xs font-medium">
+                <span class="bg-amber-200/60 px-2 py-0.5 rounded text-amber-900"><i class="fa-solid fa-universal-access mr-1"></i>Lenguaje Inclusivo</span>
+                <span class="bg-amber-200/60 px-2 py-0.5 rounded text-amber-900"><i class="fa-solid fa-bolt mr-1"></i>Interactividades Integradas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal con Menú Lateral y Contenido -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Navegación Lateral (Índice interactivo) -->
+            <aside class="lg:col-span-3">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sticky top-24">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2 flex items-center justify-between">
+                        <span>Índice del Tema</span>
+                        <i class="fa-solid fa-list-ol"></i>
+                    </h2>
+                    <nav class="space-y-1" id="toc-nav">
+                        <a href="#sec-1" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition active">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">1</span>
+                            El Dibujo Técnico
+                        </a>
+                        <a href="#sec-2" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">2</span>
+                            Boceto, Croquis y Plano
+                        </a>
+                        <a href="#sec-3" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">3</span>
+                            El Sistema Diédrico
+                        </a>
+                        <a href="#sec-4" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">4</span>
+                            La Perspectiva
+                        </a>
+                        <a href="#sec-5" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">5</span>
+                            Materiales y Herramientas
+                        </a>
+                        <a href="#sec-6" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">6</span>
+                            La Escala
+                        </a>
+                        <a href="#sec-7" class="toc-link flex items-center px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold mr-2.5">7</span>
+                            La Acotación
+                        </a>
+                    </nav>
+
+                    <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500 space-y-2">
+                        <p class="font-medium text-slate-700 mb-1"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Consejo de estudio:</p>
+                        <p>Utiliza los simuladores de escala y acotación al final de cada sección para comprobar tu comprensión.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Área de Contenidos Principales -->
+            <main class="lg:col-span-9 space-y-12">
+
+                <!-- SECCIÓN 1: EL DIBUJO TÉCNICO -->
+                <section id="sec-1" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full pointer-events-none"></div>
+                    
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 1
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">1. El Dibujo Técnico</h2>
+
+                    <!-- Takeaway / Idea Clave -->
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">El dibujo técnico es un lenguaje gráfico <strong>objetivo, universal y preciso</strong> diseñado para construir o fabricar objetos. A diferencia del dibujo artístico, no transmite sentimientos subjetivos sino datos cuantitativos exactos.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prose max-w-none text-slate-600 space-y-4">
+                        <p class="leading-relaxed">
+                            El dibujo técnico permite comunicar proyectos entre ingenierías, diseño industrial y arquitectura sin margen de error. Sigue reglas estrictas para que cualquier persona del mundo interprete el plano exactamente de la misma forma.
+                        </p>
+
+                        <!-- Tabla comparativa -->
+                        <div class="overflow-x-auto my-6">
+                            <table class="w-full text-left text-sm border-collapse rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                                <thead class="bg-slate-800 text-white">
+                                    <tr>
+                                        <th class="p-3">Característica</th>
+                                        <th class="p-3">Dibujo Técnico</th>
+                                        <th class="p-3">Dibujo Artístico</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-semibold text-slate-800">Propósito</td>
+                                        <td class="p-3 text-slate-600">Transmitir información precisa para construir o fabricar.</td>
+                                        <td class="p-3 text-slate-600">Expresar emociones, estética e ideas personales.</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-semibold text-slate-800">Interpretación</td>
+                                        <td class="p-3 text-slate-600"><strong>Objetivo:</strong> Una única interpretación exacta.</td>
+                                        <td class="p-3 text-slate-600"><strong>Subjetivo:</strong> Depende de quien lo contempla.</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-semibold text-slate-800">Reglas y Normas</td>
+                                        <td class="p-3 text-slate-600">Sigue normas internacionales (escalas, cotas, formatos DIN).</td>
+                                        <td class="p-3 text-slate-600">Técnica libre y sin reglas fijas.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Formatos Estandarizados (Norma DIN) -->
+                        <h3 class="text-xl font-bold text-slate-800 mt-6 mb-3 flex items-center">
+                            <i class="fa-solid fa-file-lines text-brand-500 mr-2"></i>
+                            Formatos Normalizados de Papel (DIN A)
+                        </h3>
+                        <p class="leading-relaxed">
+                            Los planos se realizan en láminas estandarizadas. El formato base de trabajo escolar es el <strong>A4 (297 x 210 mm)</strong>. Cada formato doblado por su mitad da lugar al formato siguiente (A3 -> A4 -> A5).
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <h4 class="font-bold text-slate-800 mb-1 flex items-center">
+                                    <i class="fa-solid fa-border-all text-brand-600 mr-2"></i> Márgenes
+                                </h4>
+                                <p class="text-xs text-slate-600">
+                                    Espacios en blanco alrededor del marco. En el formato A4 el margen izquierdo es de <strong>25 mm</strong> (para poder encuadernar o archivarlo) y los otros tres son de <strong>5 mm</strong>.
+                                </p>
+                            </div>
+                            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                                <h4 class="font-bold text-slate-800 mb-1 flex items-center">
+                                    <i class="fa-solid fa-id-card text-brand-600 mr-2"></i> Cajetín de Datos
+                                </h4>
+                                <p class="text-xs text-slate-600">
+                                    Recuadro situado en la parte inferior. Contiene la información imprescindible: Título del proyecto, autoría, escala, fecha de realización y número de plano.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Rincón de Apuntes interactivo -->
+                        <div class="mt-6 p-4 bg-blue-50/50 border border-blue-200 rounded-xl">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 mb-2 flex items-center">
+                                <i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i> Rincón de Anotaciones Personales
+                            </h4>
+                            <textarea placeholder="Escribe aquí tus notas o dudas sobre los formatos DIN o las diferencias entre el dibujo artístico y técnico..." class="w-full text-xs p-3 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white" rows="2"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 2: EL BOCETO, EL CROQUIS Y EL PLANO -->
+                <section id="sec-2" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 2
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">2. El Boceto, el Croquis y el Plano</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">El proceso de diseño evoluciona en 3 fases secuenciales de menor a mayor precisión: <strong>Boceto &rarr; Croquis &rarr; Plano</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagrama de Proceso -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                        <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-brand-500 transition shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-brand-700 flex items-center justify-center font-bold mb-3">1</div>
+                            <h3 class="font-bold text-slate-900 text-lg mb-1">Boceto</h3>
+                            <p class="text-xs text-slate-500 mb-3 font-medium">Primera idea gráfica</p>
+                            <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                                <li>Hecho a <strong>mano alzada</strong>.</li>
+                                <li>Sin medidas exactas.</li>
+                                <li>No guarda proporciones estrictas.</li>
+                                <li>Busca captar el concepto general.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-brand-500 transition shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold mb-3">2</div>
+                            <h3 class="font-bold text-slate-900 text-lg mb-1">Croquis</h3>
+                            <p class="text-xs text-slate-500 mb-3 font-medium">Dibujo proporcionado y acotado</p>
+                            <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                                <li>Realizado a <strong>mano alzada</strong>.</li>
+                                <li>Guarda <strong>proporciones reales</strong>.</li>
+                                <li>Incluye <strong>cotas (medidas)</strong>.</li>
+                                <li>Anota materiales y detalles.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-brand-500 transition shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-3">3</div>
+                            <h3 class="font-bold text-slate-900 text-lg mb-1">Plano</h3>
+                            <p class="text-xs text-slate-500 mb-3 font-medium">Dibujo definitivo y riguroso</p>
+                            <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                                <li>Usa <strong>regla, compás o CAD</strong>.</li>
+                                <li>Realizado estrictamente <strong>a escala</strong>.</li>
+                                <li>Normalizado y listo para taller.</li>
+                                <li>Definición técnica completa.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Enlaces de Interés / Herramientas de Diseño -->
+                    <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-laptop-code text-2xl text-brand-600"></i>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 text-sm">¿Sabías que puedes diseñar en digital?</h4>
+                                <p class="text-xs text-slate-500">Existen aplicaciones web para pasar de croquis a planos digitales fácilmente.</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="https://www.canva.com" target="_blank" rel="noopener" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 transition flex items-center">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Canva
+                            </a>
+                            <a href="https://www.floorplanner.com" target="_blank" rel="noopener" class="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-semibold hover:bg-brand-700 transition flex items-center">
+                                <i class="fa-solid fa-house-draw mr-1"></i> Floorplanner
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 3: EL SISTEMA DIÉDRICO -->
+                <section id="sec-3" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 3
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">3. El Sistema Diédrico. Del 3D al 2D</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">El sistema diédrico proyecta una pieza tridimensional (3D) sobre 3 planos perpendiculares obteniendo sus 3 vistas principales en 2D: <strong>Alzado, Planta y Perfil</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Explicación de las tres vistas -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50">
+                            <h3 class="font-bold text-blue-900 mb-1 flex items-center">
+                                <i class="fa-solid fa-eye text-blue-600 mr-2"></i> Alzado (Frontal)
+                            </h3>
+                            <p class="text-xs text-slate-600">
+                                Vista principal de frente. Proyección sobre el <strong>Plano Vertical (PV)</strong>. Define la anchura y la altura de la pieza.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50">
+                            <h3 class="font-bold text-emerald-900 mb-1 flex items-center">
+                                <i class="fa-solid fa-arrow-down text-emerald-600 mr-2"></i> Planta (Superior)
+                            </h3>
+                            <p class="text-xs text-slate-600">
+                                Vista desde arriba. Proyección sobre el <strong>Plano Horizontal (PH)</strong>. Muestra la anchura y la profundidad.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl border border-purple-200 bg-purple-50/50">
+                            <h3 class="font-bold text-purple-900 mb-1 flex items-center">
+                                <i class="fa-solid fa-arrow-right text-purple-600 mr-2"></i> Perfil (Lateral)
+                            </h3>
+                            <p class="text-xs text-slate-600">
+                                Vista de costado (generalmente perfil izquierdo). Proyección sobre el <strong>Plano de Perfil (PP)</strong>. Muestra la altura y profundidad.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Reglas de correspondencia -->
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl mb-6">
+                        <h4 class="text-amber-400 font-bold text-sm uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-link mr-2"></i> Reglas Obligatorias de Correspondencia entre Vistas:
+                        </h4>
+                        <ul class="text-xs sm:text-sm space-y-2 text-slate-300">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> <strong>Alzado y Planta:</strong> Tienen exactamente la misma <span class="text-white font-bold ml-1">ANCHURA</span>.</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> <strong>Alzado y Perfil:</strong> Tienen exactamente la misma <span class="text-white font-bold ml-1">ALTURA</span>.</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> <strong>Planta y Perfil:</strong> Tienen exactamente la misma <span class="text-white font-bold ml-1">PROFUNDIDAD</span>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Simulación / Visualizador de Pieza 3D y Vistas -->
+                    <div class="border border-slate-200 rounded-2xl p-5 bg-slate-50">
+                        <h3 class="font-bold text-slate-900 mb-3 flex items-center justify-between">
+                            <span><i class="fa-solid fa-cube text-brand-600 mr-2"></i> Visualizador Interactivo de Vistas</span>
+                            <span class="text-xs bg-slate-200 px-2.5 py-1 rounded-full text-slate-700">Haz clic en los botones</span>
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                            <!-- Selector de vista -->
+                            <div class="space-y-3">
+                                <p class="text-xs text-slate-600">Selecciona qué vista deseas observar en la proyección diédrica:</p>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="changeView('alzado')" id="btn-alzado" class="view-btn py-2 px-3 bg-brand-600 text-white font-semibold rounded-lg text-xs shadow hover:bg-brand-700 transition">
+                                        Alzado
+                                    </button>
+                                    <button onclick="changeView('planta')" id="btn-planta" class="view-btn py-2 px-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg text-xs shadow-sm hover:bg-slate-100 transition">
+                                        Planta
+                                    </button>
+                                    <button onclick="changeView('perfil')" id="btn-perfil" class="view-btn py-2 px-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg text-xs shadow-sm hover:bg-slate-100 transition">
+                                        Perfil
+                                    </button>
+                                </div>
+                                <div id="view-description" class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 leading-relaxed">
+                                    <strong>Alzado:</strong> Mirando la pieza de frente. Muestra su escalón frontal y la altura total.
+                                </div>
+                            </div>
+
+                            <!-- Canvas / Representación interactiva simplificada -->
+                            <div class="flex justify-center items-center bg-white p-6 rounded-xl border border-slate-200 min-h-[180px]" id="view-display">
+                                <div class="text-center">
+                                    <div class="w-32 h-32 border-4 border-brand-600 bg-blue-100 flex flex-col justify-between p-2 mx-auto rounded-lg shadow-inner">
+                                        <div class="bg-brand-500 h-1/2 w-full rounded flex items-center justify-center text-white font-bold text-xs">FRENTE</div>
+                                        <div class="bg-brand-300 h-1/3 w-full rounded text-brand-900 font-semibold text-[10px] flex items-center justify-center">BASE</div>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-500 mt-2 block">Vista del Alzado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enlace multimedia / YouTube -->
+                    <div class="mt-6 bg-red-50 border border-red-200 p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-brands fa-youtube text-red-600 text-3xl"></i>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Vídeo Explicativo Recomendado</h4>
+                                <p class="text-xs text-slate-600">Aprende a obtener Alzado, Planta y Perfil paso a paso de forma visual.</p>
+                            </div>
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=7JU-sObizA8" target="_blank" rel="noopener" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition flex items-center shadow">
+                            Ver Tutorial <i class="fa-solid fa-arrow-up-right-from-square ml-1.5"></i>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 4: LA PERSPECTIVA -->
+                <section id="sec-4" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 4
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">4. La Perspectiva</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">La perspectiva representa objetos tridimensionales en un soporte plano (2D) simulando la profundidad y el volumen.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                        <!-- Perspectiva Cónica -->
+                        <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-b from-slate-50 to-white">
+                            <div class="flex items-center space-x-2 text-brand-600 font-bold mb-2">
+                                <i class="fa-solid fa-eye text-lg"></i>
+                                <h3 class="text-slate-900 text-base">Perspectiva Cónica</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                                Imita la visión del ojo humano. Las líneas paralelas se unen en uno o varios <strong>Puntos de Fuga (PF)</strong>. Es muy realista y se emplea en arquitectura e interiorismo.
+                            </p>
+                            <span class="inline-block text-[11px] font-semibold bg-blue-100 text-blue-800 px-2.5 py-1 rounded-md">
+                                Basada en Puntos de Fuga
+                            </span>
+                        </div>
+
+                        <!-- Perspectiva Axonométrica -->
+                        <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-b from-slate-50 to-white">
+                            <div class="flex items-center space-x-2 text-brand-600 font-bold mb-2">
+                                <i class="fa-solid fa-cube text-lg"></i>
+                                <h3 class="text-slate-900 text-base">Perspectiva Axonométrica</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                                Representa los objetos mediante tres ejes (X, Y, Z) para medir anchura, altura y profundidad.
+                            </p>
+                            <div class="space-y-2 text-xs">
+                                <div class="bg-white p-2 rounded border border-slate-200">
+                                    <strong>Isométrica:</strong> Tres ejes a <strong>120º</strong> entre sí. Sin deformación en la escala.
+                                </div>
+                                <div class="bg-white p-2 rounded border border-slate-200">
+                                    <strong>Caballera:</strong> Frontal a <strong>90º</strong> (magnitud real). Eje de profundidad a <strong>135º</strong> con reducción.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 5: MATERIALES Y HERRAMIENTAS -->
+                <section id="sec-5" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 5
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">5. Materiales y Herramientas del Dibujo Técnico</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">El dominio del grafito, la regla, el compás, la escuadra y el cartabón garantiza la precisión de los trazados técnicos.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lápices de Grafito y Durezas -->
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">Escala de Dureza del Grafito</h3>
+                    <p class="text-xs text-slate-600 mb-4">La mina se compone de grafito y arcilla. A mayor cantidad de arcilla, más dura es la mina.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full bg-slate-200 text-slate-800 font-black flex items-center justify-center mb-2">H</div>
+                            <h4 class="font-bold text-slate-800 text-sm">Hard (Duros)</h4>
+                            <p class="text-xs text-slate-500 mt-1">Trazo fino y claro. Para líneas auxiliares y trazado inicial (ej: 2H, H).</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full bg-amber-200 text-amber-900 font-black flex items-center justify-center mb-2">HB</div>
+                            <h4 class="font-bold text-slate-800 text-sm">Medium / Firm</h4>
+                            <p class="text-xs text-slate-500 mt-1">Dureza media. Ideal para escribir y realizar croquis iniciales.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 text-white font-black flex items-center justify-center mb-2">B</div>
+                            <h4 class="font-bold text-slate-800 text-sm">Black (Blandos)</h4>
+                            <p class="text-xs text-slate-500 mt-1">Trazo oscuro y grueso. Para dibujo artístico, sombreado y acabado final (ej: B, 2B).</p>
+                        </div>
+                    </div>
+
+                    <!-- Escuadra y Cartabón -->
+                    <div class="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl">
+                        <h3 class="font-bold text-slate-900 text-base mb-3 flex items-center">
+                            <i class="fa-solid fa-ruler-combined text-brand-600 mr-2"></i>
+                            Escuadra y Cartabón: Los Ángulos Clave
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                                <h4 class="font-bold text-brand-700 text-sm mb-1">Escuadra</h4>
+                                <p class="text-slate-600 mb-2">Triángulo rectángulo <strong>Isósceles</strong>.</p>
+                                <div class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold">
+                                    Ángulos: 90º - 45º - 45º
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                                <h4 class="font-bold text-brand-700 text-sm mb-1">Cartabón</h4>
+                                <p class="text-slate-600 mb-2">Triángulo rectángulo <strong>Escaleno</strong>.</p>
+                                <div class="inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
+                                    Ángulos: 90º - 60º - 30º
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 6: LA ESCALA -->
+                <section id="sec-6" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 6
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">6. La Escala</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">La escala es la relación de proporción entre la dimensión del dibujo en el papel y la dimensión real del objeto.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formula -->
+                    <div class="bg-slate-900 text-white p-4 rounded-xl text-center font-mono text-sm sm:text-base mb-6 shadow-md">
+                        Escala = <span class="text-amber-400">Medida en el Dibujo</span> / <span class="text-blue-400">Medida Real</span>
+                    </div>
+
+                    <!-- Tipos de escalas -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-xs">
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Escala Natural (1:1)</h4>
+                            <p class="text-slate-600">El tamaño dibujado es idéntico al objeto real.</p>
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Reducción (1:E)</h4>
+                            <p class="text-slate-600">El dibujo es más pequeño que la realidad (ej: 1:20, 1:100 para planos de casas).</p>
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Ampliación (E:1)</h4>
+                            <p class="text-slate-600">El dibujo es más grande que la realidad (ej: 5:1 para piezas de microchip o reloj).</p>
+                        </div>
+                    </div>
+
+                    <!-- SIMULADOR INTERACTIVO DE ESCALAS -->
+                    <div class="border border-brand-200 bg-brand-50/40 rounded-2xl p-5">
+                        <h3 class="font-bold text-slate-900 text-base mb-3 flex items-center">
+                            <i class="fa-solid fa-calculator text-brand-600 mr-2"></i>
+                            Calculadora / Simulador Didáctico de Escala
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Dimensión Real (cm):</label>
+                                <input type="number" id="sim-real" value="200" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Selecciona Escala:</label>
+                                <select id="sim-scale" class="w-full p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="1:1">1:1 (Natural)</option>
+                                    <option value="1:10">1:10 (Reducción)</option>
+                                    <option value="1:20" selected>1:20 (Reducción)</option>
+                                    <option value="1:50">1:50 (Reducción)</option>
+                                    <option value="1:100">1:100 (Reducción)</option>
+                                    <option value="2:1">2:1 (Ampliación)</option>
+                                    <option value="5:1">5:1 (Ampliación)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="calculateScale()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg text-xs shadow transition">
+                                    Calcular Medida en Papel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="sim-result" class="p-4 bg-white rounded-xl border border-brand-200 text-center text-sm font-semibold text-brand-900">
+                            En un plano a escala <span class="text-brand-600">1:20</span>, un objeto de <span class="text-brand-600">200 cm</span> medirá <span class="text-emerald-600 font-bold text-base">10 cm</span> en el papel.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 7: LA ACOTACIÓN -->
+                <section id="sec-7" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+                    <span class="text-xs font-bold text-brand-600 tracking-wider uppercase bg-brand-50 px-3 py-1 rounded-full border border-brand-100">
+                        Apartado 7
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 mb-4">7. La Acotación</h2>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-key text-amber-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm uppercase tracking-wide">Idea Clave (Takeaway)</h4>
+                                <p class="text-amber-800 text-sm mt-1">Acotar consiste en anotar las medidas reales del objeto sobre la representación gráfica siguiendo normas fijas para que pueda ser fabricado.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Elementos de la acotación -->
+                    <h3 class="font-bold text-slate-800 text-base mb-3">Elementos de la Acotación</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-xs">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <strong class="text-brand-700 block mb-1">Línea de cota:</strong>
+                            Paralela a la arista a medir. Finaliza con flechas o trazos.
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <strong class="text-brand-700 block mb-1">Líneas auxiliares:</strong>
+                            Perpendiculares a la arista. Delimitan los extremos de la cota.
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <strong class="text-brand-700 block mb-1">Cifra de cota:</strong>
+                            Número con la medida real en milímetros (sin poner "mm").
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <strong class="text-brand-700 block mb-1">Símbolos complementarios:</strong>
+                            &Oslash; (Diámetro), R (Radio), &#9633; (Sección cuadrada).
+                        </div>
+                    </div>
+
+                    <!-- Reglas básicas -->
+                    <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-5 mb-6">
+                        <h4 class="font-bold text-amber-900 text-sm mb-2 flex items-center">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-2"></i> Normas Fundamentales de Acotación
+                        </h4>
+                        <ul class="text-xs text-amber-900 space-y-1.5 list-disc pl-5">
+                            <li>Las líneas de cota <strong>nunca deben cruzarse</strong> entre sí.</li>
+                            <li>No se deben repetir cotas innecesarias ni omitir cotas imprescindibles.</li>
+                            <li>Se ubican preferentemente fuera de la figura (a unos 8 mm de la arista).</li>
+                            <li>Las cotas se expresan siempre en la misma unidad (habitualmente mm).</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN DE AUTOEVALUACIÓN INTERACTIVA -->
+                <section id="quiz-section" class="bg-gradient-to-br from-slate-900 via-brand-900 to-indigo-950 text-white rounded-2xl shadow-xl p-6 sm:p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-3 bg-amber-400 text-slate-900 rounded-xl font-bold">
+                            <i class="fa-solid fa-square-check text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs uppercase tracking-widest text-amber-400 font-bold block">Ponte a Prueba</span>
+                            <h2 class="text-2xl font-extrabold">Cuestionario de Autoevaluación</h2>
+                        </div>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-slate-300 mb-6">
+                        Responde a las preguntas para comprobar tu nivel de aprendizaje antes del examen. Recibirás tu puntuación de forma inmediata.
+                    </p>
+
+                    <!-- Formulario de preguntas -->
+                    <form id="quiz-form" class="space-y-6">
+                        
+                        <!-- Pregunta 1 -->
+                        <div class="bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/15">
+                            <p class="font-semibold text-sm mb-3 text-amber-300">1. ¿En qué fase del proceso de representación el dibujo se realiza a mano alzada pero debe guardar proporciones reales e incluir cotas?</p>
+                            <div class="space-y-2 text-xs">
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q1" value="a" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    A) Boceto
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q1" value="b" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    B) Croquis
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q1" value="c" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    C) Plano CAD
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div class="bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/15">
+                            <p class="font-semibold text-sm mb-3 text-amber-300">2. Si un objeto mide 6 cm en un plano a escala 1:50, ¿cuánto mide en la realidad?</p>
+                            <div class="space-y-2 text-xs">
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q2" value="a" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    A) 1.2 metros
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q2" value="b" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    B) 3.0 metros (300 cm)
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q2" value="c" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    C) 30 metros
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div class="bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/15">
+                            <p class="font-semibold text-sm mb-3 text-amber-300">3. ¿Qué dos vistas ortogonales comparten obligatoriamente la misma ALTURA?</p>
+                            <div class="space-y-2 text-xs">
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q3" value="a" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    A) Planta y Perfil
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q3" value="b" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    B) Alzado y Planta
+                                </label>
+                                <label class="flex items-center p-2.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                                    <input type="radio" name="q3" value="c" class="mr-3 text-amber-400 focus:ring-amber-400">
+                                    C) Alzado y Perfil
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="evaluateQuiz()" class="w-full py-3 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold rounded-xl text-sm transition shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Corregir Cuestionario</span>
+                        </button>
+                    </form>
+
+                    <div id="quiz-results" class="hidden mt-6 p-5 bg-white text-slate-800 rounded-xl font-medium text-sm"></div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+            <p class="flex items-center justify-center space-x-2 text-slate-300">
+                <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+                <span>Recurso Educativo Digital - Expresión Gráfica y Dibujo Técnico</span>
+            </p>
+            <p>Diseñado conforme al currículo de Educación Secundaria Obligatoria y Bachillerato.</p>
+            <p class="text-slate-500 text-[11px]">&copy; 2026 Material Didáctico Abierto. Prohibida su comercialización.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts de Interacción JavaScript -->
+    <script>
+        
+        // 1. Cambio dinámico de Vistas Ortogonales
+        function changeView(viewType) {
+            const display = document.getElementById('view-display');
+            const desc = document.getElementById('view-description');
+
+            // Resetear estilos de botones
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.className = 'view-btn py-2 px-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg text-xs shadow-sm hover:bg-slate-100 transition';
+            });
+
+            if (viewType === 'alzado') {
+                document.getElementById('btn-alzado').className = 'view-btn py-2 px-3 bg-brand-600 text-white font-semibold rounded-lg text-xs shadow transition';
+                desc.innerHTML = '<strong>Alzado:</strong> Vista frontal del objeto. Refleja la anchura y la altura total.';
+                display.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-32 h-32 border-4 border-brand-600 bg-blue-100 flex flex-col justify-between p-2 mx-auto rounded-lg shadow-inner">
+                            <div class="bg-brand-500 h-1/2 w-full rounded flex items-center justify-center text-white font-bold text-xs">FRENTE</div>
+                            <div class="bg-brand-300 h-1/3 w-full rounded text-brand-900 font-semibold text-[10px] flex items-center justify-center">BASE</div>
+                        </div>
+                        <span class="text-xs font-bold text-slate-500 mt-2 block">Vista del Alzado</span>
+                    </div>
+                `;
+            } else if (viewType === 'planta') {
+                document.getElementById('btn-planta').className = 'view-btn py-2 px-3 bg-brand-600 text-white font-semibold rounded-lg text-xs shadow transition';
+                desc.innerHTML = '<strong>Planta:</strong> Vista superior (desde arriba). Refleja la anchura y la profundidad.';
+                display.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-32 h-32 border-4 border-emerald-600 bg-emerald-100 flex flex-row justify-between p-2 mx-auto rounded-lg shadow-inner">
+                            <div class="bg-emerald-500 w-1/2 h-full rounded flex items-center justify-center text-white font-bold text-xs">TECHO</div>
+                            <div class="bg-emerald-300 w-1/3 h-full rounded text-emerald-900 font-semibold text-[10px] flex items-center justify-center">VOLADIZO</div>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-700 mt-2 block">Vista de la Planta</span>
+                    </div>
+                `;
+            } else if (viewType === 'perfil') {
+                document.getElementById('btn-perfil').className = 'view-btn py-2 px-3 bg-brand-600 text-white font-semibold rounded-lg text-xs shadow transition';
+                desc.innerHTML = '<strong>Perfil:</strong> Vista lateral izquierda. Refleja la profundidad y la altura.';
+                display.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-32 h-32 border-4 border-purple-600 bg-purple-100 flex flex-col justify-between p-2 mx-auto rounded-lg shadow-inner">
+                            <div class="bg-purple-500 h-full w-2/3 rounded flex items-center justify-center text-white font-bold text-xs">LATERAL</div>
+                        </div>
+                        <span class="text-xs font-bold text-purple-700 mt-2 block">Vista del Perfil</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 2. Calculadora de Escalas
+        function calculateScale() {
+            const realVal = parseFloat(document.getElementById('sim-real').value);
+            const scaleVal = document.getElementById('sim-scale').value;
+            const resDiv = document.getElementById('sim-result');
+
+            if (isNaN(realVal) || realVal <= 0) {
+                resDiv.innerHTML = '<span class="text-red-600">Por favor, introduce un valor real válido mayor que 0.</span>';
+                return;
+            }
+
+            let resultPaper = 0;
+            if (scaleVal === '1:1') resultPaper = realVal;
+            else if (scaleVal === '1:10') resultPaper = realVal / 10;
+            else if (scaleVal === '1:20') resultPaper = realVal / 20;
+            else if (scaleVal === '1:50') resultPaper = realVal / 50;
+            else if (scaleVal === '1:100') resultPaper = realVal / 100;
+            else if (scaleVal === '2:1') resultPaper = realVal * 2;
+            else if (scaleVal === '5:1') resultPaper = realVal * 5;
+
+            resDiv.innerHTML = `
+                En un plano a escala <span class="text-brand-600 font-bold">${scaleVal}</span>, un objeto de <span class="text-brand-600 font-bold">${realVal} cm</span> medirá <span class="text-emerald-600 font-bold text-base">${resultPaper.toFixed(2)} cm</span> en el papel.
+            `;
+        }
+
+        // 3. Evaluación del Quiz
+        function evaluateQuiz() {
+            const answers = { q1: 'b', q2: 'b', q3: 'c' };
+            let score = 0;
+            let total = 3;
+
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if (!q1 || !q2 || !q3) {
+                alert('Por favor, responde a todas las preguntas antes de corregir.');
+                return;
+            }
+
+            if (q1.value === answers.q1) score++;
+            if (q2.value === answers.q2) score++;
+            if (q3.value === answers.q3) score++;
+
+            const resultsDiv = document.getElementById('quiz-results');
+            resultsDiv.classList.remove('hidden');
+
+            let feedbackClass = score === total ? 'text-emerald-700 bg-emerald-50 border-emerald-300' : 'text-amber-800 bg-amber-50 border-amber-300';
+
+            resultsDiv.className = `mt-6 p-5 rounded-xl border text-sm ${feedbackClass}`;
+            resultsDiv.innerHTML = `
+                <div class="font-bold text-base mb-2">Puntuación: ${score} / ${total} aciertos</div>
+                <p class="text-xs leading-relaxed">
+                    ${score === total ? '¡Excelente trabajo! Has comprendido perfectamente todos los conceptos clave del dibujo técnico.' : 'Buen intento. Revisa los apartados correspondientes e inténtalo de nuevo para consolidar tu aprendizaje.'}
+                </p>
+            `;
+        }
+
+        // 4. Scroll suave al hacer clic en el índice
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

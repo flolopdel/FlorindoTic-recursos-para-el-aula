@@ -29,6 +29,7 @@ Crea un resumen claro, estructurado y fácil de estudiar para el alumnado. Para 
    - Cuadros de autoevaluación / Mini-quiz: Incluye 2 o 3 preguntas de opción múltiple o preguntas clave con respuestas desplegables u ocultas al final del tema para que el alumnado se ponga a prueba.
    - Espacios de reflexión / "Rincón de apuntes": Añade recuadros visuales con espacio para anotaciones personales o dudas.
    - Ejercicios prácticos o retos rápidos: Incluye pequeñas actividades de relacionar conceptos o completar huecos.
+   - Incluye imágenes entre textos extraidas de las capturas.
 
 3. Formato compatible con Google Docs / Imprimible A4:
    - Utiliza un formato limpio basado en marcas o tablas (Headings H1, H2, H3, tablas visuales para resúmenes comparativos y cuadros destacados).
