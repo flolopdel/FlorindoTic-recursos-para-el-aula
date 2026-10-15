@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión Didáctica: Netiqueta, Copyright y Creative Commons (4º ESO)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        andro: {
+                            green: '#00875a',
+                            light: '#e6f4ea',
+                            dark: '#005236'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Modal animation */
+        .modal-active {
+            display: flex !important;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-500 text-slate-900 p-2 rounded-lg font-black text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">Digitalización 4º ESO</h1>
+                    <p class="text-xs text-slate-400">Junta de Andalucía • LOMLOE</p>
+                </div>
+            </div>
+            <!-- Interactive Badges with Click for Modal -->
+            <div class="hidden md:flex items-center space-x-2 text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+                <span class="text-slate-400 font-medium mr-1">Currículo:</span>
+                <button onclick="openCurriculumModal('CEv 4.1')" class="bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded hover:bg-emerald-500/40 transition">CEv 4.1 <i class="fa-solid fa-circle-info text-[10px]"></i></button>
+                <button onclick="openCurriculumModal('CEv 2.3')" class="bg-blue-500/20 text-blue-400 font-semibold px-2 py-0.5 rounded hover:bg-blue-500/40 transition">CEv 2.3 <i class="fa-solid fa-circle-info text-[10px]"></i></button>
+                <button onclick="openCurriculumModal('DIG.4.D.1')" class="bg-amber-500/20 text-amber-400 font-semibold px-2 py-0.5 rounded hover:bg-amber-500/40 transition">DIG.4.D.1 <i class="fa-solid fa-circle-info text-[10px]"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <section class="gradient-bg text-white py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto text-center space-y-4">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full">
+                <i class="fa-solid fa-chalkboard-user"></i> Sesión Introductoria Interactiva
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                Netiqueta, Copyright y Licencias Creative Commons
+            </h2>
+            <p class="text-slate-300 text-base sm:text-lg max-w-3xl mx-auto">
+                Guía interactiva para aprender a convivir con respeto en la red, comprender los limites del derecho de autor y reutilizar contenidos de forma legal y ética.
+            </p>
+        </div>
+    </section>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="flex flex-wrap justify-center border-b border-slate-200 mb-8 gap-2">
+            <button onclick="switchTab('netiqueta')" id="tab-netiqueta" class="tab-btn px-5 py-3 font-semibold text-sm rounded-t-lg transition flex items-center gap-2 border-b-2 border-emerald-600 text-emerald-600 bg-white">
+                <i class="fa-solid fa-comments"></i> 1. Netiqueta
+            </button>
+            <button onclick="switchTab('copyright')" id="tab-copyright" class="tab-btn px-5 py-3 font-semibold text-sm rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+                <i class="fa-solid fa-copyright text-amber-600"></i> 2. Copyright vs. Dominio Público
+            </button>
+            <button onclick="switchTab('cc')" id="tab-cc" class="tab-btn px-5 py-3 font-semibold text-sm rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+                <i class="fa-creative-commons text-lg text-emerald-600"></i> 3. Licencias Creative Commons
+            </button>
+            <button onclick="switchTab('reto')" id="tab-reto" class="tab-btn px-5 py-3 font-semibold text-sm rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+                <i class="fa-solid fa-pen-to-square"></i> 4. Actividad
+            </button>
+            <button onclick="switchTab('curriculo')" id="tab-curriculo" class="tab-btn px-5 py-3 font-semibold text-sm rounded-t-lg transition flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+                <i class="fa-solid fa-scroll"></i> Mapeo Curricular LOMLOE
+            </button>
+        </div>
+
+        <div id="sec-netiqueta" class="tab-content space-y-8">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-circle-info text-blue-600 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-900">¿Qué es la Netiqueta?</h3>
+                        <p class="text-sm text-blue-800">
+                            Es el conjunto de normas de comportamiento general en Internet. No es un código legal con penas de cárcel, sino una adaptación de las reglas de convivencia e interacción del mundo real al entorno virtual.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-vial text-emerald-600"></i> Ejemplos Comparativos: ¿Qué HACER y qué EVITAR?
+            </h3>
+
+            <!-- Examples Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Example 1 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-envelope text-indigo-500 mr-2"></i> Caso 1: Correo al Profesorado</span>
+                        <button onclick="openCurriculumModal('CEv 4.1')" class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded border border-emerald-200 hover:bg-emerald-100">Evaluado en CEv 4.1</button>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-red-600 uppercase flex items-center gap-1"><i class="fa-solid fa-xmark"></i> Incorrecto</span>
+                            <p class="text-slate-700 mt-1 font-mono text-xs"><strong>Asunto:</strong> (Sin asunto)<br><strong>Cuerpo:</strong> profe sube la nota que el examen de ayer estaba tirao y me pusiste un 4</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1"><i class="fa-solid fa-check"></i> Correcto (Aplica Netiqueta)</span>
+                            <p class="text-slate-700 mt-1 font-mono text-xs"><strong>Asunto:</strong> Consulta revisión examen Digitalización - Juan Pérez 4ºB<br><strong>Cuerpo:</strong> Estimado/a profesor/a, Quisiera solicitar una breve revisión de mi examen... Saludos cordiales.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-font text-purple-500 mr-2"></i> Caso 2: Uso de Mayúsculas en Chats</span>
+                        <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600">Foros y Grupos</span>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-red-600 uppercase flex items-center gap-1"><i class="fa-solid fa-xmark"></i> Incorrecto</span>
+                            <p class="text-slate-700 mt-1 font-mono text-xs">"NO ESTOY DE ACUERDO CON LO QUE DICES, TIENES QUE ENVIAR TU PARTE YA!"</p>
+                            <p class="text-xs text-red-500 mt-1">Escribir en MAYÚSCULAS equivale a GRITAR en el entorno digital.</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1"><i class="fa-solid fa-check"></i> Correcto</span>
+                            <p class="text-slate-700 mt-1 font-mono text-xs">"No coincido con ese punto. ¿Podrías revisar tu parte cuando puedas para coordinarnos?"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-user-shield text-blue-500 mr-2"></i> Caso 3: Privacidad y Fotos Ajena</span>
+                        <button onclick="openCurriculumModal('CEv 3.1')" class="text-xs bg-blue-50 text-blue-700 font-semibold px-2 py-0.5 rounded border border-blue-200 hover:bg-blue-100">Evaluado en CEv 3.1</button>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-red-600 uppercase flex items-center gap-1"><i class="fa-solid fa-xmark"></i> Incorrecto</span>
+                            <p class="text-slate-700 mt-1">Publicar una foto en Instagram o TikTok donde salen compañeros del instituto en actitud graciosa/embarazosa sin pedir su consentimiento previo.</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1"><i class="fa-solid fa-check"></i> Correcto</span>
+                            <p class="text-slate-700 mt-1">Preguntar por el grupo antes de subir cualquier contenido donde aparezcan terceros si están de acuerdo en que se publique.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 4 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-share-nodes text-amber-500 mr-2"></i> Caso 4: Difusión de Cadenas e Información</span>
+                        <button onclick="openCurriculumModal('CEv 4.3')" class="text-xs bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded border border-amber-200 hover:bg-amber-100">Evaluado en CEv 4.3</button>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-red-600 uppercase flex items-center gap-1"><i class="fa-solid fa-xmark"></i> Incorrecto</span>
+                            <p class="text-slate-700 mt-1">Reenviar a todos los contactos un audio alarmista de WhatsApp sobre la cancelación de clases sin verificar la fuente oficial.</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                            <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1"><i class="fa-solid fa-check"></i> Correcto</span>
+                            <p class="text-slate-700 mt-1">Verificar primero la información en la web oficial del centro o la Consejería de Educación antes de compartir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Interactive Rule Checker -->
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl space-y-4">
+                <h4 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i> Test Rápido: Identifica el error de Netiqueta
+                </h4>
+                <p class="text-sm text-slate-300">Lee el siguiente mensaje de un trabajo en equipo e identifica qué regla se está vulnerando:</p>
+                <div class="bg-slate-800 p-4 rounded-lg font-mono text-sm border border-slate-700 text-amber-300">
+                    "Oye Carlos tu parte del trabajo es una basura, la he borrado entera y he puesto lo mío. No hagas nada más."
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <button onclick="checkNetiquetaQuiz(1)" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-lg text-xs font-semibold text-left border border-slate-700 transition">A) Uso excesivo de emoticonos</button>
+                    <button onclick="checkNetiquetaQuiz(2)" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-lg text-xs font-semibold text-left border border-slate-700 transition">B) Falta de respeto, empatía y crítica constructiva</button>
+                    <button onclick="checkNetiquetaQuiz(3)" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-lg text-xs font-semibold text-left border border-slate-700 transition">C) Escribir con faltas de ortografía</button>
+                </div>
+                <div id="netiqueta-quiz-result" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+            </div>
+        </div>
+
+        <div id="sec-copyright" class="tab-content hidden space-y-8">
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-copyright text-amber-600 text-2xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-amber-900">Copyright y Propiedad Intelectual: El dilema del aula</h3>
+                        <p class="text-sm text-amber-800">
+                            Por defecto, <strong>toda obra creada tiene Copyright ("Todos los derechos reservados") desde el instante de su creación</strong>, sin necesidad de registrarla. Para usar la obra de otro, necesitas su permiso explícito o pagar una licencia, salvo excepciones legales específicas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mitos comunes del alumnado -->
+            <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Desmontando Mitos en la Red (Lo que opina el alumnado vs. La Realidad)
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Mito 1 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-3">
+                    <div class="flex items-center gap-2 text-red-600 font-bold text-sm">
+                        <i class="fa-solid fa-ban"></i> Mito 1: "Si está en Google Images, es gratis"
+                    </div>
+                    <p class="text-xs text-slate-600">
+                        <strong>Falso.</strong> Google solo es un buscador. La mayoría de imágenes tienen derechos de autor. Usarlas en tu web o vídeo sin permiso puede implicar reclamaciones o la retirada del contenido.
+                    </p>
+                    <div class="bg-slate-100 p-2.5 rounded text-xs text-slate-700">
+                        <strong>Solución:</strong> Filtra en Google por <i>"Licencias Creative Commons"</i> o usa bancos libres como Pixabay, Unsplash o Wikimedia.
+                    </div>
+                </div>
+
+                <!-- Mito 2 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-3">
+                    <div class="flex items-center gap-2 text-red-600 font-bold text-sm">
+                        <i class="fa-solid fa-music"></i> Mito 2: "Puedo poner 10 segundos de Bad Bunny sin que pase nada"
+                    </div>
+                    <p class="text-xs text-slate-600">
+                        <strong>Falso.</strong> No existe un "tiempo mínimo legal gratis". Los algoritmos de Content ID en YouTube/TikTok detectan fragmentos de un solo segundo y silencian o desmonetizan tu vídeo.
+                    </p>
+                    <div class="bg-slate-100 p-2.5 rounded text-xs text-slate-700">
+                        <strong>Solución:</strong> Usa la Biblioteca de Audio de YouTube o música de uso libre con licencia CC BY.
+                    </div>
+                </div>
+
+                <!-- Mito 3 -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 card-hover space-y-3">
+                    <div class="flex items-center gap-2 text-red-600 font-bold text-sm">
+                        <i class="fa-solid fa-graduation-cap"></i> Mito 3: "Para el instituto vale todo"
+                    </div>
+                    <p class="text-xs text-slate-600">
+                        <strong>Matizable.</strong> Existe la <i>Excepción Educativa</i> (Art. 32 LPI) para usar obras en el aula cerrada. Pero si el trabajo se sube a Internet, al blog del centro o a YouTube, <strong>pasa a ser público</strong> y exige respetar las licencias.
+                    </p>
+                    <div class="bg-slate-100 p-2.5 rounded text-xs text-slate-700">
+                        <strong>Solución:</strong> Acostúmbrate a atribuir siempre tus fuentes con la regla TASL.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dominio público y Excepción Educativa -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 text-white p-5 rounded-xl space-y-3">
+                    <h4 class="font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-landmark"></i> Dominio Público (Public Domain)
+                    </h4>
+                    <p class="text-xs text-slate-300">
+                        Las obras pasan al Dominio Público cuando expiran los derechos patrimoniales de autor (en España, generalmente <strong>70 u 80 años tras la muerte del autor</strong>).
+                    </p>
+                    <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                        <li>Cualquiera puede usarlas, editarlas y comercializarlas libremente.</li>
+                        <li>Ejemplos: Cuadros de Velázquez, libros de Cervantes o la música de Mozart.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 text-white p-5 rounded-xl space-y-3">
+                    <h4 class="font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced"></i> El 'Fair Use' y la Cita Ilustrativa
+                    </h4>
+                    <p class="text-xs text-slate-300">
+                        Está permitido incluir fragmentos de obras ajenas escritas, sonoras o visuales siempre que sea a título de <strong>cita o análisis crítico/educativo</strong>.
+                    </p>
+                    <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                        <li>Debe indicarse siempre la fuente y el nombre del autor.</li>
+                        <li>No debe sustituir el consumo de la obra original.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-cc" class="tab-content hidden space-y-8">
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                <div class="flex gap-3">
+                    <i class="fa-creative-commons text-emerald-600 text-2xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-emerald-900">¿Qué son las Licencias Creative Commons (CC)?</h3>
+                        <p class="text-sm text-emerald-800">
+                            Nacen como una alternativa flexible al Copyright tradicional. Permiten a los autores autorizar de antemano ciertos usos al público (compartir, modificar, comercializar) bajo condiciones prefijadas, sin tener que firmar contratos individuales.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The 4 Modules -->
+            <h3 class="text-xl font-bold text-slate-800">Los 4 Módulos Básicos</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center space-y-2 card-hover">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-xl font-bold text-slate-800">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">BY (Reconocimiento)</h4>
+                    <p class="text-xs text-slate-600">Obliga siempre a citar y dar crédito al autor original de la obra.</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center space-y-2 card-hover">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-xl font-bold text-slate-800">
+                        <i class="fa-solid fa-sack-xmark"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">NC (No Comercial)</h4>
+                    <p class="text-xs text-slate-600">Prohíbe ganar dinero o vender la obra o sus derivados.</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center space-y-2 card-hover">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-xl font-bold text-slate-800">
+                        <i class="fa-solid fa-equals"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">ND (Sin Obra Derivada)</h4>
+                    <p class="text-xs text-slate-600">Permite usar la obra pero prohíbe alterarla, cortarla o modificarla.</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center space-y-2 card-hover">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-xl font-bold text-slate-800">
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">SA (Compartir Igual)</h4>
+                    <p class="text-xs text-slate-600">Obliga a publicar las obras derivadas bajo la misma licencia exacta.</p>
+                </div>
+            </div>
+
+            <!-- Interactive Builder / Examples of Combinations -->
+            <h3 class="text-xl font-bold text-slate-800 pt-4">Ejemplos Reales de Combinaciones y Usos Permitidos</h3>
+            
+            <div class="space-y-4">
+                <!-- CC BY -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded text-xs flex items-center gap-1">
+                                <i class="fa-creative-commons"></i> CC BY
+                            </span>
+                            <h4 class="font-bold text-slate-800 text-sm">Creative Commons - Reconocimiento</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Es la licencia más permisiva de todas.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 w-full md:w-auto">
+                        <p class="text-emerald-700 font-semibold"><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Puedes: Editar, traducir, vender y publicar en cualquier canal.</p>
+                        <p class="text-slate-600"><i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Condición: Indicar el nombre del autor original y enlace a la fuente.</p>
+                    </div>
+                </div>
+
+                <!-- CC BY-NC-SA -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded text-xs flex items-center gap-1">
+                                <i class="fa-creative-commons"></i> CC BY-NC-SA
+                            </span>
+                            <h4 class="font-bold text-slate-800 text-sm">Reconocimiento - NoComercial - CompartirIgual</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Muy usada en el ámbito educativo, Wikipedia y proyectos comunitarios.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 w-full md:w-auto">
+                        <p class="text-emerald-700 font-semibold"><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Puedes: Usar en trabajos de clase, hacer diapositivas o resúmenes.</p>
+                        <p class="text-red-600"><i class="fa-solid fa-xmark text-red-500 mr-1"></i> Prohibido: Vender el trabajo o subirlo a plataformas de pago.</p>
+                    </div>
+                </div>
+
+                <!-- CC BY-ND -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded text-xs flex items-center gap-1">
+                                <i class="fa-creative-commons"></i> CC BY-ND
+                            </span>
+                            <h4 class="font-bold text-slate-800 text-sm">Reconocimiento - SinObraDerivada</h4>
+                        </div>
+                        <p class="text-xs text-slate-600">Ideal para artículos de opinión, infografías o guías técnicas.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 w-full md:w-auto">
+                        <p class="text-emerald-700 font-semibold"><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Puedes: Descargar y compartir libremente el documento exacto.</p>
+                        <p class="text-red-600"><i class="fa-solid fa-xmark text-red-500 mr-1"></i> Prohibido: Editar el texto, recortar la imagen o remezclarla.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practical Application Guide -->
+            <div class="bg-emerald-900 text-white p-6 rounded-2xl space-y-4">
+                <h4 class="text-lg font-bold text-emerald-300 flex items-center gap-2">
+                    <i class="fa-solid fa-quote-left"></i> ¿Cómo atribuir una obra correctamente en tu documento?
+                </h4>
+                <p class="text-xs text-slate-300">
+                    Aplica la regla <strong>TASL</strong> (Título, Autor, Fuente/Link, Licencia) cuando insertes una imagen o texto de Internet:
+                </p>
+                <div class="bg-slate-900 p-4 rounded-lg font-mono text-xs text-emerald-400 border border-slate-700">
+                    "Fotografía 'Atardecer en la Alhambra' por María García, disponible en Wikimedia Commons bajo licencia CC BY-SA 4.0."
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-reto" class="tab-content hidden space-y-8">
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-lg space-y-2">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-emerald-950 flex items-center gap-2">
+                        <i class="fa-solid fa-rocket text-emerald-600"></i> Consigna del Trabajo Individual
+                    </h3>
+                    <button onclick="openCurriculumModal('CEv 2.3')" class="bg-emerald-200 hover:bg-emerald-300 text-emerald-900 font-bold px-3 py-1 rounded-full text-xs transition">
+                        Evaluado en CEv 2.3 y 4.1
+                    </button>
+                </div>
+                <p class="text-sm text-emerald-900">
+                    Tras esta sesión introductoria, deberás realizar una búsqueda guiada de información para redactar una <strong>"Guía Práctica de Convivencia y Licenciamiento Digital para 4º ESO"</strong>.
+                </p>
+            </div>
+
+            <!-- Roadmap / Step by step -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3 relative card-hover">
+                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                    <h4 class="font-bold text-slate-800">Fase 1: Búsqueda de Fuentes</h4>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Busca en bancos libres (Unsplash, Wikimedia Commons, Pixabay).</li>
+                        <li>Investiga las 10 reglas básicas de la Netiqueta de Virginia Shea.</li>
+                        <li>Guarda las URLs para tu bibliografía.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3 relative card-hover">
+                    <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                    <h4 class="font-bold text-slate-800">Fase 2: Redacción del Documento</h4>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Crea un documento PDF o presentación interactiva.</li>
+                        <li>Incluye 3 situaciones reales de Netiqueta redactadas por ti.</li>
+                        <li>Inserta al menos 2 imágenes atribuidas con formato TASL.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3 relative card-hover">
+                    <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                    <h4 class="font-bold text-slate-800">Fase 3: Licencia Tu Propio Trabajo</h4>
+                    <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                        <li>Elige una licencia Creative Commons para tu documento.</li>
+                        <li>Justifica al final por qué elegiste esa licencia (ej. CC BY-NC-SA).</li>
+                        <li>Añade el sello o distintivo gráfico correspondiente.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 space-y-4">
+                <h4 class="font-bold text-slate-800 text-base border-b pb-2">
+                    <i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Lista de Cotejo de Entregable (Rúbrica Criterial)
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-pointer" onclick="openCurriculumModal('CEv 4.1')">
+                        <input type="checkbox" disabled checked class="mt-0.5 text-emerald-600">
+                        <span><strong>Netiqueta (<span class="underline text-emerald-700">CEv 4.1</span>):</strong> Plantea ejemplos concretos sobre correo institucional y redes sociales.</span>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-pointer" onclick="openCurriculumModal('CEv 2.3')">
+                        <input type="checkbox" disabled checked class="mt-0.5 text-emerald-600">
+                        <span><strong>Licencias (<span class="underline text-blue-700">CEv 2.3</span>):</strong> Utiliza correctamente la regla TASL en todas las imágenes usadas.</span>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-pointer" onclick="openCurriculumModal('CEv 2.3')">
+                        <input type="checkbox" disabled checked class="mt-0.5 text-emerald-600">
+                        <span><strong>Autoría (<span class="underline text-blue-700">CEv 2.3</span>):</strong> Otorga una licencia CC coherente a su propio producto final.</span>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-slate-50 rounded">
+                        <input type="checkbox" disabled checked class="mt-0.5 text-emerald-600">
+                        <span><strong>Formato:</strong> Documento claro, visualmente ordenado y exportado en PDF.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-curriculo" class="tab-content hidden space-y-6">
+            <div class="bg-slate-100 p-4 rounded-xl text-xs text-slate-600 space-y-1 border border-slate-200">
+                <p><strong>Marco Normativo:</strong> Orden de 30 de mayo de 2023 por la que se desarrolla el currículo de la Educación Secundaria Obligatoria en la Comunidad Autónoma de Andalucía.</p>
+                <p><strong>Materia:</strong> Digitalización (4º ESO) | <strong>Bloque Temático:</strong> D. Ciudadanía digital crítica</p>
+                <p class="text-emerald-700 font-semibold"><i class="fa-solid fa-hand-pointer"></i> Haz clic en cualquier elemento subrayado para ver su desglose oficial en un popup.</p>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto bg-white rounded-xl border border-slate-200 shadow-sm">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-900 text-white">
+                            <th class="p-3 font-semibold border-b border-slate-800">Competencia Específica</th>
+                            <th class="p-3 font-semibold border-b border-slate-800">Criterio de Evaluación</th>
+                            <th class="p-3 font-semibold border-b border-slate-800">Saber Básico</th>
+                            <th class="p-3 font-semibold border-b border-slate-800">Perfil de Salida</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-medium text-slate-800">
+                                <button onclick="openCurriculumModal('CE 4')" class="text-left font-bold text-emerald-700 hover:underline">
+                                    <i class="fa-solid fa-circle-info mr-1"></i> CE 4: Ciudadanía digital crítica
+                                </button>
+                                <p class="text-[11px] text-slate-500 mt-1">Uso activo, responsable y ético de la tecnología.</p>
+                            </td>
+                            <td class="p-3 text-slate-700">
+                                <button onclick="openCurriculumModal('CEv 4.1')" class="bg-emerald-100 text-emerald-900 font-bold px-2 py-1 rounded hover:bg-emerald-200 border border-emerald-300">
+                                    CEv 4.1
+                                </button>
+                                <p class="text-[11px] text-slate-600 mt-1">Netiqueta, privacidad y licencias de uso.</p>
+                            </td>
+                            <td class="p-3 font-mono text-slate-600">
+                                <button onclick="openCurriculumModal('DIG.4.D.1')" class="text-amber-700 font-bold hover:underline">
+                                    DIG.4.D.1
+                                </button>
+                            </td>
+                            <td class="p-3 text-slate-600">
+                                <div class="flex flex-wrap gap-1">
+                                    <button onclick="openCurriculumModal('CD3')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CD3</button>
+                                    <button onclick="openCurriculumModal('CD4')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CD4</button>
+                                    <button onclick="openCurriculumModal('CC1')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CC1</button>
+                                    <button onclick="openCurriculumModal('CC3')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CC3</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-medium text-slate-800">
+                                <button onclick="openCurriculumModal('CE 2')" class="text-left font-bold text-blue-700 hover:underline">
+                                    <i class="fa-solid fa-circle-info mr-1"></i> CE 2: Entorno Personal de Aprendizaje (PLE)
+                                </button>
+                                <p class="text-[11px] text-slate-500 mt-1">Creación y gestión respetando propiedad intelectual.</p>
+                            </td>
+                            <td class="p-3 text-slate-700">
+                                <button onclick="openCurriculumModal('CEv 2.3')" class="bg-blue-100 text-blue-900 font-bold px-2 py-1 rounded hover:bg-blue-200 border border-blue-300">
+                                    CEv 2.3
+                                </button>
+                                <p class="text-[11px] text-slate-600 mt-1">Reelaboración de contenidos y licencias.</p>
+                            </td>
+                            <td class="p-3 font-mono text-slate-600">
+                                <button onclick="openCurriculumModal('DIG.4.B.4')" class="text-blue-700 font-bold hover:underline">
+                                    DIG.4.B.4
+                                </button>
+                            </td>
+                            <td class="p-3 text-slate-600">
+                                <div class="flex flex-wrap gap-1">
+                                    <button onclick="openCurriculumModal('CD1')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CD1</button>
+                                    <button onclick="openCurriculumModal('CD2')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CD2</button>
+                                    <button onclick="openCurriculumModal('CPSAA4')" class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 font-mono text-[10px] hover:bg-slate-200">CPSAA4</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DUA Principles -->
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl space-y-2">
+                <h4 class="font-bold text-indigo-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-universal-access text-indigo-600"></i> Principios DUA Aplicados a esta Sesión
+                </h4>
+                <ul class="text-xs text-indigo-800 space-y-1 list-disc list-inside">
+                    <li><strong>Múltiples formas de representación:</strong> Combinación de texto estructurado, popups normativos explicativos, mitos contrastados y tarjetas de licencias.</li>
+                    <li><strong>Múltiples formas de acción y expresión:</strong> El alumnado puede presentar su trabajo en formato PDF escrito, presentación de diapositivas o infografía.</li>
+                    <li><strong>Múltiples formas de implicación:</strong> Casos prácticos reales vinculados a redes sociales, copyright en plataformas como YouTube/TikTok y correo escolar.</li>
+                </ul>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="curriculum-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span id="modal-tag" class="bg-emerald-500 text-slate-900 font-black text-xs px-2.5 py-1 rounded">LOMLOE</span>
+                    <h3 id="modal-title" class="font-bold text-base">Título del Elemento</h3>
+                </div>
+                <button onclick="closeCurriculumModal()" class="text-slate-400 hover:text-white text-lg font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 text-sm text-slate-700" id="modal-body">
+                <!-- Dynamic Content -->
+            </div>
+            <div class="bg-slate-50 p-3 border-t border-slate-200 text-right">
+                <button onclick="closeCurriculumModal()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-slate-700 transition">
+                    Entendido / Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>Recurso Didáctico para el Aula • Materia de Digitalización 4º ESO • Junta de Andalucía</p>
+            <p class="text-slate-500">Diseñado bajo principios DUA y normativa LOMLOE. Licencia del recurso: <span class="text-emerald-400 font-semibold">CC BY-NC-SA 4.0</span></p>
+        </div>
+    </footer>
+
+    <script>
+        // Database of Curriculum Items for Modals
+        const curriculumData = {
+            'CE 4': {
+                tag: 'Competencia Específica 4',
+                title: 'Ejercer una ciudadanía digital crítica',
+                description: 'Ejercer una ciudadanía digital crítica, conociendo las posibles acciones que realizar en la red, e identificando sus repercusiones, para hacer un uso activo, responsable y ético de la tecnología.',
+                descriptores: 'Conectado con: CD3, CD4, CPSAA1, CC1, CC2, CC3, CC4, CE1.'
+            },
+            'CE 2': {
+                tag: 'Competencia Específica 2',
+                title: 'Entorno Personal de Aprendizaje (PLE)',
+                description: 'Configurar el entorno personal de aprendizaje, interactuando y aprovechando los recursos del ámbito digital, para optimizar y gestionar el aprendizaje permanente, respetando los derechos de propiedad intelectual y las licencias de uso.',
+                descriptores: 'Conectado con: CD1, CD2, CD3, CPSAA1, CPSAA4, CPSAA5, CE3.'
+            },
+            'CEv 4.1': {
+                tag: 'Criterio de Evaluación 4.1',
+                title: 'Uso ético, Netiqueta y Licencias',
+                description: 'Hacer un uso ético de los datos y las herramientas digitales, aplicando las normas de etiqueta digital y respetando la privacidad y las licencias de uso y propiedad intelectual en la comunicación, colaboración y participación activa en la red, basadas en el respeto mutuo.',
+                vinculo: 'Saber Básico asociado: DIG.4.D.1'
+            },
+            'CEv 2.3': {
+                tag: 'Criterio de Evaluación 2.3',
+                title: 'Creación de contenidos y Derechos de Autor',
+                description: 'Crear, programar, integrar y reelaborar contenidos digitales de forma individual o colectiva, seleccionando las herramientas más apropiadas para generar nuevo conocimiento y contenidos digitales de manera creativa, respetando los derechos de autor y licencias de uso.',
+                vinculo: 'Saberes Básicos asociados: DIG.4.B.2, DIG.4.B.4, DIG.4.D.1'
+            },
+            'CEv 3.1': {
+                tag: 'Criterio de Evaluación 3.1',
+                title: 'Protección de datos y huella digital',
+                description: 'Proteger los datos personales y la huella digital generada en internet, configurando las condiciones de privacidad de las redes sociales y espacios virtuales de trabajo.',
+                vinculo: 'Saber Básico asociado: DIG.4.C.2'
+            },
+            'CEv 4.3': {
+                tag: 'Criterio de Evaluación 4.3',
+                title: 'Análisis crítico de la información',
+                description: 'Valorar la importancia de la oportunidad, facilidad y libertad de expresión que suponen los medios digitales conectados, analizando de forma crítica los mensajes que se reciben y transmiten teniendo en cuenta su objetividad, ideología, intencionalidad, sesgos y caducidad.',
+                vinculo: 'Saber Básico asociado: DIG.4.D.2'
+            },
+            'DIG.4.D.1': {
+                tag: 'Saber Básico - Bloque D',
+                title: 'Interactividad en la red y Licencias',
+                description: 'DIG.4.D.1. Interactividad en la red: libertad de expresión, etiqueta digital, propiedad intelectual y licencias de uso.',
+                vinculo: 'Materia: Digitalización 4º ESO (Andalucía)'
+            },
+            'DIG.4.B.4': {
+                tag: 'Saber Básico - Bloque B',
+                title: 'Difusión responsable',
+                description: 'DIG.4.B.4. Publicación y difusión responsable en redes sociales y entornos educativos virtuales.',
+                vinculo: 'Materia: Digitalización 4º ESO (Andalucía)'
+            },
+            'CD1': {
+                tag: 'Descriptor Operativo',
+                title: 'CD1 - Búsqueda y Selección Crítica',
+                description: 'Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos, para recuperarlos, referenciarlos y reutilizarlos, respetando la propiedad intelectual.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CD2': {
+                tag: 'Descriptor Operativo',
+                title: 'CD2 - Entornos de Aprendizaje',
+                description: 'Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales mediante herramientas digitales adaptadas a sus necesidades.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CD3': {
+                tag: 'Descriptor Operativo',
+                title: 'CD3 - Participación Digital Activa',
+                description: 'Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales, y gestiona de manera responsable sus acciones, presencia y visibilidad en la red, para ejercer una ciudadanía digital activa, cívica y reflexiva.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CD4': {
+                tag: 'Descriptor Operativo',
+                title: 'CD4 - Identificación de Riesgos',
+                description: 'Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, los datos personales, la salud y el medioambiente, y para tomar conciencia de la necesidad de hacer un uso legal, seguro y sostenible.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CC1': {
+                tag: 'Descriptor Operativo',
+                title: 'CC1 - Convivencia y Ciudadanía',
+                description: 'Analiza y comprende ideas relativas a la dimensión social y ciudadana, demostrando respeto por las normas, empatía, equidad y espíritu constructivo en la interacción con los demás.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CC3': {
+                tag: 'Descriptor Operativo',
+                title: 'CC3 - Ética y controversia moral',
+                description: 'Comprende y analiza problemas éticos fundamentales y de actualidad, considerando críticamente los valores propios y ajenos.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            },
+            'CPSAA4': {
+                tag: 'Descriptor Operativo',
+                title: 'CPSAA4 - Autoevaluación del aprendizaje',
+                description: 'Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información y para obtener conclusiones relevantes.',
+                vinculo: 'Perfil de Salida de Educación Secundaria Obligatoria'
+            }
+        };
+
+        // Modal Functions
+        function openCurriculumModal(key) {
+            const data = curriculumData[key];
+            const modal = document.getElementById('curriculum-modal');
+            
+            if (data) {
+                document.getElementById('modal-tag').innerText = data.tag;
+                document.getElementById('modal-title').innerText = key + ': ' + data.title;
+                
+                let bodyHtml = `<p class="text-slate-800 text-sm leading-relaxed">${data.description}</p>`;
+                if (data.descriptores) {
+                    bodyHtml += `<div class="bg-slate-100 p-3 rounded-lg text-xs font-medium text-slate-700 border border-slate-200 mt-2"><i class="fa-solid fa-link text-emerald-600 mr-1"></i> ${data.descriptores}</div>`;
+                }
+                if (data.vinculo) {
+                    bodyHtml += `<div class="bg-emerald-50 p-3 rounded-lg text-xs font-medium text-emerald-800 border border-emerald-200 mt-2"><i class="fa-solid fa-bookmark text-emerald-600 mr-1"></i> ${data.vinculo}</div>`;
+                }
+                
+                document.getElementById('modal-body').innerHTML = bodyHtml;
+            } else {
+                document.getElementById('modal-tag').innerText = 'Normativa LOMLOE';
+                document.getElementById('modal-title').innerText = key;
+                document.getElementById('modal-body').innerHTML = `<p class="text-slate-700">Elemento curricular de la materia Digitalización en 4º de ESO (Junta de Andalucía).</p>`;
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('modal-active');
+        }
+
+        function closeCurriculumModal() {
+            const modal = document.getElementById('curriculum-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('modal-active');
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeCurriculumModal();
+            }
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-emerald-600', 'text-emerald-600', 'bg-white');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-emerald-600', 'text-emerald-600', 'bg-white');
+        }
+
+        // Netiquette Quiz evaluation
+        function checkNetiquetaQuiz(option) {
+            const resultDiv = document.getElementById('netiqueta-quiz-result');
+            resultDiv.classList.remove('hidden', 'bg-red-900/50', 'text-red-200', 'bg-emerald-900/50', 'text-emerald-200');
+
+            if (option === 2) {
+                resultDiv.classList.add('bg-emerald-900/60', 'text-emerald-200', 'border', 'border-emerald-500/50');
+                resultDiv.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> <strong>¡Correcto!</strong> La conducta destruye la colaboración, usa un tono agresivo y no ofrece una crítica constructiva ni respetuosa.';
+            } else {
+                resultDiv.classList.add('bg-red-900/60', 'text-red-200', 'border', 'border-red-500/50');
+                resultDiv.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-400 mr-2"></i> <strong>Incorrecto.</strong> Revisa el mensaje de nuevo. El fallo principal es la falta de empatía y la descalificación directa a la otra persona.';
+            }
+        }
+    </script>
+</body>
+</html>
