@@ -1,4 +1,4 @@
-// Build "v2" del portal (PROPUESTA — no sustituye a scripts/build-menu.mjs).
+// Build del portal para publicar (lo ejecuta la GitHub Action).
 //
 // Qué hace:
 //   1. Ejecuta el build actual (scripts/build-menu.mjs) → menu.json + _pagina.html.
@@ -10,8 +10,8 @@
 //      Con --strict el build falla si hay enlaces rotos.
 //
 // Uso:
-//   node propuesta/scripts/build-site.mjs                 # salida en _site/
-//   node propuesta/scripts/build-site.mjs --out=dist --strict --base-url=https://usuario.github.io/repo/
+//   node scripts/build-site.mjs                 # salida en _site/
+//   node scripts/build-site.mjs --out=dist --strict --base-url=https://usuario.github.io/repo/
 
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -30,9 +30,9 @@ const STRICT = Boolean(args.strict);
 const BASE_URL = typeof args['base-url'] === 'string' ? args['base-url'].replace(/\/?$/, '/') : '';
 
 // Lista blanca: solo esto se publica.
-const PUBLIC_ENTRIES = ['index.html', 'bienvenida.html', 'menu.json', 'css', 'js', 'assets', 'content', 'propuesta'];
+const PUBLIC_ENTRIES = ['index.html', 'bienvenida.html', 'menu.json', 'css', 'js', 'assets', 'content'];
 // Dentro de lo publicado, nunca copiar estas rutas.
-const EXCLUDE = [/^propuesta\/scripts\//, /^propuesta\/workflows\//, /(^|\/)\.DS_Store$/, /(^|\/)Thumbs\.db$/];
+const EXCLUDE = [/(^|\/)\.DS_Store$/, /(^|\/)Thumbs\.db$/];
 
 const MAX_TEXT_PER_PAGE = 4000;
 

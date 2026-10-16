@@ -1,4 +1,4 @@
-// Aula TIC — interfaz v2 (PROPUESTA)
+// Aula TIC — portal (menú, búsqueda, navegación y herramientas de aula)
 // Lee el mismo menu.json que la versión actual y es compatible con sus enlaces
 // (#content/ruta/al/archivo.html), así que los enlaces ya compartidos siguen funcionando.
 
