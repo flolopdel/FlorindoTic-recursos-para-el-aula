@@ -76,7 +76,7 @@ No hace falta ningún framework: el build (`scripts/build-site.mjs`) lo ejecuta 
 La Action (`.github/workflows/deploy.yml`) ejecuta `scripts/build-site.mjs`, que:
 
 1. Regenera `menu.json` y las portadas (`scripts/build-menu.mjs`).
-2. Copia a `_site/` **solo lo publicable**: `index.html`, `bienvenida.html`, `menu.json`, `css/`, `js/`, `assets/` y `content/`. `private_content/`, `prompts/` y `scripts/` **no se publican**.
+2. Copia a `_site/` **solo lo publicable**: `index.html`, `bienvenida.html`, `menu.json`, `css/`, `js/`, `assets/` y `content/`. `prompts/` y `scripts/` **no se publican**. La carpeta `private_content/` está en `.gitignore`: sirve para guardar material privado solo en tu ordenador, sin subirlo a GitHub.
 3. Genera `search-index.json`, `sitemap.xml`, `404.html` y `version.json` (fecha de publicación que se muestra al pie del menú).
 4. Comprueba los enlaces internos: si alguna página enlaza a un archivo que no existe, el build falla y no se publica.
 
