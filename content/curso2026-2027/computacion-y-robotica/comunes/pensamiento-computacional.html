@@ -1,1375 +1,841 @@
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pensamiento Computacional - Unidad Didáctica & Repaso Interactivo</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Fira Code -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- FontAwesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['Fira Code', 'monospace'],
-          },
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81',
-            }
-          }
-        }
-      }
-    }
-  </script>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pensamiento Computacional</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Nunito+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: cuaderno de cuadrícula (como el diagrama de flujo del tutorial). Bandas a todo el ancho, contenido en columna de 1040px. */
+:root{
+  --bg:#F2F6F9; --surface:#FFFFFF; --ink:#0F1B3D; --muted:#51607E;
+  --line:#D6DFE9; --line-strong:#8E9DB6;
+  --accent:#0B7F7B; --on-accent:#FFFFFF; --hl:#DDF3F1;
+  --sun:#F5B82E; --coral:#D9493C; --leaf:#26874F; --leaf-bg:#DDF2E5; --coral-bg:#FBE3E0;
+  --code-bg:#0F1B3D; --code-fg:#E6EDFB; --code-dim:#8FA0C6;
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --robot:#7FA3C4; --robot-dark:#4E6E8F;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1128; --surface:#141C3C; --ink:#E8EEFA; --muted:#9AA7C7;
+  --line:#27315A; --line-strong:#5A6A9C;
+  --accent:#3CCFC6; --on-accent:#0B1128; --hl:#12383F;
+  --sun:#F7C548; --coral:#FF8074; --leaf:#55D08A; --leaf-bg:#12352A; --coral-bg:#41211F;
+  --code-bg:#070B1C; --code-fg:#E6EDFB; --code-dim:#7E8EB8;
+  --robot:#8FB0D0; --robot-dark:#5F7FA0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1128; --surface:#141C3C; --ink:#E8EEFA; --muted:#9AA7C7;
+  --line:#27315A; --line-strong:#5A6A9C;
+  --accent:#3CCFC6; --on-accent:#0B1128; --hl:#12383F;
+  --sun:#F7C548; --coral:#FF8074; --leaf:#55D08A; --leaf-bg:#12352A; --coral-bg:#41211F;
+  --code-bg:#070B1C; --code-fg:#E6EDFB; --code-dim:#7E8EB8;
+  --robot:#8FB0D0; --robot-dark:#5F7FA0; color-scheme:dark}
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-      color: #1e293b;
-    }
-    
-    /* Flowchart custom styling */
-    .flow-node {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .flow-node.active-step {
-      transform: scale(1.05);
-      filter: drop-shadow(0 10px 15px rgba(99, 102, 241, 0.4));
-      border-color: #4f46e5 !important;
-      background-color: #e0e7ff !important;
-    }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+.in{max-width:1040px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);line-height:1.1;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button{font:inherit;color:inherit}
+.mono{font-family:var(--f-mono)}
 
-    /* Print styling specifically designed for A4 format */
-    @media print {
-      body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        font-size: 11pt;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .print-only {
-        display: block !important;
-      }
-      .page-break {
-        page-break-before: always;
-      }
-      .a4-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-      .note-textarea {
-        border: 1px dashed #94a3b8 !important;
-        background: transparent !important;
-      }
-      table {
-        page-break-inside: avoid;
-      }
-    }
-    
-    /* Animation pulse */
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(1.02); }
-    }
-    .pulse-animation {
-      animation: pulse-glow 2s infinite ease-in-out;
-    }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+/* cabecera */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .in{display:flex;align-items:center;gap:20px;min-height:56px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.05rem;white-space:nowrap;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand svg{width:24px;height:24px}
+.nav{display:flex;gap:4px;overflow-x:auto;min-width:0;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.92rem;white-space:nowrap}
+.nav a:hover{background:var(--hl);color:var(--ink)}
 
-  <!-- Top Navigation Header -->
-  <header class="no-print sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-brand-600 text-white rounded-xl shadow-md">
-            <i class="fa-solid fa-laptop-code text-xl"></i>
-          </div>
-          <div>
-            <h1 class="font-bold text-slate-900 dark:text-white text-lg leading-tight">Computación y Robótica (1º, 2º y 3º ESO)</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Pensamiento Computacional & Simulaciones Ambientales</p>
-          </div>
-        </div>
+/* hero */
+.hero{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px;border-bottom:1px solid var(--line)}
+.hero .in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-block:56px}
+.hero h1{font-size:clamp(2.5rem,6.4vw,4.6rem);font-weight:800;letter-spacing:-.02em}
+.hero h1 span{color:var(--accent)}
+.lead{font-size:1.2rem;margin-top:20px;max-width:34em;background:var(--bg);box-shadow:0 0 0 8px var(--bg);border-radius:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.chip{font-family:var(--f-mono);font-size:.8rem;padding:6px 10px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);text-decoration:none}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.hero-art{min-width:0}
+.hero-art svg{width:100%;height:auto;display:block;border-radius:18px;max-width:440px;margin-inline:auto}
 
-        <!-- Navigation Controls -->
-        <div class="flex items-center space-x-2 sm:space-x-4">
-          <!-- View Switcher -->
-          <div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center text-xs font-semibold">
-            <button id="btn-mode-interactive" onclick="switchView('interactive')" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm transition-all flex items-center gap-1.5">
-              <i class="fa-solid fa-gamepad"></i> <span class="hidden sm:inline">Modo</span> Interactivo
-            </button>
-            <button id="btn-mode-a4" onclick="switchView('a4')" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all flex items-center gap-1.5">
-              <i class="fa-solid fa-file-lines"></i> <span class="hidden sm:inline">Modo</span> Vista A4
-            </button>
-          </div>
+/* secciones */
+.sec{padding-block:64px}
+.sec.alt{background:var(--surface);border-block:1px solid var(--line)}
+.kicker{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.sec h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+.sec .intro{margin-top:16px;max-width:42em;color:var(--muted);font-size:1.08rem}
+.sec .intro b,.sec .intro strong{color:var(--ink)}
+.block{margin-top:40px}
+.block>h3{font-size:1.35rem;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.alt .card{background:var(--bg)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.cols>*{min-width:0}
 
-          <!-- Print Button -->
-          <button onclick="window.print()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white text-xs font-medium rounded-xl transition-all flex items-center gap-2 shadow-sm">
-            <i class="fa-solid fa-print"></i>
-            <span class="hidden md:inline">Imprimir / PDF</span>
-          </button>
-        </div>
+/* pestañas */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line-strong);background:var(--surface);padding:9px 16px;border-radius:999px;cursor:pointer;font-weight:700;font-size:.95rem}
+.alt .tab{background:var(--bg)}
+.tab:hover{border-color:var(--accent)}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.panel{margin-top:16px}
+
+/* técnicas */
+.tech{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.tech>*{min-width:0}
+.tech h3{font-size:1.5rem}
+.tech .def{margin-top:10px}
+.tech .ico{width:140px;height:70px;margin-bottom:16px}
+.ex{border-left:4px solid var(--sun);padding:4px 0 4px 16px}
+.ex .lab{font-family:var(--f-mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ex ul{margin:8px 0 0;padding-left:20px}
+.ex li{margin-top:4px}
+
+/* rutina */
+.routine{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.routine .card{display:flex;flex-direction:column;gap:10px}
+.routine .step-t{font-family:var(--f-display);font-weight:800;font-size:1.5rem}
+.routine svg{width:72px;height:72px}
+.routine .n{font-family:var(--f-mono);font-size:.8rem;color:var(--accent);font-weight:600}
+
+/* robot */
+.game{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
+.game>*{min-width:0}
+.grid{display:grid;grid-template-columns:repeat(5,56px);grid-auto-rows:56px;gap:4px;background:var(--line);padding:4px;border-radius:12px;width:max-content;max-width:100%}
+.cell{background:var(--surface);display:grid;place-items:center;border-radius:6px}
+.alt .cell{background:var(--bg)}
+.cell svg{width:40px;height:40px}
+.cell.start{box-shadow:inset 0 0 0 2px var(--line-strong)}
+.pad{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line-strong);background:var(--surface);padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:700;min-height:44px}
+.alt .btn{background:var(--bg)}
+.btn:hover{border-color:var(--accent)}
+.btn.main{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.arrow{width:52px;font-size:1.2rem;padding:0}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:44px;margin:14px 0;padding:8px;border:1px dashed var(--line-strong);border-radius:10px;align-items:center}
+.prog .empty{color:var(--muted);font-size:.9rem}
+.cmd{width:34px;height:34px;display:grid;place-items:center;border-radius:6px;background:var(--hl);color:var(--ink);font-weight:800}
+.cmd.now{background:var(--sun);color:#0F1B3D}
+.msg{min-height:1.6em;font-weight:700;margin-top:10px}
+.msg.ok{color:var(--leaf)}.msg.bad{color:var(--coral)}
+
+/* algoritmo */
+.chars{counter-reset:c;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:28px}
+.char{padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-weight:600}
+.char::before{counter-increment:c;content:counter(c);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-family:var(--f-mono);font-size:.85rem;margin-right:10px}
+.defgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:32px}
+.defgrid>*{min-width:0}
+.defgrid h3{font-size:1.2rem;margin-bottom:8px}
+.code{background:var(--code-bg);color:var(--code-fg);font-family:var(--f-mono);font-size:.9rem;line-height:1.7;padding:18px 20px;border-radius:12px;overflow-x:auto;white-space:pre;margin:0}
+.code .k{color:var(--sun)}.code .c{color:var(--code-dim)}.code .s{color:#8EE0B1}
+.term{background:var(--code-bg);color:var(--code-fg);font-family:var(--f-mono);font-size:.9rem;border-radius:12px;padding:16px 20px;min-height:140px;white-space:pre-wrap;word-break:break-word}
+.term .in-l{color:var(--sun)}
+.runrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.field{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);min-height:44px;width:120px}
+.alt .field{background:var(--bg)}
+.note{color:var(--muted);font-size:.92rem;margin-top:10px}
+
+/* diagramas */
+.symbols{display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:20px}
+.symbols>*{min-width:0}
+.symlist{display:flex;flex-direction:column;gap:8px}
+.sym{display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--bg);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+.sym svg{width:56px;height:34px;flex:none}
+.sym[aria-pressed="true"]{border-color:var(--accent);background:var(--hl)}
+.symdetail{display:flex;flex-direction:column;justify-content:center;gap:14px}
+.symdetail svg{width:150px;height:90px}
+.symdetail h4{font-family:var(--f-display);font-size:1.5rem;margin:0}
+.fshape{fill:var(--surface);stroke:var(--accent);stroke-width:3}
+.flow{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;align-items:start}
+.flow svg{width:100%;height:auto;max-width:560px;display:block}
+.node .fl-shape{fill:var(--surface);stroke:var(--line-strong);stroke-width:2}
+.alt .node .fl-shape{fill:var(--bg)}
+.node text{fill:var(--ink);font-size:13px;font-weight:700;text-anchor:middle;font-family:var(--f-body)}
+.node.on .fl-shape{fill:var(--hl);stroke:var(--accent);stroke-width:3}
+.edge{fill:none;stroke:var(--line-strong);stroke-width:2.5}
+.edge.on{stroke:var(--accent);stroke-width:3.5}
+.lbl{font-size:13px;font-weight:800;fill:var(--muted);font-family:var(--f-body)}
+.mk{fill:var(--line-strong)}.mk-on{fill:var(--accent)}
+#fa .edge{marker-end:url(#fa-h)}#fa .edge.on{marker-end:url(#fa-hon)}
+#fb .edge{marker-end:url(#fb-h)}#fb .edge.on{marker-end:url(#fb-hon)}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--bg);padding:9px 18px;cursor:pointer;font-weight:700;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.ctl{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.ctl label,.ctl .q{font-weight:700}
+.result{padding:14px 16px;border-radius:10px;background:var(--hl);font-weight:700;border:1px solid var(--accent)}
+
+
+/* introducción */
+.didyou{margin-top:24px;padding:18px 22px;border:1px solid var(--accent);border-radius:12px;background:var(--hl);max-width:46em}
+.didyou .lab{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px}
+.concepts{display:grid;gap:20px;margin-top:36px}
+.concept{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
+.concept .tag{display:inline-block;font-family:var(--f-mono);font-size:.75rem;font-weight:600;letter-spacing:.06em;padding:4px 10px;border-radius:6px;background:var(--hl);color:var(--accent);margin-bottom:12px}
+.concept h3{font-size:1.35rem;margin-bottom:10px}
+.concept p{color:var(--muted);font-size:1rem}
+.concept p strong{color:var(--ink)}
+.cases{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.cases h4{font-family:var(--f-mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px}
+.cases ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.cases li{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line);font-size:.97rem}
+.cases li:last-child{border-bottom:0;padding-bottom:0}
+.cases li>span{flex:1 1 240px;min-width:0}
+.cases.plain li{display:block}
+.ext{display:inline-flex;gap:6px;align-items:center;white-space:nowrap;padding:8px 14px;min-height:40px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:.9rem;text-decoration:none}
+.ext:hover{filter:brightness(1.1)}
+.rule{font-family:var(--f-mono);font-size:.85rem;background:var(--bg);padding:2px 6px;border-radius:4px}
+.keyidea{margin-top:20px;padding:20px 24px;border-radius:14px;background:var(--code-bg);color:var(--code-fg);text-align:center;font-weight:600}
+.keyidea strong{color:var(--sun)}
+
+/* quiz */
+.quiz{display:grid;gap:16px;margin-top:32px}
+.q{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.q h3{font-size:1.15rem;font-family:var(--f-body);font-weight:700;line-height:1.35}
+.opts{display:grid;gap:8px;margin-top:14px}
+.opt{text-align:left;border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:44px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{border-color:var(--leaf);background:var(--leaf-bg);font-weight:700}
+.opt.bad{border-color:var(--coral);background:var(--coral-bg)}
+.opt:disabled{cursor:default}
+.why{margin-top:12px;color:var(--muted);font-size:.95rem}
+.score{margin-top:24px;font-family:var(--f-display);font-size:1.5rem;font-weight:800}
+
+footer{padding-block:40px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+footer p+p{margin-top:8px}
+
+@media (max-width:820px){
+  .hero .in{grid-template-columns:1fr;padding-block:36px}
+  .tech,.game,.symbols,.flow,.routine,.concept{grid-template-columns:1fr}
+  .sec{padding-block:48px}
+}
+@media (max-width:420px){
+  .grid{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;width:100%}
+  .cell{aspect-ratio:1}
+  .cell svg{width:70%;height:70%}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<!-- símbolos reutilizables -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-robot" viewBox="0 0 64 64">
+    <line x1="32" y1="4" x2="32" y2="12" stroke="var(--robot-dark)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="32" cy="4" r="3" fill="var(--sun)"/>
+    <rect x="12" y="12" width="40" height="30" rx="10" fill="var(--robot)"/>
+    <rect x="17" y="18" width="30" height="16" rx="8" fill="#0F1B3D"/>
+    <circle cx="25" cy="26" r="4" fill="#7FF0E8"/><circle cx="39" cy="26" r="4" fill="#7FF0E8"/>
+    <rect x="18" y="44" width="28" height="14" rx="5" fill="var(--robot-dark)"/>
+    <rect x="6" y="22" width="6" height="12" rx="3" fill="var(--robot-dark)"/><rect x="52" y="22" width="6" height="12" rx="3" fill="var(--robot-dark)"/>
+  </symbol>
+  <symbol id="i-star" viewBox="0 0 64 64"><path d="M32 6l7.5 16.3 17.8 2-13.2 12 3.7 17.6L32 45l-15.8 8.9 3.7-17.6-13.2-12 17.8-2z" fill="var(--sun)" stroke="#B7860F" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-rock" viewBox="0 0 64 64"><path d="M8 50l8-24 14-10 16 6 10 14 2 14z" fill="var(--line-strong)" stroke="var(--robot-dark)" stroke-width="2" stroke-linejoin="round"/><path d="M22 28l8-6 8 4" stroke="var(--surface)" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="in">
+    <a class="brand" href="#inicio">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="7" fill="var(--sun)"/><rect x="9" y="17" width="6" height="4" rx="1.5" fill="var(--line-strong)"/></svg>
+      Pensamiento Computacional
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#introduccion">Introducción</a>
+      <a href="#conceptos">Pensamiento</a>
+      <a href="#algoritmo">Algoritmo</a>
+      <a href="#diagramas">Diagramas</a>
+      <a href="#quiz">Quiz</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+  <div class="in">
+    <div>
+      <h1>Pensamiento <span>Computacional</span></h1>
+      <p class="lead">Es una forma de analizar y resolver problemas cotidianos como lo haría un informático: utilizando datos, estudiando problemas y diseñando algoritmos.</p>
+      <div class="chips">
+        <a class="chip" href="#introduccion">Introducción</a>
+        <a class="chip" href="#conceptos">1 · Pensamiento</a>
+        <a class="chip" href="#algoritmo">2 · Algoritmo</a>
+        <a class="chip" href="#diagramas">3 · Diagramas de flujo</a>
       </div>
     </div>
-  </header>
+    <div class="hero-art">
+      <svg viewBox="0 0 400 400" role="img" aria-label="Ilustración: una persona con gafas y una bombilla encendida sobre la cabeza, rodeada de iconos de nube, ventana, pluma de diseño y mensajes">
+        <defs>
+          <linearGradient id="bulb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE97A"/><stop offset="1" stop-color="#F5B82E"/></linearGradient>
+          <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B9BD6"/><stop offset="1" stop-color="#34D3C3"/></linearGradient>
+        </defs>
+        <rect width="400" height="400" fill="#171548"/>
+        <circle cx="200" cy="190" r="170" fill="none" stroke="#3B3A8A" stroke-width="2" stroke-dasharray="3 9"/>
+        <g fill="#26256B"><circle cx="90" cy="330" r="22"/><circle cx="318" cy="300" r="18"/></g>
+        <!-- ventana -->
+        <rect x="28" y="130" width="96" height="70" rx="6" fill="#2FB9D6"/>
+        <rect x="28" y="130" width="96" height="12" rx="6" fill="#4FD1E0"/>
+        <rect x="38" y="152" width="34" height="36" fill="none" stroke="#9BE8F0" stroke-width="2"/><path d="M38 152l34 36M72 152l-34 36" stroke="#9BE8F0" stroke-width="2"/>
+        <rect x="80" y="154" width="34" height="5" rx="2.5" fill="#BFF1F6"/><rect x="80" y="166" width="34" height="5" rx="2.5" fill="#BFF1F6"/><rect x="80" y="178" width="22" height="5" rx="2.5" fill="#BFF1F6"/>
+        <!-- barra de texto arriba -->
+        <rect x="128" y="34" width="116" height="52" rx="6" fill="#2FB9D6"/>
+        <circle cx="140" cy="48" r="4" fill="#BFF1F6"/><rect x="152" y="45" width="78" height="5" rx="2.5" fill="#BFF1F6"/><rect x="152" y="58" width="48" height="5" rx="2.5" fill="#BFF1F6"/><rect x="152" y="71" width="26" height="5" rx="2.5" fill="#BFF1F6"/>
+        <!-- pluma -->
+        <rect x="262" y="46" width="108" height="86" rx="8" fill="#FFFFFF"/>
+        <path d="M278 100c14-30 62-30 76 0" fill="none" stroke="#2FB9D6" stroke-width="3"/>
+        <circle cx="278" cy="100" r="3.5" fill="#2FB9D6"/><circle cx="354" cy="100" r="3.5" fill="#2FB9D6"/>
+        <path d="M316 70l14 22-14 22-14-22z" fill="#171548"/><circle cx="316" cy="92" r="3" fill="#FFFFFF"/>
+        <!-- check y nube -->
+        <rect x="140" y="104" width="22" height="22" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2.5"/><path d="M146 115l5 5 8-10" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M176 120a9 9 0 0 1 4-17 12 12 0 0 1 22 3 8 8 0 0 1-2 14z" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- nube grande + caja -->
+        <path d="M30 262a20 20 0 0 1 8-38 28 28 0 0 1 52 6 19 19 0 0 1-4 32z" fill="#FFFFFF"/>
+        <path d="M60 296v14" stroke="#2FB9D6" stroke-width="5"/><path d="M50 308l10 10 10-10z" fill="#2FB9D6"/>
+        <!-- chat -->
+        <rect x="296" y="168" width="64" height="34" rx="12" fill="#34D3C3"/><circle cx="312" cy="185" r="3.5" fill="#FFFFFF"/><circle cx="328" cy="185" r="3.5" fill="#FFFFFF"/><circle cx="344" cy="185" r="3.5" fill="#FFFFFF"/>
+        <rect x="300" y="226" width="60" height="30" rx="6" fill="#2B9BD6"/><rect x="316" y="234" width="62" height="34" rx="6" fill="#FFFFFF"/>
+        <!-- planeta -->
+        <circle cx="336" cy="318" r="22" fill="#FFFFFF"/><ellipse cx="336" cy="318" rx="38" ry="8" fill="none" stroke="#2FB9D6" stroke-width="4" transform="rotate(-14 336 318)"/>
+        <path d="M250 288q14-34 30-14" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+        <!-- bombilla -->
+        <circle cx="200" cy="148" r="64" fill="url(#bulb)"/>
+        <path d="M184 190v-30c-10-14 10-22 16-6 6-16 26-8 16 6v30" fill="none" stroke="#FFF6C2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="178" y="208" width="44" height="12" rx="4" fill="#D8DDEA"/><rect x="182" y="220" width="36" height="10" rx="4" fill="#B9C1D6"/>
+        <!-- persona -->
+        <path d="M110 400c4-48 44-70 90-70s86 22 90 70z" fill="url(#shirt)"/>
+        <path d="M172 340l28 30 28-30" fill="none" stroke="#1D6FA6" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="186" y="318" width="28" height="22" fill="#F1F5FF"/>
+        <path d="M156 276c0-40 88-40 88 0v20c0 30-20 44-44 44s-44-14-44-44z" fill="#F7FAFF"/>
+        <path d="M152 270c4-16 16-22 22-14 8-12 26-12 30-2 8-8 22-2 24 8 6-4 14 0 16 8-14-8-30-10-46-6-18 4-34 4-46 6z" fill="#2B9BD6"/>
+        <circle cx="180" cy="288" r="14" fill="none" stroke="#171548" stroke-width="4"/><circle cx="220" cy="288" r="14" fill="none" stroke="#171548" stroke-width="4"/><path d="M194 288h12" stroke="#171548" stroke-width="4"/>
+        <path d="M178 316q22 18 44 0" fill="none" stroke="#171548" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
 
-  <!-- Main Content Body -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Progress & Status Banner (Interactive Mode Only) -->
-    <div id="interactive-progress-bar" class="no-print mb-8 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Introducción -->
+<section class="sec alt" id="introduccion">
+  <div class="in">
+    <div class="kicker">Introducción práctica · Contexto social y ecológico</div>
+    <h2>Videojuegos sostenibles y simuladores ambientales</h2>
+    <aside class="didyou">
+      <div class="lab">¿Sabías qué?</div>
+      <p><strong>¿Un videojuego puede ayudar a salvar el planeta?</strong> En esta unidad comprenderás cómo la programación y el pensamiento computacional nos permiten crear simulaciones e historias interactivas para concienciar sobre el medio ambiente.</p>
+    </aside>
+
+    <div class="concepts">
+      <article class="card concept">
         <div>
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm text-white mb-2">
-            <i class="fa-solid fa-graduation-cap mr-1.5"></i> Computación y Robótica 1º, 2º y 3º ESO
-          </span>
-          <h2 class="text-2xl font-extrabold text-white tracking-tight">¡Aprende y pon a prueba tu pensamiento lógico!</h2>
-          <p class="text-emerald-100 text-sm mt-1 max-w-2xl">
-            Sigue el temario interactivo, explora las aplicaciones medioambientales, resuelve los retos y comprueba tus respuestas.
-          </p>
+          <span class="tag">CONCEPTO 1</span>
+          <h3>Simuladores ambientales e impacto social</h3>
+          <p>Un <strong>simulador ambiental</strong> es un programa informático que recrea un ecosistema o un problema ecológico real mediante reglas lógicas. Permite a los usuarios experimentar decisiones ambientales en un entorno seguro y observar sus consecuencias en tiempo real.</p>
         </div>
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 min-w-[200px]">
-          <div class="flex justify-between items-center text-xs font-semibold mb-1">
-            <span>Progreso de Estudio</span>
-            <span id="overall-progress-text">0%</span>
+        <div class="cases">
+          <h4>Casos del mundo real</h4>
+          <ul>
+            <li><span><strong>Terra Nil:</strong> Videojuego enfocado en limpiar suelos contaminados, reforestar bosques y reintroducir fauna sin dejar huella.</span>
+              <a class="ext" href="https://youtu.be/F8eYqNNxICE?si=tQ-ZwS0dm07Yd_L6" target="_blank" rel="noopener noreferrer">Ver tráiler ↗</a></li>
+            <li><span><strong>Simuladores de ecosistemas en Scratch:</strong> Proyectos interactivos para ajustar variables como la temperatura global o la tala de árboles.</span>
+              <a class="ext" href="https://scratch.mit.edu/projects/19691373" target="_blank" rel="noopener noreferrer">Probar Ecosistemas ↗</a></li>
+            <li><span><strong>Calculadoras de huella ecológica / digital:</strong> Aplicaciones que simulan el consumo de recursos según hábitos diarios.</span>
+              <a class="ext" href="https://scratch.mit.edu/projects/1253576811" target="_blank" rel="noopener noreferrer">Probar Huella Digital ↗</a></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card concept">
+        <div>
+          <span class="tag">CONCEPTO 2</span>
+          <h3>Mecánicas de juego en Scratch (lógica y reglas)</h3>
+          <p>Las <strong>mecánicas de juego</strong> son las reglas interactivas programadas mediante bloques de código que indican qué pasa cuando el jugador realiza una acción (mover una tecla, hacer clic o tocar un objeto). Dan vida y diversión a la simulación.</p>
+        </div>
+        <div class="cases plain">
+          <h4>Casos del mundo real</h4>
+          <ul>
+            <li><strong>Detección de colisión (limpieza marina):</strong> <span class="rule">SI el barco toca un plástico → SUMAR 10 puntos al contador de reciclaje y OCULTAR el plástico.</span></li>
+            <li><strong>Uso de variables (barra de contaminación):</strong> Una variable numérica que aumenta constantemente cada 5 segundos a menos que el jugador pulse sobre molinos eólicos.</li>
+            <li><strong>Condicionales de toma de decisiones:</strong> <span class="rule">SI el jugador elige transporte público → EL ecosistema se mantiene verde; SINO → EL fondo cambia a tono gris/contaminado.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card concept">
+        <div>
+          <span class="tag">CONCEPTO 3</span>
+          <h3>Pensamiento computacional aplicado a retos reales</h3>
+          <p>El <strong>pensamiento computacional</strong> es la capacidad de descomponer un problema del mundo real (como el exceso de residuos) en partes pequeñitas que un ordenador pueda entender y ayudar a solucionar.</p>
+        </div>
+        <div class="cases plain">
+          <h4>Casos del mundo real</h4>
+          <ul>
+            <li><strong>Descomposición:</strong> Dividir el diseño de un juego de recolección en 3 pequeñas tareas: 1) Diseñar escenarios, 2) Programar movimiento del personaje, 3) Programar caída de basura.</li>
+            <li><strong>Reconocimiento de patrones:</strong> Notar que casi todos los juegos de recolección en Scratch usan la misma lógica repetitiva: <em>caer, detectar contacto, sumar puntos y volver a subir.</em></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <p class="keyidea"><strong>Idea clave para recordar:</strong> Programar videojuegos no solo sirve para divertirnos, sino que es una herramienta potente para representar problemas reales de nuestro planeta y proponer soluciones creativas e interactivas.</p>
+  </div>
+</section>
+
+<!-- 1 -->
+<section class="sec" id="conceptos">
+  <div class="in">
+    <div class="kicker">1 · Pensamiento computacional</div>
+    <h2>Resolver problemas como un informático</h2>
+    <p class="intro">Consiste en abordar problemas cotidianos para desarrollar <strong>soluciones creativas y sencillas</strong> en situaciones habituales. Se apoya en cuatro técnicas y habilidades.</p>
+
+    <div class="block">
+      <h3>Técnicas y habilidades</h3>
+      <div data-tabs>
+        <div class="tabs" role="tablist" aria-label="Técnicas y habilidades">
+          <button class="tab" role="tab" id="t1" aria-controls="p1">Descomposición</button>
+          <button class="tab" role="tab" id="t2" aria-controls="p2">Reconocimiento de patrones</button>
+          <button class="tab" role="tab" id="t3" aria-controls="p3">Abstracción</button>
+          <button class="tab" role="tab" id="t4" aria-controls="p4">Realización de algoritmos</button>
+        </div>
+        <div class="panel card" role="tabpanel" id="p1" aria-labelledby="t1">
+          <div class="tech">
+            <div>
+              <svg class="ico" viewBox="0 0 140 70" aria-hidden="true"><rect x="6" y="8" width="54" height="54" rx="6" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M80 35h12" stroke="var(--line-strong)" stroke-width="3" stroke-linecap="round"/><g fill="var(--hl)" stroke="var(--accent)" stroke-width="3"><rect x="100" y="8" width="16" height="24" rx="3"/><rect x="120" y="8" width="16" height="24" rx="3"/><rect x="100" y="38" width="16" height="24" rx="3"/><rect x="120" y="38" width="16" height="24" rx="3"/></g></svg>
+              <h3>Descomposición</h3>
+              <p class="def">Dividir un problema o sistema complejo en partes más pequeñas que se pueden examinar y resolver o diseñar individualmente, ya que resultan más manejables y sencillas.</p>
+            </div>
+            <div class="ex"><div class="lab">Ejemplo</div><p>Preparar un chocolate caliente se divide en partes:</p><ul><li>Calentar la leche</li><li>Servirla en la taza</li><li>Añadir el chocolate en polvo</li><li>Remover</li></ul></div>
           </div>
-          <div class="w-full bg-black/20 rounded-full h-2.5 overflow-hidden">
-            <div id="overall-progress-fill" class="bg-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="panel card" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+          <div class="tech">
+            <div>
+              <svg class="ico" viewBox="0 0 140 70" aria-hidden="true"><g fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"><path d="M14 26l12-18 12 18z"/><rect x="10" y="40" width="28" height="22" rx="3"/></g><path d="M52 24l30 11-30 11M52 46l30-11" stroke="var(--line-strong)" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="98" y="22" width="32" height="26" rx="3" fill="var(--hl)" stroke="var(--accent)" stroke-width="3"/></svg>
+              <h3>Reconocimiento de patrones</h3>
+              <p class="def">Encontrar similitudes o características que comparten los problemas.</p>
+            </div>
+            <div class="ex"><div class="lab">Ejemplo</div><p>Calentar leche para el cacao y calentar agua para una infusión siguen los mismos pasos: cazo, fuego medio-bajo y esperar al vapor. Si reconocemos el patrón, resolvemos los dos con una sola solución.</p></div>
           </div>
-          <p class="text-[11px] text-emerald-100 mt-2 flex items-center justify-between">
-            <span>Retos completados:</span>
-            <strong id="completed-challenges-count">0 / 4</strong>
-          </p>
+        </div>
+        <div class="panel card" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+          <div class="tech">
+            <div>
+              <svg class="ico" viewBox="0 0 140 70" aria-hidden="true"><path d="M30 8l20 11v22L30 52 10 41V19z" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/><path d="M10 19l20 11 20-11M30 30v22" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M68 35h40" stroke="var(--line-strong)" stroke-width="3" stroke-linecap="round"/><path d="M104 28l8 7-8 7" fill="none" stroke="var(--line-strong)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="114" y="22" width="22" height="26" fill="var(--accent)" rx="2"/></svg>
+              <h3>Abstracción</h3>
+              <p class="def">Seleccionar la información relevante, filtrando lo esencial e ignorando detalles no relacionados o irrelevantes.</p>
+            </div>
+            <div class="ex"><div class="lab">Ejemplo</div><p>Para el chocolate caliente da igual si es Colacao, Nesquik u otra marca, o de qué color es la taza. Lo esencial es la dosis: unas dos cucharadas por taza.</p></div>
+          </div>
+        </div>
+        <div class="panel card" role="tabpanel" id="p4" aria-labelledby="t4" hidden>
+          <div class="tech">
+            <div>
+              <svg class="ico" viewBox="0 0 140 70" aria-hidden="true"><g fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"><rect x="4" y="22" width="26" height="26" rx="13"/><rect x="44" y="22" width="26" height="26" rx="2"/><path d="M96 20l15 15-15 15-15-15z"/><rect x="118" y="22" width="20" height="26" rx="10"/></g><g stroke="var(--line-strong)" stroke-width="3" stroke-linecap="round"><path d="M31 35h12M71 35h9M112 35h5"/></g></svg>
+              <h3>Realización de algoritmos</h3>
+              <p class="def">Un algoritmo es un plan, un conjunto de instrucciones a seguir paso a paso para resolver un problema, identificando cada instrucción y planificando el orden en que se deben ejecutar. Los algoritmos se usan cuando se diseñan pasos simples para resolver problemas.</p>
+            </div>
+            <div class="ex"><div class="lab">Ejemplo</div><p>La receta del chocolate, convertida en una lista ordenada de instrucciones sin ambigüedades.</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="note">Fuente: Gobierno de Canarias.</p>
+    </div>
+
+    <div class="block">
+      <h3>La rutina «Pienso – Programo – Pruebo»</h3>
+      <p class="intro" style="margin-top:0;margin-bottom:20px">Para experimentar y probar las soluciones planteadas, se propone desarrollar el pensamiento computacional en el aula con esta rutina.</p>
+      <div class="routine">
+        <div class="card"><span class="n">PASO 1</span><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#i-robot"/></svg><div class="step-t">Pienso</div><p>Divido un problema o sistema complejo en partes más pequeñas que se pueden examinar y resolver o diseñar individualmente, ya que resultan más manejables y sencillas.</p></div>
+        <div class="card"><span class="n">PASO 2</span><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#i-robot"/></svg><div class="step-t">Programo</div><p>Organizo la secuencia de acciones que resuelven el reto planteado con el código correspondiente, robot o dispositivo.</p></div>
+        <div class="card"><span class="n">PASO 3</span><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#i-robot"/></svg><div class="step-t">Pruebo</div><p>Ejecuto y visualizo las acciones programadas.</p></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Pruébalo: programa al robot</h3>
+      <div class="card">
+        <p style="margin-bottom:18px"><b>Pienso:</b> el robot debe llegar a la estrella sin chocar con las rocas. <b>Programo:</b> añade flechas para crear la secuencia. <b>Pruebo:</b> pulsa Ejecutar y observa.</p>
+        <div class="game">
+          <div id="grid" class="grid" aria-label="Tablero del robot, 5 columnas por 4 filas"></div>
+          <div>
+            <div class="pad" role="group" aria-label="Instrucciones">
+              <button class="btn arrow" data-cmd="U" aria-label="Arriba">↑</button>
+              <button class="btn arrow" data-cmd="D" aria-label="Abajo">↓</button>
+              <button class="btn arrow" data-cmd="L" aria-label="Izquierda">←</button>
+              <button class="btn arrow" data-cmd="R" aria-label="Derecha">→</button>
+            </div>
+            <div class="prog" id="prog" aria-live="polite"></div>
+            <div class="pad">
+              <button class="btn main" id="run">Ejecutar</button>
+              <button class="btn" id="undo">Borrar última</button>
+              <button class="btn" id="clear">Empezar de nuevo</button>
+            </div>
+            <div class="msg" id="gmsg" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="sec alt" id="algoritmo">
+  <div class="in">
+    <div class="kicker">2 · Secuencia de instrucciones</div>
+    <h2>El algoritmo</h2>
+    <p class="intro">Un <strong>algoritmo</strong> es una serie estructurada de instrucciones que permiten solucionar un problema en un tiempo determinado. Los algoritmos, conjuntos ordenados y finitos de operaciones, se pueden representar mediante esquemas, pseudocódigo o programarse en lenguajes de programación para su implementación con herramientas informáticas.</p>
+
+    <h3 style="margin-top:36px;font-size:1.2rem">Los algoritmos se caracterizan por lo siguiente</h3>
+    <div class="chars">
+      <div class="char">Incluyen instrucciones precisas y sin ambigüedades.</div>
+      <div class="char">Son finitos, es decir, siempre tienen un final.</div>
+      <div class="char">Sus pasos son sencillos y están organizados de manera ordenada.</div>
+    </div>
+
+    <div class="defgrid">
+      <div class="card"><h3>Pseudocódigo</h3><p>Es un lenguaje diseñado para que los humanos comprendan los algoritmos, facilitando la detección y corrección de errores, pero <b>no puede ser ejecutado en un ordenador</b>.</p></div>
+      <div class="card"><h3>Programa</h3><p>Es la traducción de un algoritmo a un lenguaje de programación capaz de ser entendido por un ordenador y <b>procesado por él</b>.</p></div>
+    </div>
+
+    <div class="block">
+      <h3>Del algoritmo al programa: sumar números</h3>
+      <p class="note" style="margin:-6px 0 16px">El mismo algoritmo, escrito de dos formas y ejecutado en vivo. Se piden números y se suman hasta que se introduce uno negativo.</p>
+      <div data-tabs>
+        <div class="tabs" role="tablist" aria-label="Formas de escribir el algoritmo">
+          <button class="tab" role="tab" id="s1" aria-controls="sp1">Pseudocódigo</button>
+          <button class="tab" role="tab" id="s2" aria-controls="sp2">Código en C</button>
+          <button class="tab" role="tab" id="s3" aria-controls="sp3">Ejecutar el programa</button>
+        </div>
+        <div class="panel" role="tabpanel" id="sp1" aria-labelledby="s1"><pre class="code"><span class="k">INICIO</span>
+  num ← 0
+  suma ← 0
+  <span class="k">REPETIR</span>
+    suma ← suma + num
+    <span class="k">ESCRIBIR</span> <span class="s">"Un número:"</span>
+    <span class="k">LEER</span> num
+  <span class="k">MIENTRAS</span> num ≥ 0
+  <span class="k">ESCRIBIR</span> <span class="s">"La suma es:"</span>, suma
+<span class="k">FIN</span></pre></div>
+        <div class="panel" role="tabpanel" id="sp2" aria-labelledby="s2" hidden><pre class="code"><span class="c">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> num=0, suma=0;
+
+    <span class="k">do</span> {
+        suma=suma+num;
+        printf(<span class="s">"un número: "</span>);
+        scanf(<span class="s">"%d"</span>,&amp;num);
+    } <span class="k">while</span>(num&gt;=0);
+    printf(<span class="s">"suma es: %d"</span>,suma);
+    <span class="k">return</span> 0;
+}</pre></div>
+        <div class="panel" role="tabpanel" id="sp3" aria-labelledby="s3" hidden>
+          <div class="term" id="term" aria-live="polite"></div>
+          <form class="runrow" id="sumform">
+            <label for="num" class="note" style="margin:0">Número:</label>
+            <input class="field" id="num" type="number" step="1" value="5" inputmode="numeric">
+            <button class="btn main" type="submit" id="sumgo">Enviar</button>
+            <button class="btn" type="button" id="sumreset">Reiniciar</button>
+          </form>
+          <p class="note">Prueba con 5, 3 y 8 y termina con −1.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="sec" id="diagramas">
+  <div class="in">
+    <div class="kicker">3 · Representación gráfica de los algoritmos</div>
+    <h2>Diagramas de flujo</h2>
+    <p class="intro">Los esquemas y gráficos facilitan la comprensión visual de información. Los algoritmos también pueden representarse con <strong>diagramas de flujo</strong>, que muestran la secuencia de acciones a seguir utilizando símbolos conectados por flechas.</p>
+
+    <div class="block">
+      <h3>Los símbolos</h3>
+      <div class="card symbols">
+        <div class="symlist" id="symlist" role="group" aria-label="Símbolos del diagrama de flujo"></div>
+        <div class="symdetail" id="symdetail" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Ejemplo 1: ¿puedo obtener la licencia?</h3>
+      <div class="card flow">
+        <svg id="fa" viewBox="0 0 540 510" role="img" aria-label="Diagrama de flujo: Inicio, lee edad, decisión edad mayor o igual a 18; sí licencia otorgada, no licencia negada; Fin">
+          <defs>
+            <marker id="fa-h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="fa-hon" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-on" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <path class="edge" id="a1" d="M260 54V82"/>
+          <path class="edge" id="a2" d="M260 126V161"/>
+          <path class="edge" id="a3" d="M160 225H90V328"/>
+          <path class="edge" id="a4" d="M360 225H436V328"/>
+          <path class="edge" id="a5" d="M92 372V416H260V446"/>
+          <path class="edge" id="a6" d="M436 372V416H260"/>
+          <text class="lbl" x="118" y="215">Sí</text><text class="lbl" x="376" y="215">No</text>
+          <g class="node" id="n-start"><rect class="fl-shape" x="190" y="10" width="140" height="44" rx="22"/><text x="260" y="37">Inicio</text></g>
+          <g class="node" id="n-read"><polygon class="fl-shape" points="199,84 345,84 329,126 175,126"/><text x="260" y="110">Lee edad</text></g>
+          <g class="node" id="n-dec"><polygon class="fl-shape" points="260,163 360,225 260,287 160,225"/><text x="260" y="230">Edad ≥ 18</text></g>
+          <g class="node" id="n-yes"><polygon class="fl-shape" points="36,330 172,330 156,372 20,372"/><text x="94" y="356">Licencia otorgada</text></g>
+          <g class="node" id="n-no"><polygon class="fl-shape" points="380,330 516,330 500,372 364,372"/><text x="440" y="356">Licencia negada</text></g>
+          <g class="node" id="n-end"><rect class="fl-shape" x="190" y="448" width="140" height="44" rx="22"/><text x="260" y="475">Fin</text></g>
+        </svg>
+        <div>
+          <div class="ctl">
+            <label for="edad">Introduce tu edad</label>
+            <input class="field" id="edad" type="number" min="0" max="120" step="1" value="17" inputmode="numeric">
+          </div>
+          <div class="result" id="edadres" aria-live="polite"></div>
+          <p class="note">El camino recorrido se ilumina. Cambia la edad para ver cómo la decisión elige una rama u otra.</p>
         </div>
       </div>
     </div>
 
-    <!-- Container wrapper that formats like A4 in A4 mode or as cards in interactive mode -->
-    <div id="unit-container" class="space-y-10">
-
-      <!-- INTRODUCTORY SECTION: Videojuegos Sostenibles y Simuladores Ambientales -->
-      <section id="sec-0" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <!-- Section Header -->
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Introducción Práctica</span>
-              <span>•</span>
-              <span>Contexto Social y Ecológico</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>🎮</span> Videojuegos Sostenibles y Simuladores Ambientales
-            </h2>
-          </div>
+    <div class="block">
+      <h3>Ejemplo 2: la lámpara no funciona</h3>
+      <div class="card flow">
+        <svg id="fb" viewBox="0 0 560 510" role="img" aria-label="Diagrama de flujo: la lámpara no funciona; si no está enchufada, enchufarla; si el foco está quemado, cambiarlo; si no, comprar una lámpara nueva">
+          <defs>
+            <marker id="fb-h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="fb-hon" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-on" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <path class="edge" id="b1" d="M260 60V93"/>
+          <path class="edge" id="b2" d="M360 165H408"/>
+          <path class="edge" id="b3" d="M260 235V268"/>
+          <path class="edge" id="b4" d="M360 340H408"/>
+          <path class="edge" id="b5" d="M260 410V438"/>
+          <text class="lbl" x="372" y="155">No</text><text class="lbl" x="270" y="257">Sí</text><text class="lbl" x="372" y="330">Sí</text><text class="lbl" x="270" y="430">No</text>
+          <g class="node" id="m-start"><rect class="fl-shape" x="150" y="10" width="220" height="50" rx="8"/><text x="260" y="40">LA LÁMPARA NO FUNCIONA</text></g>
+          <g class="node" id="m-d1"><polygon class="fl-shape" points="260,95 360,165 260,235 160,165"/><text x="260" y="162">¿Está enchufada</text><text x="260" y="179">la lámpara?</text></g>
+          <g class="node" id="m-a1"><rect class="fl-shape" x="410" y="140" width="140" height="50" rx="8"/><text x="480" y="162">ENCHUFAR LA</text><text x="480" y="179">LÁMPARA</text></g>
+          <g class="node" id="m-d2"><polygon class="fl-shape" points="260,270 360,340 260,410 160,340"/><text x="260" y="337">¿Está quemado</text><text x="260" y="354">el foco?</text></g>
+          <g class="node" id="m-a2"><rect class="fl-shape" x="410" y="315" width="140" height="50" rx="8"/><text x="480" y="345">CAMBIAR FOCO</text></g>
+          <g class="node" id="m-end"><rect class="fl-shape" x="150" y="440" width="220" height="50" rx="8"/><text x="260" y="462">COMPRAR NUEVA</text><text x="260" y="479">LÁMPARA</text></g>
+        </svg>
+        <div>
+          <div class="ctl"><span class="q" id="q1">¿Está enchufada la lámpara?</span>
+            <div class="seg" role="group" aria-labelledby="q1"><button id="plugY" aria-pressed="true">Sí</button><button id="plugN" aria-pressed="false">No</button></div></div>
+          <div class="ctl"><span class="q" id="q2">¿Está quemado el foco?</span>
+            <div class="seg" role="group" aria-labelledby="q2"><button id="burnY" aria-pressed="false">Sí</button><button id="burnN" aria-pressed="true">No</button></div></div>
+          <div class="result" id="lampres" aria-live="polite"></div>
+          <p class="note">Si la lámpara no está enchufada, la segunda pregunta ya no se hace: la decisión corta el camino.</p>
         </div>
-
-        <!-- Introductory Context Card -->
-        <div class="mb-6 p-4 sm:p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border-l-4 border-emerald-500 text-emerald-900 dark:text-emerald-200 shadow-xs">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">🌱</span>
-            <div>
-              <h4 class="font-bold text-sm text-emerald-800 dark:text-emerald-300 uppercase tracking-wide">¿SABÍAS QUÉ?</h4>
-              <p class="mt-1 font-medium leading-relaxed">
-                <strong>¿Un videojuego puede ayudar a salvar el planeta?</strong> En esta unidad comprenderás cómo la programación y el pensamiento computacional nos permiten crear simulaciones e historias interactivas para concienciar sobre el medio ambiente.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Concept 1 -->
-        <div class="mb-8 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 font-bold text-xs rounded-md">CONCEPTO 1</span>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Simuladores Ambientales e Impacto Social</h3>
-          </div>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-4 text-sm">
-            Un <strong>simulador ambiental</strong> es un programa informático que recrea un ecosistema o un problema ecológico real mediante reglas lógicas. Permite a los usuarios experimentar decisiones ambientales en un entorno seguro y observar sus consecuencias en tiempo real.
-          </p>
-
-          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3 text-xs sm:text-sm">
-            <h4 class="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-xs">💡 Casos del mundo real:</h4>
-            <ul class="space-y-3 text-slate-600 dark:text-slate-300">
-              <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
-                <span><strong>Terra Nil:</strong> Videojuego enfocado en limpiar suelos contaminados, reforestar bosques y reintroducir fauna sin dejar huella.</span>
-                <a href="https://youtu.be/F8eYqNNxICE?si=tQ-ZwS0dm07Yd_L6" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition-all shrink-0">
-                  <i class="fa-brands fa-youtube"></i> Ver tráiler
-                </a>
-              </li>
-              <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
-                <span><strong>Simuladores de Ecosistemas en Scratch:</strong> Proyectos interactivos para ajustar variables como la temperatura global o la tala de árboles.</span>
-                <a href="https://scratch.mit.edu/projects/19691373" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition-all shrink-0">
-                  <i class="fa-solid fa-gamepad"></i> Probar Ecosistemas
-                </a>
-              </li>
-              <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <span><strong>Calculadoras de Huella Ecológica / Digital:</strong> Aplicaciones que simulan el consumo de recursos según hábitos diarios.</span>
-                <a href="https://scratch.mit.edu/projects/1253576811" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition-all shrink-0">
-                  <i class="fa-solid fa-leaf"></i> Probar Huella Digital
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Concept 2 -->
-        <div class="mb-8 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="px-2.5 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300 font-bold text-xs rounded-md">CONCEPTO 2</span>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Mecánicas de Juego en Scratch (Lógica y Reglas)</h3>
-          </div>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-4 text-sm">
-            Las <strong>mecánicas de juego</strong> son las reglas interactivas programadas mediante bloques de código que indican qué pasa cuando el jugador realiza una acción (mover una tecla, hacer clic o tocar un objeto). Dan vida y diversión a la simulación.
-          </p>
-
-          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-xs sm:text-sm">
-            <h4 class="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-xs mb-2">💡 Casos del mundo real:</h4>
-            <ul class="space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-5">
-              <li><strong>Detección de Colisión (Limpieza marina):</strong> <em>SI el barco toca un plástico &rarr; SUMAR 10 puntos al contador de reciclaje y OCULTAR el plástico.</em></li>
-              <li><strong>Uso de Variables (Barra de Contaminación):</strong> Una variable numérica que aumenta constantemente cada 5 segundos a menos que el jugador pulse sobre molinos eólicos.</li>
-              <li><strong>Condicionales de Toma de Decisiones:</strong> <em>SI el jugador elige transporte público &rarr; EL ecosistema se mantiene verde; SINO &rarr; EL fondo cambia a tono gris/contaminado.</em></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Concept 3 -->
-        <div class="mb-6 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="px-2.5 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 font-bold text-xs rounded-md">CONCEPTO 3</span>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pensamiento Computacional Aplicado a Retos Reales</h3>
-          </div>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-4 text-sm">
-            El <strong>pensamiento computacional</strong> es la capacidad de descomponer un problema del mundo real (como el exceso de residuos) en partes pequeñitas que un ordenador pueda entender y ayudar a solucionar.
-          </p>
-
-          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-xs sm:text-sm">
-            <h4 class="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-xs mb-2">💡 Casos del mundo real:</h4>
-            <ul class="space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-5">
-              <li><strong>Descomposición:</strong> Dividir el diseño de un juego de recolección en 3 pequeñas tareas: 1) Diseñar escenarios, 2) Programar movimiento del personaje, 3) Programar caída de basura.</li>
-              <li><strong>Reconocimiento de Patrones:</strong> Notar que casi todos los juegos de recolección en Scratch usan la misma lógica repetitiva: <em>caer, detectar contacto, sumar puntos y volver a subir.</em></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Key Idea Footer -->
-        <div class="p-4 rounded-xl bg-slate-900 text-white text-center">
-          <p class="text-xs sm:text-sm font-medium">
-            🌱 <strong>Idea clave para recordar:</strong> Programar videojuegos no solo sirve para divertirnos, sino que es una herramienta potente para representar problemas reales de nuestro planeta y proponer soluciones creativas e interactivas.
-          </p>
-        </div>
-      </section>
-
-      <!-- SECTION 1: ¿Qué es el Pensamiento Computacional? -->
-      <section id="sec-1" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <!-- Section Header -->
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Sección 01</span>
-              <span>•</span>
-              <span>Fundamentos</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>💻</span> ¿Qué es el Pensamiento Computacional?
-            </h2>
-          </div>
-        </div>
-
-        <!-- Takeaway Card -->
-        <div class="mb-6 p-4 sm:p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 text-amber-900 dark:text-amber-200 shadow-xs">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">💡</span>
-            <div>
-              <h4 class="font-bold text-sm text-amber-800 dark:text-amber-300 uppercase tracking-wide">TAKEAWAY / IDEA CLAVE:</h4>
-              <p class="mt-1 font-medium leading-relaxed">
-                El <strong>pensamiento computacional</strong> es una forma de analizar y resolver problemas cotidianos estructurando la información como lo haría un informático, para obtener soluciones claras, creativas y ejecutables.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-section 1.1 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 1.1. Concepto General
-          </h3>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed pl-4 border-l-2 border-slate-100 dark:border-slate-800">
-            Consiste en un método para abordar situaciones complejas utilizando datos, analizando la estructura del problema y diseñando pasos ordenados para resolverlo. <strong>No implica pensar como un ordenador</strong>, sino pensar estratégicamente para que un ordenador (o una persona) pueda ejecutar una solución.
-          </p>
-        </div>
-
-        <!-- Sub-section 1.2 Table -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 1.2. Las 4 Técnicas y Habilidades Fundamentales
-          </h3>
-          <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">
-                <tr>
-                  <th class="py-3 px-4 w-12 text-center">N.º</th>
-                  <th class="py-3 px-4 w-48">Técnica / Habilidad</th>
-                  <th class="py-3 px-4">Explicación Didáctica</th>
-                  <th class="py-3 px-4">Ejemplo Práctico</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td class="py-3.5 px-4 font-bold text-brand-600 text-center bg-slate-50/50 dark:bg-slate-800/30">1</td>
-                  <td class="py-3.5 px-4 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="p-1.5 bg-blue-100 text-blue-700 rounded-lg dark:bg-blue-900/50 dark:text-blue-300 text-xs"><i class="fa-solid fa-puzzle-piece"></i></span>
-                    Descomposición
-                  </td>
-                  <td class="py-3.5 px-4">Dividir un problema o sistema complejo en partes más pequeñas y manejables para resolverlas individualmente.</td>
-                  <td class="py-3.5 px-4 text-xs italic bg-slate-50/30 dark:bg-slate-800/20">Dividir el diseño de un videojuego en: personajes, escenarios, sonido y puntuación.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td class="py-3.5 px-4 font-bold text-brand-600 text-center bg-slate-50/50 dark:bg-slate-800/30">2</td>
-                  <td class="py-3.5 px-4 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="p-1.5 bg-purple-100 text-purple-700 rounded-lg dark:bg-purple-900/50 dark:text-purple-300 text-xs"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
-                    Reconocimiento de Patrones
-                  </td>
-                  <td class="py-3.5 px-4">Identificar similitudes, tendencias o características repetitivas entre distintos problemas.</td>
-                  <td class="py-3.5 px-4 text-xs italic bg-slate-50/30 dark:bg-slate-800/20">Darte cuenta de que todos los juegos de carreras necesitan un contador de tiempo.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td class="py-3.5 px-4 font-bold text-brand-600 text-center bg-slate-50/50 dark:bg-slate-800/30">3</td>
-                  <td class="py-3.5 px-4 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="p-1.5 bg-emerald-100 text-emerald-700 rounded-lg dark:bg-emerald-900/50 dark:text-emerald-300 text-xs"><i class="fa-solid fa-filter"></i></span>
-                    Abstracción
-                  </td>
-                  <td class="py-3.5 px-4">Seleccionar la información realmente importante, filtrando lo esencial e ignorando detalles irrelevantes.</td>
-                  <td class="py-3.5 px-4 text-xs italic bg-slate-50/30 dark:bg-slate-800/20">En un mapa de metro, importar solo las paradas y conexiones, ignorando los edificios de la superficie.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td class="py-3.5 px-4 font-bold text-brand-600 text-center bg-slate-50/50 dark:bg-slate-800/30">4</td>
-                  <td class="py-3.5 px-4 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="p-1.5 bg-amber-100 text-amber-700 rounded-lg dark:bg-amber-900/50 dark:text-amber-300 text-xs"><i class="fa-solid fa-route"></i></span>
-                    Diseño de Algoritmos
-                  </td>
-                  <td class="py-3.5 px-4">Crear un plan o conjunto de instrucciones paso a paso para resolver el problema.</td>
-                  <td class="py-3.5 px-4 text-xs italic bg-slate-50/30 dark:bg-slate-800/20">Escribir la receta detallada para cocinar un plato paso a paso.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Sub-section 1.3 Methodology -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 1.3. Metodología de Trabajo: "Pienso - Programo - Pruebo"
-          </h3>
-          <p class="text-slate-600 dark:text-slate-300 mb-4 text-sm">
-            Para aplicar el pensamiento computacional en el aula o en proyectos reales, seguimos tres pasos sencillos:
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:shadow-md transition-all">
-              <div class="text-3xl mb-2">🧠</div>
-              <h4 class="font-bold text-slate-900 dark:text-white mb-1">1. PIENSO</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400">
-                Analizo el reto. Aplico la <em>descomposición</em> y la <em>abstracción</em> para definir qué pasos necesito.
-              </p>
-            </div>
-            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:shadow-md transition-all">
-              <div class="text-3xl mb-2">💻</div>
-              <h4 class="font-bold text-slate-900 dark:text-white mb-1">2. PROGRAMO</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400">
-                Organizo la secuencia lógica de acciones escribiendo código o utilizando bloques/instrucciones.
-              </p>
-            </div>
-            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:shadow-md transition-all">
-              <div class="text-3xl mb-2">🚀</div>
-              <h4 class="font-bold text-slate-900 dark:text-white mb-1">3. PRUEBO</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400">
-                Ejecuto el programa, compruebo los resultados y corrijo los posibles errores (<em>depuración</em>).
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notes Box Section 1 -->
-        <div class="mt-6 p-4 rounded-xl border border-brand-200 bg-brand-50/40 dark:bg-slate-800/80 dark:border-slate-700">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-bold text-sm text-brand-900 dark:text-brand-300 flex items-center gap-2">
-              <i class="fa-solid fa-pen-to-square"></i> 📝 RINCÓN DE APUNTES / MIS DUDAS
-            </h4>
-            <span class="text-[11px] text-slate-400 italic">Se guarda automáticamente</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Espacio para anotar conceptos que te resulten difíciles o ejemplos propios:</p>
-          <textarea id="notes-1" oninput="saveNote(1)" rows="3" class="note-textarea w-full p-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Escribe aquí tus notas personales sobre el pensamiento computacional..."></textarea>
-        </div>
-      </section>
-
-      <!-- SECTION 2: Secuencia de Instrucciones -->
-      <section id="sec-2" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Sección 02</span>
-              <span>•</span>
-              <span>Algoritmos & Código</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>📜</span> Secuencia de Instrucciones: Algoritmo, Pseudocódigo y Programa
-            </h2>
-          </div>
-        </div>
-
-        <!-- Takeaway Card -->
-        <div class="mb-6 p-4 sm:p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 text-amber-900 dark:text-amber-200 shadow-xs">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">💡</span>
-            <div>
-              <h4 class="font-bold text-sm text-amber-800 dark:text-amber-300 uppercase tracking-wide">TAKEAWAY / IDEA CLAVE:</h4>
-              <p class="mt-1 font-medium leading-relaxed">
-                Un <strong>algoritmo</strong> es la receta/plan, el <strong>pseudocódigo</strong> es su borrador en lenguaje humano y el <strong>programa</strong> es la traducción final a un lenguaje que la máquina entiende.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-section 2.1 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 2.1. El Algoritmo
-          </h3>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed pl-4 border-l-2 border-slate-100 dark:border-slate-800 mb-4">
-            Un <strong>algoritmo</strong> es un conjunto estructurado y ordenado de instrucciones que permiten resolver un problema o realizar una tarea en un tiempo determinado.
-          </p>
-          
-          <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-3">Propiedades indispensables de un algoritmo:</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
-              <div class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-sm mb-1">
-                <i class="fa-solid fa-bullseye text-brand-600"></i> Preciso
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-400">Cada paso debe ser claro y sin ambigüedades.</p>
-            </div>
-            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
-              <div class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-sm mb-1">
-                <i class="fa-solid fa-hourglass-end text-brand-600"></i> Finito
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-400">Debe tener un inicio y un final definidos (no dura infinitamente).</p>
-            </div>
-            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
-              <div class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-sm mb-1">
-                <i class="fa-solid fa-arrow-down-short-wide text-brand-600"></i> Ordenado
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-400">Las instrucciones siguen un paso a paso strictly secuencial o lógico.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-section 2.2 Table -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 2.2. Comparativa: Algoritmo vs. Pseudocódigo vs. Programa
-          </h3>
-          <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">
-                <tr>
-                  <th class="py-3 px-4">Concepto</th>
-                  <th class="py-3 px-4">¿Qué es?</th>
-                  <th class="py-3 px-4">¿Quién lo entiende?</th>
-                  <th class="py-3 px-4 text-center">¿Se ejecuta en ordenador?</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Algoritmo</td>
-                  <td class="py-3.5 px-4">La idea y secuencia de pasos lógica para resolver un problema.</td>
-                  <td class="py-3.5 px-4"><span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs font-semibold">Personas</span></td>
-                  <td class="py-3.5 px-4 text-center text-rose-500 font-bold">❌ No</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Pseudocódigo</td>
-                  <td class="py-3.5 px-4">Lenguaje intermedio (parecido al humano) para diseñar y corregir algoritmos fácilmente.</td>
-                  <td class="py-3.5 px-4"><span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs font-semibold">Personas (programadores)</span></td>
-                  <td class="py-3.5 px-4 text-center text-rose-500 font-bold">❌ No</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Programa</td>
-                  <td class="py-3.5 px-4">Código escrito en un lenguaje de programación específico (Python, C, Scratch).</td>
-                  <td class="py-3.5 px-4"><span class="px-2 py-1 bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 rounded text-xs font-semibold">El ordenador / Dispositivo</span></td>
-                  <td class="py-3.5 px-4 text-center text-emerald-600 font-bold">✅ Sí</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Notes Box Section 2 -->
-        <div class="mt-6 p-4 rounded-xl border border-brand-200 bg-brand-50/40 dark:bg-slate-800/80 dark:border-slate-700">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-bold text-sm text-brand-900 dark:text-brand-300 flex items-center gap-2">
-              <i class="fa-solid fa-pen-to-square"></i> 📝 RINCÓN DE APUNTES / MIS DUDAS
-            </h4>
-            <span class="text-[11px] text-slate-400 italic">Se guarda automáticamente</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Escribe aquí la diferencia entre Pseudocódigo y Programa con tus palabras:</p>
-          <textarea id="notes-2" oninput="saveNote(2)" rows="3" class="note-textarea w-full p-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Escribe aquí con tus propias palabras la diferencia..."></textarea>
-        </div>
-      </section>
-
-      <!-- SECTION 3: Representación Gráfica -->
-      <section id="sec-3" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Sección 03</span>
-              <span>•</span>
-              <span>Representación Visual</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>📊</span> Representación Gráfica: Diagramas de Flujo
-            </h2>
-          </div>
-        </div>
-
-        <!-- Takeaway Card -->
-        <div class="mb-6 p-4 sm:p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 text-amber-900 dark:text-amber-200 shadow-xs">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">💡</span>
-            <div>
-              <h4 class="font-bold text-sm text-amber-800 dark:text-amber-300 uppercase tracking-wide">TAKEAWAY / IDEA CLAVE:</h4>
-              <p class="mt-1 font-medium leading-relaxed">
-                Un <strong>diagrama de flujo</strong> representa visualmente un algoritmo usando símbolos estandarizados unidos mediante flechas de flujo.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-section 3.1 Symbols Table -->
-        <div class="mb-8">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 3.1. Simbología Estándar de los Diagramas de Flujo
-          </h3>
-          <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">
-                <tr>
-                  <th class="py-3 px-4 w-32">Símbolo Visual</th>
-                  <th class="py-3 px-4 w-48">Nombre del Símbolo</th>
-                  <th class="py-3 px-4">Función / Uso en el Diagrama</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3 px-4">
-                    <div class="w-24 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/60 border-2 border-indigo-500 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xs">
-                      ( Óvalo )
-                    </div>
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Inicio / Fin</td>
-                  <td class="py-3.5 px-4">Señala el comienzo o la conclusión del algoritmo.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3 px-4">
-                    <div class="w-24 h-9 rounded-md bg-blue-100 dark:bg-blue-900/60 border-2 border-blue-500 flex items-center justify-center text-blue-700 dark:text-blue-300 font-bold text-xs">
-                      [ Rectángulo ]
-                    </div>
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Proceso</td>
-                  <td class="py-3.5 px-4">Indica una acción, operación matemática o tarea a realizar.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3 px-4">
-                    <div class="w-24 h-9 rounded-md bg-emerald-100 dark:bg-emerald-900/60 border-2 border-emerald-500 transform -skew-x-12 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-bold text-xs">
-                      <span class="transform skew-x-12">[/ Entrada /]</span>
-                    </div>
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Entrada / Salida</td>
-                  <td class="py-3.5 px-4">Captura datos de entrada (ej. leer edad) o muestra resultados.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3 px-4">
-                    <div class="w-20 h-10 bg-amber-100 dark:bg-amber-900/60 border-2 border-amber-500 rotate-45 flex items-center justify-center mx-auto text-amber-800 dark:text-amber-300 font-bold text-xs">
-                      <span class="-rotate-45 text-[10px]">&lt; Rombo &gt;</span>
-                    </div>
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Decisión</td>
-                  <td class="py-3.5 px-4">Evalúa una condición (Sí/No) y divide el camino según el resultado.</td>
-                </tr>
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                  <td class="py-3 px-4 text-center">
-                    <div class="text-xl font-bold text-slate-700 dark:text-slate-300">---></div>
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">Línea de flujo</td>
-                  <td class="py-3.5 px-4">Flechas que marcan el orden estricto de ejecución de las acciones.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Sub-section 3.2 Interactive Flowchart Simulator -->
-        <div class="mb-8">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <i class="fa-solid fa-circle-dot text-brand-600 text-xs"></i> 3.2. Ejemplo Interactivo: Estructura de Decisión en Diagrama de Flujo
-            </h3>
-            <span class="no-print text-xs bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 px-2.5 py-1 rounded-full font-medium">
-              ⚡ Simulador Interactivo
-            </span>
-          </div>
-
-          <!-- Age Input Simulator Controls (Interactive mode only) -->
-          <div class="no-print mb-6 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-4">
-            <label for="flow-age-input" class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Prueba una Edad para ejecutar el Diagrama:
-            </label>
-            <input type="number" id="flow-age-input" value="18" min="0" max="120" class="w-24 px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-900 dark:text-white text-center font-mono font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none">
-            <button onclick="simulateFlowchart()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2">
-              <i class="fa-solid fa-play text-xs"></i> Simular Recorrido
-            </button>
-            <span id="flow-status-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-              Listo para simular
-            </span>
-          </div>
-
-          <!-- Flowchart Visual Graph Structure -->
-          <div class="p-6 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col items-center space-y-4 font-sans relative overflow-x-auto">
-            
-            <!-- STEP 1: INICIO -->
-            <div id="flow-step-start" class="flow-node w-36 h-10 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-md border-2 border-transparent">
-              [ INICIO ]
-            </div>
-
-            <i class="fa-solid fa-arrow-down text-slate-400"></i>
-
-            <!-- STEP 2: LECTURA -->
-            <div id="flow-step-read" class="flow-node w-48 h-10 rounded-md bg-emerald-600 text-white font-semibold text-xs transform -skew-x-12 flex items-center justify-center shadow-md border-2 border-transparent">
-              <span class="transform skew-x-12">[/ Lee Edad /]</span>
-            </div>
-
-            <i class="fa-solid fa-arrow-down text-slate-400"></i>
-
-            <!-- STEP 3: DECISIÓN (ROMBO) -->
-            <div id="flow-step-decision" class="flow-node w-36 h-20 bg-amber-500 text-slate-950 font-bold text-xs rotate-45 flex items-center justify-center shadow-md my-2 border-2 border-transparent">
-              <span class="-rotate-45 text-center px-2">¿Edad &gt;= 18?</span>
-            </div>
-
-            <!-- Decision Split Branches -->
-            <div class="w-full max-w-md flex justify-between items-start pt-2 px-4">
-              <!-- YES BRANCH -->
-              <div class="flex flex-col items-center w-1/2 pr-2">
-                <span id="flow-badge-yes" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-2 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 rounded">SÍ</span>
-                <i class="fa-solid fa-arrow-down text-slate-400 mb-2"></i>
-                <div id="flow-step-granted" class="flow-node w-36 p-2 rounded-md bg-emerald-600 text-white font-semibold text-xs text-center shadow-md border-2 border-transparent">
-                  [/ Licencia Otorgada /]
-                </div>
-              </div>
-
-              <!-- NO BRANCH -->
-              <div class="flex flex-col items-center w-1/2 pl-2">
-                <span id="flow-badge-no" class="text-xs font-bold text-rose-600 dark:text-rose-400 mb-2 px-2 py-0.5 bg-rose-100 dark:bg-rose-950/60 rounded">NO</span>
-                <i class="fa-solid fa-arrow-down text-slate-400 mb-2"></i>
-                <div id="flow-step-denied" class="flow-node w-36 p-2 rounded-md bg-rose-600 text-white font-semibold text-xs text-center shadow-md border-2 border-transparent">
-                  [/ Licencia Negada /]
-                </div>
-              </div>
-            </div>
-
-            <!-- Flow merge arrows -->
-            <div class="w-full max-w-md flex justify-center items-center relative my-2">
-              <div class="border-b-2 border-slate-300 dark:border-slate-700 w-1/2 h-1"></div>
-            </div>
-
-            <i class="fa-solid fa-arrow-down text-slate-400"></i>
-
-            <!-- STEP 4: FIN -->
-            <div id="flow-step-end" class="flow-node w-36 h-10 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shadow-md border-2 border-transparent">
-              [ FIN ]
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Notes Box Section 3 -->
-        <div class="mt-6 p-4 rounded-xl border border-brand-200 bg-brand-50/40 dark:bg-slate-800/80 dark:border-slate-700">
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-bold text-sm text-brand-900 dark:text-brand-300 flex items-center gap-2">
-              <i class="fa-solid fa-pen-to-square"></i> 📝 RINCÓN DE APUNTES / MIS DUDAS
-            </h4>
-            <span class="text-[11px] text-slate-400 italic">Se guarda automáticamente</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Dibuja o anota un símbolo que necesites recordar especialmente:</p>
-          <textarea id="notes-3" oninput="saveNote(3)" rows="3" class="note-textarea w-full p-3 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Escribe notas sobre los símbolos de los diagramas..."></textarea>
-        </div>
-      </section>
-
-      <!-- SECTION 4: Retos Rápidos y Ejercicios Prácticos -->
-      <section id="sec-4" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Sección 04</span>
-              <span>•</span>
-              <span>Práctica & Desafíos</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>🎯</span> Retos Rápidos y Ejercicios Prácticos
-            </h2>
-          </div>
-        </div>
-
-        <!-- RETO 1: Relaciona los Conceptos -->
-        <div class="mb-10 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span class="px-2 py-0.5 bg-brand-600 text-white text-xs rounded-md">Reto 1</span>
-              Relaciona los Conceptos
-            </h3>
-            <span id="reto1-status" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Sin verificar</span>
-          </div>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-4 italic">
-            Selecciona la letra de la opción correspondiente para cada habilidad:
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <!-- Concept 1 -->
-            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
-              <span class="font-bold text-slate-800 dark:text-slate-200">1. Descomposición</span>
-              <select id="r1-q1" class="px-2.5 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">Selecciona...</option>
-                <option value="A">Opción A</option>
-                <option value="B">Opción B</option>
-                <option value="C">Opción C</option>
-                <option value="D">Opción D</option>
-              </select>
-            </div>
-            <!-- Concept 2 -->
-            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
-              <span class="font-bold text-slate-800 dark:text-slate-200">2. Patrones</span>
-              <select id="r1-q2" class="px-2.5 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">Selecciona...</option>
-                <option value="A">Opción A</option>
-                <option value="B">Opción B</option>
-                <option value="C">Opción C</option>
-                <option value="D">Opción D</option>
-              </select>
-            </div>
-            <!-- Concept 3 -->
-            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
-              <span class="font-bold text-slate-800 dark:text-slate-200">3. Abstracción</span>
-              <select id="r1-q3" class="px-2.5 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">Selecciona...</option>
-                <option value="A">Opción A</option>
-                <option value="B">Opción B</option>
-                <option value="C">Opción C</option>
-                <option value="D">Opción D</option>
-              </select>
-            </div>
-            <!-- Concept 4 -->
-            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
-              <span class="font-bold text-slate-800 dark:text-slate-200">4. Algoritmo</span>
-              <select id="r1-q4" class="px-2.5 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">Selecciona...</option>
-                <option value="A">Opción A</option>
-                <option value="B">Opción B</option>
-                <option value="C">Opción C</option>
-                <option value="D">Opción D</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Definitions Reference -->
-          <div class="mt-4 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
-            <p><strong>A.</strong> Quedarse solo con lo importante e ignorar detalles secundarios.</p>
-            <p><strong>B.</strong> Crear una secuencia de pasos ordenados para resolver el problema.</p>
-            <p><strong>C.</strong> Dividir un problema complejo en partes más pequeñas.</p>
-            <p><strong>D.</strong> Encontrar similitudes o características repetitivas entre problemas.</p>
-          </div>
-
-          <div class="mt-4 flex items-center justify-between">
-            <button onclick="checkReto1()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm">
-              <i class="fa-solid fa-check mr-1"></i> Comprobar Reto 1
-            </button>
-            <div id="reto1-feedback" class="text-xs font-semibold"></div>
-          </div>
-        </div>
-
-        <!-- RETO 2: Completa los Huecos -->
-        <div class="mb-10 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span class="px-2 py-0.5 bg-brand-600 text-white text-xs rounded-md">Reto 2</span>
-              Completa los Huecos
-            </h3>
-            <span id="reto2-status" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Sin verificar</span>
-          </div>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
-            Opciones disponibles: <span class="font-bold text-brand-600 dark:text-brand-400">(finito - programa - pseudocódigo - ambiguas - decisión)</span>
-          </p>
-
-          <div class="space-y-3 text-sm text-slate-800 dark:text-slate-200">
-            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2">
-              <span>1. Un algoritmo debe ser</span>
-              <select id="r2-q1" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">...</option>
-                <option value="finito">finito</option>
-                <option value="programa">programa</option>
-                <option value="pseudocódigo">pseudocódigo</option>
-                <option value="ambiguas">ambiguas</option>
-                <option value="decisión">decisión</option>
-              </select>
-              <span>, lo que significa que siempre debe tener un final.</span>
-            </div>
-
-            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2">
-              <span>2. Las instrucciones de un algoritmo no pueden ser</span>
-              <select id="r2-q2" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">...</option>
-                <option value="finito">finito</option>
-                <option value="programa">programa</option>
-                <option value="pseudocódigo">pseudocódigo</option>
-                <option value="ambiguas">ambiguas</option>
-                <option value="decisión">decisión</option>
-              </select>
-              <span>.</span>
-            </div>
-
-            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2">
-              <span>3. El</span>
-              <select id="r2-q3" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">...</option>
-                <option value="finito">finito</option>
-                <option value="programa">programa</option>
-                <option value="pseudocódigo">pseudocódigo</option>
-                <option value="ambiguas">ambiguas</option>
-                <option value="decisión">decisión</option>
-              </select>
-              <span>ayuda a los humanos a diseñar algoritmos pero no se puede ejecutar en una computadora.</span>
-            </div>
-
-            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2">
-              <span>4. Para pasar las instrucciones a un ordenador, debemos traducirlas a un</span>
-              <select id="r2-q4" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">...</option>
-                <option value="finito">finito</option>
-                <option value="programa">programa</option>
-                <option value="pseudocódigo">pseudocódigo</option>
-                <option value="ambiguas">ambiguas</option>
-                <option value="decisión">decisión</option>
-              </select>
-              <span>.</span>
-            </div>
-
-            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2">
-              <span>5. En un diagrama de flujo, el símbolo del rombo representa una</span>
-              <select id="r2-q5" class="px-2 py-1 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
-                <option value="">...</option>
-                <option value="finito">finito</option>
-                <option value="programa">programa</option>
-                <option value="pseudocódigo">pseudocódigo</option>
-                <option value="ambiguas">ambiguas</option>
-                <option value="decisión">decisión</option>
-              </select>
-              <span>.</span>
-            </div>
-          </div>
-
-          <div class="mt-4 flex items-center justify-between">
-            <button onclick="checkReto2()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm">
-              <i class="fa-solid fa-check mr-1"></i> Comprobar Reto 2
-            </button>
-            <div id="reto2-feedback" class="text-xs font-semibold"></div>
-          </div>
-        </div>
-
-        <!-- RETO 3: Algoritmo Cotidiano (Chocolate Caliente) -->
-        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span class="px-2 py-0.5 bg-brand-600 text-white text-xs rounded-md">Reto 3</span>
-              Algoritmo Cotidiano (Caso Chocolate Caliente)
-            </h3>
-            <span id="reto3-status" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Sin verificar</span>
-          </div>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">
-            Ordena cronológicamente del <strong>1 al 5</strong> los pasos utilizando los botones para subir o bajar cada instrucción:
-          </p>
-
-          <div id="reorder-list" class="space-y-2">
-            <!-- Items rendered via JS for interactive reordering -->
-          </div>
-
-          <div class="mt-4 flex items-center justify-between">
-            <button onclick="checkReto3()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm">
-              <i class="fa-solid fa-check mr-1"></i> Comprobar Reto 3
-            </button>
-            <div id="reto3-feedback" class="text-xs font-semibold"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 5: Autoevaluación / Mini-Quiz -->
-      <section id="sec-5" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <span>Sección 05</span>
-              <span>•</span>
-              <span>Evaluación Final</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-              <span>📝</span> Autoevaluación / Mini-Quiz de Repaso
-            </h2>
-          </div>
-        </div>
-
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
-          Responde a las siguientes preguntas antes de mirar el solucionario al final:
-        </p>
-
-        <!-- Quiz Questions -->
-        <div class="space-y-6">
-          <!-- Question 1 -->
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">
-              1. ¿Cuál es el principal objetivo de la técnica de Abstracción?
-            </h4>
-            <div class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q1" value="a" class="text-brand-600 focus:ring-brand-500">
-                <span>a) Dividir un problema en 10 partes iguales.</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q1" value="b" class="text-brand-600 focus:ring-brand-500">
-                <span>b) Filtrar la información esencial e ignorar los detalles irrelevantes.</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q1" value="c" class="text-brand-600 focus:ring-brand-500">
-                <span>c) Traducir el código a lenguaje máquina inmediatamente.</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Question 2 -->
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">
-              2. ¿Cuál es la diferencia fundamental entre el Pseudocódigo y un Programa?
-            </h4>
-            <div class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q2" value="a" class="text-brand-600 focus:ring-brand-500">
-                <span>a) El pseudocódigo lo ejecutan las computadoras y el programa no.</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q2" value="b" class="text-brand-600 focus:ring-brand-500">
-                <span>b) El pseudocódigo es para comprensión humana; el programa está escrito en un lenguaje que la máquina sí puede ejecutar.</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q2" value="c" class="text-brand-600 focus:ring-brand-500">
-                <span>c) No existe ninguna diferencia, son dos nombres para lo mismo.</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Question 3 -->
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">
-              3. ¿Qué símbolo de diagrama de flujo se utiliza para preguntar si una luz está encendida o apagada?
-            </h4>
-            <div class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q3" value="a" class="text-brand-600 focus:ring-brand-500">
-                <span>a) Un rectángulo (Proceso).</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q3" value="b" class="text-brand-600 focus:ring-brand-500">
-                <span>b) Un óvalo (Inicio/Fin).</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <input type="radio" name="quiz-q3" value="c" class="text-brand-600 focus:ring-brand-500">
-                <span>c) Un rombo (Decisión).</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800 pt-4">
-          <button onclick="checkQuiz()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs transition-all shadow-md flex items-center gap-2">
-            <i class="fa-solid fa-square-check text-sm"></i> Comprobar Autoevaluación
-          </button>
-          <div id="quiz-results" class="text-xs font-bold text-slate-700 dark:text-slate-300"></div>
-        </div>
-      </section>
-
-      <!-- SECTION 6: Solucionario -->
-      <section id="sec-6" class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
-        <div class="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span>🔑</span> Solucionario (Respuestas a la Autoevaluación y Retos)
-          </h2>
-          <button onclick="toggleSolucionario()" class="no-print text-xs px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-semibold rounded-lg text-slate-700 dark:text-slate-300 transition-all">
-            <span id="solucionario-toggle-text">Ocultar Soluciones</span>
-          </button>
-        </div>
-
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 italic">
-          *Consulta esta sección únicamente tras haber completado las actividades.*
-        </p>
-
-        <div id="solucionario-content" class="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-          <!-- Reto 1 Answers -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-xs uppercase tracking-wide">
-              Respuestas Reto 1: Relaciona los Conceptos
-            </h4>
-            <ul class="space-y-1 list-disc pl-5">
-              <li><strong>1 - C:</strong> Descomposición = Dividir un problema complejo en partes más pequeñas.</li>
-              <li><strong>2 - D:</strong> Patrones = Encontrar similitudes o características repetitivas.</li>
-              <li><strong>3 - A:</strong> Abstracción = Quedarse solo con lo importante e ignorar detalles secundarios.</li>
-              <li><strong>4 - B:</strong> Algoritmo = Crear una secuencia de pasos ordenados.</li>
-            </ul>
-          </div>
-
-          <!-- Reto 2 Answers -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-xs uppercase tracking-wide">
-              Respuestas Reto 2: Completa los Huecos
-            </h4>
-            <ol class="space-y-1 list-decimal pl-5">
-              <li><strong>finito</strong></li>
-              <li><strong>ambiguas</strong></li>
-              <li><strong>pseudocódigo</strong></li>
-              <li><strong>programa</strong></li>
-              <li><strong>decisión</strong></li>
-            </ol>
-          </div>
-
-          <!-- Reto 3 Answers -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-xs uppercase tracking-wide">
-              Respuestas Reto 3: Algoritmo Cotidiano (Chocolate Caliente)
-            </h4>
-            <ol class="space-y-1 list-decimal pl-5">
-              <li><strong>[ 1 ]</strong> Coger un cazo, una taza, leche y el chocolate en polvo.</li>
-              <li><strong>[ 2 ]</strong> Servir la leche en un cazo y ponerlo a fuego medio-bajo sin que llegue a hervir.</li>
-              <li><strong>[ 3 ]</strong> Retirar el cazo del fuego cuando la leche esté bien caliente.</li>
-              <li><strong>[ 4 ]</strong> Verter la leche en una taza y añadir dos cucharadas de chocolate en polvo.</li>
-              <li><strong>[ 5 ]</strong> Remover enérgicamente con una cuchara hasta disolver los grumos y disfrutar.</li>
-            </ol>
-          </div>
-
-          <!-- Quiz Answers -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-xs uppercase tracking-wide">
-              Respuestas Autoevaluación
-            </h4>
-            <ul class="space-y-1.5 list-disc pl-5">
-              <li><strong>1. Opción b:</strong> Filtrar la información esencial e ignorar los detalles irrelevantes.</li>
-              <li><strong>2. Opción b:</strong> El pseudocódigo es para comprensión humana; el programa está escrito en un lenguaje que la máquina sí puede ejecutar.</li>
-              <li><strong>3. Opción c:</strong> Un rombo (Decisión).</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
+      </div>
     </div>
-  </main>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="no-print mt-12 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-    <p>Computación y Robótica 1º, 2º y 3º ESO — Unidad Didáctica Resumen para Estudio y Repaso Interactivo</p>
-  </footer>
+<!-- Quiz -->
+<section class="sec alt" id="quiz">
+  <div class="in">
+    <div class="kicker">Repaso</div>
+    <h2>Comprueba lo aprendido</h2>
+    <p class="intro">Seis preguntas sobre el tutorial. Elige una respuesta y verás la explicación al instante.</p>
+    <div class="quiz" id="quizbox"></div>
+    <div class="score" id="score" aria-live="polite"></div>
+  </div>
+</section>
+</main>
 
-  <script>
-    /* State variables */
-    let reorderItems = [
-      { id: 4, text: "Verter la leche en una taza y añadir dos cucharadas de chocolate en polvo." },
-      { id: 2, text: "Servir la leche en un cazo y ponerlo a fuego medio-bajo sin que llegue a hervir." },
-      { id: 5, text: "Remover enérgicamente con una cuchara hasta disolver los grumos y disfrutar." },
-      { id: 1, text: "Coger un cazo, una taza, leche y el chocolate en polvo." },
-      { id: 3, text: "Retirar el cazo del fuego cuando la leche esté bien caliente." }
-    ];
+<footer>
+  <div class="in">
+    <p>Contenido basado en el tutorial «Pensamiento computacional» de <a href="https://www.aulademartin.com/tutoriales/pensamiento-computacional">Aula de Martín</a>. Técnicas y habilidades: Gobierno de Canarias.</p>
+    <p>Licencia <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Las ilustraciones de esta página son originales y están inspiradas en las del tutorial.</p>
+  </div>
+</footer>
 
-    let challengeCompletionState = {
-      reto1: false,
-      reto2: false,
-      reto3: false,
-      quiz: false
-    };
+<script>
+(function(){
+const $=s=>document.querySelector(s);
 
-    /* Initialize page on load */
-    window.onload = function() {
-      renderReorderList();
-      loadSavedNotes();
-      simulateFlowchart(); // Run initial flowchart simulation
-    };
-
-    function switchView(mode) {
-      const container = document.getElementById('unit-container');
-      const progressBanner = document.getElementById('interactive-progress-bar');
-      const btnInteractive = document.getElementById('btn-mode-interactive');
-      const btnA4 = document.getElementById('btn-mode-a4');
-
-      if (mode === 'a4') {
-        container.classList.add('a4-container', 'max-w-[210mm]', 'mx-auto');
-        progressBanner.classList.add('hidden');
-        btnInteractive.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all flex items-center gap-1.5";
-        btnA4.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm transition-all flex items-center gap-1.5";
-      } else {
-        container.classList.remove('a4-container', 'max-w-[210mm]', 'mx-auto');
-        progressBanner.classList.remove('hidden');
-        btnInteractive.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm transition-all flex items-center gap-1.5";
-        btnA4.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all flex items-center gap-1.5";
+/* pestañas */
+function tabs(root){
+  const btns=[...root.querySelectorAll('[role=tab]')];
+  const panels=btns.map(b=>root.querySelector('#'+b.getAttribute('aria-controls')));
+  function sel(i){btns.forEach((b,j)=>{b.setAttribute('aria-selected',String(j===i));b.tabIndex=j===i?0:-1;panels[j].hidden=j!==i;});}
+  btns.forEach((b,i)=>{
+    b.addEventListener('click',()=>sel(i));
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        const n=(i+(e.key==='ArrowRight'?1:-1)+btns.length)%btns.length;sel(n);btns[n].focus();e.preventDefault();
       }
+    });
+  });
+  sel(0);
+}
+document.querySelectorAll('[data-tabs]').forEach(tabs);
+
+/* robot */
+(function(){
+  const W=5,H=4,start={x:0,y:3},goal={x:3,y:1},rocks=[{x:1,y:2},{x:2,y:1}];
+  const arrows={U:'↑',D:'↓',L:'←',R:'→'},d={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]};
+  let prog=[],pos={x:start.x,y:start.y},running=false,timer=null,now=-1;
+  const grid=$('#grid'),progEl=$('#prog'),msg=$('#gmsg');
+  const has=(a,p)=>a.some(r=>r.x===p.x&&r.y===p.y);
+  function icon(id){return '<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#'+id+'"/></svg>';}
+  function draw(){
+    let h='';
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const p={x,y};let c='';
+      if(pos.x===x&&pos.y===y)c=icon('i-robot');
+      else if(has(rocks,p))c=icon('i-rock');
+      else if(goal.x===x&&goal.y===y)c=icon('i-star');
+      const isStart=(start.x===x&&start.y===y);
+      h+='<div class="cell'+(isStart?' start':'')+'">'+c+'</div>';
     }
-
-    function saveNote(num) {
-      const text = document.getElementById(`notes-${num}`).value;
-      localStorage.setItem(`comp_thinking_note_${num}`, text);
-    }
-
-    function loadSavedNotes() {
-      for (let i = 1; i <= 3; i++) {
-        const saved = localStorage.getItem(`comp_thinking_note_${i}`);
-        if (saved) {
-          const el = document.getElementById(`notes-${i}`);
-          if (el) el.value = saved;
-        }
-      }
-    }
-
-    function simulateFlowchart() {
-      const ageInput = document.getElementById('flow-age-input');
-      const age = parseInt(ageInput.value, 10) || 0;
-      const badge = document.getElementById('flow-status-badge');
-
-      // Reset active step classes
-      const steps = ['flow-step-start', 'flow-step-read', 'flow-step-decision', 'flow-step-granted', 'flow-step-denied', 'flow-step-end'];
-      steps.forEach(s => {
-        const el = document.getElementById(s);
-        if (el) el.classList.remove('active-step');
-      });
-
-      // Animate execution flow
-      let delay = 0;
-      
-      setTimeout(() => {
-        document.getElementById('flow-step-start').classList.add('active-step');
-      }, delay);
-
-      delay += 400;
-      setTimeout(() => {
-        document.getElementById('flow-step-read').classList.add('active-step');
-      }, delay);
-
-      delay += 400;
-      setTimeout(() => {
-        document.getElementById('flow-step-decision').classList.add('active-step');
-      }, delay);
-
-      delay += 400;
-      setTimeout(() => {
-        if (age >= 18) {
-          document.getElementById('flow-step-granted').classList.add('active-step');
-          badge.textContent = `Edad ${age} >= 18 -> Licencia Otorgada`;
-          badge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
-        } else {
-          document.getElementById('flow-step-denied').classList.add('active-step');
-          badge.textContent = `Edad ${age} < 18 -> Licencia Negada`;
-          badge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300";
-        }
-      }, delay);
-
-      delay += 400;
-      setTimeout(() => {
-        document.getElementById('flow-step-end').classList.add('active-step');
-      }, delay);
-    }
-
-    function checkReto1() {
-      const q1 = document.getElementById('r1-q1').value;
-      const q2 = document.getElementById('r1-q2').value;
-      const q3 = document.getElementById('r1-q3').value;
-      const q4 = document.getElementById('r1-q4').value;
-
-      const fb = document.getElementById('reto1-feedback');
-      const status = document.getElementById('reto1-status');
-
-      if (q1 === 'C' && q2 === 'D' && q3 === 'A' && q4 === 'B') {
-        fb.textContent = "¡Correcto! Has relacionado perfectamente todas las habilidades.";
-        fb.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
-        status.textContent = "✅ Completado";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300";
-        challengeCompletionState.reto1 = true;
-      } else {
-        fb.textContent = "Hay algunas respuestas incorrectas. Revisa la tabla de habilidades.";
-        fb.className = "text-xs font-bold text-rose-600 dark:text-rose-400";
-        status.textContent = "❌ Inténtalo de nuevo";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300";
-        challengeCompletionState.reto1 = false;
-      }
-      updateOverallProgress();
-    }
-
-    function checkReto2() {
-      const q1 = document.getElementById('r2-q1').value;
-      const q2 = document.getElementById('r2-q2').value;
-      const q3 = document.getElementById('r2-q3').value;
-      const q4 = document.getElementById('r2-q4').value;
-      const q5 = document.getElementById('r2-q5').value;
-
-      const fb = document.getElementById('reto2-feedback');
-      const status = document.getElementById('reto2-status');
-
-      if (q1 === 'finito' && q2 === 'ambiguas' && q3 === 'pseudocódigo' && q4 === 'programa' && q5 === 'decisión') {
-        fb.textContent = "¡Excelente! Has completado los 5 huecos correctamente.";
-        fb.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
-        status.textContent = "✅ Completado";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300";
-        challengeCompletionState.reto2 = true;
-      } else {
-        fb.textContent = "Revisa los huecos marcados. Asegúrate de colocar las definiciones en el lugar adecuado.";
-        fb.className = "text-xs font-bold text-rose-600 dark:text-rose-400";
-        status.textContent = "❌ Inténtalo de nuevo";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300";
-        challengeCompletionState.reto2 = false;
-      }
-      updateOverallProgress();
-    }
-
-    function renderReorderList() {
-      const container = document.getElementById('reorder-list');
-      container.innerHTML = '';
-
-      reorderItems.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = "p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs";
-        
-        div.innerHTML = `
-          <div class="flex items-center gap-3">
-            <span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300 flex items-center justify-center font-bold text-xs">${index + 1}</span>
-            <span class="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200">${item.text}</span>
-          </div>
-          <div class="flex items-center gap-1 no-print">
-            <button onclick="moveStep(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="p-1 px-2 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed text-xs">
-              <i class="fa-solid fa-chevron-up"></i>
-            </button>
-            <button onclick="moveStep(${index}, 1)" ${index === reorderItems.length - 1 ? 'disabled' : ''} class="p-1 px-2 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed text-xs">
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function moveStep(index, direction) {
-      const targetIndex = index + direction;
-      if (targetIndex < 0 || targetIndex >= reorderItems.length) return;
-
-      const temp = reorderItems[index];
-      reorderItems[index] = reorderItems[targetIndex];
-      reorderItems[targetIndex] = temp;
-
-      renderReorderList();
-    }
-
-    function checkReto3() {
-      const fb = document.getElementById('reto3-feedback');
-      const status = document.getElementById('reto3-status');
-
-      // Correct order is IDs 1, 2, 3, 4, 5
-      const isCorrect = reorderItems.every((item, i) => item.id === (i + 1));
-
-      if (isCorrect) {
-        fb.textContent = "¡Perfecto! Has ordenado la receta en la secuencia lógica exacta (1 a 5).";
-        fb.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
-        status.textContent = "✅ Completado";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300";
-        challengeCompletionState.reto3 = true;
-      } else {
-        fb.textContent = "El orden no es el correcto. Piensa en el orden físico de la receta.";
-        fb.className = "text-xs font-bold text-rose-600 dark:text-rose-400";
-        status.textContent = "❌ Orden Incorrecto";
-        status.className = "text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300";
-        challengeCompletionState.reto3 = false;
-      }
-      updateOverallProgress();
-    }
-
-    function checkQuiz() {
-      const q1 = document.querySelector('input[name="quiz-q1"]:checked')?.value;
-      const q2 = document.querySelector('input[name="quiz-q2"]:checked')?.value;
-      const q3 = document.querySelector('input[name="quiz-q3"]:checked')?.value;
-
-      const results = document.getElementById('quiz-results');
-
-      if (!q1 || !q2 || !q3) {
-        results.textContent = "Por favor responde a todas las preguntas antes de comprobar.";
-        results.className = "text-xs font-bold text-amber-600 dark:text-amber-400";
+    grid.innerHTML=h;
+    progEl.innerHTML=prog.length?prog.map((c,i)=>'<span class="cmd'+(i===now?' now':'')+'">'+arrows[c]+'</span>').join(''):'<span class="empty">Aún no hay instrucciones.</span>';
+  }
+  function reset(){clearTimeout(timer);running=false;pos={x:start.x,y:start.y};now=-1;draw();}
+  function setMsg(t,c){msg.textContent=t;msg.className='msg'+(c?' '+c:'');}
+  document.querySelectorAll('[data-cmd]').forEach(b=>b.addEventListener('click',()=>{
+    if(running)return;
+    if(prog.length>=14){setMsg('Máximo 14 instrucciones.','bad');return;}
+    prog.push(b.dataset.cmd);reset();setMsg('');
+  }));
+  $('#undo').addEventListener('click',()=>{if(running)return;prog.pop();reset();setMsg('');});
+  $('#clear').addEventListener('click',()=>{prog=[];reset();setMsg('');});
+  $('#run').addEventListener('click',()=>{
+    if(running)return;
+    if(!prog.length){setMsg('Añade primero alguna instrucción.','bad');return;}
+    reset();running=true;setMsg('Ejecutando…');
+    let i=0;
+    (function step(){
+      if(i>=prog.length){
+        now=-1;running=false;draw();
+        if(pos.x===goal.x&&pos.y===goal.y)setMsg('¡Bien! El robot ha llegado a la estrella.','ok');
+        else setMsg('El robot no ha llegado a la estrella. Revisa tu programa y vuelve a probar.','bad');
         return;
       }
-
-      let score = 0;
-      if (q1 === 'b') score++;
-      if (q2 === 'b') score++;
-      if (q3 === 'c') score++;
-
-      if (score === 3) {
-        results.textContent = `¡Sobresaliente! 3 / 3 Respuestas Correctas (100%)`;
-        results.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
-        challengeCompletionState.quiz = true;
-      } else {
-        results.textContent = `Has acertado ${score} de 3 preguntas. Revisa el solucionario abajo para repasar.`;
-        results.className = "text-xs font-bold text-amber-600 dark:text-amber-400";
-        challengeCompletionState.quiz = false;
+      const v=d[prog[i]],n={x:pos.x+v[0],y:pos.y+v[1]};
+      now=i;
+      if(n.x<0||n.y<0||n.x>=W||n.y>=H||has(rocks,n)){
+        draw();running=false;setMsg('El robot choca en la instrucción '+(i+1)+'. Corrígela y prueba otra vez.','bad');return;
       }
+      pos=n;draw();i++;timer=setTimeout(step,450);
+    })();
+  });
+  draw();
+})();
 
-      updateOverallProgress();
-    }
+/* programa de la suma */
+(function(){
+  const term=$('#term'),form=$('#sumform'),inp=$('#num');
+  let suma,done,lines;
+  function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+  function show(){term.innerHTML=lines.join('\n');}
+  function reset(){suma=0;done=false;lines=['un número: '];show();$('#sumgo').disabled=false;}
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    if(done)return;
+    const n=parseInt(inp.value,10);
+    if(isNaN(n))return;
+    lines[lines.length-1]+='<span class="in-l">'+esc(String(n))+'</span>';
+    if(n>=0){suma+=n;lines.push('un número: ');}
+    else{lines.push('suma es: '+suma);done=true;$('#sumgo').disabled=true;}
+    show();inp.select();
+  });
+  $('#sumreset').addEventListener('click',reset);
+  reset();
+})();
 
-    function updateOverallProgress() {
-      const completedCount = Object.values(challengeCompletionState).filter(Boolean).length;
-      const pct = Math.round((completedCount / 4) * 100);
+/* símbolos */
+(function(){
+  const S=[
+    {n:'Entrada / Salida',t:'Representa el comienzo o el fin de un algoritmo.',s:'<rect class="fshape" x="6" y="8" width="48" height="24" rx="12"/>'},
+    {n:'Proceso',t:'Permite representar cada una de las acciones que hay que realizar para desarrollar el algoritmo.',s:'<rect class="fshape" x="6" y="6" width="48" height="28" rx="2"/>'},
+    {n:'Entrada o salida de información (datos)',t:'Se utiliza cuando es necesaria información (datos adicionales para desarrollar el algoritmo) o se presentan datos o resultados.',s:'<polygon class="fshape" points="16,6 54,6 44,34 6,34"/>'},
+    {n:'Decisión',t:'Se utiliza cuando es necesario decidir entre dos o más opciones y señala el camino que habrá que seguir según cuál sea la opción elegida.',s:'<polygon class="fshape" points="30,2 56,20 30,38 4,20"/>'},
+    {n:'Línea de flujo',t:'Señala el orden en que se desarrollan las acciones en el algoritmo.',s:'<path d="M6 20H44" stroke="var(--accent)" stroke-width="3" fill="none"/><path d="M40 12l12 8-12 8z" fill="var(--accent)"/>'}
+  ];
+  const list=$('#symlist'),det=$('#symdetail');
+  function pick(i){
+    [...list.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));
+    det.innerHTML='<svg viewBox="0 0 60 40" aria-hidden="true">'+S[i].s+'</svg><h4>'+S[i].n+'</h4><p>'+S[i].t+'</p>';
+  }
+  S.forEach((o,i)=>{
+    const b=document.createElement('button');b.className='sym';b.type='button';
+    b.innerHTML='<svg viewBox="0 0 60 40" aria-hidden="true">'+o.s+'</svg><span>'+o.n+'</span>';
+    b.addEventListener('click',()=>pick(i));list.appendChild(b);
+  });
+  pick(0);
+})();
 
-      document.getElementById('overall-progress-fill').style.width = `${pct}%`;
-      document.getElementById('overall-progress-text').textContent = `${pct}%`;
-      document.getElementById('completed-challenges-count').textContent = `${completedCount} / 4`;
-    }
+/* flujo: licencia */
+(function(){
+  const inp=$('#edad'),res=$('#edadres');
+  const all=['n-start','n-read','n-dec','n-yes','n-no','n-end','a1','a2','a3','a4','a5','a6'];
+  function upd(){
+    all.forEach(id=>{const el=document.getElementById(id);el&&el.classList.remove('on');});
+    const raw=inp.value.trim(),v=parseFloat(raw);
+    if(raw===''||isNaN(v)||v<0){res.textContent='Escribe una edad para recorrer el diagrama.';return;}
+    const yes=v>=18;
+    const on=['n-start','a1','n-read','a2','n-dec',yes?'a3':'a4',yes?'n-yes':'n-no',yes?'a5':'a6','n-end'];
+    on.forEach(id=>document.getElementById(id).classList.add('on'));
+    res.textContent=(yes?'Edad '+v+' ≥ 18: Licencia otorgada.':'Edad '+v+' < 18: Licencia negada.');
+  }
+  inp.addEventListener('input',upd);upd();
+})();
 
-    function toggleSolucionario() {
-      const content = document.getElementById('solucionario-content');
-      const text = document.getElementById('solucionario-toggle-text');
+/* flujo: lámpara */
+(function(){
+  let plug=true,burn=false;
+  const res=$('#lampres');
+  const pY=$('#plugY'),pN=$('#plugN'),bY=$('#burnY'),bN=$('#burnN');
+  const all=['m-start','m-d1','m-a1','m-d2','m-a2','m-end','b1','b2','b3','b4','b5'];
+  function upd(){
+    pY.setAttribute('aria-pressed',String(plug));pN.setAttribute('aria-pressed',String(!plug));
+    bY.setAttribute('aria-pressed',String(burn));bN.setAttribute('aria-pressed',String(!burn));
+    bY.disabled=bN.disabled=!plug;
+    all.forEach(id=>document.getElementById(id).classList.remove('on'));
+    let on,t;
+    if(!plug){on=['m-start','b1','m-d1','b2','m-a1'];t='La lámpara no estaba enchufada: hay que enchufarla.';}
+    else if(burn){on=['m-start','b1','m-d1','b3','m-d2','b4','m-a2'];t='El foco está quemado: hay que cambiarlo.';}
+    else{on=['m-start','b1','m-d1','b3','m-d2','b5','m-end'];t='Está enchufada y el foco no está quemado: toca comprar una lámpara nueva.';}
+    on.forEach(id=>document.getElementById(id).classList.add('on'));
+    res.textContent=t;
+  }
+  pY.onclick=()=>{plug=true;upd();};pN.onclick=()=>{plug=false;upd();};
+  bY.onclick=()=>{burn=true;upd();};bN.onclick=()=>{burn=false;upd();};
+  upd();
+})();
 
-      if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        text.textContent = 'Ocultar Soluciones';
-      } else {
-        content.classList.add('hidden');
-        text.textContent = 'Mostrar Soluciones';
-      }
-    }
-  </script>
+/* quiz */
+(function(){
+  const Q=[
+    {q:'¿Qué es el pensamiento computacional?',o:['Aprender a reparar ordenadores','Una forma de analizar y resolver problemas cotidianos como lo haría un informático','Memorizar lenguajes de programación'],a:1,w:'Se trata de usar datos, estudiar problemas y diseñar algoritmos para dar soluciones creativas y sencillas.'},
+    {q:'¿Qué técnica consiste en dividir un problema complejo en partes más pequeñas?',o:['Abstracción','Reconocimiento de patrones','Descomposición'],a:2,w:'La descomposición hace que cada parte sea más manejable y sencilla de resolver.'},
+    {q:'¿Qué característica NO tiene un algoritmo?',o:['Instrucciones precisas y sin ambigüedades','Puede no acabar nunca','Pasos sencillos y ordenados'],a:1,w:'Los algoritmos son finitos: siempre tienen un final.'},
+    {q:'¿Qué símbolo del diagrama de flujo se usa para decidir entre dos o más opciones?',o:['El rombo (decisión)','El rectángulo (proceso)','El óvalo (inicio / fin)'],a:0,w:'La decisión señala el camino a seguir según la opción elegida, por ejemplo Sí o No.'},
+    {q:'¿Qué diferencia a un programa de un pseudocódigo?',o:['El pseudocódigo está en inglés','El programa está en un lenguaje que el ordenador entiende y puede procesar','No hay ninguna diferencia'],a:1,w:'El pseudocódigo está pensado para humanos y no se puede ejecutar en un ordenador.'},
+    {q:'En la rutina «Pienso – Programo – Pruebo», ¿qué se hace en «Pruebo»?',o:['Se divide el problema en partes','Se organiza la secuencia de acciones','Se ejecutan y visualizan las acciones programadas'],a:2,w:'Probar es ejecutar el programa y ver qué ocurre, para corregirlo si hace falta.'}
+  ];
+  const box=$('#quizbox'),sc=$('#score');
+  let score=0,answered=0;
+  Q.forEach((it,qi)=>{
+    const d=document.createElement('div');d.className='q';
+    d.innerHTML='<h3>'+(qi+1)+'. '+it.q+'</h3><div class="opts"></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why');
+    it.o.forEach((t,i)=>{
+      const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=t;
+      b.onclick=()=>{
+        [...opts.children].forEach((x,j)=>{x.disabled=true;if(j===it.a)x.classList.add('ok');});
+        if(i===it.a)score++;else b.classList.add('bad');
+        why.textContent=(i===it.a?'Correcto. ':'Casi. ')+it.w;why.hidden=false;
+        answered++;
+        if(answered===Q.length)sc.textContent='Has acertado '+score+' de '+Q.length+(score===Q.length?'. ¡Excelente!':'. Repasa las secciones y vuelve a intentarlo.');
+      };
+      opts.appendChild(b);
+    });
+    box.appendChild(d);
+  });
+})();
+})();
+</script>
 
-</body>
-</html>
+</body></html>
