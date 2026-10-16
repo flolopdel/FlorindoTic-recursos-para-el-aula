@@ -1,0 +1,80 @@
+# PROPUESTA de workflow de despliegue (v2).
+# Está en propuesta/workflows/ a propósito: GitHub solo ejecuta los workflows de
+# .github/workflows/, así que este fichero NO hace nada hasta que se copie allí
+# sustituyendo al deploy.yml actual (ver propuesta/README.md, "Cómo adoptarlo").
+
+name: Build y despliegue (v2)
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'prompts/**'
+      - 'private_content/**'
+      - '**.md'
+      - 'abrir-portal.cmd'
+  pull_request:          # en PRs solo se construye y se valida, no se despliega
+  workflow_dispatch:     # botón "Run workflow" para redesplegar a mano
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Configurar Pages (obtiene la URL pública)
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Construir sitio en _site/ (solo contenido publicable)
+        run: >
+          node propuesta/scripts/build-site.mjs
+          --out=_site
+          --base-url=${{ steps.pages.outputs.base_url }}
+          --strict
+
+      - name: Resumen del build
+        run: |
+          {
+            echo "### Build del Aula TIC"
+            echo ""
+            echo "- Páginas: $(jq .pages _site/version.json)"
+            echo "- Tamaño publicado: $(du -sh _site | cut -f1)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comprobar que no se publica nada privado
+        run: |
+          for p in private_content prompts scripts abrir-portal.cmd; do
+            if [ -e "_site/$p" ]; then echo "::error::$p no debería publicarse"; exit 1; fi
+          done
+
+      - name: Subir artefacto para Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
