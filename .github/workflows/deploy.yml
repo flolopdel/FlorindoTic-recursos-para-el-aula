@@ -1,8 +1,18 @@
+# Construye el sitio en _site/ (solo lo publicable), lo valida y lo despliega en GitHub Pages.
+# En las Pull Requests solo construye y valida; despliega únicamente desde main.
+
 name: Build and deploy
 
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'prompts/**'
+      - 'private_content/**'
+      - '**.md'
+      - 'abrir-portal.cmd'
+  pull_request:          # en PRs solo se construye y se valida, no se despliega
+  workflow_dispatch:     # botón "Run workflow" para redesplegar a mano
 
 permissions:
   contents: read
@@ -10,7 +20,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -21,17 +31,42 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Generar menu.json
-        run: node scripts/build-menu.mjs
+      - name: Configurar Pages (obtiene la URL pública)
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Construir sitio en _site/ (solo contenido publicable)
+        run: >
+          node scripts/build-site.mjs
+          --out=_site
+          --base-url=${{ steps.pages.outputs.base_url }}
+          --strict
+
+      - name: Resumen del build
+        run: |
+          {
+            echo "### Build del Aula TIC"
+            echo ""
+            echo "- Páginas: $(jq .pages _site/version.json)"
+            echo "- Tamaño publicado: $(du -sh _site | cut -f1)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comprobar que no se publica nada privado
+        run: |
+          for p in private_content prompts scripts abrir-portal.cmd; do
+            if [ -e "_site/$p" ]; then echo "::error::$p no debería publicarse"; exit 1; fi
+          done
 
       - name: Subir artefacto para Pages
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: _site
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
