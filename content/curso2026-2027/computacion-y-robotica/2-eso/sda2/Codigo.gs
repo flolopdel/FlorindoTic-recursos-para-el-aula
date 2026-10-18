@@ -8,8 +8,11 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   crearF1_EncuestaInicialVideojuegosY()  →  Encuesta inicial: videojuegos y programación (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/hZivwDLmTKPC5KDWA
  *   crearF2_GameTestersValoracionDe()  →  Game testers: valoración de un videojuego (sesión 16)
+ *        ya creado: https://forms.gle/baUnhqKzfiWJHEtF9
  *   crearF3_DianaDeAutoevaluacionY()  →  Diana de autoevaluación y KWL (sesión 18)
+ *        ya creado: https://forms.gle/2edxMZVzCCYZrpWBA
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Los formularios se guardan en la carpeta «SdA 2 · Formularios» de tu Drive.
@@ -83,6 +86,7 @@ var FORMULARIOS = [
     "id": "F1",
     "titulo": "Encuesta inicial: videojuegos y programación",
     "anonimo": true,
+    "enlace": "https://forms.gle/hZivwDLmTKPC5KDWA",
     "obligatorias": true,
     "descripcion": "Encuesta anónima para conocer al grupo antes de empezar. No hay respuestas buenas ni malas.",
     "confirmacion": "¡Gracias! Con tus respuestas prepararemos los equipos y las prácticas.",
@@ -152,6 +156,7 @@ var FORMULARIOS = [
     "id": "F2",
     "titulo": "Game testers: valoración de un videojuego",
     "anonimo": false,
+    "enlace": "https://forms.gle/baUnhqKzfiWJHEtF9",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Responde una vez por cada juego que pruebes. Sé concreto/a y respetuoso/a: tu valoración ayuda al equipo a mejorar.",
@@ -230,6 +235,7 @@ var FORMULARIOS = [
     "id": "F3",
     "titulo": "Diana de autoevaluación y KWL",
     "anonimo": false,
+    "enlace": "https://forms.gle/2edxMZVzCCYZrpWBA",
     "obligatorias": true,
     "descripcion": "Reflexiona sobre lo que has aprendido en la SdA «Código en Acción». Sé sincero/a: no cuenta para la nota.",
     "confirmacion": "¡Gracias! Revisa tus respuestas cuando empieces la próxima SdA de programación.",
