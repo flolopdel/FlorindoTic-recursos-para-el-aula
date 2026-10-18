@@ -12,8 +12,11 @@
  *   crearF2_TestDeNomofobiaAnonimo()  →  Test de nomofobia (anónimo) (sesión 3, anónimo)
  *        ya creado: https://forms.gle/QJ8EuqAkaqKT1HtCA
  *   crearF3_PaseoDeGaleriaDos()  →  Paseo de galería: dos estrellas y un deseo (sesión 6, anónimo)
+ *        ya creado: https://forms.gle/mY6ZWC8vV3njvxro7
  *   crearF4_CierreDelBloque1()  →  Cierre del bloque 1: mi compromiso de hábito saludable (sesión 6, anónimo)
+ *        ya creado: https://forms.gle/14yGNMkaZ4iKNifu5
  *   crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
+ *        ya creado: https://forms.gle/fFNUjtyXrQGfgzW28
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Los formularios se guardan en la carpeta «SdA 3 · Formularios» de tu Drive.
@@ -296,6 +299,7 @@ var FORMULARIOS = [
     "id": "F3",
     "titulo": "Paseo de galería: dos estrellas y un deseo",
     "anonimo": true,
+    "enlace": "https://forms.gle/mY6ZWC8vV3njvxro7",
     "repetible": true,
     "descripcion": "Responde una vez por cada cómic que visites. Prueba antes sus interacciones. Escribe con respeto: tus comentarios ayudan al equipo a mejorar.",
     "confirmacion": "¡Gracias! Cuando cambies de estación, pulsa «Enviar otra respuesta» para valorar el siguiente cómic.",
@@ -343,6 +347,7 @@ var FORMULARIOS = [
     "id": "F4",
     "titulo": "Cierre del bloque 1: mi compromiso de hábito saludable",
     "anonimo": true,
+    "enlace": "https://forms.gle/14yGNMkaZ4iKNifu5",
     "descripcion": "Escribe un hábito saludable que te comprometes a mantener las próximas semanas. Lo recordaremos en la sesión 12.",
     "confirmacion": "¡Compromiso guardado! En la sesión 12 veremos si lo has mantenido.",
     "preguntas": [
@@ -386,6 +391,7 @@ var FORMULARIOS = [
     "id": "F5",
     "titulo": "Cierre de la SdA: votación, autoevaluación y valoración",
     "anonimo": false,
+    "enlace": "https://forms.gle/fFNUjtyXrQGfgzW28",
     "descripcion": "Este formulario recoge tu correo del centro porque incluye tu autoevaluación. La votación y la valoración de la SdA solo se mostrarán como resultados de toda la clase.",
     "confirmacion": "¡Gracias! Tu opinión sirve para mejorar las próximas situaciones de aprendizaje.",
     "preguntas": [
