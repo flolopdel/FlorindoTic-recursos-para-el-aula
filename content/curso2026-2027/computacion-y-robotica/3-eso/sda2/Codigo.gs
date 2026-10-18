@@ -8,7 +8,9 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   crearF1_CoevaluacionArcadeGameFair()  →  Coevaluación Arcade Game Fair (sesiones 15-16)
+ *        ya creado: https://forms.gle/Bve6vg1UUKw52h9N6
  *   crearF2_AutoevaluacionYValoracionDe()  →  Autoevaluación y valoración de la SdA 2 (sesión 16)
+ *        ya creado: https://forms.gle/cY6bXcU17amPEqCGA
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Los formularios se guardan en la carpeta «SdA 2 · Formularios» de tu Drive.
@@ -81,6 +83,7 @@ var FORMULARIOS = [
     "id": "F1",
     "titulo": "Coevaluación Arcade Game Fair",
     "anonimo": false,
+    "enlace": "https://forms.gle/Bve6vg1UUKw52h9N6",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Rellena un formulario por cada juego que juegues. Sé concreto/a y amable: tus comentarios ayudan a mejorar el juego.",
@@ -168,6 +171,7 @@ var FORMULARIOS = [
     "id": "F2",
     "titulo": "Autoevaluación y valoración de la SdA 2",
     "anonimo": false,
+    "enlace": "https://forms.gle/cY6bXcU17amPEqCGA",
     "obligatorias": true,
     "descripcion": "Responde con sinceridad: no cuenta para nota. Sirve para que veas lo que has aprendido y para mejorar la SdA.",
     "confirmacion": "¡Gracias! Has terminado la SdA 2. ¡Enhorabuena por tu juego!",
