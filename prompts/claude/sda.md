@@ -32,4 +32,4 @@ MOODLE Y EVALUACIÓN
 SÉNECA
 - Número de actividades en Séneca: [3-6 o "las que veas"]
 
-Entrégame la web HTML, el documento .docx y el JSON para poder pedir cambios después.
+Entrégame la web HTML, la web para proyectar en clase, el snippet html para moodle, el documento .docx y el JSON para poder pedir cambios después.

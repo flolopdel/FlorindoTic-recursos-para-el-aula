@@ -36,4 +36,4 @@ MOODLE Y EVALUACIÓN
 SÉNECA
 - Actividades en Séneca: las que veas
 
-Entrégame la web HTML, el documento .docx y el JSON para poder pedir cambios después.
+Entrégame la web HTML, la web para proyectar en clase, el snippet html para moodle, el documento .docx y el JSON para poder pedir cambios después.
