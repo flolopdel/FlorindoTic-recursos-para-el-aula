@@ -105,10 +105,9 @@ ol.steps li.hid{visibility:hidden}
 @media(max-width:640px){.study .cols{grid-template-columns:1fr}}
 .col{border:2px solid var(--line);border-radius:.6em;padding:.7em .9em}
 .col h4{margin:0 0 .3em;font-size:1.1em;color:var(--fc,var(--brand))}
-.grid-i{display:grid;gap:.7em;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}
-@media (max-width:700px){.grid-i{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.grid-i{display:grid;gap:.8em;grid-template-columns:repeat(auto-fit,minmax(9em,1fr))}
 .gi{background:var(--bg);border-radius:.6em;padding:.7em;text-align:center}
-.gi .e{font-size:1.8em}.gi>b{display:block;margin:.2em 0}.gi>span{display:block;font-size:.85em;line-height:1.35;color:var(--ink2)}.gi>span b{color:var(--ink)}
+.gi .e{font-size:2em}.gi b{display:block;margin:.2em 0}.gi span{font-size:.85em;color:var(--ink2)}
 .flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5em;margin:.6em 0}
 .fn{padding:.55em .9em;border-radius:.5em;background:var(--brand-soft);border:2px solid var(--brand);font-weight:600;text-align:center;max-width:12em}
 .fn.inicio,.fn.fin{border-radius:2em;background:var(--accent-soft);border-color:var(--accent)}
@@ -158,8 +157,6 @@ const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
 // **negrita** dentro de los textos
 const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
 const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
-// Admite nombres de fase compuestos («Bloque 1 · Inicio»)
-const fcol = f => FC[f] || FC[Object.keys(FC).find(k => String(f || '').includes(k))] || 'var(--brand)';
 const st = { s: null, i: 0, mode: 'proy', notes: false, revealed: {} };
 const SES = D.sesiones;
 
@@ -167,8 +164,6 @@ function ytId(v){
   const m = String(v||'').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(v||'').match(/^([\w-]{11})$/);
   return m ? m[1] : null;
 }
-// En vistas previas protegidas (iframe sandbox, about:srcdoc) el navegador bloquea replaceState: se ignora.
-function setHash(h){ try { history.replaceState(null, '', h); } catch(e){} }
 function fmtT(s){ s = Math.max(0, s|0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
 
 // --------------------------------------------------- renderizado de cada tipo
@@ -193,7 +188,7 @@ const R = {
     const key = s.n+'-'+k, prog = d.progresivo, shown = st.revealed[key] ?? (prog ? 1 : 1e9);
     const ps = arr(d.pasos);
     return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
-      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}"><span>${md(p)}</span></li>`).join('')}</ol>
+      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}">${md(p)}</li>`).join('')}</ol>
       ${prog && st.mode==='proy' && shown < ps.length ? `<button class="reveal" data-rev="${key}" data-max="${ps.length}">Siguiente paso (↓)</button>` : ''}</div>`;
   },
   comparar(d){
@@ -210,7 +205,7 @@ const R = {
   },
   infografia(d){
     const body = d.svg ? `<div class="svgw">${d.svg}</div>`
-      : `<div class="grid-i" style="--cols:${Math.min(arr(d.elementos).length, arr(d.elementos).length === 4 ? 4 : 3) || 1}">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
+      : `<div class="grid-i">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
     return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${body}
       ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
   },
@@ -230,7 +225,7 @@ const R = {
       <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
       ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
       <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
-      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
+      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li>${md(p)}</li>`).join('')}</ol>` : ''}
       ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
   },
   quiz(d, s, k){
@@ -262,7 +257,7 @@ function slidesOf(s){ return [{tipo:'portada', pregunta: s.pregunta}].concat(arr
 function renderSlide(s, d, k, total){
   const f = R[d.tipo] || R.idea;
   const tag = d.tipo !== 'portada' ? `<div class="tag">${esc(TAG[d.tipo]||'')}</div>` : '';
-  return `<section class="slide" style="--fc:${fcol(s.fase)}" data-k="${k}">${f(d, s, k)}${tag}
+  return `<section class="slide" style="--fc:${FC[s.fase]||'var(--brand)'}" data-k="${k}">${f(d, s, k)}${tag}
     <div class="bar"><i style="width:${(k+1)/total*100}%"></i></div><div class="pg">${k+1} / ${total}</div></section>`;
 }
 
@@ -275,9 +270,8 @@ function home(){
     <h1>${esc(D.meta.titulo||'')}</h1>${D.meta.subtitulo ? `<p>${esc(D.meta.subtitulo)}</p>` : ''}
     ${D.reto ? `<p><b>Reto:</b> ${esc(D.reto)}</p>` : ''}
     <p class="help">Elige una sesión. Proyectar: <span class="kbd">←</span><span class="kbd">→</span> pasar · <span class="kbd">F</span> pantalla completa · <span class="kbd">N</span> notas del docente · <span class="kbd">E</span> modo estudio · <span class="kbd">Esc</span> volver aquí.</p></div>
-    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${fcol(s.fase)}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div></div>`;
-  setHash('#');
-  wire();
+    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${FC[s.fase]||'var(--brand)'}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div></div>`;
+  history.replaceState(null, '', '#');
 }
 function show(n, i){
   const s = SES.find(x => x.n == n); if (!s) return home();
@@ -297,9 +291,8 @@ function show(n, i){
   const nt = st.mode === 'proy' ? sl[st.i].nota : null;
   $('#notes').innerHTML = nt ? `<b>Notas para el docente:</b> ${md(nt)}` : '<b>Notas:</b> sin notas en esta diapositiva.';
   $('#notes').classList.toggle('on', st.notes && st.mode === 'proy');
-  setHash(`#s${s.n}-${st.i + 1}`);
+  history.replaceState(null, '', `#s${s.n}-${st.i + 1}`);
   wire();
-  fit();
 }
 function next(){
   if (!st.s) return; const sl = slidesOf(st.s), d = sl[st.i];
@@ -310,14 +303,6 @@ function next(){
 }
 function prev(){ if (!st.s) return; if (st.i > 0) show(st.s.n, st.i - 1); else { const p = SES.find(x => x.n == st.s.n - 1); if (p) show(p.n, slidesOf(p).length - 1); } }
 
-// Si el contenido no cabe en la diapositiva proyectada, reduce la letra (hasta un 62 %)
-function fit(){
-  const sl = document.querySelector('.stage .slide'); if (!sl) return;
-  const inn = sl.querySelector('.in'); sl.style.fontSize = '';
-  const base = parseFloat(getComputedStyle(sl).fontSize); let f = base;
-  while (inn.scrollHeight > inn.clientHeight + 1 && f > base * 0.62) { f *= 0.96; sl.style.fontSize = f + 'px'; }
-}
-let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fit, 80); });
 let timers = {};
 function wire(){
   document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => show(+b.dataset.s, 0));
@@ -354,7 +339,7 @@ function toggleFs(){
   if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.().catch(()=>{}); document.body.classList.add('fs'); }
   else { document.exitFullscreen?.(); document.body.classList.remove('fs'); }
 }
-document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('fs', !!document.fullscreenElement); setTimeout(fit, 120); });
+document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fs', !!document.fullscreenElement));
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || e.altKey || e.ctrlKey || e.metaKey) return;
   const k = e.key;
@@ -368,7 +353,7 @@ document.addEventListener('keydown', e => {
   else if (k === 'Escape' && !document.fullscreenElement) home();
 });
 // enlace directo: #s3-2 (sesión 3, diapositiva 2)
-let m = null; try { m = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){}
+const m = location.hash.match(/^#s(\d+)(?:-(\d+))?/);
 if (!SES.length) $('#app').innerHTML = '<div class="empty">Esta situación de aprendizaje todavía no tiene diapositivas de clase.</div>';
 else if (m) show(+m[1], (+m[2] || 1) - 1); else home();
 </script>
