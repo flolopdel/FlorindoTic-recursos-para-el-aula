@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase · SdA 3: Un Aula del Futuro</title>
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dbe3ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --code-bg:#0f172a; --code-ink:#e2e8f0; --slide:#ffffff; --f-ini:#2563eb; --f-des:#0f766e; --f-cie:#9333ea;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+@media(max-width:760px){.top{overflow-x:auto}.top .ttl{display:none}.top .tb{flex:0 0 auto}select.tb{max-width:60vw}}
+.top .ttl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.top .ttl small{font-weight:500;color:var(--muted);margin-left:8px}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+.tb[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+select.tb{max-width:42vw}
+/* ---------- índice */
+.home{max-width:1180px;margin:0 auto;padding:28px 16px 48px}
+.hero{background:linear-gradient(135deg,#134e4a,#1e3a8a);color:#fff;border-radius:18px;padding:28px 24px}
+.hero h1{margin:6px 0;font-size:clamp(26px,4vw,40px);line-height:1.1}
+.hero p{margin:6px 0;opacity:.92;font-size:18px}
+.hero .k{font-size:13px;opacity:.8;letter-spacing:.04em;text-transform:uppercase}
+.help{margin:14px 0 0;font-size:14px;opacity:.85}
+.kbd{display:inline-block;border:1px solid rgba(255,255,255,.4);border-radius:5px;padding:0 6px;font-size:12px;margin:0 2px}
+.cards{display:grid;gap:14px;margin-top:20px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.sc{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink);border-top:6px solid var(--fc,var(--brand))}
+.sc:hover{border-color:var(--fc,var(--brand));transform:translateY(-1px)}
+.sc .n{font-size:13px;font-weight:700;color:var(--fc,var(--brand));text-transform:uppercase;letter-spacing:.04em}
+.sc h3{margin:6px 0;font-size:18px;line-height:1.25}
+.sc p{margin:0;color:var(--ink2);font-size:14px}
+.sc .c{margin-top:10px;font-size:13px;color:var(--muted)}
+/* ---------- modo proyección */
+.stage{position:relative;height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:12px}
+.fs .stage{height:100vh;padding:0}
+.fs .top{display:none}
+.slide{position:relative;width:min(100%, calc((100vh - 81px) * 16 / 9));aspect-ratio:16/9;background:var(--slide);border-radius:14px;box-shadow:0 10px 40px rgba(15,23,42,.18);overflow:hidden;
+  font-size:min(2.05vw, 3.6vh);container-type:inline-size}
+.fs .slide{width:min(100vw, calc(100vh * 16 / 9));border-radius:0;box-shadow:none}
+@supports (font-size:1cqw){ .slide{font-size:2.05cqw} }
+.slide .in{position:absolute;inset:0;padding:3.2em 3.6em 3em;display:flex;flex-direction:column;overflow:auto}
+.slide .bar{position:absolute;left:0;right:0;bottom:0;height:.35em;background:var(--line)}
+.slide .bar i{display:block;height:100%;background:var(--fc,var(--brand))}
+.slide .pg{position:absolute;right:1.4em;bottom:.9em;font-size:.62em;color:var(--muted)}
+.slide .tag{position:absolute;left:5.8em;top:2.1em;font-size:.62em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fc,var(--brand))}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:0;border-radius:10px;background:rgba(15,23,42,.08);color:var(--ink2);font-size:24px;opacity:.4}
+.nav:hover{opacity:1}.nav.l{left:4px}.nav.r{right:4px}
+.fs .nav{display:none}
+.notes{position:fixed;left:16px;right:16px;bottom:16px;z-index:9;background:var(--warm-bg);border:1px solid var(--warm);color:var(--ink);border-radius:12px;padding:12px 16px;font-size:15px;max-height:30vh;overflow:auto;display:none}
+.notes.on{display:block}
+.notes b{color:var(--warm)}
+/* ---------- modo estudio */
+.study{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.study .slide{width:100%;aspect-ratio:auto;font-size:18px;margin:0 0 16px;box-shadow:none;border:1px solid var(--line);container-type:normal}
+@media(max-width:640px){.study .slide{font-size:16px}}
+.study .slide .in{position:static;padding:2.4em 1.4em 1.4em;overflow:visible}
+.study .slide .bar,.study .slide .pg{display:none}
+.study .slide .tag{left:2.3em;top:1.6em}
+.study h2.sh{margin:28px 0 12px;font-size:22px}
+/* ---------- piezas de diapositiva */
+.s-h{margin:0 0 .5em;font-size:1.75em;line-height:1.15;font-weight:800}
+.s-lead{font-size:1.1em;color:var(--ink2);margin:0 0 .7em}
+.ico{font-size:2.4em;line-height:1;margin-bottom:.2em}
+ul.pts{margin:.2em 0;padding-left:1.1em}ul.pts li{margin:.35em 0}
+.cover{justify-content:center;background:linear-gradient(135deg,var(--fc,var(--brand)),#1e3a8a);color:#fff}
+.cover .s-h{font-size:2.6em}.cover .s-lead{color:rgba(255,255,255,.9)}
+.cover .q{margin-top:1em;font-size:1.25em;font-weight:700;background:rgba(255,255,255,.14);border-radius:.5em;padding:.6em .8em}
+.cover .tag{color:rgba(255,255,255,.85)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.2em;align-items:start}
+@media(max-width:640px){.study .two{grid-template-columns:1fr}}
+.box{background:var(--bg);border-radius:.6em;padding:.8em 1em}
+.box.hl{background:var(--brand-soft)}
+.box.ac{background:var(--accent-soft)}
+.box.wa{background:var(--warm-bg)}
+.box .lb{font-size:.62em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3em}
+.ask{margin-top:auto;padding-top:.7em;font-size:1.1em;font-weight:700;color:var(--accent)}
+ol.steps{list-style:none;margin:.3em 0;padding:0;counter-reset:st;display:grid;gap:.45em}
+ol.steps li{counter-increment:st;display:flex;gap:.7em;align-items:flex-start;background:var(--bg);border-radius:.5em;padding:.45em .7em}
+ol.steps li::before{content:counter(st);flex:0 0 auto;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85em}
+ol.steps li.hid{visibility:hidden}
+.cols{display:grid;gap:1em;grid-template-columns:repeat(var(--n,2),1fr)}
+@media(max-width:640px){.study .cols{grid-template-columns:1fr}}
+.col{border:2px solid var(--line);border-radius:.6em;padding:.7em .9em}
+.col h4{margin:0 0 .3em;font-size:1.1em;color:var(--fc,var(--brand))}
+.grid-i{display:grid;gap:.7em;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}
+@media (max-width:700px){.grid-i{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gi{background:var(--bg);border-radius:.6em;padding:.7em;text-align:center}
+.gi .e{font-size:1.8em}.gi>b{display:block;margin:.2em 0}.gi>span{display:block;font-size:.85em;line-height:1.35;color:var(--ink2)}.gi>span b{color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5em;margin:.6em 0}
+.fn{padding:.55em .9em;border-radius:.5em;background:var(--brand-soft);border:2px solid var(--brand);font-weight:600;text-align:center;max-width:12em}
+.fn.inicio,.fn.fin{border-radius:2em;background:var(--accent-soft);border-color:var(--accent)}
+.fn.decision{background:var(--warm-bg);border-color:var(--warm);transform:skew(-8deg)}
+.fn.decision>span{display:inline-block;transform:skew(8deg)}
+.arr{font-size:1.3em;color:var(--muted)}
+.svgw{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.svgw svg{max-width:100%;max-height:100%;height:auto}
+pre.code{margin:.3em 0;background:var(--code-bg);color:var(--code-ink);border-radius:.6em;padding:.8em 1em;font:0.82em/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto;white-space:pre}
+.big{font-size:4.2em;font-weight:900;line-height:1;color:var(--fc,var(--brand))}
+.src{font-size:.6em;color:var(--muted);margin-top:.6em}
+.opts{display:grid;gap:.5em;margin:.4em 0}
+.opt{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:.5em;padding:.5em .8em;font-size:1em}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ko{border-color:var(--ko);background:var(--ko-bg)}
+.expl{display:none;margin-top:.4em}.expl.on{display:block}
+.chip{display:inline-block;border-radius:2em;padding:.15em .7em;font-size:.7em;font-weight:700;background:var(--warm-bg);color:var(--warm);border:1px solid var(--warm);margin-right:.4em}
+.timer{display:inline-flex;align-items:center;gap:.4em;border:2px solid var(--fc,var(--brand));color:var(--fc,var(--brand));background:transparent;border-radius:2em;padding:.2em .8em;font-weight:800;font-size:.9em}
+.timer.end{background:var(--ko);border-color:var(--ko);color:#fff}
+.vid{position:relative;flex:1;min-height:6em;border-radius:.6em;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .play{border:0;background:#dc2626;color:#fff;border-radius:.6em;padding:.6em 1.2em;font-size:1em;font-weight:800}
+.study .vid{aspect-ratio:16/9;flex:none}
+.reveal{border:1px dashed var(--muted);background:transparent;color:var(--muted);border-radius:.4em;padding:.2em .7em;font-size:.7em;margin-top:.4em}
+.empty{max-width:700px;margin:60px auto;text-align:center;color:var(--muted)}
+@media print{.top,.nav,.notes{display:none}.study .slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top" id="top">
+  <button class="tb" id="b-home" title="Índice de sesiones (Esc)">☰ Sesiones</button>
+  <div class="ttl" id="ttl"></div>
+  <select class="tb" id="sel" aria-label="Ir a la sesión"></select>
+  <button class="tb" id="b-mode" title="Cambiar entre proyectar y estudiar (E)">📖 Estudiar</button>
+  <button class="tb" id="b-notes" title="Notas para el docente (N)" aria-pressed="false">🗒 Notas</button>
+  <button class="tb" id="b-fs" title="Pantalla completa (F)">⛶</button>
+  <button class="tb" id="b-theme" title="Tema claro / oscuro">🌓</button>
+</div>
+<div id="app"></div>
+<div class="notes" id="notes"></div>
+<script>
+const D = {"meta": {"titulo": "SdA 3: Un Aula del Futuro", "subtitulo": "«Consultoría Aula del Futuro»: rediseñamos un aula del IES Villa de Mijas con planos, CAD y un Elevator Pitch", "curso_texto": "3.º ESO"}, "materias": "Tecnología y Digitalización", "reto": "«Somos el equipo de consultoría Aula del Futuro del IES Villa de Mijas. El equipo directivo nos ha encargado medir y dibujar un aula del instituto y proponer cómo transformarla en un espacio flexible por zonas, cómodo, accesible y sostenible. Tenemos que entregar los planos, el modelo 3D y un cartel, y defender la propuesta en un Elevator Pitch de 2 minutos.»", "sesiones": [{"n": 1, "fase": "Inicio", "titulo": "Gancho: ¿es cómoda nuestra clase? Del objeto a sus vistas", "reto": "Conocer el reto de la SdA y descubrir que un objeto 3D se describe con tres vistas: alzado, planta y perfil.", "pregunta": "¿Es cómoda nuestra clase? ¿Cómo la organizaría un equipo profesional de diseño?", "diapositivas": [{"tipo": "comparar", "titulo": "¿Dónde aprenderías mejor?", "columnas": [{"titulo": "Aula tradicional", "icono": "🪑", "puntos": ["Filas mirando a la pizarra", "Mobiliario fijo", "Una sola forma de trabajar"]}, {"titulo": "Aula del Futuro", "icono": "🚀", "puntos": ["**Zonas** para presentar, investigar, crear…", "Mobiliario móvil", "Tecnología al servicio del trabajo"]}], "pregunta": "Di 3 cosas que cambiarías de tu clase.", "nota": "Recoge las ideas en la pizarra y guárdalas en una foto: se retoman en la sesión 12 al definir necesidades."}, {"tipo": "idea", "icono": "🎯", "titulo": "Vuestro encargo", "texto": "El equipo directivo quiere transformar un aula del instituto.", "puntos": ["Medir y dibujar el aula **a escala**", "Diseñarla en 3D con **Floorplanner**", "Cartel en **Canva**", "**Elevator Pitch** de 2 minutos"]}, {"tipo": "practica", "titulo": "Diagnóstico: ¿qué sé ya?", "tiempo": 8, "enunciado": "Responde el formulario F1 con sinceridad: no cuenta para nota, sirve para formar equipos equilibrados.", "agrupamiento": "Individual"}, {"tipo": "ejemplo", "icono": "📦", "titulo": "Una caja vista desde tres sitios", "situacion": "Si miras una caja de cereales **de frente**, solo ves un rectángulo. **Desde arriba**, otro distinto. **De lado**, uno estrecho.", "explicacion": "Ninguna vista sola describe la caja, pero **las tres juntas** sí: alzado (de frente), planta (desde arriba) y perfil (desde la izquierda)."}, {"tipo": "infografia", "titulo": "Dónde va cada vista (sistema europeo)", "svg": "<svg viewBox=\"0 0 640 240\" role=\"img\" aria-label=\"Colocación de las vistas: alzado arriba a la izquierda, perfil a su derecha y planta debajo del alzado\"><rect x=\"120\" y=\"20\" width=\"160\" height=\"90\" rx=\"6\" style=\"fill:var(--brand-soft);stroke:var(--brand);stroke-width:2\"/><text x=\"200\" y=\"72\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:18px;font-weight:700\">ALZADO<\/text><rect x=\"320\" y=\"20\" width=\"90\" height=\"90\" rx=\"6\" style=\"fill:var(--accent-soft);stroke:var(--accent);stroke-width:2\"/><text x=\"365\" y=\"60\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:16px;font-weight:700\">PERFIL<\/text><text x=\"365\" y=\"82\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:13px\">izquierdo<\/text><rect x=\"120\" y=\"140\" width=\"160\" height=\"80\" rx=\"6\" style=\"fill:var(--warm-bg);stroke:var(--warm);stroke-width:2\"/><text x=\"200\" y=\"186\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:18px;font-weight:700\">PLANTA<\/text><line x1=\"280\" y1=\"40\" x2=\"320\" y2=\"40\" style=\"stroke:var(--ink);stroke-dasharray:4 4\"/><line x1=\"140\" y1=\"110\" x2=\"140\" y2=\"140\" style=\"stroke:var(--ink);stroke-dasharray:4 4\"/><text x=\"440\" y=\"60\" style=\"fill:var(--ink);font-size:14px\">Misma altura que el alzado<\/text><text x=\"300\" y=\"190\" style=\"fill:var(--ink);font-size:14px\">Mismo ancho que el alzado<\/text><\/svg>", "nota": "Insiste en la alineación: el alzado y el perfil comparten altura; el alzado y la planta comparten anchura."}, {"tipo": "practica", "titulo": "Primeras vistas guiadas", "tiempo": 17, "enunciado": "En la lámina A1 dibuja las tres vistas de las **piezas 1 y 2**, a la vez que el ejemplo de la pizarra.", "pasos": ["Alzado: lo que ves desde la flecha.", "Planta: debajo, con el mismo ancho.", "Perfil: a la derecha, con la misma altura."], "material": ["Lámina A1 con rejilla", "Lápiz HB y goma", "Bloque físico de la pieza"], "enlace": "https://docs.google.com/document/d/1f_zPKtPMIxjAbhacbF6DvRJkgx5DA6El0BxXmBoltQE/copy"}, {"tipo": "cierre", "puntos": ["Un objeto 3D se describe con **tres vistas**.", "Alzado, planta y perfil van **alineados**.", "La planta es la vista que usan los planos de aulas y casas."], "siguiente": "Terminamos la lámina de vistas y la entregamos en Moodle.", "pregunta": "¿Qué vista dibujarías de una mesa para saber cuánto ocupa en el suelo?"}]}, {"n": 2, "fase": "Inicio", "titulo": "Vistas normalizadas: la lámina completa", "reto": "Dibujar alzado, planta y perfil de seis piezas a partir de su perspectiva isométrica y entregarlas.", "pregunta": "¿Puedes adivinar la planta de una pieza sin verla desde arriba?", "diapositivas": [{"tipo": "quiz", "pregunta": "Una pieza en L se ve desde arriba. ¿Qué forma tiene su planta si el escalón está a la derecha?", "opciones": ["Un rectángulo entero con una línea que marca el escalón", "Una L", "Un cuadrado"], "correcta": 0, "explicacion": "Desde arriba se ven **las dos alturas** a la vez: el contorno es un rectángulo y el escalón aparece como una **línea** en medio."}, {"tipo": "ejemplo", "icono": "🧱", "titulo": "Aristas que no se ven", "situacion": "Una pieza de Lego con un hueco por detrás: de frente **no ves** el hueco, pero existe.", "explicacion": "Las aristas ocultas se dibujan con **línea discontinua**. Así quien lee el plano sabe que ahí hay algo."}, {"tipo": "practica", "titulo": "Lámina por niveles", "tiempo": 33, "enunciado": "Completa la lámina A1. Empieza por tu nivel y sube cuando termines.", "pasos": ["🥉 Piezas 3 y 4: escalones.", "🥈 Pieza 5: con un hueco (aristas ocultas).", "🥇 Pieza 6: con un plano inclinado."], "material": ["Lámina A1", "Piezas físicas en la mesa del docente"], "enlace": "https://docs.google.com/document/d/1f_zPKtPMIxjAbhacbF6DvRJkgx5DA6El0BxXmBoltQE/copy"}, {"tipo": "pasos", "titulo": "Comprobación por parejas", "progresivo": true, "pasos": ["¿Hay **3 vistas** en cada pieza?", "¿La planta está **debajo** del alzado con el mismo ancho?", "¿El perfil está **a la derecha** con la misma altura?", "¿Las aristas ocultas son **discontinuas**?"]}, {"tipo": "practica", "titulo": "Entrega", "tiempo": 5, "entrega": "Tarea 3.1 · Lámina de vistas normalizadas", "enunciado": "Foto **nítida y recta** de la lámina completa (sin sombras). Súbela a Moodle."}, {"tipo": "cierre", "puntos": ["Las vistas se **alinean** entre sí.", "Lo oculto va en **discontinua**.", "Pronto dibujaremos la **planta de nuestra aula**."], "siguiente": "¿Cómo cabe un aula de 8 metros en un folio? Las escalas.", "pregunta": "¿Qué pieza te costó más y por qué?"}]}, {"n": 3, "fase": "Desarrollo", "titulo": "El error del arquitecto: qué es una escala", "reto": "Entender qué significa una escala y distinguir escalas de reducción, ampliación y natural.", "pregunta": "¿Cómo cabe un aula de 8 metros en un folio?", "diapositivas": [{"tipo": "video", "titulo": "El error del arquitecto", "busqueda": "errores de escala en construcción ingeniería fallos de medida", "texto": "Mira el caso con una pregunta en la cabeza.", "preguntas": ["¿Qué medida falló?", "¿Qué habría pasado con un plano bien hecho?"], "nota": "Elige un vídeo de 2-3 minutos; si no encuentras uno adecuado, cuenta un caso con una foto."}, {"tipo": "ejemplo", "icono": "🗺️", "titulo": "Google Maps ya usa escalas", "situacion": "Abajo del mapa aparece una barrita que dice **«100 m»**. En tu pantalla mide 2 cm.", "explicacion": "Eso es una escala: **2 cm del mapa = 100 m reales**. Los planos hacen lo mismo con números: 1:50 significa que **1 cm del dibujo son 50 cm reales**."}, {"tipo": "comparar", "titulo": "Tres tipos de escala", "columnas": [{"titulo": "Reducción", "icono": "🏠", "puntos": ["1:50 · 1:100", "Edificios, aulas, mapas", "El dibujo es **más pequeño**"]}, {"titulo": "Natural", "icono": "📏", "puntos": ["1:1", "Piezas pequeñas", "El dibujo es **igual**"]}, {"titulo": "Ampliación", "icono": "🔍", "puntos": ["2:1 · 5:1", "Tornillos, chips", "El dibujo es **más grande**"]}]}, {"tipo": "codigo", "titulo": "La cuenta que siempre funciona", "codigo": "DIBUJO = REAL ÷ 50          (escala 1:50)\nREAL   = DIBUJO × 50\n\nEjemplo: pared de 7,20 m\n7,20 m = 720 cm\n720 ÷ 50 = 14,4 cm en el plano", "explicacion": ["Pasa **todo a cm** antes de calcular.", "Reducción: **divides** para dibujar.", "Ampliación: **multiplicas** para dibujar."], "pregunta": "¿Cuánto medirá en el plano una puerta de 90 cm a 1:50?"}, {"tipo": "practica", "titulo": "Ejercicios graduados (bloque 1)", "tiempo": 23, "enunciado": "Haz el **bloque 1** de la ficha A2. Puedes usar la calculadora.", "pasos": ["Clasifica las escalas.", "Calcula medidas reales.", "Mide la mesa dibujada a 1:20."], "material": ["Ficha A2", "Regla", "Calculadora"], "enlace": "https://docs.google.com/document/d/1daj5nA65ikk66_3omxaIeZPX1sy4XRmLCtSmDfmpSVI/copy"}, {"tipo": "cierre", "puntos": ["Escala = **dibujo : realidad**.", "Mismas unidades antes de calcular.", "1:50 → divide entre 50."], "siguiente": "Planos de un piso: calculamos en las dos direcciones.", "pregunta": "Escribe una duda que te quede sobre escalas."}]}, {"n": 4, "fase": "Desarrollo", "titulo": "Escalas de reducción: el plano de un piso", "reto": "Calcular medidas reales y medidas de dibujo en el plano de una vivienda a 1:50 y 1:100.", "pregunta": "¿Cabe tu cama en ese dormitorio? El plano lo sabe.", "diapositivas": [{"tipo": "quiz", "pregunta": "Una puerta mide 90 cm. ¿Cuánto mide en un plano a escala 1:50?", "opciones": ["4,5 cm", "1,8 cm", "45 cm"], "correcta": 1, "explicacion": "90 ÷ 50 = **1,8 cm**. En reducción siempre se **divide**."}, {"tipo": "ejemplo", "icono": "🛋️", "titulo": "¿Cabe el sofá?", "situacion": "Vas a comprar un sofá de **2,40 m** y en el plano del piso a 1:50 la pared del salón mide **5,2 cm**.", "explicacion": "5,2 × 50 = 260 cm = **2,60 m**. Sí cabe, con 20 cm de margen. Así deciden los diseñadores **antes** de comprar."}, {"tipo": "practica", "titulo": "Ejercicios graduados (bloque 2)", "tiempo": 28, "enunciado": "Por parejas, completa el **bloque 2** de la ficha A2 con el plano del piso.", "pasos": ["Mide cada estancia con la regla.", "Calcula sus medidas reales.", "Resuelve las dos situaciones-problema."], "agrupamiento": "Parejas", "enlace": "https://docs.google.com/document/d/1daj5nA65ikk66_3omxaIeZPX1sy4XRmLCtSmDfmpSVI/copy"}, {"tipo": "dato", "valor": "1:50", "texto": "Es la escala más usada para dibujar **un aula o una vivienda en un A4**: un aula de 8 m ocupa 16 cm.", "pregunta": "¿Y a 1:100? ¿Se leería bien?"}, {"tipo": "cierre", "puntos": ["Medir en el plano → **multiplicar** para saber la realidad.", "Elegir escala = que **quepa** y se **lea bien**.", "Nuestra aula irá a **1:50**."], "siguiente": "Escalas de ampliación y comprobación con un formulario.", "pregunta": "¿Qué escala usarías para dibujar tu habitación en un A4?"}]}, {"n": 5, "fase": "Desarrollo", "titulo": "Escalas de ampliación y elegir la escala adecuada", "reto": "Trabajar con escalas de ampliación y comprobar si se domina el cálculo antes de la prueba.", "pregunta": "¿Por qué a veces el dibujo es más grande que la realidad?", "diapositivas": [{"tipo": "ejemplo", "icono": "🔩", "titulo": "El tornillo de las gafas", "situacion": "Un tornillo de gafas mide **2 mm**. Si lo dibujas a 1:1 no se ve nada.", "explicacion": "Se dibuja **ampliado**, por ejemplo a 5:1: cada milímetro real son 5 mm en el papel. El dibujo mide 10 mm."}, {"tipo": "codigo", "titulo": "Ampliación: la cuenta", "codigo": "Escala 5:1\nDIBUJO = REAL × 5\nREAL   = DIBUJO ÷ 5\n\nTornillo de 8 mm → 8 × 5 = 40 mm en el dibujo", "explicacion": ["En ampliación **multiplicas** para dibujar.", "La **cota** siempre dice la medida **real**: 8, no 40."]}, {"tipo": "practica", "titulo": "Ejercicios graduados (bloque 3)", "tiempo": 20, "enunciado": "Haz el **bloque 3** de la ficha A2: ampliaciones y «elige la escala».", "material": ["Ficha A2", "Calculadora"], "enlace": "https://docs.google.com/document/d/1daj5nA65ikk66_3omxaIeZPX1sy4XRmLCtSmDfmpSVI/copy"}, {"tipo": "practica", "titulo": "Comprueba tus escalas (F2)", "tiempo": 12, "enunciado": "Responde el **formulario F2**. Al enviarlo verás las soluciones: apunta en tu ficha los que fallaste.", "agrupamiento": "Individual"}, {"tipo": "cierre", "puntos": ["Reducción: **divide**. Ampliación: **multiplica**.", "La cota es siempre la medida **real**.", "La escala se elige para que **quepa y se lea**."], "siguiente": "Prueba de escalas.", "pregunta": "Verde, amarillo o rojo: ¿cómo llegas a la prueba?"}]}, {"n": 6, "fase": "Desarrollo", "titulo": "Prueba de ejecución: escalas", "reto": "Demostrar de forma individual que se calculan e interpretan escalas sin errores graves.", "pregunta": "¿Estás listo o lista para demostrar lo que sabes de escalas?", "diapositivas": [{"tipo": "quiz", "pregunta": "En un plano a 1:50 una pared mide 12 cm. ¿Cuánto mide en realidad?", "opciones": ["6 m", "60 cm", "2,4 m"], "correcta": 0, "explicacion": "12 × 50 = 600 cm = **6 m**."}, {"tipo": "ejemplo", "icono": "📐", "titulo": "El error más común", "situacion": "Una alumna calcula 3 m a 1:50 y escribe **0,06 cm**.", "explicacion": "Dividió metros entre 50 y luego puso cm. Primero **3 m = 300 cm**, después 300 ÷ 50 = **6 cm**."}, {"tipo": "practica", "titulo": "Prueba de escalas", "tiempo": 35, "enunciado": "Trabaja **en silencio y de forma individual**. Lee cada enunciado, haz las cuentas en el papel y escribe las unidades.", "material": ["Prueba A3", "Regla", "Calculadora"], "nota": "Recuerda las medidas de tiempo extra o prueba en dos partes acordadas para el alumnado con TDAH o con más dificultades."}, {"tipo": "cierre", "puntos": ["Pasa a **cm** antes de calcular.", "Escribe siempre la **unidad**.", "La prueba va al **dossier técnico**."], "siguiente": "Acotación: cómo se escriben las medidas en un plano.", "pregunta": "¿Qué ejercicio te ha resultado más fácil?"}]}, {"n": 7, "fase": "Desarrollo", "titulo": "Acotación: el lenguaje de las medidas", "reto": "Conocer los elementos de una cota y las reglas fundamentales de la acotación normalizada.", "pregunta": "¿Montarías un mueble con un plano sin números?", "diapositivas": [{"tipo": "ejemplo", "icono": "🪛", "titulo": "Las instrucciones del mueble", "situacion": "Las instrucciones de una estantería dicen dónde va cada tornillo **a 32 mm del borde**.", "explicacion": "Esos números colocados con líneas y flechas son **cotas**. Si están mal puestas, el mueble no encaja."}, {"tipo": "infografia", "titulo": "Las partes de una cota", "svg": "<svg viewBox=\"0 0 640 230\" role=\"img\" aria-label=\"Rectángulo acotado con su línea de cota, líneas auxiliares, flechas y cifra 60\"><rect x=\"170\" y=\"110\" width=\"300\" height=\"90\" style=\"fill:var(--brand-soft);stroke:var(--ink);stroke-width:3\"/><line x1=\"170\" y1=\"104\" x2=\"170\" y2=\"52\" style=\"stroke:var(--accent);stroke-width:1.5\"/><line x1=\"470\" y1=\"104\" x2=\"470\" y2=\"52\" style=\"stroke:var(--accent);stroke-width:1.5\"/><line x1=\"170\" y1=\"60\" x2=\"470\" y2=\"60\" style=\"stroke:var(--warm);stroke-width:1.5\"/><polygon points=\"170,60 184,55 184,65\" style=\"fill:var(--warm)\"/><polygon points=\"470,60 456,55 456,65\" style=\"fill:var(--warm)\"/><text x=\"320\" y=\"52\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:20px;font-weight:700\">60<\/text><text x=\"20\" y=\"40\" style=\"fill:var(--accent);font-size:15px\">Línea auxiliar<\/text><text x=\"490\" y=\"40\" style=\"fill:var(--warm);font-size:15px\">Línea de cota<\/text><text x=\"490\" y=\"90\" style=\"fill:var(--warm);font-size:15px\">Flecha<\/text><text x=\"20\" y=\"160\" style=\"fill:var(--ink);font-size:15px\">Cifra = medida<\/text><text x=\"20\" y=\"180\" style=\"fill:var(--ink);font-size:15px;font-weight:700\">REAL (mm)<\/text><\/svg>"}, {"tipo": "idea", "icono": "⭐", "titulo": "Las 5 reglas que más se olvidan", "puntos": ["La cifra es la medida **real**, no la del dibujo.", "Cada medida se acota **una sola vez**.", "No se acota sobre **aristas ocultas**.", "La cifra va **encima** de la línea de cota y se lee desde abajo o desde la derecha."], "nota": "Las 10 reglas completas están en la infografía del aula y en la ficha A5."}, {"tipo": "practica", "titulo": "Copia guiada: acotamos juntos", "tiempo": 25, "enunciado": "En la **parte 1 de la ficha A5**, acota la pieza a la vez que en la pizarra.", "pasos": ["Medidas generales: largo y alto.", "Posición del agujero desde dos bordes.", "Diámetro con el símbolo **Ø**.", "Revisa separaciones de 8-10 mm."], "material": ["Ficha A5", "Escuadra y cartabón", "Lápiz H"], "enlace": "https://docs.google.com/document/d/16Z7593mq7vrI3VCfgXNaTjGE6WlYBDh2XTGOh2mQZ7A/copy"}, {"tipo": "quiz", "pregunta": "Un plano está a escala 1:2 y una arista mide 30 mm en el papel. ¿Qué cifra escribes en la cota?", "opciones": ["30", "60", "15"], "correcta": 1, "explicacion": "La cota siempre indica la medida **real**: 30 × 2 = **60 mm**."}, {"tipo": "cierre", "puntos": ["Una cota = línea de cota + auxiliares + flechas + cifra.", "La cifra es la medida **real**.", "Pocas cotas, pero **todas las necesarias**."], "siguiente": "Detective de errores: un plano lleno de fallos.", "pregunta": "¿Qué regla te parece más fácil de olvidar?"}]}, {"n": 8, "fase": "Desarrollo", "titulo": "Detective de errores: un plano mal acotado", "reto": "Analizar un plano técnico, encontrar las infracciones de la norma de acotación y corregirlas.", "pregunta": "¿Eres capaz de encontrar 8 errores en un plano?", "diapositivas": [{"tipo": "infografia", "titulo": "El plano sospechoso", "svg": "<svg viewBox=\"0 0 640 250\" role=\"img\" aria-label=\"Pieza en L con cotas mal colocadas para encontrar errores\"><path d=\"M160 210 L160 70 L300 70 L300 140 L460 140 L460 210 Z\" style=\"fill:var(--brand-soft);stroke:var(--ink);stroke-width:3\"/><line x1=\"160\" y1=\"230\" x2=\"460\" y2=\"230\" style=\"stroke:var(--warm);stroke-width:1.5\"/><text x=\"300\" y=\"246\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:16px\">150 mm<\/text><line x1=\"160\" y1=\"105\" x2=\"300\" y2=\"105\" style=\"stroke:var(--warm);stroke-width:1.5\"/><text x=\"230\" y=\"100\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:16px\">70<\/text><line x1=\"140\" y1=\"70\" x2=\"140\" y2=\"210\" style=\"stroke:var(--warm);stroke-width:1.5\"/><text x=\"120\" y=\"145\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:16px\">70<\/text><line x1=\"480\" y1=\"140\" x2=\"480\" y2=\"210\" style=\"stroke:var(--warm);stroke-width:1.5\"/><text x=\"500\" y=\"180\" style=\"fill:var(--ink);font-size:16px\">35<\/text><line x1=\"300\" y1=\"55\" x2=\"460\" y2=\"55\" style=\"stroke:var(--warm);stroke-width:1.5\"/><text x=\"380\" y=\"48\" text-anchor=\"middle\" style=\"fill:var(--ink);font-size:16px\">80<\/text><text x=\"560\" y=\"30\" style=\"fill:var(--accent);font-size:28px\">🔎<\/text><\/svg>", "nota": "El SVG es un apoyo visual: el plano completo con los 8 errores va impreso (se describe en la ficha A4 para el docente)."}, {"tipo": "practica", "titulo": "Investigación por equipos", "tiempo": 25, "enunciado": "Sois una agencia de detectives. Encontrad los **8 errores** y anotadlos en la ficha A4.", "pasos": ["Marca el error en el plano impreso con un número.", "Escribe qué **regla** incumple.", "Explica cómo se **corrige**."], "agrupamiento": "Equipos de 3", "material": ["Plano impreso", "Ficha A4", "Infografía de las 10 reglas"], "enlace": "https://docs.google.com/document/d/1tSn_X9dmCY5muEI6yFYrIManrfqG76rXRvFpMbCDwNw/copy"}, {"tipo": "pasos", "titulo": "Pistas si os atascáis", "progresivo": true, "pasos": ["Mira las **unidades**: ¿hace falta escribir «mm»?", "¿Alguna medida aparece **dos veces**?", "¿Hay cotas **dentro** de la pieza que podrían ir fuera?", "¿Alguna línea de cota **pega** a la pieza?"]}, {"tipo": "ejemplo", "icono": "🕵️", "titulo": "Un error resuelto", "situacion": "La cota «150 mm» lleva la unidad escrita y la línea de cota está pegada a la pieza.", "explicacion": "Dos errores: en piezas las cotas van en **mm sin unidad**, y la línea de cota se separa **8-10 mm** del contorno."}, {"tipo": "practica", "titulo": "Corrección individual", "tiempo": 8, "enunciado": "Redibuja la pieza **bien acotada** a mano alzada en el recuadro final de la ficha A4."}, {"tipo": "cierre", "puntos": ["Acotar bien es **comunicar sin dudas**.", "Revisar un plano ajeno entrena el ojo para el propio.", "Pronto acotaremos **nuestra aula**."], "siguiente": "Acotamos piezas y la planta de una habitación.", "pregunta": "¿Cuál fue el error más difícil de encontrar?"}]}, {"n": 9, "fase": "Desarrollo", "titulo": "Acotamos piezas y la planta de una habitación", "reto": "Aplicar las reglas de acotación en las vistas de una pieza y en la planta de una habitación a escala.", "pregunta": "¿En qué se parece acotar una pieza y acotar una habitación?", "diapositivas": [{"tipo": "comparar", "titulo": "Pieza y edificio: dos costumbres", "columnas": [{"titulo": "Pieza", "icono": "⚙️", "puntos": ["Cotas en **mm**", "No se escribe la unidad", "Escala 1:1, 2:1…"]}, {"titulo": "Habitación / aula", "icono": "🏫", "puntos": ["Cotas en **cm** (o m)", "Unidad indicada en el **cajetín**", "Escala 1:50 o 1:100"]}]}, {"tipo": "practica", "titulo": "Acotar las vistas de una pieza", "tiempo": 18, "enunciado": "Parte 2 de la ficha A5: acota alzado y planta de la pieza 5 **sin repetir** ninguna medida.", "pasos": ["Medidas generales en la vista que mejor las muestra.", "Detalles (huecos) donde se ven de verdad, no ocultos.", "Revisa: ¿cada medida está **una vez**?"], "enlace": "https://docs.google.com/document/d/16Z7593mq7vrI3VCfgXNaTjGE6WlYBDh2XTGOh2mQZ7A/copy"}, {"tipo": "ejemplo", "icono": "🛏️", "titulo": "Tu dormitorio en un folio", "situacion": "Un dormitorio de **3,20 × 2,80 m** a 1:50 ocupa 6,4 × 5,6 cm en el papel.", "explicacion": "Pero en las cotas escribes **320** y **280**: lo que mide de verdad. La puerta (80) y la ventana (120) también se acotan."}, {"tipo": "practica", "titulo": "Planta de una habitación a 1:50", "tiempo": 22, "enunciado": "Parte 3 de la ficha A5: acota la habitación en cm y completa el cajetín (escala, unidad, nombre).", "material": ["Ficha A5", "Escuadra y cartabón", "Lápiz H para líneas finas"]}, {"tipo": "cierre", "puntos": ["En edificios: **cm** y unidad en el cajetín.", "Puertas y ventanas también se **acotan**.", "Ya podemos medir y dibujar el aula."], "siguiente": "¡Lanzamos el desafío! Medimos nuestra aula por equipos.", "pregunta": "¿Qué te llevarías para medir el aula de verdad?"}]}, {"n": 10, "fase": "Desarrollo", "titulo": "Lanzamiento del desafío: medimos nuestra aula", "reto": "Formar los equipos de consultoría, medir el aula real y dibujar su croquis acotado a mano alzada.", "pregunta": "¿Cuánto mide realmente nuestra aula?", "diapositivas": [{"tipo": "idea", "icono": "📣", "titulo": "Encargo oficial", "texto": "«El equipo directivo del IES Villa de Mijas solicita a los equipos de consultoría una propuesta para transformar un aula en un **Aula del Futuro**.»", "puntos": ["Plano a escala del aula actual", "Modelo 3D de la propuesta", "Cartel + Elevator Pitch"]}, {"tipo": "infografia", "titulo": "Roles de hoy", "elementos": [{"icono": "📏", "titulo": "Medidor/a principal", "texto": "Maneja la cinta y dicta las medidas."}, {"icono": "📝", "titulo": "Anotador/a de datos", "texto": "Escribe cada medida en la tabla, en **cm**."}, {"icono": "✏️", "titulo": "Dibujante de croquis", "texto": "Traza la planta a mano alzada."}, {"icono": "🔁", "titulo": "Todo el equipo", "texto": "Comprueba dos veces cada medida."}]}, {"tipo": "ejemplo", "icono": "🛏️", "titulo": "El armario que no cabía", "situacion": "Una familia compra un armario de **2,10 m** «a ojo» y, al montarlo, choca con el techo inclinado del dormitorio.", "explicacion": "Medir antes evita disgustos. Por eso los profesionales miden **dos veces** y anotan **todo**: puertas, ventanas, pilares y enchufes."}, {"tipo": "pasos", "titulo": "Normas de seguridad y medición", "pasos": ["La cinta **no se suelta de golpe**: se recoge despacio.", "Nadie se sube a **sillas ni mesas**.", "Mide **pegado al suelo** y en línea recta.", "Anota **en cm** y repite si dudas."]}, {"tipo": "practica", "titulo": "Medición en el aula", "tiempo": 25, "enunciado": "Medid vuestra zona y después el contorno. Anotad todo en la **tabla de la hoja A6**.", "pasos": ["Largo y ancho del aula.", "Puertas y ventanas: ancho y posición.", "Pilares, radiadores, enchufes y pizarra."], "agrupamiento": "Equipos de consultoría", "material": ["Cinta métrica", "Hoja A6", "Soporte rígido"], "enlace": "https://docs.google.com/document/d/1GFfxEbIyaDcBYhMNzwkqy3ZZj6ltYVPXaS7FHK4IA8M/copy"}, {"tipo": "practica", "titulo": "Croquis a mano alzada", "tiempo": 10, "enunciado": "Dibujad la planta del aula **sin regla y sin escala**, pero proporcionada, y añadid las cotas.", "pasos": ["Contorno.", "Puertas y ventanas.", "Cotas medidas."]}, {"tipo": "cierre", "puntos": ["Un croquis es rápido pero **lleva todas las medidas**.", "Medir dos veces evita errores.", "Con estos datos haremos el **plano a 1:50**."], "siguiente": "Plano del aula a escala, acotado y entregado.", "pregunta": "¿Qué medida os dio más guerra y por qué?"}]}, {"n": 11, "fase": "Desarrollo", "titulo": "El plano del aula a escala y el dossier técnico", "reto": "Dibujar a 1:50 el plano acotado del aula, organizar el dossier técnico digital y entregarlo.", "pregunta": "¿Cómo pasa nuestra aula de la cinta métrica al papel?", "diapositivas": [{"tipo": "ejemplo", "icono": "🏫", "titulo": "Así dibujan las arquitectas", "situacion": "En el plano de un instituto, los **muros** son dos líneas gruesas y las **puertas** dibujan un cuarto de círculo.", "explicacion": "Son **símbolos**: cualquiera que lea el plano sabe hacia dónde abre la puerta y dónde está la ventana."}, {"tipo": "pasos", "titulo": "El plano en 6 pasos", "progresivo": true, "pasos": ["Pasa las medidas a **1:50** (÷ 50).", "Muros exteriores con **lápiz H** y línea suave.", "Huecos de puertas y ventanas.", "Repasa muros con **HB**.", "Acota en **cm**.", "Cajetín: nombre, título, escala, fecha."]}, {"tipo": "practica", "titulo": "Plano a escala acotado", "tiempo": 30, "enunciado": "Dibuja tu plano a 1:50 siguiendo la **guía A7**. Cada persona hace el suyo con los datos del equipo.", "material": ["A4 o papel milimetrado", "Escuadra, cartabón, regla", "Lápices H y HB", "Guía A7"], "enlace": "https://docs.google.com/document/d/11mqTu6YSFg8pt43xK9O_yWT-yQgYwUA794DWo0TVIQU/copy"}, {"tipo": "infografia", "titulo": "Protocolo de nombres del dossier", "elementos": [{"icono": "📁", "titulo": "Carpeta", "texto": "SdA3_Apellido_Nombre"}, {"icono": "🖼️", "titulo": "Archivos", "texto": "01_Vistas · 02_Escalas · 03_Acotacion · 04_Croquis · 05_Plano"}, {"icono": "📄", "titulo": "PDF final", "texto": "SdA3_Dossier_Apellido.pdf"}], "nota": "Recuerda: todo se guarda solo en el Drive del centro y sin caras ni datos personales en las fotos."}, {"tipo": "practica", "titulo": "Dossier digital y entrega", "tiempo": 14, "entrega": "Tarea 3.2 · Dossier técnico gráfico", "enunciado": "Fotografía tus trabajos, nómbralos según el protocolo, únelos en un **PDF** y súbelo.", "pasos": ["Fotos rectas y nítidas.", "Renombra en Drive.", "Une en un PDF (Documentos de Google → Descargar en PDF).", "Sube a Moodle."]}, {"tipo": "cierre", "puntos": ["Ya tenemos el **aula real** en un plano.", "El dossier está **ordenado y a salvo**.", "Ahora toca **soñar** el aula nueva."], "siguiente": "Investigamos qué es un Aula del Futuro.", "pregunta": "¿Qué escala usaríais para dibujar el instituto entero?"}]}, {"n": 12, "fase": "Desarrollo", "titulo": "Investigamos: qué es un Aula del Futuro y qué necesita la nuestra", "reto": "Buscar información fiable sobre Aulas del Futuro, ergonomía e iluminación y definir las necesidades de nuestra aula.", "pregunta": "¿Qué necesita de verdad un aula para que se aprenda mejor?", "diapositivas": [{"tipo": "infografia", "titulo": "Las zonas del Aula del Futuro", "elementos": [{"icono": "🎤", "titulo": "Presentar", "texto": "Exponer y recibir opiniones."}, {"icono": "🔬", "titulo": "Investigar", "texto": "Buscar, experimentar, analizar."}, {"icono": "🎬", "titulo": "Crear", "texto": "Producir vídeos, podcasts, prototipos."}, {"icono": "🖐️", "titulo": "Interactuar", "texto": "Pantalla interactiva y participación."}, {"icono": "📚", "titulo": "Desarrollar", "texto": "Trabajo individual y tranquilo."}, {"icono": "🤝", "titulo": "Intercambiar", "texto": "Colaborar en equipo (opcional)."}], "nota": "Modelo Future Classroom Lab de European Schoolnet, difundido por el INTEF. El encargo exige las cinco primeras."}, {"tipo": "video", "titulo": "Un Aula del Futuro por dentro", "busqueda": "Aula del Futuro INTEF zonas de aprendizaje", "preguntas": ["¿Qué zona os ha llamado más la atención?", "¿Qué mobiliario se mueve?"], "nota": "Elige un vídeo corto (menos de 4 minutos) de un centro español."}, {"tipo": "comparar", "titulo": "¿Me fío de esta fuente?", "columnas": [{"titulo": "Sí, con cuidado", "icono": "✅", "puntos": ["Organismos oficiales (INTEF, Junta, IDAE)", "Universidades", "Autor y fecha visibles"]}, {"titulo": "Mejor no", "icono": "⚠️", "puntos": ["Anuncios de una sola marca", "Foros sin autor", "Sin fecha ni fuentes"]}]}, {"tipo": "practica", "titulo": "Búsqueda crítica", "tiempo": 20, "enunciado": "Cada miembro investiga **un tema** y anota en la ficha A8 dos fuentes con su fiabilidad y una idea útil.", "pasos": ["Zonas y mobiliario.", "Ergonomía de mesas y sillas.", "Luz natural y ventilación.", "Eficiencia energética."], "agrupamiento": "Equipos de consultoría", "enlace": "https://docs.google.com/document/d/1TaV6gbJspk_M8ycI7Af3rsebethlfwSLDbMsW79qXWA/copy"}, {"tipo": "ejemplo", "icono": "💡", "titulo": "De una molestia a una necesidad", "situacion": "«Por la tarde el sol da en la pantalla y no se ve nada.»", "explicacion": "Se convierte en: **¿Cómo podríamos** aprovechar la luz natural sin reflejos en las pantallas? Así se define un problema de diseño."}, {"tipo": "practica", "titulo": "Empatizar, definir y compartir", "tiempo": 22, "enunciado": "Entrevistad a 2 personas de otro equipo, escribid **3 necesidades** «¿Cómo podríamos…?» y publicad un referente en el foro.", "pasos": ["Entrevista: ¿qué te molesta? ¿qué necesitas?", "Tres «¿Cómo podríamos…?».", "Foro: imagen o enlace + fuente + qué copiaríais."]}, {"tipo": "cierre", "puntos": ["Un buen diseño empieza por **las personas**.", "Fuentes fiables = decisiones defendibles.", "Ya sabemos **qué** necesita el aula."], "siguiente": "Dibujamos el aula actual en Floorplanner.", "pregunta": "¿Cuál es la necesidad más importante de vuestra aula?"}]}, {"n": 13, "fase": "Desarrollo", "titulo": "Floorplanner I: el aula actual en 2D y 3D", "reto": "Crear la cuenta en Floorplanner y recrear el aula actual a escala real con las medidas del plano.", "pregunta": "¿Se parece el aula del ordenador a la de verdad?", "diapositivas": [{"tipo": "ejemplo", "icono": "🎮", "titulo": "Como un videojuego de construir", "situacion": "En juegos de construir casas colocas paredes y muebles **a ojo**.", "explicacion": "Un programa **CAD** hace lo mismo pero con **medidas exactas**: escribes «720 cm» y la pared mide eso. Por eso los arquitectos lo usan."}, {"tipo": "pasos", "titulo": "Floorplanner en 6 pasos", "progresivo": true, "pasos": ["Nuevo proyecto: **SdA3_EquipoN_AulaActual**.", "Herramienta **Paredes**: clic y escribe la longitud en cm.", "Biblioteca: **puertas y ventanas** sobre la pared.", "Ajusta su posición con las cotas.", "Añade pilares y pizarra.", "Cambia a **3D** para comprobar."]}, {"tipo": "video", "titulo": "Tutorial de Floorplanner", "busqueda": "Floorplanner tutorial español dibujar paredes puertas ventanas", "texto": "Por si alguien necesita verlo otra vez en casa (también en Moodle).", "nota": "Busca un tutorial en español de menos de 10 minutos y enlázalo también en Moodle."}, {"tipo": "practica", "titulo": "Recrear el aula actual", "tiempo": 28, "enunciado": "Por parejas, **cambiad de persona al teclado cada 7 minutos**. El medidor/a dicta y comprueba.", "pasos": ["Paredes con las medidas del plano.", "Puertas y ventanas.", "Pilares y pizarra.", "Comprobación: ¿coincide con el plano?"], "agrupamiento": "Equipos (por parejas al teclado)"}, {"tipo": "practica", "titulo": "Entrega", "tiempo": 7, "entrega": "Tarea 3.3 · El aula actual en Floorplanner", "enunciado": "Subid la **captura 2D con medidas**, la **captura 3D** y el **enlace** al proyecto."}, {"tipo": "cierre", "puntos": ["CAD = dibujo con **medidas exactas**.", "El plano a mano nos ha servido de **guía**.", "Ahora sí: a **transformar** el aula."], "siguiente": "Diseñamos las zonas del Aula del Futuro.", "pregunta": "¿Qué diferencia notas entre dibujar a mano y en el ordenador?"}]}, {"n": 14, "fase": "Desarrollo", "titulo": "Floorplanner II: idear y zonificar el Aula del Futuro", "reto": "Idear la nueva distribución del aula por zonas y colocar el mobiliario en Floorplanner.", "pregunta": "¿Dónde pondríais cada zona y por qué?", "diapositivas": [{"tipo": "practica", "titulo": "Lluvia de ideas con bocetos", "tiempo": 8, "enunciado": "Cada persona dibuja **en 3 minutos** su aula ideal sobre el plano pequeño. Luego elegís o mezcláis.", "pasos": ["3 minutos de boceto en silencio.", "1 minuto por persona para explicarlo.", "Elegid o mezclad."]}, {"tipo": "ejemplo", "icono": "🪟", "titulo": "Cada zona en su sitio", "situacion": "La zona de **Desarrollar** (lectura, trabajo individual) necesita silencio y buena luz.", "explicacion": "Mejor **junto a las ventanas** y lejos de la puerta. La zona de **Presentar** va donde todos vean la pantalla sin reflejos."}, {"tipo": "practica", "titulo": "Plan de zonas", "tiempo": 12, "enunciado": "Completad la **ficha A9**: función, lugar, mobiliario y tecnología de cada zona, y elegid vuestra especialización.", "pasos": ["🎙️ Rincón de podcast o streaming", "🖨️ Rincón de impresión 3D", "🧘 Zona tranquila de ideación"], "enlace": "https://docs.google.com/document/d/1McTgm0TYT83qAhuqjG4xr1Qr967G8lM6vjsbV1Lo9A8/copy"}, {"tipo": "practica", "titulo": "Duplicar y zonificar", "tiempo": 25, "enunciado": "Duplicad el proyecto como **SdA3_EquipoN_AulaFuturo** y colocad zonas y muebles.", "pasos": ["Un color de suelo o etiqueta por zona.", "Mesas móviles y sillas regulables.", "Pantalla interactiva y estanterías.", "Turnos de teclado cada 7 min."]}, {"tipo": "dato", "valor": "90 cm", "texto": "Ancho mínimo de paso para que una **silla de ruedas** circule con comodidad entre muebles.", "pregunta": "¿Cumple vuestro diseño este paso en todo el aula?", "nota": "Puedes relacionarlo con el Código Técnico de la Edificación (accesibilidad) sin entrar en detalle normativo."}, {"tipo": "cierre", "puntos": ["Cada zona tiene una **función** y un **lugar** lógico.", "Diseñar es **para todas las personas**.", "Lo próximo: tecnología, ergonomía y sostenibilidad."], "siguiente": "Afinamos el diseño y lo testeamos con otro equipo.", "pregunta": "¿Qué zona os ha costado más colocar?"}]}, {"n": 15, "fase": "Desarrollo", "titulo": "Floorplanner III: tecnología, ergonomía, sostenibilidad y testeo", "reto": "Mejorar el diseño con criterios de ergonomía, accesibilidad y eficiencia energética, y testearlo con otro equipo.", "pregunta": "¿Es vuestra aula cómoda para todos y gasta poca energía?", "diapositivas": [{"tipo": "infografia", "titulo": "Checklist de calidad", "elementos": [{"icono": "🪑", "titulo": "Ergonomía", "texto": "Mesas y sillas **regulables**; pantalla a la altura de los ojos."}, {"icono": "☀️", "titulo": "Luz natural", "texto": "Ventanas **a un lado** de las pantallas, no delante ni detrás."}, {"icono": "🌬️", "titulo": "Ventilación", "texto": "Ventanas y puerta despejadas para **ventilación cruzada**."}, {"icono": "⚡", "titulo": "Energía", "texto": "**LED**, equipos eficientes y regletas con apagado."}]}, {"tipo": "ejemplo", "icono": "📱", "titulo": "El reflejo en el móvil", "situacion": "Si usas el móvil de espaldas a una ventana soleada, **no ves la pantalla**.", "explicacion": "Con las pantallas del aula pasa igual: la luz debe llegar **de lado**. Así se aprovecha la luz natural y se gasta menos en lámparas."}, {"tipo": "practica", "titulo": "Mejorar el diseño", "tiempo": 20, "enunciado": "Revisad la propuesta con la **checklist** y la ficha A9, añadid la tecnología de vuestra especialización y preparad el **render 3D**.", "pasos": ["Reorientad puestos respecto a las ventanas.", "Añadid la tecnología.", "Escribid las decisiones de energía.", "Generad el render o captura 3D."], "enlace": "https://docs.google.com/document/d/1McTgm0TYT83qAhuqjG4xr1Qr967G8lM6vjsbV1Lo9A8/copy"}, {"tipo": "practica", "titulo": "Paseo virtual y testeo", "tiempo": 15, "enunciado": "Abrid el proyecto de otro equipo, haced el **paseo 3D** y respondedle el **formulario F3**.", "pasos": ["Recorred todas las zonas.", "¿Se puede circular en silla de ruedas?", "¿Qué funciona? ¿Qué cambiaríais?"], "agrupamiento": "Equipos"}, {"tipo": "practica", "titulo": "Incorporar mejoras", "tiempo": 8, "enunciado": "Leed el testeo que os han hecho y elegid **una mejora** para aplicar. Anotadla en la ficha A9."}, {"tipo": "cierre", "puntos": ["Un diseño se **prueba** antes de construirse.", "La crítica de otros equipos **mejora** la propuesta.", "Toca **contarlo** al mundo."], "siguiente": "Cartel en Canva y preparación del Elevator Pitch.", "pregunta": "¿Qué mejora vais a incorporar gracias al testeo?"}]}, {"n": 16, "fase": "Cierre", "titulo": "Cartel en Canva y guion del Elevator Pitch", "reto": "Diseñar el cartel promocional con el render 3D, cerrar el dossier digital con licencia y preparar el pitch.", "pregunta": "¿Cómo convencemos al equipo directivo en un solo vistazo?", "diapositivas": [{"tipo": "comparar", "titulo": "Dos carteles", "columnas": [{"titulo": "No convence", "icono": "😵", "puntos": ["Mucho texto pequeño", "Imagen diminuta", "Sin fuentes"]}, {"titulo": "Convence", "icono": "😎", "puntos": ["**Titular** corto", "**Render grande**", "Una frase por zona + fuentes y licencia"]}]}, {"tipo": "ejemplo", "icono": "🎬", "titulo": "El póster de una película", "situacion": "Pasas por delante de un cine y en **5 segundos** sabes de qué va la película por su póster.", "explicacion": "Una **imagen potente**, un **título** y poco texto. Vuestro cartel debe hacer lo mismo con el render del aula."}, {"tipo": "practica", "titulo": "Cartel en Canva", "tiempo": 25, "enunciado": "Diseñad el cartel de vuestra propuesta en **Canva para Educación**.", "pasos": ["Render 3D grande.", "Nombre de la propuesta.", "Zonas con una frase.", "Ergonomía y sostenibilidad.", "Fuentes y licencia **CC BY-NC-SA**."]}, {"tipo": "flujo", "titulo": "Elevator Pitch en 2 minutos", "nodos": [{"texto": "Gancho (15 s)", "tipo": "inicio"}, {"texto": "Problema del aula actual (20 s)", "tipo": "proceso"}, {"texto": "Nuestra solución por zonas (45 s)", "tipo": "proceso"}, {"texto": "Ergonomía y sostenibilidad (20 s)", "tipo": "proceso"}, {"texto": "Cierre: qué pedimos (20 s)", "tipo": "fin"}]}, {"tipo": "practica", "titulo": "Guion del pitch", "tiempo": 12, "enunciado": "Completad el **guion A10**, repartid las partes y ensayad una vez con cronómetro.", "pasos": ["Cada persona tiene su parte.", "Ensayo con cronómetro: **2 minutos**.", "¿Sobra algo? Recortad."], "enlace": "https://docs.google.com/document/d/1FDw_oDH7TFbxuIa3MH4scwB6p-AJCO7b6hQ2O0bDXqU/copy"}, {"tipo": "practica", "titulo": "Entrega y almacenamiento seguro", "tiempo": 8, "entrega": "Tarea 3.4 · Propuesta Aula del Futuro: diseño, cartel y Elevator Pitch", "enunciado": "Guardad en Drive cartel (PDF y PNG), enlace del proyecto y guion con el **protocolo de nombres**, y subid a Moodle el **enlace** y el **cartel en PDF**."}, {"tipo": "cierre", "puntos": ["Un buen cartel se entiende **en 5 segundos**.", "El pitch tiene **estructura** y tiempo.", "Licencia y fuentes = **respeto** al trabajo ajeno."], "siguiente": "¡Pitch de startup ante la clase!", "pregunta": "¿Qué frase de vuestro pitch creéis que convencerá más?"}]}, {"n": 17, "fase": "Cierre", "titulo": "Pitch de startup: presentamos el Aula del Futuro", "reto": "Defender la propuesta en un Elevator Pitch de 2 minutos, coevaluar a otros equipos y reflexionar sobre lo aprendido.", "pregunta": "¿Qué propuesta convencerá al equipo directivo?", "diapositivas": [{"tipo": "idea", "icono": "🚀", "titulo": "Pitch de startup", "puntos": ["**2 minutos** por equipo", "Cartel y paseo 3D en pantalla", "**1 pregunta** del equipo directivo", "Coevaluación mientras escuchas (F4)"]}, {"tipo": "practica", "titulo": "Elevator Pitch", "tiempo": 30, "enunciado": "Cada equipo presenta en **2 minutos**. Mientras, el resto valora cada pitch en el **formulario F4**.", "pasos": ["Orden de salida en la pizarra.", "Cronómetro visible.", "Una pregunta por equipo."], "entrega": "Tarea 3.4 · Propuesta Aula del Futuro: diseño, cartel y Elevator Pitch", "nota": "Aquí completas las dos líneas de puesta en público de la rúbrica de la Tarea 3.4 (peso 16,7 % cada una).", "enlace": "https://docs.google.com/document/d/1FDw_oDH7TFbxuIa3MH4scwB6p-AJCO7b6hQ2O0bDXqU/copy"}, {"tipo": "ejemplo", "icono": "🏆", "titulo": "Lo que hace ganar un pitch", "situacion": "En los concursos de startups, quien gana no es quien más habla, sino quien **resuelve un problema claro** en poco tiempo.", "explicacion": "Vuestro problema: un aula incómoda y poco flexible. Vuestra solución: **zonas, ergonomía y sostenibilidad**."}, {"tipo": "practica", "titulo": "Diana de autoevaluación", "tiempo": 10, "enunciado": "Completa el **formulario F5** con sinceridad y escribe una mejora para la próxima SdA.", "agrupamiento": "Individual"}, {"tipo": "cierre", "puntos": ["Hemos pasado de **medir** a **diseñar** y **convencer**.", "Vistas, escalas, cotas y CAD son el **idioma** de la ingeniería.", "Los carteles llegarán al **equipo directivo**."], "pregunta": "En una frase: ¿cómo convertiríais vuestra aula en un espacio donde se aprenda mejor?"}]}]};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
+// **negrita** dentro de los textos
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
+// Admite nombres de fase compuestos («Bloque 1 · Inicio»)
+const fcol = f => FC[f] || FC[Object.keys(FC).find(k => String(f || '').includes(k))] || 'var(--brand)';
+const st = { s: null, i: 0, mode: 'proy', notes: false, revealed: {} };
+const SES = D.sesiones;
+
+function ytId(v){
+  const m = String(v||'').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(v||'').match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+// En vistas previas protegidas (iframe sandbox, about:srcdoc) el navegador bloquea replaceState: se ignora.
+function setHash(h){ try { history.replaceState(null, '', h); } catch(e){} }
+function fmtT(s){ s = Math.max(0, s|0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+// --------------------------------------------------- renderizado de cada tipo
+const R = {
+  portada(d, s){
+    return `<div class="in cover"><div class="tag">Sesión ${s.n} · ${esc(s.fase||'')}</div>
+      <h1 class="s-h">${md(s.titulo)}</h1>${s.reto ? `<p class="s-lead">${md(s.reto)}</p>` : ''}
+      ${d.pregunta ? `<div class="q">${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  idea(d){
+    return `<div class="in">${d.icono ? `<div class="ico">${esc(d.icono)}</div>` : ''}<h2 class="s-h">${md(d.titulo)}</h2>
+      ${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${arr(d.puntos).length ? `<ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  ejemplo(d){
+    return `<div class="in"><h2 class="s-h">${d.icono ? esc(d.icono)+' ' : ''}${md(d.titulo)}</h2>
+      <div class="two"><div class="box wa"><div class="lb">En tu día a día</div>${md(d.situacion)}</div>
+      <div class="box hl"><div class="lb">¿Qué hay detrás?</div>${md(d.explicacion)}</div></div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  pasos(d, s, k){
+    const key = s.n+'-'+k, prog = d.progresivo, shown = st.revealed[key] ?? (prog ? 1 : 1e9);
+    const ps = arr(d.pasos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}"><span>${md(p)}</span></li>`).join('')}</ol>
+      ${prog && st.mode==='proy' && shown < ps.length ? `<button class="reveal" data-rev="${key}" data-max="${ps.length}">Siguiente paso (↓)</button>` : ''}</div>`;
+  },
+  comparar(d){
+    const c = arr(d.columnas);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="cols" style="--n:${c.length}">${c.map(x=>`<div class="col"><h4>${esc(x.icono||'')} ${md(x.titulo)}</h4><ul class="pts">${arr(x.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  flujo(d){
+    const n = arr(d.nodos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="flow">${n.map((x,j)=>`${j?'<span class="arr">→</span>':''}<div class="fn ${esc(x.tipo||'proceso')}"><span>${md(x.texto ?? x)}</span></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  infografia(d){
+    const body = d.svg ? `<div class="svgw">${d.svg}</div>`
+      : `<div class="grid-i" style="--cols:${Math.min(arr(d.elementos).length, arr(d.elementos).length === 4 ? 4 : 3) || 1}">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${body}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  codigo(d){
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2><div class="two" style="grid-template-columns:${d.explicacion?'1.2fr 1fr':'1fr'}">
+      <pre class="code">${esc(d.codigo)}</pre>${d.explicacion ? `<div class="box hl"><div class="lb">Qué hace</div>${arr(d.explicacion).map(x=>`<p style="margin:.2em 0">${md(x)}</p>`).join('')}</div>` : ''}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  dato(d){
+    return `<div class="in" style="justify-content:center;text-align:center"><div class="big">${esc(d.valor)}</div>
+      <p class="s-lead" style="margin-top:.5em;font-size:1.3em">${md(d.texto)}</p>${d.fuente ? `<div class="src">Fuente: ${esc(d.fuente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask" style="margin-top:1em">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  practica(d, s, k){
+    const min = +d.tiempo || 0;
+    return `<div class="in"><h2 class="s-h">🛠 ${md(d.titulo)}</h2>
+      <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
+      ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
+      <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
+      ${d.enlace ? `<a class="box wa" style="display:block;text-decoration:none;color:inherit;margin:.6em 0" href="${esc(d.enlace)}" target="_blank" rel="noopener">🔗 <b>${esc(String(d.enlace).replace(/^https?:\/\//,''))}</b></a>` : ''}
+      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
+      ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
+  },
+  quiz(d, s, k){
+    return `<div class="in"><h2 class="s-h">🧠 ${md(d.pregunta)}</h2>
+      <div class="opts" data-q="${s.n}-${k}" data-ok="${+d.correcta||0}">${arr(d.opciones).map((o,j)=>`<button class="opt" data-j="${j}">${String.fromCharCode(65+j)}. ${md(o)}</button>`).join('')}</div>
+      <div class="expl box hl" id="ex-${s.n}-${k}">${md(d.explicacion||'')}</div></div>`;
+  },
+  video(d){
+    const id = ytId(d.youtube), ini = +d.inicio || 0;
+    const url = id ? `https://www.youtube.com/watch?v=${id}${ini?'&t='+ini+'s':''}` : (d.busqueda ? 'https://www.youtube.com/results?search_query='+encodeURIComponent(d.busqueda) : '');
+    const box = id ? `<div class="vid" data-yt="${id}" data-ini="${ini}" data-fin="${+d.fin||0}"><button class="play">▶ Reproducir aquí</button></div>`
+      : `<a class="box wa" style="display:block;text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">🔎 Buscar en YouTube: <b>${esc(d.busqueda||'')}</b><div class="src">El docente elige el vídeo antes de clase.</div></a>`;
+    return `<div class="in"><h2 class="s-h">🎬 ${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="two" style="grid-template-columns:${arr(d.preguntas).length?'1.5fr 1fr':'1fr'};flex:1;min-height:0">${box}
+      ${arr(d.preguntas).length ? `<div class="box ac"><div class="lb">Mientras lo ves</div><ul class="pts">${arr(d.preguntas).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>` : ''}</div>
+      ${url && id ? `<div class="src"><a href="${esc(url)}" target="_blank" rel="noopener">Abrir en YouTube ↗</a>${d.duracion ? ' · '+esc(d.duracion) : ''}${ini ? ' · desde '+fmtT(ini) : ''}</div>` : ''}</div>`;
+  },
+  cierre(d){
+    return `<div class="in"><h2 class="s-h">✅ ${md(d.titulo || 'Hoy hemos aprendido')}</h2>
+      <ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>
+      ${d.siguiente ? `<div class="box ac" style="margin-top:.6em"><div class="lb">Próxima sesión</div>${md(d.siguiente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask">🚪 Pregunta de salida: ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+};
+const TAG = {idea:'Idea clave', ejemplo:'Ejemplo cotidiano', pasos:'Paso a paso', comparar:'Comparamos', flujo:'Diagrama de flujo',
+  infografia:'Infografía', codigo:'Programa', dato:'Dato', practica:'¡Manos a la obra!', quiz:'Comprueba', video:'Vídeo', cierre:'Cierre'};
+
+function slidesOf(s){ return [{tipo:'portada', pregunta: s.pregunta}].concat(arr(s.diapositivas)); }
+function renderSlide(s, d, k, total){
+  const f = R[d.tipo] || R.idea;
+  const tag = d.tipo !== 'portada' ? `<div class="tag">${esc(TAG[d.tipo]||'')}</div>` : '';
+  return `<section class="slide" style="--fc:${fcol(s.fase)}" data-k="${k}">${f(d, s, k)}${tag}
+    <div class="bar"><i style="width:${(k+1)/total*100}%"></i></div><div class="pg">${k+1} / ${total}</div></section>`;
+}
+
+// --------------------------------------------------- vistas
+function home(){
+  st.s = null; document.body.classList.remove('fs');
+  $('#ttl').innerHTML = esc(D.meta.titulo || 'Sesiones');
+  $('#sel').value = ''; $('#notes').classList.remove('on');
+  $('#app').innerHTML = `<div class="home"><div class="hero"><div class="k">${esc([D.meta.curso_texto, D.materias].filter(Boolean).join(' · '))}</div>
+    <h1>${esc(D.meta.titulo||'')}</h1>${D.meta.subtitulo ? `<p>${esc(D.meta.subtitulo)}</p>` : ''}
+    ${D.reto ? `<p><b>Reto:</b> ${esc(D.reto)}</p>` : ''}
+    <p class="help">Elige una sesión. Proyectar: <span class="kbd">←</span><span class="kbd">→</span> pasar · <span class="kbd">F</span> pantalla completa · <span class="kbd">N</span> notas del docente · <span class="kbd">E</span> modo estudio · <span class="kbd">Esc</span> volver aquí.</p></div>
+    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${fcol(s.fase)}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div></div>`;
+  setHash('#');
+  wire();
+}
+function show(n, i){
+  const s = SES.find(x => x.n == n); if (!s) return home();
+  const sl = slidesOf(s);
+  st.s = s; st.i = Math.max(0, Math.min(i|0, sl.length - 1));
+  $('#ttl').innerHTML = `Sesión ${s.n}. ${esc(s.titulo)}<small>${esc(D.meta.titulo||'')}</small>`;
+  $('#sel').value = String(s.n);
+  $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar';
+  if (st.mode === 'proy') {
+    $('#app').innerHTML = `<div class="stage"><button class="nav l" id="pv" aria-label="Anterior">‹</button>${renderSlide(s, sl[st.i], st.i, sl.length)}<button class="nav r" id="nx" aria-label="Siguiente">›</button></div>`;
+    $('#pv').onclick = prev; $('#nx').onclick = next;
+  } else {
+    $('#app').innerHTML = `<div class="study">${sl.map((d,k)=>renderSlide(s, d, k, sl.length)).join('')}
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:20px">${SES.find(x=>x.n==s.n-1) ? `<button class="tb" data-s="${s.n-1}">← Sesión ${s.n-1}</button>` : '<span></span>'}${SES.find(x=>x.n==s.n+1) ? `<button class="tb" data-s="${s.n+1}">Sesión ${s.n+1} →</button>` : ''}</div></div>`;
+    window.scrollTo(0, 0);
+  }
+  const nt = st.mode === 'proy' ? sl[st.i].nota : null;
+  $('#notes').innerHTML = nt ? `<b>Notas para el docente:</b> ${md(nt)}` : '<b>Notas:</b> sin notas en esta diapositiva.';
+  $('#notes').classList.toggle('on', st.notes && st.mode === 'proy');
+  setHash(`#s${s.n}-${st.i + 1}`);
+  wire();
+  fit();
+}
+function next(){
+  if (!st.s) return; const sl = slidesOf(st.s), d = sl[st.i];
+  if (d.tipo === 'pasos' && d.progresivo) { const key = st.s.n+'-'+st.i, v = st.revealed[key] ?? 1;
+    if (v < arr(d.pasos).length) { st.revealed[key] = v + 1; return show(st.s.n, st.i); } }
+  if (st.i < sl.length - 1) show(st.s.n, st.i + 1);
+  else { const nx = SES.find(x => x.n == st.s.n + 1); if (nx) show(nx.n, 0); }
+}
+function prev(){ if (!st.s) return; if (st.i > 0) show(st.s.n, st.i - 1); else { const p = SES.find(x => x.n == st.s.n - 1); if (p) show(p.n, slidesOf(p).length - 1); } }
+
+// Si el contenido no cabe en la diapositiva proyectada, reduce la letra (hasta un 62 %)
+function fit(){
+  const sl = document.querySelector('.stage .slide'); if (!sl) return;
+  const inn = sl.querySelector('.in'); sl.style.fontSize = '';
+  const base = parseFloat(getComputedStyle(sl).fontSize); let f = base;
+  while (inn.scrollHeight > inn.clientHeight + 1 && f > base * 0.62) { f *= 0.96; sl.style.fontSize = f + 'px'; }
+}
+let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fit, 80); });
+let timers = {};
+function wire(){
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => show(+b.dataset.s, 0));
+  document.querySelectorAll('.opts').forEach(q => q.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+    const ok = +q.dataset.ok; q.querySelectorAll('.opt').forEach(x => x.classList.remove('ok','ko'));
+    o.classList.add(+o.dataset.j === ok ? 'ok' : 'ko'); q.querySelectorAll('.opt')[ok]?.classList.add('ok');
+    document.getElementById('ex-' + q.dataset.q)?.classList.add('on');
+  }));
+  document.querySelectorAll('.reveal').forEach(b => b.onclick = () => { st.revealed[b.dataset.rev] = (st.revealed[b.dataset.rev] ?? 1) + 1; show(st.s.n, st.i); });
+  document.querySelectorAll('.vid').forEach(v => { const b = v.querySelector('.play'); if (b) b.onclick = () => {
+    const p = new URLSearchParams({autoplay: '1', rel: '0'}); if (+v.dataset.ini) p.set('start', v.dataset.ini); if (+v.dataset.fin) p.set('end', v.dataset.fin);
+    v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.yt}?${p}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>`; }; });
+  document.querySelectorAll('.timer').forEach(b => {
+    const k = b.dataset.k, paint = () => { const t = timers[k]; if (!t) return; const left = Math.round((t.end - Date.now())/1000);
+      b.textContent = left > 0 ? '⏱ ' + fmtT(left) : '⏰ ¡Tiempo!'; b.classList.toggle('end', left <= 0); };
+    if (timers[k]) paint();
+    b.onclick = () => { if (timers[k]) { clearInterval(timers[k].iv); delete timers[k]; b.textContent = '⏱ ' + (b.dataset.timer/60) + ' min'; b.classList.remove('end'); return; }
+      timers[k] = { end: Date.now() + b.dataset.timer * 1000 }; timers[k].iv = setInterval(() => { if (!document.body.contains(b)) return; paint(); }, 500); paint(); };
+  });
+}
+
+// --------------------------------------------------- controles
+$('#sel').innerHTML = `<option value="">Ir a la sesión…</option>` + SES.map(s => `<option value="${s.n}">S${s.n}. ${esc(s.titulo)}</option>`).join('');
+$('#sel').onchange = e => e.target.value ? show(+e.target.value, 0) : home();
+$('#b-home').onclick = home;
+$('#b-mode').onclick = () => { st.mode = st.mode === 'proy' ? 'est' : 'proy'; st.s ? show(st.s.n, st.i) : null; $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar'; };
+$('#b-notes').onclick = () => { st.notes = !st.notes; $('#b-notes').setAttribute('aria-pressed', st.notes); $('#notes').classList.toggle('on', st.notes && st.mode === 'proy' && !!st.s); };
+$('#b-fs').onclick = toggleFs;
+$('#b-theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('clase-theme', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('clase-theme'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+function toggleFs(){
+  if (!st.s) return;
+  if (st.mode !== 'proy') { st.mode = 'proy'; show(st.s.n, st.i); }
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.().catch(()=>{}); document.body.classList.add('fs'); }
+  else { document.exitFullscreen?.(); document.body.classList.remove('fs'); }
+}
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('fs', !!document.fullscreenElement); setTimeout(fit, 120); });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = e.key;
+  if (st.s && st.mode === 'proy' && ['ArrowRight','ArrowDown','PageDown',' '].includes(k)) { e.preventDefault(); next(); }
+  else if (st.s && st.mode === 'proy' && ['ArrowLeft','ArrowUp','PageUp'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home' && st.s && st.mode === 'proy') show(st.s.n, 0);
+  else if (k === 'End' && st.s && st.mode === 'proy') show(st.s.n, slidesOf(st.s).length - 1);
+  else if (k === 'f' || k === 'F') toggleFs();
+  else if (k === 'n' || k === 'N') $('#b-notes').click();
+  else if ((k === 'e' || k === 'E') && st.s) $('#b-mode').click();
+  else if (k === 'Escape' && !document.fullscreenElement) home();
+});
+// enlace directo: #s3-2 (sesión 3, diapositiva 2)
+let m = null; try { m = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){}
+if (!SES.length) $('#app').innerHTML = '<div class="empty">Esta situación de aprendizaje todavía no tiene diapositivas de clase.</div>';
+else if (m) show(+m[1], (+m[2] || 1) - 1); else home();
+</script>
+</body>
+</html>
