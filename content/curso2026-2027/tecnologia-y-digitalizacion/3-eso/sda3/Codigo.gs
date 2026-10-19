@@ -8,10 +8,15 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   crearF1_QueSeDeDibujo()  →  ¿Qué sé de dibujo técnico? (diagnóstico) (sesión 1)
+ *        ya creado: https://forms.gle/KMgAVCf63Whz4mpq8
  *   crearF2_CompruebaTusEscalas()  →  Comprueba tus escalas (sesión 5)
+ *        ya creado: https://forms.gle/SXDUpPBiopeRQd696
  *   crearF3_TesteoDelDisenoDe()  →  Testeo del diseño de otro equipo (sesión 15)
+ *        ya creado: https://forms.gle/oKBAH9yTzodFCmE28
  *   crearF4_CoevaluacionDelElevatorPitch()  →  Coevaluación del Elevator Pitch (sesión 17)
+ *        ya creado: https://forms.gle/meSWF8Jzy1VvZEnK8
  *   crearF5_DianaDeAutoevaluacionDe()  →  Diana de autoevaluación de la SdA 3 (sesión 17)
+ *        ya creado: https://forms.gle/oAwknj94G6HrLKjG8
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
@@ -111,6 +116,7 @@ var FORMULARIOS = [
     "id": "F1",
     "titulo": "¿Qué sé de dibujo técnico? (diagnóstico)",
     "anonimo": false,
+    "enlace": "https://forms.gle/KMgAVCf63Whz4mpq8",
     "obligatorias": true,
     "descripcion": "No cuenta para la nota: sirve para formar equipos equilibrados en la SdA 3. Responde con sinceridad.",
     "confirmacion": "¡Gracias! En la sesión 10 conocerás tu equipo de consultoría.",
@@ -190,6 +196,7 @@ var FORMULARIOS = [
     "id": "F2",
     "titulo": "Comprueba tus escalas",
     "anonimo": false,
+    "enlace": "https://forms.gle/SXDUpPBiopeRQd696",
     "obligatorias": true,
     "descripcion": "Autocomprobación antes de la prueba (no cuenta para la nota). Haz las cuentas en un papel y elige la respuesta.",
     "confirmacion": "Soluciones: 1) 1,8 cm · 2) 6 m · 3) 40 mm · 4) 15 mm · 5) 1:50 · 6) 14,4 cm · 7) Ampliación · 8) 2,5 m. Apunta en tu ficha las que has fallado y pregúntalas al inicio de la próxima sesión.",
@@ -290,6 +297,7 @@ var FORMULARIOS = [
     "id": "F3",
     "titulo": "Testeo del diseño de otro equipo",
     "anonimo": false,
+    "enlace": "https://forms.gle/oKBAH9yTzodFCmE28",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Haced el paseo 3D por la propuesta de otro equipo y respondedle con respeto y propuestas concretas. Una respuesta por equipo evaluado.",
@@ -344,6 +352,7 @@ var FORMULARIOS = [
     "id": "F4",
     "titulo": "Coevaluación del Elevator Pitch",
     "anonimo": false,
+    "enlace": "https://forms.gle/meSWF8Jzy1VvZEnK8",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Valora cada pitch al terminar. Envía una respuesta por cada equipo que escuchas (no te valores a ti mismo/a).",
@@ -425,6 +434,7 @@ var FORMULARIOS = [
     "id": "F5",
     "titulo": "Diana de autoevaluación de la SdA 3",
     "anonimo": false,
+    "enlace": "https://forms.gle/oAwknj94G6HrLKjG8",
     "obligatorias": true,
     "descripcion": "Piensa en todo lo que has hecho en la SdA 3 y valora tu aprendizaje con sinceridad.",
     "confirmacion": "¡Gracias! Tu reflexión ayuda a preparar la próxima SdA.",
