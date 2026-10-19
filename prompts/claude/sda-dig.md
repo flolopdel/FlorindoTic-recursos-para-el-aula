@@ -1,5 +1,5 @@
 /sda-andalucia-tecnologia  
-Crea una situación de aprendizaje con la skill sda-andalucia-tecnologia.
+Crea una situación de aprendizaje con la skill sda-andalucia-tecnologia y usa también la skill sda-drive para las plantillas y los formularios.
 
 DATOS BÁSICOS
 - Materia y curso: Digitalización 4.º ESO
@@ -36,4 +36,8 @@ MOODLE Y EVALUACIÓN
 SÉNECA
 - Actividades en Séneca: las que veas
 
-Entrégame la web HTML, la web para proyectar en clase, el snippet html para moodle, el documento .docx y el JSON para poder pedir cambios después.
+GOOGLE DRIVE (skill sda-drive)
+- Carpeta del curso en mi Drive: DIG 4 ESO (dentro de «03 - IES VILLA DE MIJAS 26-27»). Usa o crea dentro de las carpetas del curso, la carpeta correspondiente a la SdA (SdA 1, SdA 2, etc..)
+- Compartir las plantillas: [ya he compartido la carpeta con el centro / compártelas con el grupo correo-del-grupo@g.educaand.es]
+
+Entrégame la web HTML, la web para proyectar en clase, el snippet html para moodle, el documento .docx, el Codigo.gs adaptado (si hay formularios) y el JSON para poder pedir cambios después. Sube las plantillas del alumnado a mi Drive como Google Docs y enlázalas en la web de clase; cuando ejecute el Codigo.gs, te avisaré para que enlaces también los formularios.
