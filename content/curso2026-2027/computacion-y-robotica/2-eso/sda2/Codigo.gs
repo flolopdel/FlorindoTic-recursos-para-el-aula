@@ -86,7 +86,6 @@ var FORMULARIOS = [
     "id": "F1",
     "titulo": "Encuesta inicial: videojuegos y programación",
     "anonimo": true,
-    "enlace": "https://forms.gle/hZivwDLmTKPC5KDWA",
     "obligatorias": true,
     "descripcion": "Encuesta anónima para conocer al grupo antes de empezar. No hay respuestas buenas ni malas.",
     "confirmacion": "¡Gracias! Con tus respuestas prepararemos los equipos y las prácticas.",
@@ -150,13 +149,13 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/hZivwDLmTKPC5KDWA",
     "sesiones": "Sesión 1"
   },
   {
     "id": "F2",
     "titulo": "Game testers: valoración de un videojuego",
     "anonimo": false,
-    "enlace": "https://forms.gle/baUnhqKzfiWJHEtF9",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Responde una vez por cada juego que pruebes. Sé concreto/a y respetuoso/a: tu valoración ayuda al equipo a mejorar.",
@@ -229,13 +228,13 @@ var FORMULARIOS = [
         "titulo": "Una sugerencia para mejorarlo"
       }
     ],
+    "enlace": "https://forms.gle/baUnhqKzfiWJHEtF9",
     "sesiones": "Sesión 16"
   },
   {
     "id": "F3",
     "titulo": "Diana de autoevaluación y KWL",
     "anonimo": false,
-    "enlace": "https://forms.gle/2edxMZVzCCYZrpWBA",
     "obligatorias": true,
     "descripcion": "Reflexiona sobre lo que has aprendido en la SdA «Código en Acción». Sé sincero/a: no cuenta para la nota.",
     "confirmacion": "¡Gracias! Revisa tus respuestas cuando empieces la próxima SdA de programación.",
@@ -295,6 +294,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/2edxMZVzCCYZrpWBA",
     "sesiones": "Sesión 18"
   }
 ];
