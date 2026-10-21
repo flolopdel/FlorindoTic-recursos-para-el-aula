@@ -116,7 +116,6 @@ var FORMULARIOS = [
     "id": "F1",
     "titulo": "¿Qué sé de dibujo técnico? (diagnóstico)",
     "anonimo": false,
-    "enlace": "https://forms.gle/KMgAVCf63Whz4mpq8",
     "obligatorias": true,
     "descripcion": "No cuenta para la nota: sirve para formar equipos equilibrados en la SdA 3. Responde con sinceridad.",
     "confirmacion": "¡Gracias! En la sesión 10 conocerás tu equipo de consultoría.",
@@ -190,13 +189,13 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/KMgAVCf63Whz4mpq8",
     "sesiones": "Sesión 1"
   },
   {
     "id": "F2",
     "titulo": "Comprueba tus escalas",
     "anonimo": false,
-    "enlace": "https://forms.gle/SXDUpPBiopeRQd696",
     "obligatorias": true,
     "descripcion": "Autocomprobación antes de la prueba (no cuenta para la nota). Haz las cuentas en un papel y elige la respuesta.",
     "confirmacion": "Soluciones: 1) 1,8 cm · 2) 6 m · 3) 40 mm · 4) 15 mm · 5) 1:50 · 6) 14,4 cm · 7) Ampliación · 8) 2,5 m. Apunta en tu ficha las que has fallado y pregúntalas al inicio de la próxima sesión.",
@@ -291,13 +290,13 @@ var FORMULARIOS = [
         ]
       }
     ],
+    "enlace": "https://forms.gle/SXDUpPBiopeRQd696",
     "sesiones": "Sesión 5"
   },
   {
     "id": "F3",
     "titulo": "Testeo del diseño de otro equipo",
     "anonimo": false,
-    "enlace": "https://forms.gle/oKBAH9yTzodFCmE28",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Haced el paseo 3D por la propuesta de otro equipo y respondedle con respeto y propuestas concretas. Una respuesta por equipo evaluado.",
@@ -346,13 +345,13 @@ var FORMULARIOS = [
         "titulo": "Una mejora concreta que proponemos"
       }
     ],
+    "enlace": "https://forms.gle/oKBAH9yTzodFCmE28",
     "sesiones": "Sesión 15"
   },
   {
     "id": "F4",
     "titulo": "Coevaluación del Elevator Pitch",
     "anonimo": false,
-    "enlace": "https://forms.gle/meSWF8Jzy1VvZEnK8",
     "repetible": true,
     "obligatorias": true,
     "descripcion": "Valora cada pitch al terminar. Envía una respuesta por cada equipo que escuchas (no te valores a ti mismo/a).",
@@ -428,13 +427,13 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/meSWF8Jzy1VvZEnK8",
     "sesiones": "Sesión 17"
   },
   {
     "id": "F5",
     "titulo": "Diana de autoevaluación de la SdA 3",
     "anonimo": false,
-    "enlace": "https://forms.gle/oAwknj94G6HrLKjG8",
     "obligatorias": true,
     "descripcion": "Piensa en todo lo que has hecho en la SdA 3 y valora tu aprendizaje con sinceridad.",
     "confirmacion": "¡Gracias! Tu reflexión ayuda a preparar la próxima SdA.",
@@ -477,6 +476,7 @@ var FORMULARIOS = [
         "titulo": "Algo que mejoraré en la próxima SdA"
       }
     ],
+    "enlace": "https://forms.gle/oAwknj94G6HrLKjG8",
     "sesiones": "Sesión 17"
   }
 ];
