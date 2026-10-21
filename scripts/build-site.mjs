@@ -187,7 +187,7 @@ async function main() {
   for (const rel of published.filter((p) => p.endsWith('.html'))) {
     const html = await fs.readFile(path.join(OUT, rel), 'utf-8');
     for (const ref of findLocalRefs(html)) {
-      const clean = ref.split(/[?#]/)[0];
+      const clean = ref.split(/[?#]|\$\{|\{\{/)[0]; // la parte fija antes de una plantilla ${…} o {{…}}
       if (!clean) continue;
       let decoded;
       try {
