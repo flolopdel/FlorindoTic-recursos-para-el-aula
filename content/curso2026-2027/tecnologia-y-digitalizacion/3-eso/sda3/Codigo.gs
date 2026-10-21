@@ -499,8 +499,9 @@ function guardarDocumentoSdA() {
   var carpeta = DriveApp.getFolderById(DOC_SDA.carpeta), borrar = [];
   var temporal = primero_(carpeta.getFilesByName(DOC_SDA.temporal));
   if (!temporal) {                                             // plan B: el .docx subido a mano a la carpeta del curso
-    var docx = primero_(carpeta.getFilesByName(DOC_SDA.docx)) ||           // tal cual o ya convertido por Drive
-               primero_(carpeta.getFilesByName(DOC_SDA.docx.replace(/\.docx$/, '')));
+    // tal cual, ya convertido por Drive (sin .docx) o renombrado por el navegador («SdA3_documento (1).docx»)
+    var base = DOC_SDA.docx.replace(/\.docx$/, '');
+    var docx = primero_(carpeta.searchFiles("title contains '" + base + "' and trashed = false"));
     if (!docx) throw new Error('No encuentro «' + DOC_SDA.temporal + '» ni «' + DOC_SDA.docx + '» en la carpeta «' + carpeta.getName() + '». Sube allí el .docx de la SdA (o pide a Claude que lo suba) y vuelve a ejecutar.');
     borrar.push(docx);
     if (docx.getMimeType() === MimeType.GOOGLE_DOCS) temporal = docx;
