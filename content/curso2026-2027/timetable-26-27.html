@@ -84,7 +84,7 @@
 
     <!-- TOP NAVBAR & SYSTEM STATUS -->
     <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 py-3 shadow-lg">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+        <div class="max-w-screen-2xl mx-auto flex flex-wrap items-center justify-between gap-4">
             
             <!-- Brand & Teacher Info -->
             <div class="flex items-center space-x-3">
@@ -138,7 +138,7 @@
         </div>
 
         <!-- Simulation Selector Panel (Hidden by default) -->
-        <div id="sim-controls" class="hidden max-w-7xl mx-auto mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div id="sim-controls" class="hidden max-w-screen-2xl mx-auto mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center space-x-2 text-amber-400 font-medium">
                 <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                 <span>Modo Simulación Activo: Elige un día y hora ficticios para probar los avisos.</span>
@@ -165,10 +165,10 @@
     </header>
 
     <!-- MAIN APPLICATION CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="flex-1 max-w-screen-2xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LEFT/CENTER COLUMN: ACTIVE SESSION & COUNTDOWN TIMER (7 COLUMNS ON LARGE SCREENS) -->
-        <section class="lg:col-span-7 flex flex-col space-y-6">
+        <!-- LEFT/CENTER COLUMN: ACTIVE SESSION & COUNTDOWN TIMER (6 COLUMNS ON LARGE SCREENS) -->
+        <section class="lg:col-span-6 flex flex-col space-y-6">
 
             <!-- Active Class Banner / Card -->
             <div id="active-class-card" class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 relative overflow-hidden transition-all duration-300 shadow-xl">
@@ -354,8 +354,8 @@
 
         </section>
 
-        <!-- RIGHT COLUMN: FULL WEEKLY SCHEDULE GRID (5 COLUMNS ON LARGE SCREENS) -->
-        <section class="lg:col-span-5 flex flex-col space-y-6">
+        <!-- RIGHT COLUMN: FULL WEEKLY SCHEDULE GRID (6 COLUMNS ON LARGE SCREENS) -->
+        <section class="lg:col-span-6 flex flex-col space-y-6">
 
             <!-- Timetable Card Container -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col h-full">
@@ -375,10 +375,10 @@
 
                 <!-- Schedule Table Wrapper -->
                 <div class="overflow-x-auto custom-scrollbar flex-1">
-                    <table class="w-full text-left text-xs border-collapse">
+                    <table class="w-full table-fixed text-left text-xs border-collapse">
                         <thead>
                             <tr class="border-b border-slate-800 text-slate-400 font-mono">
-                                <th class="p-2 text-center w-14">Hora</th>
+                                <th class="p-1 text-center w-12">Hora</th>
                                 <th id="th-day-1" class="p-2 text-center">L</th>
                                 <th id="th-day-2" class="p-2 text-center">M</th>
                                 <th id="th-day-3" class="p-2 text-center">X</th>
@@ -778,14 +778,15 @@
 
                 // Time Slot Header
                 const tdTime = document.createElement('td');
-                tdTime.className = `p-2 font-mono text-[11px] font-semibold border-r border-slate-800 text-center whitespace-nowrap ${isCurrentRow ? 'text-sky-300' : 'text-slate-400'}`;
-                tdTime.innerText = row.slot;
+                tdTime.className = `p-1 font-mono text-[11px] font-semibold border-r border-slate-800 text-center leading-tight ${isCurrentRow ? 'text-sky-300' : 'text-slate-400'}`;
+                // Inicio y fin en dos líneas para que la columna de horas sea estrecha
+                tdTime.innerHTML = `${row.start}<br><span class="opacity-60">${row.end}</span>`;
                 tr.appendChild(tdTime);
 
                 // Days Monday(1) to Friday(5)
                 for (let d = 1; d <= 5; d++) {
                     const td = document.createElement('td');
-                    td.className = "p-1.5 text-center transition cursor-pointer relative";
+                    td.className = "p-1 text-center transition cursor-pointer relative";
 
                     const cellData = row.days[d];
                     const isCurrentSlot = isCurrentRow && phase.day === d;
@@ -806,9 +807,9 @@
 
                         td.title = `${DAY_NAMES[d]} ${row.slot} · ${cellData.subject} · ${cellData.groups} · ${cellData.aula}`;
                         td.innerHTML = `
-                            <div class="${bgClass}${dimClass} p-2 rounded-lg flex flex-col justify-between h-full text-[11px] leading-tight">
-                                <span class="font-bold truncate">${cellData.subject}</span>
-                                <span class="text-[10px] opacity-80 truncate">${cellData.aula}</span>
+                            <div class="${bgClass}${dimClass} p-1.5 rounded-lg flex flex-col justify-between h-full text-[11px] leading-tight break-words">
+                                <span class="font-bold">${cellData.subject}</span>
+                                <span class="text-[10px] opacity-80">${cellData.aula}</span>
                             </div>
                         `;
                     } else {
