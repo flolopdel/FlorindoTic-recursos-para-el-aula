@@ -51,6 +51,22 @@
         .glow-warning {
             box-shadow: 0 0 30px -5px rgba(239, 68, 68, 0.6);
         }
+        /* Aviso a pantalla completa: parpadea hasta que se hace clic */
+        @keyframes overlay-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.15; }
+        }
+        @keyframes overlay-flash {
+            0%, 100% { background-color: rgba(127, 29, 29, 0.97); }
+            50% { background-color: rgba(220, 38, 38, 0.97); }
+        }
+        .overlay-blink { animation: overlay-blink 1.2s ease-in-out infinite; }
+        .overlay-blink-fast { animation: overlay-blink 0.5s steps(2, jump-none) infinite; }
+        .overlay-flash { animation: overlay-flash 0.8s ease-in-out infinite; }
+        #milestone-overlay h2 {
+            font-size: clamp(3rem, 11vw, 11rem);
+            line-height: 0.95;
+        }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -410,6 +426,16 @@
 
     </main>
 
+    <!-- AVISO A PANTALLA COMPLETA (-15, -10, -5 y -2 min): se cierra con un clic -->
+    <div id="milestone-overlay" onclick="hideMilestoneOverlay()" class="hidden fixed inset-0 z-50 cursor-pointer flex-col items-center justify-center text-center px-4 py-8 select-none">
+        <div id="overlay-content" class="flex flex-col items-center gap-6 max-w-[95vw]">
+            <div id="overlay-time" class="font-mono font-bold text-2xl md:text-4xl tracking-widest uppercase opacity-90"></div>
+            <h2 id="overlay-title" class="font-extrabold uppercase tracking-tight break-words"></h2>
+            <p id="overlay-text" class="text-2xl md:text-5xl font-semibold max-w-6xl leading-tight"></p>
+        </div>
+        <p class="absolute bottom-6 left-0 right-0 text-sm md:text-base opacity-70">Haz clic en cualquier parte para cerrar el aviso</p>
+    </div>
+
     <!-- JAVASCRIPT APP ENGINE -->
     <script>
 
@@ -516,7 +542,14 @@
             15: { badge: 'bg-sky-500 text-white border-sky-400', sound: 'chime', text: "Atención clase. Quedan quince minutos para finalizar." },
             10: { badge: 'bg-amber-500 text-slate-950 border-amber-400', sound: 'chime', text: "Quedan diez minutos. Id concluyendo las tareas." },
             5: { badge: 'bg-orange-500 text-white border-orange-400', sound: 'chime', text: "Atención: quedan cinco minutos de clase. Id entregando las tareas pendientes." },
-            2: { badge: 'bg-red-600 text-white border-red-400', sound: 'gong', text: "Quedan dos minutos. Es momento de recoger el aula y guardar ordenadores." }
+            2: { badge: 'bg-red-600 text-white border-red-400', sound: 'gong', text: "Quedan dos minutos. Cerrad sesión en Moodle y en el ordenador ahora mismo." }
+        };
+        // Mensaje en pantalla que aparece al terminar la voz de cada aviso
+        const MILESTONE_OVERLAYS = {
+            15: { bg: 'bg-sky-700/95 text-white', blink: 'overlay-blink', title: "Últimos retoques", text: "Dad los últimos retoques y preparad el documento de entrega." },
+            10: { bg: 'bg-amber-500/95 text-slate-950', blink: 'overlay-blink', title: "Documento de entrega", text: "Es el momento de empezar con el documento de entrega." },
+            5: { bg: 'bg-orange-600/95 text-white', blink: 'overlay-blink-fast', title: "⚠ ¡Abrid Moodle y entregad!", text: "Subid ya vuestro documento a Moodle." },
+            2: { bg: 'overlay-flash text-white', blink: 'overlay-blink-fast', title: "🚨 ¡Cerrad sesión!", text: "Cerrad sesión en Moodle y en el ordenador ahora mismo." }
         };
         const DAY_NAMES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -613,17 +646,53 @@
             setTimeout(() => playBeep(880, 'sine', 1.0), 200);
         }
 
-        function speakText(text) {
-            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+        // onEnd se llama una sola vez al acabar la voz (o enseguida si la voz está desactivada)
+        function speakText(text, onEnd) {
+            let done = false;
+            const finish = () => {
+                if (done || !onEnd) return;
+                done = true;
+                onEnd();
+            };
+            if (!isVoiceEnabled || !('speechSynthesis' in window)) {
+                setTimeout(finish, 1500);
+                return;
+            }
             try {
                 window.speechSynthesis.cancel(); // Cancel current queue
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'es-ES';
                 utterance.rate = 1.0;
+                utterance.onend = finish;
+                utterance.onerror = finish;
                 window.speechSynthesis.speak(utterance);
+                setTimeout(finish, 15000); // Por si el navegador no dispara 'end'
             } catch (e) {
                 console.log("Speech error:", e);
+                finish();
             }
+        }
+
+        // Cada aviso nuevo invalida al anterior que aún esté esperando a que acabe la voz
+        let overlayRequestId = 0;
+
+        function showMilestoneOverlay(t) {
+            const o = MILESTONE_OVERLAYS[t];
+            const overlay = document.getElementById('milestone-overlay');
+            overlay.className = `fixed inset-0 z-50 cursor-pointer flex flex-col items-center justify-center text-center px-4 py-8 select-none ${o.bg}`;
+            document.getElementById('overlay-content').className = `flex flex-col items-center gap-6 max-w-[95vw] ${o.blink}`;
+            document.getElementById('overlay-time').innerText = `Quedan ${t} minutos`;
+            document.getElementById('overlay-title').innerText = o.title;
+            document.getElementById('overlay-text').innerText = o.text;
+        }
+
+        function hideMilestoneOverlay() {
+            document.getElementById('milestone-overlay').className = 'hidden';
+        }
+
+        function cancelMilestoneOverlay() {
+            overlayRequestId++;
+            hideMilestoneOverlay();
         }
 
         function testAlert() {
@@ -859,11 +928,17 @@
             document.getElementById(`m-${t}`).className = `${BADGE_BASE} shadow-md animate-pulse ${alert.badge}`;
             if (isAlertsEnabled) {
                 if (alert.sound === 'gong') playGongSound(); else playChimeSound();
-                speakText(alert.text);
+                const requestId = ++overlayRequestId;
+                speakText(alert.text, () => {
+                    if (requestId === overlayRequestId) showMilestoneOverlay(t);
+                });
             }
         }
 
         function onPhaseChange(prev, current, phase) {
+            // Al acabar la clase (o saltar de hora en la simulación) se retira el aviso en pantalla
+            cancelMilestoneOverlay();
+
             // Aviso de final solo si la clase anterior acaba de terminar (no al saltar de hora en la simulación)
             const justEnded = prev && prev.kind === 'class' && prev.day === current.dayOfWeek
                 && current.secOfDay - prev.endSec >= 0 && current.secOfDay - prev.endSec < 5;
