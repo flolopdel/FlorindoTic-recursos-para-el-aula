@@ -7,7 +7,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,14 +99,16 @@
             <!-- Control Bar: Sound & Simulation Controls -->
             <div class="flex items-center space-x-2">
                 <!-- Sound Toggle -->
-                <button id="btn-audio-toggle" onclick="toggleAudio()" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
-                    <i data-lucide="volume-2" id="icon-audio" class="w-4 h-4 text-emerald-400"></i>
+                <button id="btn-audio-toggle" onclick="toggleAudio()" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
+                    <span id="icon-audio-on" class="leading-none"><i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i></span>
+                    <span id="icon-audio-off" class="hidden leading-none"><i data-lucide="volume-x" class="w-4 h-4 text-slate-500"></i></span>
                     <span id="label-audio">Audio Activo</span>
                 </button>
 
                 <!-- Voice Announcement Toggle -->
-                <button id="btn-voice-toggle" onclick="toggleVoice()" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
-                    <i data-lucide="message-square" id="icon-voice" class="w-4 h-4 text-sky-400"></i>
+                <button id="btn-voice-toggle" onclick="toggleVoice()" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition">
+                    <span id="icon-voice-on" class="leading-none"><i data-lucide="message-square" class="w-4 h-4 text-sky-400"></i></span>
+                    <span id="icon-voice-off" class="hidden leading-none"><i data-lucide="message-square-off" class="w-4 h-4 text-slate-500"></i></span>
                     <span id="label-voice">Voz ON</span>
                 </button>
 
@@ -141,6 +143,7 @@
                 <button onclick="setQuickSimTime('09:05')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-sky-400">9:05 (Clase 1ª)</button>
                 <button onclick="setQuickSimTime('09:48')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-amber-400">9:48 (Pre-Desayuno)</button>
                 <button onclick="setQuickSimTime('10:15')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-purple-400">10:15 (Clase 2ª)</button>
+                <button onclick="setQuickSimTime('14:20')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-emerald-400">14:20 (Final 6ª)</button>
             </div>
         </div>
     </header>
@@ -167,6 +170,7 @@
                         </div>
                         <h2 id="text-subject" class="text-3xl font-extrabold text-white mt-2 tracking-tight">Sin clase programada</h2>
                         <p id="text-groups" class="text-sm font-medium text-slate-400 mt-1">Horario libre o fuera de lectivo</p>
+                        <p id="text-next" class="hidden text-xs font-semibold text-sky-300/90 mt-2"></p>
                     </div>
 
                     <!-- Audio Signal Gong Button -->
@@ -231,15 +235,16 @@
                         </div>
                     </div>
 
-                    <!-- Main Timer Control Buttons -->
+                    <!-- Main Timer Control Buttons: el contador sigue al reloj y los avisos saltan solos -->
                     <div class="flex items-center space-x-3 mt-6">
-                        <button id="btn-timer-start" onclick="toggleTimer()" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5">
-                            <i data-lucide="play" id="icon-timer-start" class="w-5 h-5 fill-current"></i>
-                            <span id="label-timer-start">Iniciar Contador</span>
+                        <button id="btn-alerts" onclick="toggleAlerts()" title="Activar o desactivar los avisos de -15, -10, -5 y -2 min" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center gap-2 transition">
+                            <span id="icon-alerts-on" class="leading-none"><i data-lucide="bell" class="w-5 h-5"></i></span>
+                            <span id="icon-alerts-off" class="hidden leading-none"><i data-lucide="bell-off" class="w-5 h-5"></i></span>
+                            <span id="label-alerts">Avisos Automáticos ON</span>
                         </button>
-                        
-                        <button onclick="resetTimer()" class="p-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 rounded-xl border border-slate-700 transition" title="Reiniciar contador">
-                            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+
+                        <button onclick="testAlert()" class="p-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 rounded-xl border border-slate-700 transition" title="Probar sonido y voz">
+                            <i data-lucide="speaker" class="w-5 h-5"></i>
                         </button>
                     </div>
 
@@ -253,19 +258,19 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                         <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
-                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <input type="checkbox" class="close-check w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
                             <span class="text-slate-300">Guardar trabajos y apagar ordenadores</span>
                         </label>
                         <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
-                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <input type="checkbox" class="close-check w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
                             <span class="text-slate-300">Recoger herramientas de Taller / EPV</span>
                         </label>
                         <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
-                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <input type="checkbox" class="close-check w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
                             <span class="text-slate-300">Limpiar mesas y colocar sillas</span>
                         </label>
                         <label class="flex items-center space-x-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-800/80 cursor-pointer hover:bg-slate-800/50">
-                            <input type="checkbox" class="w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
+                            <input type="checkbox" class="close-check w-4 h-4 text-sky-600 rounded bg-slate-900 border-slate-700 focus:ring-0">
                             <span class="text-slate-300">Entregar fichas / Tarea Classroom</span>
                         </label>
                     </div>
@@ -358,11 +363,11 @@
                         <thead>
                             <tr class="border-b border-slate-800 text-slate-400 font-mono">
                                 <th class="p-2 text-center w-14">Hora</th>
-                                <th class="p-2 text-center">L</th>
-                                <th class="p-2 text-center">M</th>
-                                <th class="p-2 text-center">X</th>
-                                <th class="p-2 text-center">J</th>
-                                <th class="p-2 text-center">V</th>
+                                <th id="th-day-1" class="p-2 text-center">L</th>
+                                <th id="th-day-2" class="p-2 text-center">M</th>
+                                <th id="th-day-3" class="p-2 text-center">X</th>
+                                <th id="th-day-4" class="p-2 text-center">J</th>
+                                <th id="th-day-5" class="p-2 text-center">V</th>
                             </tr>
                         </thead>
                         <tbody id="timetable-body" class="divide-y divide-slate-800/60 font-sans">
@@ -407,8 +412,9 @@
 
     <!-- JAVASCRIPT APP ENGINE -->
     <script>
-        
+
         // Full weekly schedule definition based on official prompt data
+        // breakfastAt: la clase termina a esa hora para desayunar en el aula hasta el final del tramo
         const SCHEDULE_DATA = [
             {
                 slot: "8:00 - 9:00",
@@ -420,7 +426,7 @@
                 slot: "9:00 - 10:00",
                 start: "09:00",
                 end: "10:00",
-                specialBreakfast: true, // Requires special 9:50-10:00 breakfast routine
+                breakfastAt: "09:50",
                 days: {
                     1: { code: 'tec4', subject: 'Tec. 4 II', groups: '4º A, 4º B, 4º C', aula: 'A 00', type: 'tec' },
                     2: { code: 'tec4', subject: 'Tec. 4 II', groups: '4º A, 4º B, 4º C', aula: 'A 00', type: 'tec' },
@@ -490,9 +496,9 @@
                 }
             },
             {
-                slot: "13:30 - 14:30",
+                slot: "13:30 - 14:25",
                 start: "13:30",
-                end: "14:30",
+                end: "14:25",
                 days: {
                     1: { code: 'guardia', subject: 'GUARDIA', groups: 'Lectiva', aula: 'Guardias', type: 'guardia' },
                     2: { code: 'dig4', subject: 'Digit. 4', groups: '4º A', aula: 'TEC.', type: 'dig' },
@@ -503,38 +509,56 @@
             }
         ];
 
+        // Tipos que son clase con alumnado: solo en ellos suenan los avisos de -15, -10, -5 y -2 min
+        const CLASS_TYPES = ['tec', 'rob', 'tyd', 'dig'];
+        const MILESTONES = [15, 10, 5, 2];
+        const MILESTONE_ALERTS = {
+            15: { badge: 'bg-sky-500 text-white border-sky-400', sound: 'chime', text: "Atención clase. Quedan quince minutos para finalizar." },
+            10: { badge: 'bg-amber-500 text-slate-950 border-amber-400', sound: 'chime', text: "Quedan diez minutos. Id concluyendo las tareas." },
+            5: { badge: 'bg-orange-500 text-white border-orange-400', sound: 'chime', text: "Atención: quedan cinco minutos de clase. Id entregando las tareas pendientes." },
+            2: { badge: 'bg-red-600 text-white border-red-400', sound: 'gong', text: "Quedan dos minutos. Es momento de recoger el aula y guardar ordenadores." }
+        };
+        const DAY_NAMES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+        const BADGE_BASE = "py-1.5 px-1 rounded text-center border text-[10px] md:text-xs font-mono font-semibold";
+        const BADGE_IDLE = `${BADGE_BASE} border-slate-800 bg-slate-900/60 text-slate-500`;
+        const BADGE_PASSED = `${BADGE_BASE} border-slate-800 bg-slate-900/60 text-slate-600 line-through`;
+        const RING_CIRCUMFERENCE = 2 * Math.PI * 44; // 276.46
+
         // Roster for random picker
         const SAMPLE_STUDENTS = [
-            "Álvaro G.", "Ana M.", "Carlos R.", "Daniela P.", "Elena S.", 
+            "Álvaro G.", "Ana M.", "Carlos R.", "Daniela P.", "Elena S.",
             "Francisco J.", "Gabriel T.", "Hugo N.", "Inés V.", "Javier L.",
             "Lucia B.", "Manuel C.", "Nuria F.", "Pablo K.", "Rocío E."
         ];
 
-        let isSimulationMode = false;
-        let simDay = 1; // Default Monday
-        let simTime = "09:15"; // Default 09:15
+        // Simulación: desfase en ms respecto a la hora real (null = hora real). El reloj simulado sigue avanzando
+        let simOffsetMs = null;
 
-        let timerInterval = null;
-        let timerSecondsRemaining = 0;
-        let timerTotalSeconds = 0;
-        let isTimerRunning = false;
-        let activeTargetEndTime = null; // Date or Target Time string
-        let isBreakfastPhase = false;
-
-        // Sound Settings
-        let isAudioEnabled = true;
-        let isVoiceEnabled = true;
+        // Sound Settings (se recuerdan en este navegador)
+        let isAlertsEnabled = loadPref('avisos', true);
+        let isAudioEnabled = loadPref('audio', true);
+        let isVoiceEnabled = loadPref('voz', true);
         let audioCtx = null;
+        let wakeLock = null;
 
-        // Notification flags to prevent repeated alerts
-        let alertsFired = {
-            m15: false,
-            m10: false,
-            m5: false,
-            m2: false,
-            breakfast: false,
-            end: false
-        };
+        let lastPhase = null;
+        let alertsFired = {};
+
+        function loadPref(name, fallback) {
+            try {
+                const value = localStorage.getItem('horario-' + name);
+                return value === null ? fallback : value === '1';
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function savePref(name, value) {
+            try {
+                localStorage.setItem('horario-' + name, value ? '1' : '0');
+            } catch (e) {}
+        }
 
         // Initialize Web Audio Context
         function getAudioContext() {
@@ -602,55 +626,90 @@
             }
         }
 
-        // Utility functions for dates & times
-        function getCurrentDateTime() {
-            if (isSimulationMode) {
-                const [h, m] = simTime.split(':').map(Number);
-                const d = new Date();
-                d.setHours(h, m, 0, 0);
-                return {
-                    dayOfWeek: parseInt(simDay), // 1=Mon, 5=Fri
-                    hours: h,
-                    minutes: m,
-                    seconds: (new Date()).getSeconds(),
-                    timeString: simTime + ":" + String((new Date()).getSeconds()).padStart(2, '0'),
-                    dateObj: d
-                };
-            } else {
-                const now = new Date();
-                let day = now.getDay(); // 0=Sun, 1=Mon, 6=Sat
-                if (day === 0 || day === 6) day = 1; // Default to Monday on weekend for classroom context
-                return {
-                    dayOfWeek: day,
-                    hours: now.getHours(),
-                    minutes: now.getMinutes(),
-                    seconds: now.getSeconds(),
-                    timeString: now.toTimeString().split(' ')[0],
-                    dateObj: now
-                };
-            }
+        function testAlert() {
+            getAudioContext();
+            playChimeSound();
+            speakText("Prueba de sonido. Los avisos se oyen correctamente.");
         }
 
-        function timeToMinutes(timeStr) {
+        // Utility functions for dates & times
+        function getCurrentDateTime() {
+            const now = simOffsetMs === null ? new Date() : new Date(Date.now() + simOffsetMs);
+            return {
+                dayOfWeek: now.getDay(), // 0=Sun, 1=Mon, 6=Sat
+                secOfDay: now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds(),
+                timeString: now.toTimeString().split(' ')[0],
+                dateObj: now
+            };
+        }
+
+        function timeToSeconds(timeStr) {
             const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
+            return h * 3600 + m * 60;
+        }
+
+        function secondsToTime(secs) {
+            return `${Math.floor(secs / 3600)}:${String(Math.floor(secs / 60) % 60).padStart(2, '0')}`;
+        }
+
+        function isClass(cell) {
+            return !!cell && CLASS_TYPES.includes(cell.type);
+        }
+
+        // Tramo y fase en curso. La clase de 9:00 tiene dos fases: clase hasta las 9:50 y desayuno hasta las 10:00
+        function getPhase(current) {
+            const day = current.dayOfWeek;
+            const sec = current.secOfDay;
+            if (day < 1 || day > 5) return { kind: 'none', key: 'weekend', title: "Fin de semana" };
+
+            const row = SCHEDULE_DATA.find(r => sec >= timeToSeconds(r.start) && sec < timeToSeconds(r.end));
+            if (!row) return { kind: 'none', key: `${day}-out`, title: "Fuera de jornada" };
+
+            const cell = row.days[day];
+            const phase = { row, cell, day, startSec: timeToSeconds(row.start), endSec: timeToSeconds(row.end), key: `${day}-${row.start}` };
+
+            if (row.breakfastAt && isClass(cell)) {
+                const breakfastSec = timeToSeconds(row.breakfastAt);
+                if (sec < breakfastSec) {
+                    return { ...phase, kind: 'class', endSec: breakfastSec, title: `Clase (Límite ${secondsToTime(breakfastSec)}h)` };
+                }
+                return { ...phase, kind: 'breakfast', startSec: breakfastSec, key: `${phase.key}-desayuno`, title: "Desayuno en Aula" };
+            }
+            if (isClass(cell)) return { ...phase, kind: 'class', title: "Tiempo Restante" };
+            return { ...phase, kind: 'other', title: cell ? cell.subject : "Hora Libre" };
+        }
+
+        // Próxima clase con alumnado desde el segundo indicado de hoy, o en los días lectivos siguientes
+        function findNextClass(current, fromSec) {
+            for (let offset = 0; offset < 7; offset++) {
+                const day = (current.dayOfWeek + offset) % 7;
+                if (day < 1 || day > 5) continue;
+                const row = SCHEDULE_DATA.find(r => isClass(r.days[day]) && (offset > 0 || timeToSeconds(r.start) >= fromSec));
+                if (row) return { row, cell: row.days[day], day, isToday: offset === 0 };
+            }
+            return null;
         }
 
         // Render Timetable Grid in HTML
-        function renderTimetable() {
+        function renderTimetable(current, phase) {
             const tbody = document.getElementById('timetable-body');
             tbody.innerHTML = '';
 
-            const current = getCurrentDateTime();
-            const currentMin = current.hours * 60 + current.minutes;
+            const today = current.dayOfWeek;
+            for (let d = 1; d <= 5; d++) {
+                document.getElementById(`th-day-${d}`).className = d === today ? "p-2 text-center text-sky-300 font-bold" : "p-2 text-center";
+            }
 
-            SCHEDULE_DATA.forEach((row, rowIndex) => {
+            SCHEDULE_DATA.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/40 transition";
 
+                const isPastRow = current.secOfDay >= timeToSeconds(row.end);
+                const isCurrentRow = phase.row === row;
+
                 // Time Slot Header
                 const tdTime = document.createElement('td');
-                tdTime.className = "p-2 font-mono text-[11px] text-slate-400 font-semibold border-r border-slate-800 text-center whitespace-nowrap";
+                tdTime.className = `p-2 font-mono text-[11px] font-semibold border-r border-slate-800 text-center whitespace-nowrap ${isCurrentRow ? 'text-sky-300' : 'text-slate-400'}`;
                 tdTime.innerText = row.slot;
                 tr.appendChild(tdTime);
 
@@ -658,12 +717,10 @@
                 for (let d = 1; d <= 5; d++) {
                     const td = document.createElement('td');
                     td.className = "p-1.5 text-center transition cursor-pointer relative";
-                    
-                    const cellData = row.days[d];
-                    const slotStartMin = timeToMinutes(row.start);
-                    const slotEndMin = timeToMinutes(row.end);
 
-                    const isCurrentSlot = (current.dayOfWeek === d) && (currentMin >= slotStartMin && currentMin < slotEndMin);
+                    const cellData = row.days[d];
+                    const isCurrentSlot = isCurrentRow && phase.day === d;
+                    const dimClass = (d === today && isPastRow) ? " opacity-40" : "";
 
                     if (cellData) {
                         let bgClass = "bg-slate-800/60 hover:bg-slate-700/80 text-slate-200";
@@ -678,8 +735,9 @@
                             bgClass += " ring-2 ring-sky-400 font-bold scale-[1.02] shadow-lg z-10";
                         }
 
+                        td.title = `${DAY_NAMES[d]} ${row.slot} · ${cellData.subject} · ${cellData.groups} · ${cellData.aula}`;
                         td.innerHTML = `
-                            <div class="${bgClass} p-2 rounded-lg flex flex-col justify-between h-full text-[11px] leading-tight">
+                            <div class="${bgClass}${dimClass} p-2 rounded-lg flex flex-col justify-between h-full text-[11px] leading-tight">
                                 <span class="font-bold truncate">${cellData.subject}</span>
                                 <span class="text-[10px] opacity-80 truncate">${cellData.aula}</span>
                             </div>
@@ -688,13 +746,13 @@
                         if (isCurrentSlot) {
                             td.innerHTML = `<div class="p-2 rounded-lg bg-slate-800 ring-2 ring-sky-400 text-[10px] text-slate-400">Libre</div>`;
                         } else {
-                            td.innerHTML = `<div class="p-2 rounded-lg bg-slate-950/30 text-[10px] text-slate-600 font-mono">-</div>`;
+                            td.innerHTML = `<div class="p-2 rounded-lg bg-slate-950/30 text-[10px] text-slate-600 font-mono${dimClass}">-</div>`;
                         }
                     }
 
                     // Click event to simulate or load this block
                     td.onclick = () => {
-                        enableSimulationMode(d, row.start);
+                        setSimulation(d, row.start);
                     };
 
                     tr.appendChild(td);
@@ -704,260 +762,125 @@
             });
         }
 
-        // Calculate dynamic active period and setup timer parameters
-        let lastActiveKey = null;
-
-        function updateActiveSession() {
-            const current = getCurrentDateTime();
-            const currentMin = current.hours * 60 + current.minutes;
-            const currentDay = current.dayOfWeek;
-
-            // Find matching row in schedule
-            let activeRow = null;
-            SCHEDULE_DATA.forEach(row => {
-                const sMin = timeToMinutes(row.start);
-                const eMin = timeToMinutes(row.end);
-                if (currentMin >= sMin && currentMin < eMin) {
-                    activeRow = row;
-                }
-            });
-
-            const activeClass = (activeRow && activeRow.days[currentDay]) ? activeRow.days[currentDay] : null;
-
-            // Render Card UI Details
-            const card = document.getElementById('active-class-card');
-            const periodBadge = document.getElementById('badge-period');
-            const textAula = document.getElementById('text-aula');
-            const textSubject = document.getElementById('text-subject');
-            const textGroups = document.getElementById('text-groups');
+        // Datos de la tarjeta de la clase en curso y de la siguiente
+        function updateCard(current, phase) {
+            const cell = phase.cell;
             const breakfastNotice = document.getElementById('breakfast-notice');
 
-            const currentKey = `${currentDay}-${activeRow ? activeRow.slot : 'free'}`;
-
-            if (activeClass) {
-                periodBadge.innerText = activeRow.slot;
-                textAula.innerText = activeClass.aula;
-                textSubject.innerText = activeClass.subject;
-                textGroups.innerText = `Grupos: ${activeClass.groups}`;
-                
-                // Special check for 9:00 - 10:00 breakfast routine
-                if (activeRow.specialBreakfast) {
-                    breakfastNotice.classList.remove('hidden');
-                } else {
-                    breakfastNotice.classList.add('hidden');
-                }
-
+            document.getElementById('badge-period').innerText = phase.row ? phase.row.slot : "Sin tramo";
+            if (cell) {
+                document.getElementById('text-aula').innerText = cell.aula;
+                document.getElementById('text-subject').innerText = cell.subject;
+                document.getElementById('text-groups').innerText = `Grupos: ${cell.groups}`;
             } else {
-                periodBadge.innerText = activeRow ? activeRow.slot : "Sin tramo";
-                textAula.innerText = "N/A";
-                textSubject.innerText = "Sin Clase Activa";
-                textGroups.innerText = "Horario libre o fuera de jornada escolar";
-                breakfastNotice.classList.add('hidden');
+                document.getElementById('text-aula').innerText = "N/A";
+                document.getElementById('text-subject').innerText = phase.row ? "Hora Libre" : phase.title;
+                document.getElementById('text-groups').innerText = phase.row ? "Sin clase en este tramo" : "Horario libre o fuera de jornada escolar";
             }
 
-            // If session changed and timer isn't manually running, re-calculate target
-            if (currentKey !== lastActiveKey && !isTimerRunning) {
-                lastActiveKey = currentKey;
-                setupTimerForCurrentSlot(activeRow, activeClass, currentMin);
+            const showBreakfast = !!(phase.row && phase.row.breakfastAt && isClass(cell));
+            breakfastNotice.classList.toggle('hidden', !showBreakfast);
+
+            const next = findNextClass(current, phase.row ? timeToSeconds(phase.row.end) : current.secOfDay);
+            const nextEl = document.getElementById('text-next');
+            if (next) {
+                const when = next.isToday ? next.row.start.replace(/^0/, '') : `${DAY_NAMES[next.day]} ${next.row.start.replace(/^0/, '')}`;
+                nextEl.innerText = `Siguiente: ${when} · ${next.cell.subject} (${next.cell.groups}) · ${next.cell.aula}`;
+                nextEl.classList.remove('hidden');
+            } else {
+                nextEl.classList.add('hidden');
             }
         }
 
-        function setupTimerForCurrentSlot(row, activeClass, currentMin) {
-            resetAlertFlags();
+        // El contador se calcula siempre a partir del reloj: no se desfasa ni hay que ponerlo en marcha
+        function updateTimer(current, phase) {
+            const circle = document.getElementById('timer-progress-ring');
+            const card = document.getElementById('active-class-card');
+            document.getElementById('timer-phase-title').innerText = phase.title;
 
-            if (!row) {
-                setTimerDisplay(0, 0, "Sin Clase");
+            if (phase.kind === 'none') {
+                document.getElementById('timer-digits').innerText = "--:--";
+                document.getElementById('timer-sublabel').innerText = "Sin tramo";
+                circle.style.strokeDashoffset = RING_CIRCUMFERENCE;
+                card.classList.remove('glow-active', 'glow-breakfast', 'glow-warning');
                 return;
             }
 
-            const startMin = timeToMinutes(row.start);
-            const endMin = timeToMinutes(row.end);
+            const remaining = Math.max(0, phase.endSec - current.secOfDay);
+            const total = Math.max(1, phase.endSec - phase.startSec);
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
 
-            // Special logic for 9:00 - 10:00 session
-            if (row.specialBreakfast && activeClass) {
-                const breakfastStartMin = 9 * 60 + 50; // 9:50 (590 mins)
-                
-                if (currentMin < breakfastStartMin) {
-                    // Phase 1: Class work until 9:50
-                    isBreakfastPhase = false;
-                    const totalSecs = (50) * 60; // 50 mins total
-                    const remainingSecs = (breakfastStartMin - currentMin) * 60 - getCurrentDateTime().seconds;
-                    setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Clase (Límite 9:50h)");
-                } else {
-                    // Phase 2: Breakfast in class (9:50 - 10:00)
-                    isBreakfastPhase = true;
-                    const totalSecs = (10) * 60; // 10 mins
-                    const remainingSecs = (endMin - currentMin) * 60 - getCurrentDateTime().seconds;
-                    setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Desayuno en Aula");
-                }
-            } else {
-                // Standard session timer
-                isBreakfastPhase = false;
-                const totalSecs = (endMin - startMin) * 60;
-                const remainingSecs = (endMin - currentMin) * 60 - getCurrentDateTime().seconds;
-                setTimerDisplay(Math.max(0, remainingSecs), totalSecs, "Tiempo Restante");
-            }
+            document.getElementById('timer-digits').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            document.getElementById('timer-sublabel').innerText = `Hasta las ${secondsToTime(phase.endSec)}`;
+            circle.style.strokeDashoffset = RING_CIRCUMFERENCE - (remaining / total) * RING_CIRCUMFERENCE;
+
+            // Visual Ring Color depending on remaining minutes
+            let ringColor = 'text-sky-500';
+            if (phase.kind === 'breakfast') ringColor = 'text-amber-500';
+            else if (phase.kind === 'other') ringColor = 'text-slate-500';
+            else if (m <= 2) ringColor = 'text-red-500';
+            else if (m <= 5) ringColor = 'text-orange-400';
+            circle.setAttribute('class', `${ringColor} transition-all duration-500`);
+
+            card.classList.toggle('glow-breakfast', phase.kind === 'breakfast');
+            card.classList.toggle('glow-warning', phase.kind === 'class' && remaining <= 120);
+            card.classList.toggle('glow-active', phase.kind === 'class' && remaining > 120);
         }
 
-        function resetAlertFlags() {
-            alertsFired = {
-                m15: false,
-                m10: false,
-                m5: false,
-                m2: false,
-                breakfast: false,
-                end: false
-            };
-            
-            // Reset visual badge indicators
-            ['m-15', 'm-10', 'm-5', 'm-2'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.className = "py-1.5 px-1 rounded text-center border border-slate-800 bg-slate-900/60 text-[10px] md:text-xs font-mono font-semibold text-slate-500";
-                }
+        // Al empezar una fase se dan por pasados los avisos que ya no tocan (p. ej. al abrir la página a mitad de clase)
+        function resetAlertFlags(current, phase) {
+            const remaining = phase.kind === 'class' ? phase.endSec - current.secOfDay : 0;
+            alertsFired = {};
+            MILESTONES.forEach(t => {
+                const passed = phase.kind === 'class' && remaining <= t * 60;
+                alertsFired[t] = passed;
+                document.getElementById(`m-${t}`).className = passed ? BADGE_PASSED : BADGE_IDLE;
             });
         }
 
-        function setTimerDisplay(remainingSecs, totalSecs, phaseTitle) {
-            timerSecondsRemaining = Math.max(0, remainingSecs);
-            timerTotalSeconds = totalSecs > 0 ? totalSecs : 1;
+        function checkMilestoneAlerts(current, phase) {
+            if (phase.kind !== 'class') return;
+            const remaining = phase.endSec - current.secOfDay;
+            const crossed = MILESTONES.filter(t => !alertsFired[t] && remaining <= t * 60);
+            if (!crossed.length) return;
 
-            document.getElementById('timer-phase-title').innerText = phaseTitle || "Contador";
+            MILESTONES.forEach(t => {
+                if (alertsFired[t]) document.getElementById(`m-${t}`).className = BADGE_PASSED;
+            });
+            crossed.forEach(t => {
+                alertsFired[t] = true;
+                document.getElementById(`m-${t}`).className = BADGE_PASSED;
+            });
 
-            updateTimerVisuals();
-        }
-
-        function updateTimerVisuals() {
-            const m = Math.floor(timerSecondsRemaining / 60);
-            const s = timerSecondsRemaining % 60;
-            const formattedStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            
-            document.getElementById('timer-digits').innerText = formattedStr;
-
-            // SVG Circular Progress Ring
-            const circle = document.getElementById('timer-progress-ring');
-            const circumference = 2 * Math.PI * 44; // 276.46
-            const fraction = timerSecondsRemaining / timerTotalSeconds;
-            const strokeDashoffset = circumference - (fraction * circumference);
-            
-            circle.style.strokeDashoffset = isNaN(strokeDashoffset) ? 0 : strokeDashoffset;
-
-            // Visual Ring Color depending on remaining minutes
-            if (isBreakfastPhase) {
-                circle.setAttribute('class', 'text-amber-500 transition-all duration-500');
-            } else if (m <= 2) {
-                circle.setAttribute('class', 'text-red-500 transition-all duration-500');
-            } else if (m <= 5) {
-                circle.setAttribute('class', 'text-orange-400 transition-all duration-500');
-            } else {
-                circle.setAttribute('class', 'text-sky-500 transition-all duration-500');
+            // Si se cruzan varios a la vez (pestaña en segundo plano), solo suena el más reciente
+            const t = crossed[crossed.length - 1];
+            const alert = MILESTONE_ALERTS[t];
+            document.getElementById(`m-${t}`).className = `${BADGE_BASE} shadow-md animate-pulse ${alert.badge}`;
+            if (isAlertsEnabled) {
+                if (alert.sound === 'gong') playGongSound(); else playChimeSound();
+                speakText(alert.text);
             }
         }
 
-        function toggleTimer() {
-            if (isTimerRunning) {
-                pauseTimer();
-            } else {
-                startTimer();
-            }
-        }
-
-        function startTimer() {
-            if (isTimerRunning) return;
-            getAudioContext(); // Ensure Audio Context is initialized
-            isTimerRunning = true;
-
-            document.getElementById('btn-timer-start').className = "px-6 py-3 bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-bold rounded-xl shadow-lg shadow-amber-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5";
-            document.getElementById('icon-timer-start').setAttribute('data-lucide', 'pause');
-            document.getElementById('label-timer-start').innerText = "Pausar";
-            lucide.createIcons();
-
-            timerInterval = setInterval(() => {
-                if (timerSecondsRemaining > 0) {
-                    timerSecondsRemaining--;
-                    updateTimerVisuals();
-                    checkMilestoneAlerts();
-                } else {
-                    pauseTimer();
-                    handleTimerCompletion();
-                }
-            }, 1000);
-        }
-
-        function pauseTimer() {
-            isTimerRunning = false;
-            clearInterval(timerInterval);
-
-            document.getElementById('btn-timer-start').className = "px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center space-x-2 transition transform hover:-translate-y-0.5";
-            document.getElementById('icon-timer-start').setAttribute('data-lucide', 'play');
-            document.getElementById('label-timer-start').innerText = "Continuar";
-            lucide.createIcons();
-        }
-
-        function resetTimer() {
-            pauseTimer();
-            lastActiveKey = null; // Force refresh
-            updateActiveSession();
-        }
-
-        function highlightMilestoneBadge(id, colorClass) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.className = `py-1.5 px-1 rounded text-center font-mono font-bold text-[10px] md:text-xs shadow-md animate-pulse ${colorClass}`;
-            }
-        }
-
-        function checkMilestoneAlerts() {
-            const mins = Math.floor(timerSecondsRemaining / 60);
-            const secs = timerSecondsRemaining % 60;
-
-            // 15 Minutes Warning
-            if (mins === 15 && secs === 0 && !alertsFired.m15) {
-                alertsFired.m15 = true;
-                highlightMilestoneBadge('m-15', 'bg-sky-500 text-white border-sky-400');
-                playChimeSound();
-                speakText("Atención clase. Quedan quince minutos para finalizar.");
-            }
-
-            // 10 Minutes Warning
-            if (mins === 10 && secs === 0 && !alertsFired.m10) {
-                alertsFired.m10 = true;
-                highlightMilestoneBadge('m-10', 'bg-amber-500 text-slate-950 border-amber-400');
-                playChimeSound();
-                speakText("Quedan diez minutos. Id concluyendo las tareas.");
-            }
-
-            // 5 Minutes Warning
-            if (mins === 5 && secs === 0 && !alertsFired.m5) {
-                alertsFired.m5 = true;
-                highlightMilestoneBadge('m-5', 'bg-orange-500 text-white border-orange-400');
-                playChimeSound();
-                speakText("Atención: quedan cinco minutos de clase, Id entregando las tareas pendiente.");
-            }
-
-            // 2 Minutes Warning (Pick up & Clean routine)
-            if (mins === 2 && secs === 0 && !alertsFired.m2) {
-                alertsFired.m2 = true;
-                highlightMilestoneBadge('m-2', 'bg-red-600 text-white border-red-400');
+        function onPhaseChange(prev, current, phase) {
+            // Aviso de final solo si la clase anterior acaba de terminar (no al saltar de hora en la simulación)
+            const justEnded = prev && prev.kind === 'class' && prev.day === current.dayOfWeek
+                && current.secOfDay - prev.endSec >= 0 && current.secOfDay - prev.endSec < 5;
+            if (justEnded && isAlertsEnabled) {
                 playGongSound();
-                speakText("Quedan dos minutos. Es momento de recoger el aula y guardar ordenadores.");
+                speakText(phase.kind === 'breakfast'
+                    ? "Tiempo de clase finalizado. Es la hora del desayuno en el aula antes del recreo."
+                    : "Tiempo finalizado. Fin de la clase.");
             }
-        }
 
-        function handleTimerCompletion() {
-            playGongSound();
-            const current = getCurrentDateTime();
-            
-            // Check if completing 9:00 - 10:00 first phase
-            if (current.hours === 9 && !isBreakfastPhase) {
-                speakText("Tiempo de clase finalizado. Es la hora del desayuno en el aula antes del recreo.");
-                // Automatically switch to breakfast 10-minute timer
-                isBreakfastPhase = true;
-                setTimerDisplay(10 * 60, 10 * 60, "Hora del Desayuno");
-                startTimer();
-            } else {
-                speakText("Tiempo finalizado. Fin del tramo lectivo.");
+            if (phase.kind === 'class') {
+                document.querySelectorAll('.close-check').forEach(c => { c.checked = false; });
             }
+
+            resetAlertFlags(current, phase);
+            updateCard(current, phase);
+            renderTimetable(current, phase);
         }
 
         // Random Student Picker function
@@ -978,73 +901,79 @@
             }, 80);
         }
 
+        // Estado visual de los botones de avisos, audio y voz
+        function renderSoundButtons() {
+            document.getElementById('label-alerts').innerText = isAlertsEnabled ? "Avisos Automáticos ON" : "Avisos Automáticos OFF";
+            document.getElementById('icon-alerts-on').classList.toggle('hidden', !isAlertsEnabled);
+            document.getElementById('icon-alerts-off').classList.toggle('hidden', isAlertsEnabled);
+            document.getElementById('btn-alerts').className = isAlertsEnabled
+                ? "px-6 py-3 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-600/30 flex items-center gap-2 transition"
+                : "px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl border border-slate-700 flex items-center gap-2 transition";
+
+            document.getElementById('label-audio').innerText = isAudioEnabled ? "Audio Activo" : "Audio Silenciado";
+            document.getElementById('icon-audio-on').classList.toggle('hidden', !isAudioEnabled);
+            document.getElementById('icon-audio-off').classList.toggle('hidden', isAudioEnabled);
+
+            document.getElementById('label-voice').innerText = isVoiceEnabled ? "Voz ON" : "Voz OFF";
+            document.getElementById('icon-voice-on').classList.toggle('hidden', !isVoiceEnabled);
+            document.getElementById('icon-voice-off').classList.toggle('hidden', isVoiceEnabled);
+        }
+
+        function toggleAlerts() {
+            isAlertsEnabled = !isAlertsEnabled;
+            savePref('avisos', isAlertsEnabled);
+            getAudioContext();
+            renderSoundButtons();
+        }
+
         // Toggle Audio Signals
         function toggleAudio() {
             isAudioEnabled = !isAudioEnabled;
-            const label = document.getElementById('label-audio');
-            const icon = document.getElementById('icon-audio');
-            if (isAudioEnabled) {
-                label.innerText = "Audio Activo";
-                icon.className = "w-4 h-4 text-emerald-400";
-                playBeep(800, 'sine', 0.1);
-            } else {
-                label.innerText = "Audio Silenciado";
-                icon.className = "w-4 h-4 text-slate-500";
-            }
+            savePref('audio', isAudioEnabled);
+            renderSoundButtons();
+            if (isAudioEnabled) playBeep(800, 'sine', 0.1);
         }
 
         function toggleVoice() {
             isVoiceEnabled = !isVoiceEnabled;
-            const label = document.getElementById('label-voice');
-            const icon = document.getElementById('icon-voice');
-            if (isVoiceEnabled) {
-                label.innerText = "Voz ON";
-                icon.className = "w-4 h-4 text-sky-400";
-                speakText("Voz activada");
-            } else {
-                label.innerText = "Voz OFF";
-                icon.className = "w-4 h-4 text-slate-500";
-            }
+            savePref('voz', isVoiceEnabled);
+            renderSoundButtons();
+            if (isVoiceEnabled) speakText("Voz activada");
         }
 
         // Simulation Mode Controls
-        function toggleSimulationMode() {
-            isSimulationMode = !isSimulationMode;
-            const simPanel = document.getElementById('sim-controls');
-            const simText = document.getElementById('sim-mode-text');
+        function setSimulation(day, timeStr) {
+            const target = new Date();
+            target.setDate(target.getDate() + (day - target.getDay()));
+            const [h, m] = timeStr.split(':').map(Number);
+            target.setHours(h, m, 0, 0);
+            simOffsetMs = target.getTime() - Date.now();
 
-            if (isSimulationMode) {
-                simPanel.classList.remove('hidden');
-                simText.innerText = "Salir de Simulación";
-            } else {
-                simPanel.classList.add('hidden');
-                simText.innerText = "Probar Simulación";
-            }
-
-            resetTimer();
-            renderTimetable();
-        }
-
-        function enableSimulationMode(day, startTimeStr) {
-            isSimulationMode = true;
             document.getElementById('sim-controls').classList.remove('hidden');
             document.getElementById('sim-mode-text').innerText = "Salir de Simulación";
-
             document.getElementById('sim-day-select').value = day;
-            document.getElementById('sim-time-input').value = startTimeStr;
+            document.getElementById('sim-time-input').value = timeStr;
 
-            simDay = day;
-            simTime = startTimeStr;
+            lastPhase = null; // al saltar no se anuncia el final del tramo anterior
+            tick();
+        }
 
-            resetTimer();
-            renderTimetable();
+        function toggleSimulationMode() {
+            if (simOffsetMs === null) {
+                updateSimulationTime();
+                return;
+            }
+            simOffsetMs = null;
+            document.getElementById('sim-controls').classList.add('hidden');
+            document.getElementById('sim-mode-text').innerText = "Probar Simulación";
+            lastPhase = null;
+            tick();
         }
 
         function updateSimulationTime() {
-            simDay = parseInt(document.getElementById('sim-day-select').value);
-            simTime = document.getElementById('sim-time-input').value;
-            resetTimer();
-            renderTimetable();
+            const day = parseInt(document.getElementById('sim-day-select').value);
+            const timeStr = document.getElementById('sim-time-input').value || "09:00";
+            setSimulation(day, timeStr);
         }
 
         function setQuickSimTime(timeStr) {
@@ -1065,29 +994,53 @@
             }
         }
 
-        // Clock loop
-        function updateLiveClock() {
-            const current = getCurrentDateTime();
-            
-            const daysNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-            const dateStr = `${daysNames[current.dayOfWeek]} • ${current.timeString}`;
+        // Evita que la pantalla del proyector se apague mientras la página está abierta
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator) || wakeLock || document.visibilityState !== 'visible') return;
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => { wakeLock = null; });
+            } catch (e) {
+                console.log("Wake lock error:", e);
+            }
+        }
 
+        function updateLiveClock(current) {
             document.getElementById('live-clock').innerText = current.timeString;
-            document.getElementById('live-date').innerText = isSimulationMode ? `[SIMULACIÓN] ${daysNames[current.dayOfWeek]}` : dateStr;
+            document.getElementById('live-date').innerText = simOffsetMs !== null
+                ? `[SIMULACIÓN] ${DAY_NAMES[current.dayOfWeek]}`
+                : current.dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        }
 
-            updateActiveSession();
-            renderTimetable();
+        // Bucle principal: un tic por segundo
+        function tick() {
+            const current = getCurrentDateTime();
+            const phase = getPhase(current);
+
+            updateLiveClock(current);
+            if (!lastPhase || phase.key !== lastPhase.key) {
+                onPhaseChange(lastPhase, current, phase);
+                lastPhase = phase;
+            }
+            updateTimer(current, phase);
+            checkMilestoneAlerts(current, phase);
         }
 
         window.onload = function() {
             // Initialize Lucide icons
             lucide.createIcons();
+            renderSoundButtons();
 
-            // Initial render
-            updateLiveClock();
+            // El navegador solo deja sonar el audio tras una primera interacción
+            document.addEventListener('pointerdown', () => {
+                getAudioContext();
+                requestWakeLock();
+            }, { once: true });
+            document.addEventListener('visibilitychange', requestWakeLock);
+            requestWakeLock();
 
-            // Run clock update every second
-            setInterval(updateLiveClock, 1000);
+            tick();
+            setInterval(tick, 1000);
         };
     </script>
 </body>
