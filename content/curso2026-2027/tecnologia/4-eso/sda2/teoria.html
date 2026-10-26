@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad Didáctica: Fabricación y Diseño de Objetos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        edu: {
+                            blue: '#0284c7',
+                            teal: '#0d9488',
+                            amber: '#d97706',
+                            purple: '#9333ea',
+                            rose: '#e11d48'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom animations & scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-300">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-compass-drafting text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase block">Tecnología e Innovación</span>
+                        <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-slate-900 via-teal-800 to-emerald-700 dark:from-white dark:via-teal-200 dark:to-emerald-400 bg-clip-text text-transparent">
+                            Fabricación y Diseño de Objetos
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls & Utilities -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Progress Tracker Button -->
+                    <div class="hidden md:flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full text-xs font-medium">
+                        <i class="fa-solid fa-chart-line text-emerald-500"></i>
+                        <span>Progreso:</span>
+                        <span id="globalProgressText" class="font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+                        <div class="w-16 bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div id="globalProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Switcher -->
+                    <button id="themeToggleBtn" aria-label="Cambiar tema" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition">
+                        <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                        <i class="fa-solid fa-sun text-lg hidden dark:block text-amber-400"></i>
+                    </button>
+
+                    <!-- Text-To-Speech Reader -->
+                    <button id="ttsBtn" title="Escuchar resumen de la sección activa" class="p-2 rounded-xl text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 transition">
+                        <i class="fa-solid fa-volume-high text-lg"></i>
+                    </button>
+
+                    <!-- Quick Print / Notes -->
+                    <button id="notesModalBtn" title="Ver mis notas guardadas" class="relative p-2 rounded-xl text-slate-500 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-400 bg-slate-100 dark:bg-slate-800 transition">
+                        <i class="fa-solid fa-book-bookmark text-lg"></i>
+                        <span id="notesBadge" class="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Navigation Tabs -->
+        <nav class="hidden lg:block border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+            <div class="max-w-7xl mx-auto px-4 flex space-x-1 overflow-x-auto py-2 text-xs font-medium scrollbar-none">
+                <a href="#sec1" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 active"><i class="fa-solid fa-pen-ruler mr-1.5 text-emerald-500"></i>1. El Diseño</a>
+                <a href="#sec2" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-diagram-project mr-1.5 text-blue-500"></i>2. Proceso de Diseño</a>
+                <a href="#sec3" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-chart-line mr-1.5 text-purple-500"></i>3. Ciclo de Vida</a>
+                <a href="#sec4" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-clock-rotate-left mr-1.5 text-rose-500"></i>4. Obsolescencia</a>
+                <a href="#sec5" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-leaf mr-1.5 text-emerald-600"></i>5. Producción Sostenible</a>
+                <a href="#sec6" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-cubes mr-1.5 text-amber-500"></i>6. Materiales</a>
+                <a href="#sec7" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap hover:bg-emerald-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-palette mr-1.5 text-indigo-500"></i>7. Fabricación y Color</a>
+                <a href="#sec8" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap bg-emerald-600 text-white hover:bg-emerald-700 ml-auto"><i class="fa-solid fa-vial mr-1.5"></i>Autoevaluación</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MOBILE NAVIGATION MENU DROPDOWN -->
+    <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3 space-y-2 text-sm shadow-xl">
+        <a href="#sec1" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-pen-ruler w-6 text-emerald-500"></i>1. El Diseño</a>
+        <a href="#sec2" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-diagram-project w-6 text-blue-500"></i>2. El Proceso de Diseño</a>
+        <a href="#sec3" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-chart-line w-6 text-purple-500"></i>3. Ciclo de Vida</a>
+        <a href="#sec4" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-clock-rotate-left w-6 text-rose-500"></i>4. La Obsolescencia</a>
+        <a href="#sec5" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-leaf w-6 text-emerald-600"></i>5. Producción Sostenible</a>
+        <a href="#sec6" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-cubes w-6 text-amber-500"></i>6. Materiales</a>
+        <a href="#sec7" class="mobile-nav-link block p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fa-solid fa-palette w-6 text-indigo-500"></i>7. Técnicas y Color</a>
+        <a href="#sec8" class="mobile-nav-link block p-2 rounded-md bg-emerald-600 text-white font-semibold text-center mt-2"><i class="fa-solid fa-vial mr-2"></i>Pon a Prueba tus Conocimientos</a>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- HERO / INTRO BANNER -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-900 via-slate-900 to-emerald-950 text-white p-8 sm:p-12 shadow-2xl border border-teal-800/40">
+            <div class="absolute -right-12 -bottom-12 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-3xl">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-4">
+                    <i class="fa-solid fa-graduation-cap"></i> Recurso Didáctico Interactivo - Junta de Andalucía
+                </span>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+                    Crea, diseña y transforma la tecnología de forma responsable.
+                </h2>
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
+                    Explora cómo los objetos que nos rodean pasan desde una idea en papel hasta su fabricación, considerando la ergonomía, la sostenibilidad, los materiales y el impacto ambiental.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#sec1" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-5 py-3 rounded-xl transition shadow-lg hover:shadow-emerald-500/25">
+                        <i class="fa-solid fa-rocket"></i> Empezar la Unidad
+                    </a>
+                    <a href="#sec8" class="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl border border-slate-700 transition">
+                        <i class="fa-solid fa-list-check"></i> Ir al Cuestionario
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: EL DISEÑO -->
+        <section id="sec1" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Apartado 1</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-pen-ruler"></i></span>
+                        El Diseño
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec1')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY CARD -->
+            <div class="bg-emerald-50 dark:bg-emerald-950/40 border-l-4 border-emerald-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-emerald-600 dark:text-emerald-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-emerald-900 dark:text-emerald-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-emerald-800 dark:text-emerald-300 text-sm sm:text-base mt-1">
+                            El diseño es el trabajo mental y técnico previo a la fabricación. Un diseño excelente equilibra la <strong>función</strong> del objeto, su <strong>factibilidad económica y técnica</strong>, su <strong>capacidad de comunicar</strong> y el <strong>contexto</strong> de la época.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Explanation -->
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-emerald-500"></i> ¿Qué es el diseño y cuáles son sus funciones?
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Diseñar es transformar una necesidad o problema en una solución concreta y fabricable. Un diseño debe cumplir tres tipos de funciones esenciales:
+                        </p>
+                        
+                        <!-- Interactive Function Explorer -->
+                        <div class="space-y-3 pt-2">
+                            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 transition cursor-pointer bg-slate-50 dark:bg-slate-900/50" onclick="showFunctionDetail('practica')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-slate-800 dark:text-slate-200"><i class="fa-solid fa-wrench mr-2 text-blue-500"></i>1. Función Práctica</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Responde a la utilidad directa (ej. una mochila para transportar libros).</p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 transition cursor-pointer bg-slate-50 dark:bg-slate-900/50" onclick="showFunctionDetail('estetica')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-slate-800 dark:text-slate-200"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-purple-500"></i>2. Función Estética</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Hace que el objeto sea atractivo visualmente mediante la forma, color y acabado.</p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 transition cursor-pointer bg-slate-50 dark:bg-slate-900/50" onclick="showFunctionDetail('simbolica')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-slate-800 dark:text-slate-200"><i class="fa-solid fa-crown mr-2 text-amber-500"></i>3. Función Simbólica</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Transmite pertenencia a un grupo, estatus o identidad cultural (ej. un reloj de lujo).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Concepts: Ergonomics & Bionics -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-teal-500/10 to-emerald-500/10 border border-teal-200 dark:border-teal-800 p-5 rounded-2xl">
+                            <div class="text-teal-600 dark:text-teal-400 text-2xl mb-2"><i class="fa-solid fa-child-reaching"></i></div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base">Ergonomía</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                                Adaptación del objeto a la anatomía y dimensiones de la persona para usarlo de forma cómoda, eficiente y segura.
+                            </p>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-200 dark:border-emerald-800 p-5 rounded-2xl">
+                            <div class="text-emerald-600 dark:text-emerald-400 text-2xl mb-2"><i class="fa-solid fa-leaf"></i></div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base">Biónica</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                                Ciencia que estudia e imita las formas y soluciones de la naturaleza para crear inventos tecnológicos (ej. el tren bala inspirado en el pico del martín pescador).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Factibilidad & Video -->
+                <div class="space-y-6">
+                    <!-- Factibilidad Table -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-teal-500"></i> Análisis de Factibilidad
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Antes de fabricar un objeto, se debe comprobar si es viable en tres dimensiones:</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold">
+                                    <tr>
+                                        <th class="p-2.5 rounded-l-lg">Dimensión</th>
+                                        <th class="p-2.5 rounded-r-lg">¿Qué se analiza?</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-teal-600 dark:text-teal-400">Estructurales</td>
+                                        <td class="p-2.5 text-slate-600 dark:text-slate-300">Resistencia a fuerzas, uniones seguras y carcasas de protección.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-teal-600 dark:text-teal-400">Técnicas</td>
+                                        <td class="p-2.5 text-slate-600 dark:text-slate-300">Maquinaria disponible, personal cualificado, medidas y tolerancias.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-teal-600 dark:text-teal-400">Mercantiles</td>
+                                        <td class="p-2.5 text-slate-600 dark:text-slate-300">Costes de producción, precio final, demanda del mercado y distribución.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Video Resource Badge -->
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg border border-slate-800 flex flex-col sm:flex-row items-center gap-4">
+                        <div class="bg-red-600 p-3 rounded-xl text-2xl flex-shrink-0">
+                            <i class="fa-brands fa-youtube"></i>
+                        </div>
+                        <div class="flex-1 text-center sm:text-left">
+                            <h4 class="font-bold text-sm">Aprende más sobre la Biónica</h4>
+                            <p class="text-xs text-slate-400 mt-1">Mira cómo la naturaleza inspira el diseño de la tecnología moderna.</p>
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=sugYsXJX5PY" target="_blank" rel="noopener noreferrer" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition whitespace-nowrap">
+                            Ver Vídeo <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Interactive Notes Box -->
+                    <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-amber-900 dark:text-amber-300 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square"></i> Rincón de Apuntes del Alumnado
+                            </span>
+                            <span class="text-[10px] text-amber-700 dark:text-amber-400 uppercase tracking-wider font-semibold">Guardado Automático</span>
+                        </div>
+                        <p class="text-xs text-amber-800 dark:text-amber-400">¿Qué objeto cotidiano usas que tenga una gran ergonomía y cuál resulta poco cómodo?</p>
+                        <textarea id="note_sec1" placeholder="Escribe aquí tu observación personal..." class="w-full text-xs p-3 rounded-xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none h-20 resize-none" oninput="saveUserNote('sec1', this.value)"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: EL PROCESO DE DISEÑO -->
+        <section id="sec2" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Apartado 2</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-diagram-project"></i></span>
+                        El Proceso de Diseño
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec2')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY -->
+            <div class="bg-blue-50 dark:bg-blue-950/40 border-l-4 border-blue-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-blue-600 dark:text-blue-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-900 dark:text-blue-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-blue-800 dark:text-blue-300 text-sm sm:text-base mt-1">
+                            Diseñar no es improvisar. Es un método estructurado de <strong>investigación, planificación, ensayo y mejora continua</strong> para resolver un problema real de la comunidad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE 5-STEP TIMELINE -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-route text-blue-500"></i> Las 5 Fases del Proceso de Diseño
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Haz clic en cada etapa para consultar qué tareas realiza el equipo de diseño:</p>
+
+                <!-- Steps Navigation Header -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <button onclick="setDesignStep(1)" id="stepBtn1" class="step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-blue-600 text-white shadow-md">
+                        <span class="text-[10px] uppercase font-bold opacity-80 block">Paso 1</span>
+                        <span class="font-bold text-sm block"><i class="fa-solid fa-lightbulb mr-1"></i> Idea</span>
+                    </button>
+                    <button onclick="setDesignStep(2)" id="stepBtn2" class="step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                        <span class="text-[10px] uppercase font-bold opacity-80 block">Paso 2</span>
+                        <span class="font-bold text-sm block"><i class="fa-solid fa-magnifying-glass mr-1"></i> Investigación</span>
+                    </button>
+                    <button onclick="setDesignStep(3)" id="stepBtn3" class="step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                        <span class="text-[10px] uppercase font-bold opacity-80 block">Paso 3</span>
+                        <span class="font-bold text-sm block"><i class="fa-solid fa-ruler-combined mr-1"></i> Planificación</span>
+                    </button>
+                    <button onclick="setDesignStep(4)" id="stepBtn4" class="step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                        <span class="text-[10px] uppercase font-bold opacity-80 block">Paso 4</span>
+                        <span class="font-bold text-sm block"><i class="fa-solid fa-vial-circle-check mr-1"></i> Prueba</span>
+                    </button>
+                    <button onclick="setDesignStep(5)" id="stepBtn5" class="step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 col-span-2 sm:col-span-1">
+                        <span class="text-[10px] uppercase font-bold opacity-80 block">Paso 5</span>
+                        <span class="font-bold text-sm block"><i class="fa-solid fa-circle-check mr-1"></i> Definitivo</span>
+                    </button>
+                </div>
+
+                <!-- Step Details Card -->
+                <div id="stepDetailCard" class="bg-blue-50/50 dark:bg-slate-900/80 p-6 rounded-2xl border border-blue-100 dark:border-slate-700 transition-all">
+                    <!-- Dynamic Javascript Content -->
+                </div>
+            </div>
+
+            <!-- METHODS FOR IDEA GENERATION -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-brain text-purple-500"></i> Métodos para Generar Ideas Creativas
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-lg mb-3">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Lluvia de Ideas (Brainstorming)</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                            Técnica grupal para proponer la mayor cantidad de ideas rápidamente sin juzgar ni criticar ninguna al inicio.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg mb-3">
+                            <i class="fa-solid fa-user-secret"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Método Delfos (Delphi)</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                            Consulta anónima a un grupo de expertos. Un coordinador sintetiza las respuestas para llegar a un consenso técnico.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg mb-3">
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">División del Problema</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                            Descomponer un problema complejo en subproblemas más pequeños y fáciles de resolver por separado.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- INTERACTIVE RETO RÁPIDO MATCHING -->
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-2xl shadow-md space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-amber-400"></i> Reto Rápido: ¿Conoces los métodos?
+                        </h4>
+                        <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full">Ejercicio de Emparejamiento</span>
+                    </div>
+
+                    <p class="text-xs text-blue-200">Relaciona cada situación con su método correcto:</p>
+
+                    <div class="space-y-3 text-xs" id="matchingGame">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/10 p-3 rounded-xl">
+                            <span>1. Descomponer una dificultad grande en partes pequeñas:</span>
+                            <select id="match1" class="bg-slate-800 text-white border border-slate-600 rounded-lg p-1.5 outline-none focus:ring-2 focus:ring-amber-400">
+                                <option value="">Selecciona...</option>
+                                <option value="delphi">Método Delfos</option>
+                                <option value="brainstorming">Lluvia de Ideas</option>
+                                <option value="division">División del Problema</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/10 p-3 rounded-xl">
+                            <span>2. Pedir la opinión anónima e individual a especialistas:</span>
+                            <select id="match2" class="bg-slate-800 text-white border border-slate-600 rounded-lg p-1.5 outline-none focus:ring-2 focus:ring-amber-400">
+                                <option value="">Selecciona...</option>
+                                <option value="delphi">Método Delfos</option>
+                                <option value="brainstorming">Lluvia de Ideas</option>
+                                <option value="division">División del Problema</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="checkMatchingGame()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">
+                            Comprobar Respuestas
+                        </button>
+                        <span id="matchFeedback" class="text-xs font-semibold"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CICLO DE VIDA DE UN PRODUCTO -->
+        <section id="sec3" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Apartado 3</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-chart-line"></i></span>
+                        Ciclo de Vida de un Producto
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec3')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY -->
+            <div class="bg-purple-50 dark:bg-purple-950/40 border-l-4 border-purple-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-purple-600 dark:text-purple-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-purple-900 dark:text-purple-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-purple-800 dark:text-purple-300 text-sm sm:text-base mt-1">
+                            Todos los objetos pasan por <strong>cuatro etapas sucesivas de ventas en el tiempo</strong>. Conocer esta evolución ayuda a planificar mejoras o lanzar nuevos modelos antes de que el objeto quede en desuso.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE LIFE CYCLE STAGE EXPLORER -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-purple-500"></i> Simulación del Ciclo de Vida
+                </h3>
+
+                <!-- Visual Lifecycle Curve Representation -->
+                <div class="relative w-full bg-slate-100 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="flex justify-between items-end h-32 w-full gap-2 px-4 relative z-10">
+                        <!-- Stage 1 Bar -->
+                        <div onclick="selectLifeStage(1)" class="life-bar flex-1 bg-amber-400 hover:bg-amber-500 h-1/4 rounded-t-xl transition-all duration-300 cursor-pointer flex items-center justify-center font-bold text-xs text-slate-900 shadow-sm" id="lifeBar1">
+                            1. Introducción
+                        </div>
+                        <!-- Stage 2 Bar -->
+                        <div onclick="selectLifeStage(2)" class="life-bar flex-1 bg-emerald-500 hover:bg-emerald-600 h-3/4 rounded-t-xl transition-all duration-300 cursor-pointer flex items-center justify-center font-bold text-xs text-white shadow-sm" id="lifeBar2">
+                            2. Crecimiento
+                        </div>
+                        <!-- Stage 3 Bar -->
+                        <div onclick="selectLifeStage(3)" class="life-bar flex-1 bg-purple-600 hover:bg-purple-700 h-full rounded-t-xl transition-all duration-300 cursor-pointer flex items-center justify-center font-bold text-xs text-white shadow-sm" id="lifeBar3">
+                            3. Madurez
+                        </div>
+                        <!-- Stage 4 Bar -->
+                        <div onclick="selectLifeStage(4)" class="life-bar flex-1 bg-rose-500 hover:bg-rose-600 h-1/3 rounded-t-xl transition-all duration-300 cursor-pointer flex items-center justify-center font-bold text-xs text-white shadow-sm" id="lifeBar4">
+                            4. Declive
+                        </div>
+                    </div>
+                    <div class="border-b-2 border-slate-400 w-full mt-1"></div>
+                    <div class="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-2 uppercase tracking-wider">
+                        <span>Lanzamiento</span>
+                        <span>Saturación del Mercado</span>
+                        <span>Sustitución</span>
+                    </div>
+                </div>
+
+                <!-- Active Stage Info Card -->
+                <div id="lifeStageDetails" class="bg-slate-50 dark:bg-slate-900/60 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <!-- Loaded via JS -->
+                </div>
+
+                <!-- Historic Example Case: Cassettes vs MP3 -->
+                <div class="bg-gradient-to-br from-slate-900 to-purple-950 text-white p-6 rounded-2xl space-y-3">
+                    <h4 class="font-bold text-sm text-purple-300 flex items-center gap-2">
+                        <i class="fa-solid fa-compact-disc"></i> Ejemplo Histórico: Evolución de los Soportes de Música
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs pt-2">
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10">
+                            <span class="font-bold text-amber-300 block mb-1">Introducción (1979)</span>
+                            Lanzamiento del Walkman de Sony. Pocos usuarios lo conocían.
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10">
+                            <span class="font-bold text-emerald-300 block mb-1">Crecimiento (Años 80)</span>
+                            Popularización masiva en deportes y cultura juvenil. Ventas disparadas.
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10">
+                            <span class="font-bold text-purple-300 block mb-1">Madurez (Fin 80)</span>
+                            Modelos ultrafinos con sonido Dolby. Máximo dominio mundial.
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10">
+                            <span class="font-bold text-rose-300 block mb-1">Declive (Años 90/2000)</span>
+                            Reemplazado por el CD portátil (Discman) y más tarde por el MP3.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: LA OBSOLESCENCIA -->
+        <section id="sec4" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Apartado 4</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        La Obsolescencia
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec4')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY -->
+            <div class="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-rose-600 dark:text-rose-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-rose-900 dark:text-rose-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-rose-800 dark:text-rose-300 text-sm sm:text-base mt-1">
+                            La obsolescencia es el acortamiento deliberado o indirecto de la vida útil de un producto. Genera una acumulación preocupante de <strong>residuos electrónicos (e-waste)</strong> y sobreexplota los recursos del planeta.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TYPES OF OBSOLESCENCE GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 rounded-xl font-bold">
+                            <i class="fa-solid fa-bomb"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">Obsolescencia Programada</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        El producto se diseña con un límite de uso de forma premeditada para que falle tras cierto tiempo (ej. impresoras con contador de impresiones o bombillas antiguas).
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-xl font-bold">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">Obsolescencia Indirecta</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Es imposible reparar el objeto porque las piezas no se venden por separado, las baterías están pegadas o la reparación cuesta más que comprar uno nuevo.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-xl font-bold">
+                            <i class="fa-solid fa-shirt"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">Obsolescencia Percibida (Diseño)</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Un cambio estético o de moda hace sentir a la persona que su objeto "ha quedado anticuado", aunque funcione perfectamente.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-xl font-bold">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">Obsolescencia Tecnológica</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        El dispositivo antiguo deja de ser compatible con los nuevos programas, aplicaciones o actualizaciones de software.
+                    </p>
+                </div>
+            </div>
+
+            <!-- RIGHT TO REPAIR & VIDEO LINK -->
+            <div class="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400"><i class="fa-solid fa-shield-halved mr-1"></i> Movimiento Global por el Planeta</span>
+                    <h3 class="text-xl font-bold">El Derecho a Reparar ("Right to Repair")</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Organizaciones de todo el mundo exigen leyes para que los fabricantes faciliten recambios, manuales de reparación y baterías sustituibles para frenar los vertederos tecnológicos como el de Agbogbloshie (Ghana).
+                    </p>
+                </div>
+                <a href="https://www.youtube.com/watch?v=3Nxhy0fyBdo" target="_blank" rel="noopener noreferrer" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-5 py-3 rounded-xl text-xs transition whitespace-nowrap shadow-lg flex items-center gap-2">
+                    <i class="fa-brands fa-youtube text-base"></i> Vídeo: Obsolescencia Programada
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION 5: MODELOS DE PRODUCCIÓN SOSTENIBLE -->
+        <section id="sec5" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Apartado 5</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-leaf"></i></span>
+                        Modelos de Producción Sostenible
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec5')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY -->
+            <div class="bg-emerald-50 dark:bg-emerald-950/40 border-l-4 border-emerald-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-emerald-600 dark:text-emerald-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-emerald-900 dark:text-emerald-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-emerald-800 dark:text-emerald-300 text-sm sm:text-base mt-1">
+                            El modelo tradicional (<strong>Extraer $\rightarrow$ Fabricar $\rightarrow$ Usar $\rightarrow$ Tirar</strong>) agota el planeta. Debemos migrar hacia una <strong>Economía Circular</strong> que repare, reutilice y recicle continuamente los materiales.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPARATIVE ECONOMIC MODELS INTERACTIVE -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-spin text-emerald-500"></i> Comparativa de Modelos Económicos
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Linear Economy -->
+                    <div class="p-5 rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-rose-700 dark:text-rose-400 text-sm"><i class="fa-solid fa-arrow-right-long mr-2"></i>Economía Lineal (Tradicional)</span>
+                            <span class="text-[10px] bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-2 py-0.5 rounded-full font-bold">Insostenible</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">
+                            <strong>Materia Prima $\rightarrow$ Fabricación $\rightarrow$ Consumo $\rightarrow$ Basura.</strong> Genera un consumo masivo irresponsable.
+                        </p>
+                    </div>
+
+                    <!-- Circular Economy -->
+                    <div class="p-5 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-emerald-700 dark:text-emerald-400 text-sm"><i class="fa-solid fa-rotate mr-2"></i>Economía Circular</span>
+                            <span class="text-[10px] bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">Sostenible</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">
+                            <strong>Reducir, Reutilizar, Reparar, Reciclar.</strong> Extiende la vida útil de los materiales manteniéndolos en el ciclo productivo.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SPECIAL MODELS (Verde, Azul, Dónut) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <span class="text-xs font-bold text-teal-600 dark:text-teal-400 block"><i class="fa-solid fa-seedling mr-1"></i>Economía Verde</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Busca reducir las emisiones de CO₂ e impulsar las energías renovables y la eficiencia energética.</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 block"><i class="fa-solid fa-water mr-1"></i>Economía Azul</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Creada por Gunter Pauli. Copia a la naturaleza: los residuos de un proceso son materia prima para otro a nivel local.</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <span class="text-xs font-bold text-amber-600 dark:text-amber-400 block"><i class="fa-solid fa-circle-dot mr-1"></i>Economía del Dónut</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">Diseñada por Kate Raworth. Equilibra las necesidades sociales del alumnado y la sociedad con el respeto a los límites del planeta.</p>
+                    </div>
+                </div>
+
+                <!-- Video Resource Link -->
+                <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
+                        <div>
+                            <h4 class="font-bold text-xs">Explicación en Vídeo: Economía Circular</h4>
+                            <p class="text-[11px] text-slate-400">Aprende cómo funciona el reciclaje y reutilización en la industria moderna.</p>
+                        </div>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=wc_65-yf6zU" target="_blank" rel="noopener noreferrer" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">
+                        Ver Vídeo Interactivo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: MATERIALES Y SELECCIÓN EN DISEÑO -->
+        <section id="sec6" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Apartado 6</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-cubes"></i></span>
+                        Materiales y Selección en Diseño
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec6')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- KEY TAKEAWAY -->
+            <div class="bg-amber-50 dark:bg-amber-950/40 border-l-4 border-amber-500 p-5 rounded-r-2xl shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-600 dark:text-amber-400 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-amber-900 dark:text-amber-200 text-sm uppercase tracking-wider">Idea Clave (Takeaway)</h3>
+                        <p class="text-amber-800 dark:text-amber-300 text-sm sm:text-base mt-1">
+                            Seleccionar el material correcto exige analizar sus <strong>propiedades mecánicas</strong> (fuerza, dureza), sus <strong>sensaciones táctiles o visuales</strong> y las <strong>emociones o valores sociales</strong> que transmiten a quien lo utiliza.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE MATERIAL EXPLORER -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-hand-pointer text-amber-500"></i> Explorador Interactivo de Materiales
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Selecciona una familia de materiales para conocer sus características e impacto psicológico:</p>
+
+                <!-- Family Selector Tabs -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="selectMaterialFamily('metales')" id="matBtnMetales" class="mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-white shadow-md">
+                        <i class="fa-solid fa-shield-halved mr-1"></i> Metales
+                    </button>
+                    <button onclick="selectMaterialFamily('madera')" id="matBtnMadera" class="mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-tree mr-1"></i> Madera
+                    </button>
+                    <button onclick="selectMaterialFamily('vidrio')" id="matBtnVidrio" class="mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-glass-water mr-1"></i> Vidrio / Cristal
+                    </button>
+                    <button onclick="selectMaterialFamily('polimeros')" id="matBtnPolimeros" class="mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-bottle-water mr-1"></i> Plásticos (Polímeros)
+                    </button>
+                </div>
+
+                <!-- Material Display Box -->
+                <div id="materialDetailBox" class="bg-slate-50 dark:bg-slate-900/70 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Methods for Material Selection -->
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-6">
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-3">Métodos para elegir materiales:</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">Método Tradicional</span>
+                            Basado en la experiencia previa de la persona que diseña.
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">Diagramas de Ashby</span>
+                            Gráficos dobles que cruzan dos propiedades (ej. densidad vs resistencia).
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">Bases de Datos</span>
+                            Programas informáticos que filtran materiales según especificaciones exactas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: TÉCNICAS DE FABRICACIÓN Y COLOR -->
+        <section id="sec7" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Apartado 7</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 p-2 rounded-xl text-xl"><i class="fa-solid fa-palette"></i></span>
+                        Técnicas de Fabricación y Psicología del Color
+                    </h2>
+                </div>
+                <button onclick="toggleSectionDone('sec7')" class="check-btn text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-indigo-50 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-circle-check text-slate-400 mr-1"></i> Marcar como estudiado
+                </button>
+            </div>
+
+            <!-- FABRICATION TECHNIQUES GRID -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-gears text-indigo-500"></i> Clasificación de Técnicas de Fabricación
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <div class="text-indigo-500 font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-scissors"></i> Separación
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Se elimina parte del material para dividir o dar forma. <br><strong>Ejemplos:</strong> Cortar, serrar, taladrar, limar.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <div class="text-indigo-500 font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-hammer"></i> Conformación
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Se modifica la forma sin quitar ni añadir masa. <br><strong>Ejemplos:</strong> Forjar, doblar, moldear, extrusión.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <div class="text-indigo-500 font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-link"></i> Unión
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Se ensamblan dos o más piezas independientes. <br><strong>Ejemplos:</strong> Atornillar, soldar, remachar, pegar.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 space-y-2">
+                        <div class="text-indigo-500 font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-paint-roller"></i> Recubrimiento
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Se aplica una capa superficial para proteger o embellecer. <br><strong>Ejemplos:</strong> Pintar, barnizar, cromar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE COLOR PSYCHOLOGY WHEEL / EXPLORER -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-palette text-indigo-500"></i> Psicología del Color en el Diseño de Objetos
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Haz clic en un color para descubrir qué emociones despierta y cómo se utiliza en la fabricación:</p>
+
+                <!-- Color Palette Picker -->
+                <div class="grid grid-cols-2 sm:grid-cols-6 gap-3">
+                    <button onclick="inspectColor('rojo')" class="p-4 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold text-xs transition shadow-md text-center">
+                        Rojo / Naranja
+                    </button>
+                    <button onclick="inspectColor('azul')" class="p-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-md text-center">
+                        Azul
+                    </button>
+                    <button onclick="inspectColor('verde')" class="p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-md text-center">
+                        Verde
+                    </button>
+                    <button onclick="inspectColor('amarillo')" class="p-4 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition shadow-md text-center">
+                        Amarillo
+                    </button>
+                    <button onclick="inspectColor('blanco')" class="p-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-xs transition shadow-md text-center border border-slate-300">
+                        Blanco
+                    </button>
+                    <button onclick="inspectColor('negro')" class="p-4 rounded-2xl bg-slate-900 hover:bg-black text-white font-bold text-xs transition shadow-md text-center">
+                        Negro / Gris
+                    </button>
+                </div>
+
+                <!-- Color Info Output Box -->
+                <div id="colorDetailDisplay" class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <!-- Loaded via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: AUTOEVALUACIÓN Y CUESTIONARIO -->
+        <section id="sec8" class="scroll-mt-24 space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Apartado 8</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-3">
+                        <span class="bg-emerald-600 text-white p-2 rounded-xl text-xl"><i class="fa-solid fa-vial"></i></span>
+                        Ponte a Prueba (Autoevaluación)
+                    </h2>
+                </div>
+            </div>
+
+            <!-- QUIZ CONTAINER -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl space-y-8">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Cuestionario Interactivo del Tema</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Responde a las 4 preguntas para comprobar lo que has aprendido antes del examen.</p>
+                </div>
+
+                <div id="quizQuestionsContainer" class="space-y-6">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <!-- Quiz Actions -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-700 pt-6">
+                    <button onclick="submitQuiz()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> Corregir Cuestionario
+                    </button>
+                    <div id="quizResultScore" class="font-bold text-lg hidden"></div>
+                </div>
+            </div>
+
+            <!-- PRACTICAL CHALLENGE: SILLA DE AULA -->
+            <div class="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-teal-800 space-y-6 shadow-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-amber-500 text-slate-950 rounded-2xl font-bold text-xl">
+                        <i class="fa-solid fa-chair"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Reto Práctico Integrador</span>
+                        <h3 class="text-xl font-bold">Diseña una Silla Ergonomica para tu Aula</h3>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Aplica lo aprendido en el tema para configurar una propuesta de silla escolar cómoda y respetuosa con el medio ambiente:
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                    <div class="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <label class="font-bold text-emerald-400 block"><i class="fa-solid fa-cubes mr-1"></i>1. Material Estructural</label>
+                        <select id="challengeMat" class="w-full bg-slate-800 text-white p-2.5 rounded-xl border border-slate-700 outline-none">
+                            <option value="Acero reciclado y madera de bosque sostenible">Acero reciclado + Madera sostenible</option>
+                            <option value="Plástico monouso barato">Plástico barato no reciclable</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <label class="font-bold text-teal-400 block"><i class="fa-solid fa-palette mr-1"></i>2. Color Principal</label>
+                        <select id="challengeColor" class="w-full bg-slate-800 text-white p-2.5 rounded-xl border border-slate-700 outline-none">
+                            <option value="Azul o Verde para favorecer la concentración">Azul o Verde (Calma y Concentración)</option>
+                            <option value="Rojo chillón brillante">Rojo chillón (Mucha excitación)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <label class="font-bold text-amber-400 block"><i class="fa-solid fa-screwdriver-wrench mr-1"></i>3. Mantenimiento</label>
+                        <select id="challengeRepair" class="w-full bg-slate-800 text-white p-2.5 rounded-xl border border-slate-700 outline-none">
+                            <option value="Tornillos estandarizados para fácil reparación local">Piezas atornilladas reparables (Economía Circular)</option>
+                            <option value="Piezas pegadas imposibles de desmontar">Piezas pegadas (Obsolescencia Indirecta)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-between items-center">
+                    <button onclick="evaluateChallenge()" class="bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs transition">
+                        Evaluar mi propuesta
+                    </button>
+                    <div id="challengeFeedback" class="text-xs font-semibold"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-8 text-center text-xs text-slate-500 dark:text-slate-400 mt-16">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-medium">Unidad Didáctica Interactiva - Fabricación y Diseño de Objetos</p>
+            <p>Elaborado conforme al marco curricular inclusivo de la Junta de Andalucía.</p>
+        </div>
+    </footer>
+
+    <!-- SAVED NOTES MODAL -->
+    <div id="notesModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-amber-500"></i> Mis Apuntes Guardados
+                </h3>
+                <button onclick="closeNotesModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="notesModalContent" class="space-y-3 max-h-80 overflow-y-auto text-xs text-slate-600 dark:text-slate-300">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="closeNotesModal()" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold px-4 py-2 rounded-xl text-xs">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        const state = {
+            completedSections: new Set(),
+            notes: {},
+            quizAnswers: {}
+        };
+
+        // Data for Design Steps
+        const designStepsData = {
+            1: {
+                title: "1. IDEA",
+                icon: "fa-lightbulb",
+                desc: "Identificación de una necesidad o problema de un cliente o de la sociedad.",
+                actions: ["Observar entorno y usuarios", "Redactar el pliego de condiciones", "Definir objetivos principales"]
+            },
+            2: {
+                title: "2. INVESTIGACIÓN",
+                icon: "fa-magnifying-glass",
+                desc: "Análisis de antecedentes, estudio de la competencia y evaluación de viabilidad económica.",
+                actions: ["Buscar diseños existentes", "Consultar normativas de seguridad", "Realizar tormenta de ideas (Brainstorming)"]
+            },
+            3: {
+                title: "3. PLANIFICACIÓN",
+                icon: "fa-ruler-combined",
+                desc: "Definición exacta de formas, dimensiones, selección de materiales y elaboración de planos técnicos.",
+                actions: ["Dibujar bocetos y croquis acotados", "Crear modelos 3D por ordenador", "Calcular presupuestos de material"]
+            },
+            4: {
+                title: "4. PRUEBA Y ENSAYO",
+                icon: "fa-vial-circle-check",
+                desc: "Construcción de prototipos reales a escala para testear su resistencia, ergonomía y facilidad de uso.",
+                actions: ["Fabricar maqueta física", "Probar comodidad con personas reales", "Corregir fallos de resistencia"]
+            },
+            5: {
+                title: "5. DISEÑO DEFINITIVO",
+                icon: "fa-circle-check",
+                desc: "Aprobación final del producto para proceder a su fabricación en cadena o montaje industrial.",
+                actions: ["Entregar planos de taller definitivos", "Configurar maquinaria de fabricación", "Iniciar fase de distribución"]
+            }
+        };
+
+        // Data for Life Cycle Stages
+        const lifeStagesData = {
+            1: {
+                name: "1. INTRODUCCIÓN",
+                badgeBg: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+                desc: "Fase de lanzamiento al mercado. Las ventas son bajas y los costes de publicidad son elevados para dar a conocer el producto.",
+                strategy: "Generar demanda inicial y convencer a los primeros compradores."
+            },
+            2: {
+                name: "2. CRECIMIENTO",
+                badgeBg: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+                desc: "Aumento veloz de las ventas y los beneficios. Surgen competidores y el objeto se distribuye masivamente.",
+                strategy: "Mejorar la calidad, reducir costes unitarios y ampliar puntos de venta."
+            },
+            3: {
+                name: "3. MADUREZ",
+                badgeBg: "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300",
+                desc: "Pico máximo de ventas. El mercado está saturado y la competencia es muy fuerte.",
+                strategy: "Fidelizar clientes mediante ofertas o aplicar pequeños rediseños estéticos."
+            },
+            4: {
+                name: "4. DECLIVE",
+                badgeBg: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
+                desc: "Caída continuada de las ventas. El objeto queda anticuado o es sustituido por nuevas tecnologías.",
+                strategy: "Retirar el producto del mercado o sustituirlo por una versión totalmente innovadora."
+            }
+        };
+
+        // Data for Material Families
+        const materialsData = {
+            metales: {
+                title: "Metales (Acero, Aluminio, Cobre)",
+                properties: "Alta resistencia mecánica, gran dureza y excelente conductividad térmica/eléctrica.",
+                sensory: "Tacto frío, acabado brillante o mate, sensación de solidez.",
+                psychosocial: "Transmiten tecnología, firmeza, elegancia, durabilidad e industrialización."
+            },
+            madera: {
+                title: "Madera (Pino, Haya, Roble)",
+                properties: "Buena resistencia a la tracción, densidad moderada y aislante térmico natural.",
+                sensory: "Tacto cálido, vetas visuales únicas, olor característico agradable.",
+                psychosocial: "Evoca naturaleza, confort, artesanía, sostenibilidad y tradición."
+            },
+            vidrio: {
+                title: "Vidrio / Cristal",
+                properties: "Elevada dureza pero gran fragilidad. Inerte químicamente y transparente.",
+                sensory: "Superficie lisa, fría al tacto, transparencia o traslucidez visual.",
+                psychosocial: "Asociado a pureza, higiene, modernidad, elegancia y fragilidad."
+            },
+            polimeros: {
+                title: "Plásticos / Polímeros (PET, ABS, PVC)",
+                properties: "Ligeros, moldeables a baja temperatura, aislantes eléctricos y económicos.",
+                sensory: "Superficies muy suaves, livianas y disponibles en cualquier color imaginable.",
+                psychosocial: "Versatilidad y ligereza, pero a menudo se perciben con menor valor percibido o menor calidad."
+            }
+        };
+
+        // Data for Color Psychology
+        const colorData = {
+            rojo: {
+                title: "Rojo y Naranja",
+                effect: "Especialmente dinámicos y estimulantes. Atraen la atención de inmediato.",
+                use: "Herramientas de emergencia, maquinaria de seguridad, elementos deportivos o productos juveniles."
+            },
+            azul: {
+                title: "Azul",
+                effect: "Evoca tranquilidad, confianza, tecnología, serenidad e higiene.",
+                use: "Dispositivos tecnológicos, mobiliario de estudio/trabajo, productos médicos e higiene."
+            },
+            verde: {
+                title: "Verde",
+                effect: "Transmiten sostenibilidad, ecología, frescura y renovación.",
+                use: "Objetos eco-diseñados, envases reciclables, mobiliario escolar relajante."
+            },
+            amarillo: {
+                title: "Amarillo",
+                effect: "Transmite energía, creatividad, optimismo y aviso de advertencia.",
+                use: "Señalización de obras, objetos de diseño creativo y papelería."
+            },
+            blanco: {
+                title: "Blanco",
+                effect: "Sensación de limpieza, pureza, sencillez, orden y amplitud.",
+                use: "Electrodomésticos, instrumental sanitario, diseños minimalistas."
+            },
+            negro: {
+                title: "Negro y Gris",
+                effect: "Sobriedad, elegancia, estatus superior, autoridad y profesionalidad.",
+                use: "Dispositivos electrónicos premium, automóviles, relojes de alta gama."
+            }
+        };
+
+        // Quiz Questions Data
+        const quizData = [
+            {
+                id: 1,
+                question: "¿Qué disciplina adapta el diseño a las características físicas y anatómicas de la persona para un uso cómodo?",
+                options: ["A) Biónica", "B) Ergonomía", "C) Factibilidad", "D) Obsolescencia"],
+                correct: 1,
+                explanation: "La Ergonomía busca que el objeto sea cómodo, seguro y adecuado al cuerpo humano."
+            },
+            {
+                id: 2,
+                question: "¿En qué fase del ciclo de vida de un producto se alcanzan las ventas máximas y la competencia es más fuerte?",
+                options: ["A) Introducción", "B) Crecimiento", "C) Madurez", "D) Declive"],
+                correct: 2,
+                explanation: "En la fase de Madurez el mercado alcanza su techo de ventas y máxima competencia."
+            },
+            {
+                id: 3,
+                question: "Si un teléfono tiene la batería pegada y es imposible cambiarla, ¿qué obsolescencia se está aplicando?",
+                options: ["A) Programada", "B) Indirecta", "C) Percibida", "D) Tecnológica"],
+                correct: 1,
+                explanation: "Es obsolescencia indirecta, ya que dificulta o imposibilita la reparación del aparato."
+            },
+            {
+                id: 4,
+                question: "¿Qué tipo de técnica de fabricación engloba doblar, forjar y moldear un material sin quitar masa?",
+                options: ["A) Separación", "B) Unión", "C) Conformación", "D) Recubrimiento"],
+                correct: 2,
+                explanation: "La conformación modifica la forma del material sin añadir ni quitar masa."
+            }
+        ];
+
+        // DOM Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initDesignSteps();
+            initLifeCycle();
+            initMaterialExplorer();
+            initColorExplorer();
+            initQuiz();
+            loadSavedNotes();
+            setupTextToSpeech();
+        });
+
+        // Theme Toggle
+        function initTheme() {
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            toggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+
+        // Section Reading Progress
+        function toggleSectionDone(sectionId) {
+            if (state.completedSections.has(sectionId)) {
+                state.completedSections.delete(sectionId);
+            } else {
+                state.completedSections.add(sectionId);
+            }
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const total = 7; // Main educational sections
+            const current = state.completedSections.size;
+            const percentage = Math.round((current / total) * 100);
+            document.getElementById('globalProgressText').textContent = `${percentage}%`;
+            document.getElementById('globalProgressBar').style.width = `${percentage}%`;
+        }
+
+        // Section 1: Function Detail Modal/Box
+        function showFunctionDetail(type) {
+            const messages = {
+                practica: "La función práctica se centra en resolver la necesidad física directa (ej. que una silla soporte el peso adecuadamente).",
+                estetica: "La función estética involucra los sentidos, haciendo que el objeto resulte agradable mediante sus proporciones y acabado.",
+                simbolica: "La función simbólica transmite valores socioculturales o identidad del usuario."
+            };
+            alertModal("Detalle de Función", messages[type]);
+        }
+
+        // Custom Modal implementation (No alert())
+        function alertModal(title, text) {
+            const modal = document.createElement('div');
+            modal.className = "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4";
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-800 max-w-sm w-full p-6 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 text-center">
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">${title}</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${text}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                        Entendido
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Section 2: Design Steps
+        function initDesignSteps() {
+            setDesignStep(1);
+        }
+
+        function setDesignStep(stepNum) {
+            const step = designStepsData[stepNum];
+            
+            // Highlight Buttons
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`stepBtn${i}`);
+                if (i === stepNum) {
+                    btn.className = "step-btn p-3 rounded-xl border border-blue-500 text-left transition bg-blue-600 text-white shadow-md";
+                } else {
+                    btn.className = "step-btn p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-left transition bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300";
+                }
+            }
+
+            // Render Card
+            const card = document.getElementById('stepDetailCard');
+            card.innerHTML = `
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-3 bg-blue-600 text-white rounded-xl font-bold text-lg">
+                        <i class="fa-solid ${step.icon}"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">${step.title}</h4>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 font-medium">${step.desc}</p>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-blue-200/50 dark:border-slate-800">
+                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-2">Tareas clave en esta fase:</span>
+                    <ul class="list-disc list-inside space-y-1 text-xs text-slate-600 dark:text-slate-300">
+                        ${step.actions.map(act => `<li>${act}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Section 2: Matching Game
+        function checkMatchingGame() {
+            const m1 = document.getElementById('match1').value;
+            const m2 = document.getElementById('match2').value;
+            const feedback = document.getElementById('matchFeedback');
+
+            if (m1 === 'division' && m2 === 'delphi') {
+                feedback.className = "text-xs font-bold text-emerald-300";
+                feedback.textContent = "¡Correcto! Has emparejado los métodos perfectamente.";
+            } else {
+                feedback.className = "text-xs font-bold text-amber-300";
+                feedback.textContent = "Revisa tus respuestas: 1 es División del problema y 2 es Método Delfos.";
+            }
+        }
+
+        // Section 3: Life Cycle
+        function initLifeCycle() {
+            selectLifeStage(2); // Default to Growth
+        }
+
+        function selectLifeStage(stageNum) {
+            const stage = lifeStagesData[stageNum];
+            
+            // Highlight visual bars
+            for (let i = 1; i <= 4; i++) {
+                const bar = document.getElementById(`lifeBar${i}`);
+                if (i === stageNum) {
+                    bar.classList.add('ring-4', 'ring-purple-400', 'scale-105');
+                } else {
+                    bar.classList.remove('ring-4', 'ring-purple-400', 'scale-105');
+                }
+            }
+
+            const container = document.getElementById('lifeStageDetails');
+            container.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${stage.badgeBg}">${stage.name}</span>
+                    <span class="text-[10px] text-slate-400">Etapa ${stageNum} de 4</span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">${stage.desc}</p>
+                <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                    <strong class="text-purple-600 dark:text-purple-400 block mb-0.5">Estrategia Recomendada:</strong>
+                    <span class="text-slate-600 dark:text-slate-300">${stage.strategy}</span>
+                </div>
+            `;
+        }
+
+        // Section 6: Material Explorer
+        function initMaterialExplorer() {
+            selectMaterialFamily('metales');
+        }
+
+        function selectMaterialFamily(famKey) {
+            const mat = materialsData[famKey];
+            
+            // Update active tabs
+            const keys = ['metales', 'madera', 'vidrio', 'polimeros'];
+            keys.forEach(k => {
+                const btn = document.getElementById(`matBtn${k.charAt(0).toUpperCase() + k.slice(1)}`);
+                if (k === famKey) {
+                    btn.className = "mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-white dark:bg-amber-500 dark:text-slate-950 shadow-md";
+                } else {
+                    btn.className = "mat-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200";
+                }
+            });
+
+            const box = document.getElementById('materialDetailBox');
+            box.innerHTML = `
+                <h4 class="font-bold text-slate-900 dark:text-white text-base">${mat.title}</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                        <span class="font-bold text-amber-600 dark:text-amber-400 block"><i class="fa-solid fa-gear mr-1"></i>Propiedades Técnicas</span>
+                        <p class="text-slate-600 dark:text-slate-300">${mat.properties}</p>
+                    </div>
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                        <span class="font-bold text-teal-600 dark:text-teal-400 block"><i class="fa-solid fa-eye mr-1"></i>Sensaciones Sensoriales</span>
+                        <p class="text-slate-600 dark:text-slate-300">${mat.sensory}</p>
+                    </div>
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                        <span class="font-bold text-purple-600 dark:text-purple-400 block"><i class="fa-solid fa-brain mr-1"></i>Impacto Psicosocial</span>
+                        <p class="text-slate-600 dark:text-slate-300">${mat.psychosocial}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Section 7: Color Explorer
+        function initColorExplorer() {
+            inspectColor('azul');
+        }
+
+        function inspectColor(colorKey) {
+            const c = colorData[colorKey];
+            const box = document.getElementById('colorDetailDisplay');
+            box.innerHTML = `
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-circle text-indigo-500 text-xs"></i> Psicología del color: ${c.title}
+                </h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-1"><strong>Sensación/Emoción:</strong> ${c.effect}</p>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-1"><strong>Aplicación típica en diseño:</strong> ${c.use}</p>
+            `;
+        }
+
+        // Section 8: Quiz Implementation
+        function initQuiz() {
+            const container = document.getElementById('quizQuestionsContainer');
+            container.innerHTML = quizData.map((q, idx) => `
+                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
+                    <p class="font-bold text-sm text-slate-900 dark:text-white">${idx + 1}. ${q.question}</p>
+                    <div class="space-y-2">
+                        ${q.options.map((opt, oIdx) => `
+                            <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 cursor-pointer text-xs text-slate-700 dark:text-slate-300 transition">
+                                <input type="radio" name="q_${q.id}" value="${oIdx}" onclick="state.quizAnswers[${q.id}] = ${oIdx}" class="text-emerald-600 focus:ring-emerald-500">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="quizFeedback_${q.id}" class="text-xs font-semibold hidden p-3 rounded-xl"></div>
+                </div>
+            `).join('');
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            quizData.forEach(q => {
+                const userAns = state.quizAnswers[q.id];
+                const fb = document.getElementById(`quizFeedback_${q.id}`);
+                fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+                
+                if (userAns === q.correct) {
+                    score++;
+                    fb.classList.add('bg-emerald-100', 'text-emerald-800', 'dark:bg-emerald-950', 'dark:text-emerald-200');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ¡Correcto! ${q.explanation}`;
+                } else {
+                    fb.classList.add('bg-rose-100', 'text-rose-800', 'dark:bg-rose-950', 'dark:text-rose-200');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1 text-rose-600"></i> Incorrecto. ${q.explanation}`;
+                }
+            });
+
+            const scoreDisplay = document.getElementById('quizResultScore');
+            scoreDisplay.classList.remove('hidden');
+            scoreDisplay.className = `font-bold text-sm p-3 rounded-xl ${score === quizData.length ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+            scoreDisplay.innerHTML = `Puntuación obtenida: ${score} / ${quizData.length} correctas.`;
+        }
+
+        // Section 8: Challenge evaluation
+        function evaluateChallenge() {
+            const mat = document.getElementById('challengeMat').value;
+            const color = document.getElementById('challengeColor').value;
+            const repair = document.getElementById('challengeRepair').value;
+            const feedback = document.getElementById('challengeFeedback');
+
+            if (mat.includes('reciclado') && color.includes('Azul') && repair.includes('atornilladas')) {
+                feedback.className = "text-xs font-bold text-emerald-400";
+                feedback.textContent = "¡Excelente propuesta! Garantiza ergonomía, sostenibilidad y economía circular.";
+            } else {
+                feedback.className = "text-xs font-bold text-amber-400";
+                feedback.textContent = "Has elegido opciones con alto impacto ambiental o menor funcionalidad. ¡Intenta ajustar las opciones!";
+            }
+        }
+
+        // Local Notes Management
+        function saveUserNote(sectionKey, text) {
+            state.notes[sectionKey] = text;
+            localStorage.setItem('fab_diseno_notes', JSON.stringify(state.notes));
+            updateNotesBadge();
+        }
+
+        function loadSavedNotes() {
+            const saved = localStorage.getItem('fab_diseno_notes');
+            if (saved) {
+                try {
+                    state.notes = JSON.parse(saved);
+                    if (state.notes.sec1) {
+                        const txtArea = document.getElementById('note_sec1');
+                        if (txtArea) txtArea.value = state.notes.sec1;
+                    }
+                    updateNotesBadge();
+                } catch(e){}
+            }
+        }
+
+        function updateNotesBadge() {
+            const count = Object.values(state.notes).filter(v => v && v.trim().length > 0).length;
+            const badge = document.getElementById('notesBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Notes Modal
+        document.getElementById('notesModalBtn').addEventListener('click', () => {
+            const modal = document.getElementById('notesModal');
+            const content = document.getElementById('notesModalContent');
+            const entries = Object.entries(state.notes).filter(([_, v]) => v && v.trim().length > 0);
+
+            if (entries.length === 0) {
+                content.innerHTML = `<p class="italic text-slate-400">Aún no has guardado notas o reflexiones en los rincones de apuntes.</p>`;
+            } else {
+                content.innerHTML = entries.map(([sec, text]) => `
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">Apunte en Sección ${sec.toUpperCase()}:</span>
+                        <p class="whitespace-pre-wrap text-slate-700 dark:text-slate-300">${text}</p>
+                    </div>
+                `).join('');
+            }
+            modal.classList.remove('hidden');
+        });
+
+        function closeNotesModal() {
+            document.getElementById('notesModal').classList.add('hidden');
+        }
+
+        // Text To Speech (TTS)
+        function setupTextToSpeech() {
+            const ttsBtn = document.getElementById('ttsBtn');
+            ttsBtn.addEventListener('click', () => {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // Stop active speech
+                    const textToRead = "Unidad didáctica sobre fabricación y diseño de objetos. El diseño es el proceso mental y técnico previo a la fabricación. Busca equilibrar la función práctica, estética y simbólica con la factibilidad técnica y la sostenibilidad ambiental.";
+                    const utterance = new SpeechSynthesisUtterance(textToRead);
+                    utterance.lang = 'es-ES';
+                    utterance.rate = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alertModal("Lectura no soportada", "Tu navegador no admite la sintesis de voz automática.");
+                }
+            });
+        }
+
+        // Mobile Menu Navigation Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
