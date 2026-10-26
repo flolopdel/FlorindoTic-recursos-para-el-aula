@@ -8,15 +8,18 @@ Menú generado automáticamente a partir de la estructura de carpetas dentro de 
 content/
   curso2026-2027/
     computacion-y-robotica/
-      ud1/
-        indice.html
-        practica1.html
-    programacion/
-      ud1/
-        ...
+      2-eso/
+        sda2/
+          clase.html
+          guia-profesorado.html
+          moodle.html
+          sda2.json
   curso2027-2028/
     ...
 ```
+
+Las convenciones completas (nombres de las SdA, redirecciones para no romper enlaces de Moodle, grupo
+«Docente» del menú, enlaces a Google Drive) están en [`CLAUDE.md`](CLAUDE.md).
 
 Cualquier archivo `.html` dentro de `content/` (a cualquier profundidad) aparece automáticamente en el menú. Los nombres de carpetas y archivos se "embellecen" automáticamente (guiones/guiones bajos → espacios, mayúscula inicial). Puedes usar los nombres de carpeta que quieras: `curso2026-2027`, `1-eso-b`, `unidad3-bbdd`, etc.
 
@@ -28,9 +31,12 @@ Cualquier carpeta puede tener un `meta.json` opcional:
 {
   "title": "Computación y Robótica",
   "description": "Contenidos, prácticas y rúbricas de la asignatura de Computación y Robótica.",
-  "current": false
+  "current": false,
+  "hidden": false
 }
 ```
+
+Con `"hidden": true` la carpeta no aparece en el menú. En una carpeta de SdA sin `meta.json`, el título y la descripción salen de `meta.titulo` y `meta.subtitulo` de su `sdaN.json`.
 
 Si existe, el build genera automáticamente una página de portada (`_pagina.html`) dentro de esa carpeta, con el título, la descripción y un listado de lo que contiene (subcarpetas con su propia portada y archivos `.html` sueltos). En el menú lateral, el nombre de esa carpeta pasa a ser un enlace directo a su portada.
 
@@ -79,6 +85,8 @@ La Action (`.github/workflows/deploy.yml`) ejecuta `scripts/build-site.mjs`, que
 2. Copia a `_site/` **solo lo publicable**: `index.html`, `bienvenida.html`, `menu.json`, `css/`, `js/`, `assets/` y `content/`. `prompts/` y `scripts/` **no se publican**. La carpeta `private_content/` está en `.gitignore`: sirve para guardar material privado solo en tu ordenador, sin subirlo a GitHub.
 3. Genera `search-index.json`, `sitemap.xml`, `404.html` y `version.json` (fecha de publicación que se muestra al pie del menú).
 4. Comprueba los enlaces internos: si alguna página enlaza a un archivo que no existe, el build falla y no se publica.
+
+En las Pull Requests, además, `scripts/revisar-pr.mjs` comenta en la PR qué páginas cambian (con su dirección) y comprueba que cada SdA tiene sus archivos.
 
 En las Pull Requests solo se construye y se valida (no se despliega). Para redesplegar sin hacer commit: pestaña **Actions → Build and deploy → Run workflow**.
 
