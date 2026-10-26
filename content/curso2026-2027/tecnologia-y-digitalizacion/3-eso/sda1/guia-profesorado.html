@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 1: Pasaporte Digital - Tecnología y Digitalización 3º ESO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 320px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        /* Interactive Term Badge Styles */
+        .term-badge {
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            items-center: center;
+            user-select: none;
+        }
+        .term-badge:hover {
+            transform: translateY(-1px);
+            filter: brightness(0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Neutral & Tech Slate (Slate background, Indigo primary, Emerald/Amber/Cyan accents) -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive pedagogical dashboard for teachers and students. It breaks down SdA 1 into 6 core interactive modules: 1) Overview & Deliverables, 2) Curricular Alignment with Chart.js CEv weight visualizer, 3) 5-Session Interactive Timeline with checkpoint inspector, 4) Live Interactive Rubric & Grade Calculator for LOMLOE CEv assessment, 5) Universal Design for Learning (DUA) strategies, and 6) Moodle Centros Virtual Classroom Setup. Additionally, an interactive Popup Modal system is implemented to instantly decode and display full LOMLOE official definitions for CEv criteria, Saberes Básicos, Descriptores Operativos del Perfil de Salida (CCL1, CD2, STEM4, etc.), and key concepts (PLE, DUA, Netiqueta). -->
+    <!-- Visualization & Content Choices: 
+         - CEv Weightings: Chart.js Doughnut Chart (Canvas) to illustrate the weight distribution of the 3 key criteria (CEv 4.1: 30%, CEv 6.2: 40%, CEv 6.3: 30%).
+         - Interactive Rubric Calculator: Custom JS tool converting rubric level clicks (Iniciante, En Proceso, Competente, Excelente) into live weighted score out of 10 with qualitative feedback.
+         - Interactive Popups / Modals: Clickable badges for Descriptores Operativos (CCL1, CD2, CD3, CD4, STEM4, CP2, CPSAA4, CPSAA5, CCEC3, CCEC4), Saberes Básicos (TYD.3.B.3, TYD.3.D.2, TYD.3.D.3, TYD.3.D.4), CEvs, and key terms to display popup cards with official definitions.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. HTML unicode icons and styled CSS elements are used instead. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="bg-blue-600 text-white font-bold text-xs uppercase px-2.5 py-1 rounded-md tracking-wider">TYD 3º ESO</span>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight">SdA 1: Mi Identidad Digital y Pasaporte Virtual</h1>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-xs md:text-sm">
+                <button onclick="openModal('LOMLOE')" class="term-badge bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 hover:border-blue-500">📍 Andalucía (<span class="underline decoration-blue-400">LOMLOE</span>)</button>
+                <span class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">⏱️ 5 Sesiones (~2.5 Semanas)</span>
+                <span class="bg-blue-900/80 text-blue-200 px-3 py-1 rounded-full border border-blue-700 font-medium">⚖️ Peso: 10% Curso</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-[72px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto text-sm gap-2 sm:gap-6">
+            <button onclick="switchTab('resumen')" id="tab-resumen" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors tab-active">📌 Justificación y Producto</button>
+            <button onclick="switchTab('curriculo')" id="tab-curriculo" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors">🎯 Conexión Curricular</button>
+            <button onclick="switchTab('secuencia')" id="tab-secuencia" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors">🗓️ Secuenciación (5 Sesiones)</button>
+            <button onclick="switchTab('evaluacion')" id="tab-evaluacion" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors">📊 Calculadora de Evaluación</button>
+            <button onclick="switchTab('dua')" id="tab-dua" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors">🧠 Atenciones DUA</button>
+            <button onclick="switchTab('moodle')" id="tab-moodle" class="py-3 px-2 whitespace-nowrap text-slate-600 hover:text-blue-600 transition-colors">🌐 Moodle Centros</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- SECTION 1: JUSTIFICACIÓN Y PRODUCTO FINAL -->
+        <section id="sec-resumen" class="space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div class="flex flex-wrap justify-between items-center border-b pb-2 border-slate-100 mb-3 gap-2">
+                    <h2 class="text-2xl font-bold text-slate-900">1. Justificación Pedagógica y Contexto</h2>
+                    <span class="text-xs text-slate-500">💡 Haz clic en los términos destacados para ver su definición completa</span>
+                </div>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    Al inicio del curso de 3.º de ESO en la materia de <strong>Tecnología y Digitalización</strong>, el alumnado debe estructurar de forma autónoma, segura y eficiente su Entorno Personal de Aprendizaje (
+                    <button onclick="openModal('PLE')" class="term-badge bg-blue-50 text-blue-700 font-semibold px-1.5 py-0.5 rounded border border-blue-200 text-xs">PLE - Personal Learning Environment ℹ️</button>). Este entorno servirá de soporte para todos los proyectos de resolución de problemas, simulación, programación y fabricación que desarrollará a lo largo del curso.
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    Es indispensable afianzar el uso de las herramientas institucionales de la Junta de Andalucía (<code class="bg-slate-100 text-blue-700 px-1.5 py-0.5 rounded font-mono text-sm">@g.educaand.es</code> y <strong>Moodle Centros</strong>), así como la organización de discos virtuales y la adopción de conductas de ciberseguridad, 
+                    <button onclick="openModal('Netiqueta')" class="term-badge bg-slate-100 text-slate-700 font-semibold px-1.5 py-0.5 rounded border border-slate-300 text-xs">netiqueta ℹ️</button> y respeto a la propiedad intelectual y derechos de autor.
+                </p>
+            </div>
+
+            <!-- Product Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Component 1 -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4">1</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Decálogo Multimedia Interactivo</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Elaborado en Canva, Google Slides o Genially. Sintetiza pautas de ciberseguridad, protección de datos, contraseñas seguras, netiqueta y licencias de uso (Creative Commons, Copyright, Open Source).
+                    </p>
+                    <button onclick="openModal('CEv 6.2')" class="term-badge bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded border border-blue-200">CEv 6.2 (40%) 🔍</button>
+                </div>
+
+                <!-- Component 2 -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4">2</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Documento PDF del Pasaporte Digital</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Creado en Google Docs y exportado a <code class="text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded font-mono">.pdf</code>. Recopila evidencias del perfil de Moodle, cuenta corporativa, árbol jerárquico de carpetas en Google Drive y enlace accesible al Decálogo.
+                    </p>
+                    <button onclick="openModal('CEv 6.3')" class="term-badge bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded border border-emerald-200">CEv 6.3 (30%) 🔍</button>
+                </div>
+
+                <!-- Component 3 -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4">3</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Comunicación Técnica Formal</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Envío de un correo electrónico institucional al docente con asunto normalizado, estructura protocolaria, lenguaje inclusivo y técnico, firma corporativa automática y el PDF adjunto.
+                    </p>
+                    <button onclick="openModal('CEv 4.1')" class="term-badge bg-purple-50 text-purple-700 text-xs font-semibold px-2.5 py-1 rounded border border-purple-200">CEv 4.1 (30%) 🔍</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CONEXIÓN CURRICULAR -->
+        <section id="sec-curriculo" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div class="flex flex-wrap justify-between items-center border-b pb-2 border-slate-100 mb-3 gap-2">
+                    <h2 class="text-2xl font-bold text-slate-900">2. Conexión Curricular Simplificada (3.º ESO - Andalucía)</h2>
+                    <span class="text-xs text-blue-600 font-medium">✨ Haz clic en cualquier código (CEv, Saber o Descriptor) para ver su pop-up explicativo</span>
+                </div>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    Para minimizar la carga burocrática y maximizar la efectividad pedagógica, la evaluación de esta Situación de Aprendizaje se concentra exclusivamente en los <strong>3 Criterios de Evaluación mínimos y directamente vinculados</strong> con los contenidos y productos desarrollados.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mb-8">
+                    <!-- Chart Column -->
+                    <div class="lg:col-span-1 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h3 class="text-sm font-bold text-center text-slate-700 mb-2">Ponderación Criterial en la SdA 1</h3>
+                        <div class="chart-container">
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Alignment Summary -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="border-l-4 border-purple-500 bg-purple-50/50 p-4 rounded-r-lg">
+                            <div class="flex justify-between items-center">
+                                <button onclick="openModal('CEv 4.1')" class="term-badge font-bold text-purple-900 hover:underline text-base">CEv 4.1 (Peso: 30%) 🔍</button>
+                            </div>
+                            <div class="text-sm text-slate-700 mt-1">
+                                Representar y comunicar el proceso de creación de un producto, elaborando documentación técnica con la ayuda de herramientas digitales, empleando formatos y vocabulario técnico adecuados.
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2 flex flex-wrap gap-1.5 items-center">
+                                <span class="font-semibold text-slate-600">Saberes:</span>
+                                <button onclick="openModal('TYD.3.B.3')" class="term-badge bg-purple-100 text-purple-800 font-mono px-2 py-0.5 rounded border border-purple-200">TYD.3.B.3</button>
+                                <span class="font-semibold text-slate-600 ml-2">Descriptores:</span>
+                                <button onclick="openModal('CCL1')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CCL1</button>
+                                <button onclick="openModal('STEM4')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">STEM4</button>
+                                <button onclick="openModal('CD3')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CD3</button>
+                                <button onclick="openModal('CCEC3')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CCEC3</button>
+                                <button onclick="openModal('CCEC4')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CCEC4</button>
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-blue-500 bg-blue-50/50 p-4 rounded-r-lg">
+                            <div class="flex justify-between items-center">
+                                <button onclick="openModal('CEv 6.2')" class="term-badge font-bold text-blue-900 hover:underline text-base">CEv 6.2 (Peso: 40%) 🔍</button>
+                            </div>
+                            <div class="text-sm text-slate-700 mt-1">
+                                Crear contenidos, elaborar materiales y difundirlos en distintas plataformas, configurando correctamente las herramientas digitales habituales del entorno de aprendizaje y respetando los derechos de autor y la etiqueta digital.
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2 flex flex-wrap gap-1.5 items-center">
+                                <span class="font-semibold text-slate-600">Saberes:</span>
+                                <button onclick="openModal('TYD.3.D.2')" class="term-badge bg-blue-100 text-blue-800 font-mono px-2 py-0.5 rounded border border-blue-200">TYD.3.D.2</button>
+                                <button onclick="openModal('TYD.3.D.4')" class="term-badge bg-blue-100 text-blue-800 font-mono px-2 py-0.5 rounded border border-blue-200">TYD.3.D.4</button>
+                                <span class="font-semibold text-slate-600 ml-2">Descriptores:</span>
+                                <button onclick="openModal('CP2')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CP2</button>
+                                <button onclick="openModal('CD2')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CD2</button>
+                                <button onclick="openModal('CD4')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CD4</button>
+                                <button onclick="openModal('CPSAA4')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CPSAA4</button>
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-emerald-500 bg-emerald-50/50 p-4 rounded-r-lg">
+                            <div class="flex justify-between items-center">
+                                <button onclick="openModal('CEv 6.3')" class="term-badge font-bold text-emerald-900 hover:underline text-base">CEv 6.3 (Peso: 30%) 🔍</button>
+                            </div>
+                            <div class="text-sm text-slate-700 mt-1">
+                                Organizar la información de manera estructurada, aplicando técnicas de almacenamiento seguro en la nube.
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2 flex flex-wrap gap-1.5 items-center">
+                                <span class="font-semibold text-slate-600">Saberes:</span>
+                                <button onclick="openModal('TYD.3.D.3')" class="term-badge bg-emerald-100 text-emerald-800 font-mono px-2 py-0.5 rounded border border-emerald-200">TYD.3.D.3</button>
+                                <span class="font-semibold text-slate-600 ml-2">Descriptores:</span>
+                                <button onclick="openModal('CP2')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CP2</button>
+                                <button onclick="openModal('CD2')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CD2</button>
+                                <button onclick="openModal('CPSAA4')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CPSAA4</button>
+                                <button onclick="openModal('CPSAA5')" class="term-badge bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">CPSAA5</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Mapping Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-3 font-semibold">Competencia Específica (CE)</th>
+                                <th class="p-3 font-semibold">Criterio de Evaluación (CEv)</th>
+                                <th class="p-3 font-semibold">Saberes Básicos Movilizados</th>
+                                <th class="p-3 font-semibold">Descriptores Perfil Salida</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-medium text-slate-800">
+                                    <button onclick="openModal('CE4')" class="term-badge font-bold text-slate-900 hover:text-blue-600">CE4 ℹ️</button><br>
+                                    <span class="text-xs text-slate-600">Comunicar y difundir soluciones tecnológicas con lenguaje adecuado.</span>
+                                </td>
+                                <td class="p-3 text-slate-700">
+                                    <button onclick="openModal('CEv 4.1')" class="term-badge bg-purple-100 text-purple-900 font-bold px-2 py-0.5 rounded border border-purple-300 text-xs mb-1">CEv 4.1</button><br>
+                                    Comunicar el proceso de creación elaborando documentación técnica con vocabulario adecuado.
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="openModal('TYD.3.B.3')" class="term-badge bg-purple-50 text-purple-700 font-mono text-xs px-2 py-1 rounded border border-purple-200">TYD.3.B.3 🔍</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="openModal('CCL1')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CCL1</button>
+                                        <button onclick="openModal('STEM4')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">STEM4</button>
+                                        <button onclick="openModal('CD3')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CD3</button>
+                                        <button onclick="openModal('CCEC3')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CCEC3</button>
+                                        <button onclick="openModal('CCEC4')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CCEC4</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-slate-800" rowspan="2">
+                                    <button onclick="openModal('CE6')" class="term-badge font-bold text-slate-900 hover:text-blue-600">CE6 ℹ️</button><br>
+                                    <span class="text-xs text-slate-600">Comprender dispositivos y ajustar el PLE para un uso eficiente y seguro.</span>
+                                </td>
+                                <td class="p-3 text-slate-700">
+                                    <button onclick="openModal('CEv 6.2')" class="term-badge bg-blue-100 text-blue-900 font-bold px-2 py-0.5 rounded border border-blue-300 text-xs mb-1">CEv 6.2</button><br>
+                                    Crear contenidos digitales, configurando plataformas y respetando derechos de autor y netiqueta.
+                                </td>
+                                <td class="p-3 space-y-1">
+                                    <button onclick="openModal('TYD.3.D.2')" class="term-badge block bg-blue-50 text-blue-700 font-mono text-xs px-2 py-1 rounded border border-blue-200">TYD.3.D.2 🔍</button>
+                                    <button onclick="openModal('TYD.3.D.4')" class="term-badge block bg-blue-50 text-blue-700 font-mono text-xs px-2 py-1 rounded border border-blue-200">TYD.3.D.4 🔍</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="openModal('CP2')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CP2</button>
+                                        <button onclick="openModal('CD2')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CD2</button>
+                                        <button onclick="openModal('CD4')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CD4</button>
+                                        <button onclick="openModal('CPSAA4')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CPSAA4</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-700">
+                                    <button onclick="openModal('CEv 6.3')" class="term-badge bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-300 text-xs mb-1">CEv 6.3</button><br>
+                                    Organizar la información de manera estructurada aplicando almacenamiento seguro.
+                                </td>
+                                <td class="p-3">
+                                    <button onclick="openModal('TYD.3.D.3')" class="term-badge bg-emerald-50 text-emerald-700 font-mono text-xs px-2 py-1 rounded border border-emerald-200">TYD.3.D.3 🔍</button>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <button onclick="openModal('CP2')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CP2</button>
+                                        <button onclick="openModal('CD2')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CD2</button>
+                                        <button onclick="openModal('CPSAA4')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CPSAA4</button>
+                                        <button onclick="openModal('CPSAA5')" class="term-badge bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border">CPSAA5</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SECUENCIACIÓN DIDÁCTICA -->
+        <section id="sec-secuencia" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">3. Secuenciación Didáctica Paso a Paso (5 Sesiones)</h2>
+                <p class="text-slate-600 mb-6">Haz clic en cada sesión para explorar sus objetivos, fases de desarrollo y los 5 Puntos de Control consecutivos.</p>
+
+                <!-- Session Buttons -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6">
+                    <button onclick="showSession(1)" id="sbtn-1" class="py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-blue-600 text-white border-blue-600">Sesión 1: Inducción PLE</button>
+                    <button onclick="showSession(2)" id="sbtn-2" class="py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">Sesión 2: Ciberseguridad</button>
+                    <button onclick="showSession(3)" id="sbtn-3" class="py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">Sesión 3: Decálogo Visual</button>
+                    <button onclick="showSession(4)" id="sbtn-4" class="py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">Sesión 4: Drive & PDF</button>
+                    <button onclick="showSession(5)" id="sbtn-5" class="py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">Sesión 5: Correo Formal</button>
+                </div>
+
+                <!-- Session Details Display -->
+                <div id="session-container" class="bg-slate-50 rounded-xl p-6 border border-slate-200 space-y-4">
+                    <!-- Session content injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CALCULADORA Y RÚBRICA INTERACTIVA -->
+        <section id="sec-evaluacion" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">4. Evaluación Criterial y Calculadora de Rúbrica</h2>
+                <p class="text-slate-600 mb-6">Selecciona el nivel alcanzado por el estudiante en cada Criterio de Evaluación para calcular instantáneamente la calificación final ponderada (10% del curso) según la normativa LOMLOE.</p>
+
+                <!-- Grade Scoreboard -->
+                <div class="bg-slate-900 text-white p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">Calificación Ponderada SdA 1</div>
+                        <div class="text-4xl font-extrabold flex items-baseline gap-2">
+                            <span id="final-score" class="text-blue-400">10.0</span>
+                            <span class="text-lg font-normal text-slate-400">/ 10</span>
+                        </div>
+                    </div>
+                    <div id="score-badge" class="px-4 py-2 rounded-lg font-bold text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Nivel: Excelente (Sobresaliente)
+                    </div>
+                </div>
+
+                <!-- Rubric Evaluator Table -->
+                <div class="space-y-8">
+                    <!-- Criterion 1 -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+                            <div>
+                                <button onclick="openModal('CEv 4.1')" class="term-badge bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded hover:bg-purple-200">CEv 4.1 (Peso: 30%) 🔍</button>
+                                <h3 class="text-base font-bold text-slate-900 mt-1">Comunicación Técnica Formal</h3>
+                            </div>
+                            <span class="text-xs text-slate-500">Evaluado en: Correo institucional y etiqueta</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                            <button onclick="setScore('cev41', 3)" id="cev41-1" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Iniciante (1-4)</div>
+                                <p class="text-slate-500">Omite la comunicación formal o envía correos informales sin respetar la estructura básica.</p>
+                            </button>
+                            <button onclick="setScore('cev41', 5.5)" id="cev41-2" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">En Proceso (5-6)</div>
+                                <p class="text-slate-500">Envía el correo pero incurre en imprecisiones en asunto, cuerpo, firma o vocabulario.</p>
+                            </button>
+                            <button onclick="setScore('cev41', 7.5)" id="cev41-3" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Competente (7-8)</div>
+                                <p class="text-slate-500">Redacta correo institucional adecuado, respetando netiqueta y adjuntando PDF.</p>
+                            </button>
+                            <button onclick="setScore('cev41', 10)" id="cev41-4" class="rubric-btn p-3 rounded-lg border text-left transition-all border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30">
+                                <div class="font-bold text-blue-900 mb-1">Excelente (9-10)</div>
+                                <p class="text-slate-600">Redacta un correo impecable con vocabulario técnico, lenguaje inclusivo y firma corporativa.</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criterion 2 -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+                            <div>
+                                <button onclick="openModal('CEv 6.2')" class="term-badge bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded hover:bg-blue-200">CEv 6.2 (Peso: 40%) 🔍</button>
+                                <h3 class="text-base font-bold text-slate-900 mt-1">Creación Multimedia, Configuración PLE y Derechos de Autor</h3>
+                            </div>
+                            <span class="text-xs text-slate-500">Evaluado en: Decálogo interactivo y perfil Moodle</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                            <button onclick="setScore('cev62', 3)" id="cev62-1" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Iniciante (1-4)</div>
+                                <p class="text-slate-500">No elabora el producto multimedia o ignora los derechos de autor y pautas de netiqueta.</p>
+                            </button>
+                            <button onclick="setScore('cev62', 5.5)" id="cev62-2" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">En Proceso (5-6)</div>
+                                <p class="text-slate-500">Presentación básica con escaso impacto visual, configuración parcial o citas incompletas.</p>
+                            </button>
+                            <button onclick="setScore('cev62', 7.5)" id="cev62-3" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Competente (7-8)</div>
+                                <p class="text-slate-500">Presentación interactiva bien estructurada, respetando licencias y derechos de autor.</p>
+                            </button>
+                            <button onclick="setScore('cev62', 10)" id="cev62-4" class="rubric-btn p-3 rounded-lg border text-left transition-all border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30">
+                                <div class="font-bold text-blue-900 mb-1">Excelente (9-10)</div>
+                                <p class="text-slate-600">Producto multimedia de alto impacto, interactividad, PLE óptimo y cita ética perfecta.</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Criterion 3 -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+                            <div>
+                                <button onclick="openModal('CEv 6.3')" class="term-badge bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded hover:bg-emerald-200">CEv 6.3 (Peso: 30%) 🔍</button>
+                                <h3 class="text-base font-bold text-slate-900 mt-1">Organización y Almacenamiento Seguro</h3>
+                            </div>
+                            <span class="text-xs text-slate-500">Evaluado en: Árbol de carpetas en Drive y PDF</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                            <button onclick="setScore('cev63', 3)" id="cev63-1" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Iniciante (1-4)</div>
+                                <p class="text-slate-500">Desorganización en sus archivos digitales y no crea la estructura solicitada.</p>
+                            </button>
+                            <button onclick="setScore('cev63', 5.5)" id="cev63-2" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">En Proceso (5-6)</div>
+                                <p class="text-slate-500">Organiza las carpetas en Drive con ayuda puntual o presenta jerarquía incompleta.</p>
+                            </button>
+                            <button onclick="setScore('cev63', 7.5)" id="cev63-3" class="rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white">
+                                <div class="font-bold text-slate-800 mb-1">Competente (7-8)</div>
+                                <p class="text-slate-500">Crea autónomamente la arquitectura de carpetas en Drive y exporta el PDF maquetado.</p>
+                            </button>
+                            <button onclick="setScore('cev63', 10)" id="cev63-4" class="rubric-btn p-3 rounded-lg border text-left transition-all border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30">
+                                <div class="font-bold text-blue-900 mb-1">Excelente (9-10)</div>
+                                <p class="text-slate-600">Domina con total autonomía la organización estructurada del PLE con arquitectura e informe impecables.</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DUA -->
+        <section id="sec-dua" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div class="flex flex-wrap justify-between items-center border-b pb-2 border-slate-100 mb-3 gap-2">
+                    <h2 class="text-2xl font-bold text-slate-900">5. Atenciones a la Diversidad (Principios DUA)</h2>
+                    <button onclick="openModal('DUA')" class="term-badge bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded text-xs border border-amber-300">¿Qué es el DUA? ℹ️</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <!-- Principle I -->
+                    <div class="bg-amber-50/60 rounded-xl p-5 border border-amber-200">
+                        <div class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2">Principio I</div>
+                        <h3 class="text-base font-bold text-slate-900 mb-3">Múltiples formas de representación</h3>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600">▪</span> Apoyo visual mediante infografías explicativas paso a paso y micro-videotutoriales (1-2 min) en Moodle.
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-600">▪</span> Glosario interactivo de términos clave (<em>netiqueta, phishing, creative commons, PLE</em>).
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Principle II -->
+                    <div class="bg-blue-50/60 rounded-xl p-5 border border-blue-200">
+                        <div class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Principio II</div>
+                        <h3 class="text-base font-bold text-slate-900 mb-3">Múltiples formas de acción y expresión</h3>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-600">▪</span> Elección entre diversas plataformas de diseño interactivo (Canva, Genially, Google Slides).
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-600">▪</span> Opción de incorporar audios explicativos para alumnado con dificultades en la expresión escrita.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Principle III -->
+                    <div class="bg-emerald-50/60 rounded-xl p-5 border border-emerald-200">
+                        <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Principio III</div>
+                        <h3 class="text-base font-bold text-slate-900 mb-3">Múltiples formas de implicación</h3>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-600">▪</span> Reto estructurado en 5 Puntos de Control consecutivos que aportan retroalimentación inmediata.
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-600">▪</span> Aplicabilidad real: la estructura servirá para todos los proyectos del curso en Tecnología.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: MOODLE CENTROS -->
+        <section id="sec-moodle" class="space-y-6 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-3 border-b pb-2 border-slate-100">6. Implementación en Moodle Centros</h2>
+                
+                <div class="space-y-6 mt-4">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-sm mb-1">Sección General del Aula Virtual</h3>
+                        <p class="text-xs text-slate-600">Título: <code class="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800">[SdA 1] Mi Identidad Digital y Pasaporte Virtual de TYD</code></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/30 space-y-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">Tarea 1 (Formativa/Sumativa)</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Registro de Enlace Multimedia</h4>
+                            <p class="text-xs text-slate-600">Registro del enlace público al Decálogo interactivo.</p>
+                            <button onclick="openModal('CEv 6.2')" class="term-badge text-xs font-semibold text-blue-700 hover:underline">Vinculación Criterial: CEv 6.2 🔍</button>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">Tarea 2 (Entregable Final)</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Pasaporte Digital PDF</h4>
+                            <p class="text-xs text-slate-600">Subida del archivo <code class="text-xs">Pasaporte_Digital_TYD_Nombre_Apellidos.pdf</code>. Máx. 1 intento.</p>
+                            <button onclick="openModal('CEv 6.3')" class="term-badge text-xs font-semibold text-emerald-700 hover:underline">Vinculación Criterial: CEv 6.3 🔍</button>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-purple-200 bg-purple-50/30 space-y-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-0.5 rounded">Tarea 3 (Correo Formal)</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Verificación Correo Docente</h4>
+                            <p class="text-xs text-slate-600">Comprobación en la bandeja de entrada del profesor del correo institucional estructurado.</p>
+                            <button onclick="openModal('CEv 4.1')" class="term-badge text-xs font-semibold text-purple-700 hover:underline">Vinculación Criterial: CEv 4.1 🔍</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Definition Popup Modal -->
+    <div id="info-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden" onclick="closeModalOnBackdrop(event)">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full overflow-hidden transform transition-all">
+            <!-- Modal Header -->
+            <div id="modal-header-bg" class="px-6 py-4 bg-blue-600 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span id="modal-category" class="text-[10px] font-extrabold uppercase bg-white/20 px-2 py-0.5 rounded text-white tracking-wider">DESCRIPTOR</span>
+                    <h3 id="modal-title" class="text-lg font-bold">CCL1</h3>
+                </div>
+                <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl font-bold px-2 py-0.5 rounded hover:bg-white/10 transition-colors">✕</button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <div>
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1" id="modal-label">Descripción Oficial Curricular</div>
+                    <div id="modal-body" class="text-sm text-slate-700 leading-relaxed font-normal">
+                        <!-- Dynamic text injected by JS -->
+                    </div>
+                </div>
+
+                <div id="modal-extra" class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1 hidden">
+                    <!-- Additional context injected by JS -->
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-lg hover:bg-slate-700 transition-colors">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Situación de Aprendizaje 1 - Tecnología y Digitalización 3.º ESO | Junta de Andalucía (LOMLOE)</p>
+            <p class="text-slate-500">Alineación criterial simplificada: CEv 4.1, CEv 6.2 y CEv 6.3</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Dictionary of Definitions for Popups
+        const dictionary = {
+            // Descriptores Operativos del Perfil de Salida (Decreto LOMLOE)
+            "CCL1": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia en Comunicación Lingüística (CCL1)",
+                bg: "bg-indigo-600",
+                desc: "Se expresa de forma oral, escrita, signada o multimodal con coherencia, corrección y adecuación a los diferentes contextos sociales, y participa en interacciones comunicativas con actitud cooperativa y respetuosa tanto para intercambiar información, crear conocimiento y transmitir opiniones, como para construir vínculos personales.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Redacción técnica formal del correo electrónico institucional dirigido al docente."
+            },
+            "CD1": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Digital (CD1)",
+                bg: "bg-blue-600",
+                desc: "Realiza búsquedas en internet atendiendo a criterios de validez, calidad, actualidad y fiabilidad, seleccionando los resultados de manera crítica y archivándolos, para recuperarlos, referenciarlos y reutilizarlos, respetando la propiedad intelectual.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Búsqueda activa de contenidos y licencias abiertas (Creative Commons/Open Source)."
+            },
+            "CD2": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Digital (CD2)",
+                bg: "bg-blue-600",
+                desc: "Gestiona y utiliza su entorno personal digital de aprendizaje para construir conocimiento y crear contenidos digitales, mediante estrategias de tratamiento de la información y el uso de diferentes herramientas digitales, seleccionando y configurando la más adecuada en función de la tarea y de sus necesidades de aprendizaje permanente.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Configuración completa del PLE en Google Workspace y Moodle Centros."
+            },
+            "CD3": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Digital (CD3)",
+                bg: "bg-blue-600",
+                desc: "Se comunica, participa, colabora e interactúa compartiendo contenidos, datos e información mediante herramientas o plataformas virtuales, y gestiona de manera responsable sus acciones, presencia y visibilidad en la red, para ejercer una ciudadanía digital activa, cívica y reflexiva.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Uso adecuado del canal de correo corporativo @g.educaand.es."
+            },
+            "CD4": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Digital (CD4)",
+                bg: "bg-blue-600",
+                desc: "Identifica riesgos y adopta medidas preventivas al usar las tecnologías digitales para proteger los dispositivos, los datos personales, la salud y el medioambiente, y para tomar conciencia de la importancia y necesidad de hacer un uso crítico, legal, seguro, saludable y sostenible de dichas tecnologías.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Elaboración del Decálogo de Ciberseguridad y protección de datos."
+            },
+            "STEM4": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia STEM (STEM4)",
+                bg: "bg-emerald-600",
+                desc: "Interpreta y transmite los elementos más relevantes de procesos, razonamientos, demostraciones, métodos y resultados científicos, matemáticos y tecnológicos de forma clara y precisa y en diferentes formatos (gráficos, tablas, diagramas, fórmulas, esquemas, símbolos...), y aprovechando de forma crítica la cultura digital e incluyendo el lenguaje matemático-formal, con ética y responsabilidad para compartir y construir nuevos conocimientos.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Elaboración de documentación técnica en PDF y esquemas del PLE."
+            },
+            "CP2": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Plurilingüe (CP2)",
+                bg: "bg-amber-600",
+                desc: "A partir de sus experiencias, realiza transferencias entre distintas lenguas como estrategia para comunicarse y ampliar su repertorio lingüístico individual.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Comprensión de vocabulario técnico internacional (PLE, Phishing, Passphrase, Creative Commons)."
+            },
+            "CPSAA4": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Personal, Social y de Aprender a Aprender (CPSAA4)",
+                bg: "bg-purple-600",
+                desc: "Realiza autoevaluaciones sobre su proceso de aprendizaje, buscando fuentes fiables para validar, sustentar y contrastar la información y para obtener conclusiones relevantes.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Verificación autónoma de enlaces públicos y autoevaluación final."
+            },
+            "CPSAA5": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Competencia Personal, Social y de Aprender a Aprender (CPSAA5)",
+                bg: "bg-purple-600",
+                desc: "Planea objetivos a medio plazo y desarrolla procesos metacognitivos de retroalimentación para aprender de sus errores en el proceso de construcción del conocimiento.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Organización del árbol de carpetas para dar servicio durante todo el curso."
+            },
+            "CCEC3": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Conciencia y Expresión Culturales (CCEC3)",
+                bg: "bg-rose-600",
+                desc: "Expresa ideas, opiniones, sentimientos y emociones por medio de producciones culturales y artísticas, integrando su propio cuerpo y desarrollando la autoestima, la creatividad y el sentido del lugar que ocupa en la sociedad, con una actitud empática, abierta y colaborativa.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Diseño visual creativo del Decálogo de Ciberseguridad."
+            },
+            "CCEC4": {
+                category: "Descriptor Operativo - Perfil de Salida",
+                label: "Conciencia y Expresión Culturales (CCEC4)",
+                bg: "bg-rose-600",
+                desc: "Conoce, selecciona y utiliza con creatividad diversos medios y soportes, así como técnicas plásticas, visuales, audiovisuales, sonoras o corporales, para la creación de productos artísticos y culturales, tanto de forma individual como colaborativa.",
+                extra: "📌 <strong>Aplicación en SdA 1:</strong> Selección de herramientas de diseño multimedia (Canva, Genially, Slides)."
+            },
+
+            // Criterios de Evaluación (CEv)
+            "CEv 4.1": {
+                category: "Criterio de Evaluación Mínimo (30%)",
+                label: "CEv 4.1 - Comunicación Técnica Formal",
+                bg: "bg-purple-700",
+                desc: "Representar y comunicar el proceso de creación de un producto, desde su diseño hasta su difusión, elaborando documentación técnica y gráfica con la ayuda de herramientas digitales, empleando los formatos y el vocabulario técnico adecuados, de manera colaborativa, tanto presencialmente como en remoto.",
+                extra: "📌 <strong>Evaluación:</strong> Se mide en el envío del correo electrónico formal con asunto normalizado y el PDF adjunto."
+            },
+            "CEv 6.2": {
+                category: "Criterio de Evaluación Mínimo (40%)",
+                label: "CEv 6.2 - Creación Multimedia, PLE y Etiqueta Digital",
+                bg: "bg-blue-700",
+                desc: "Crear contenidos, elaborar materiales y difundirlos en distintas plataformas, configurando correctamente las herramientas digitales habituales del entorno de aprendizaje, ajustándolas a sus necesidades y respetando los derechos de autor y la etiqueta digital.",
+                extra: "📌 <strong>Evaluación:</strong> Se mide en la creación del Decálogo multimedia interactivo y la configuración del perfil Moodle."
+            },
+            "CEv 6.3": {
+                category: "Criterio de Evaluación Mínimo (30%)",
+                label: "CEv 6.3 - Organización y Almacenamiento Seguro",
+                bg: "bg-emerald-700",
+                desc: "Organizar la información de manera estructurada, aplicando técnicas de almacenamiento seguro.",
+                extra: "📌 <strong>Evaluación:</strong> Se mide en el árbol jerárquico de carpetas en Google Drive y la exportación del PDF estructurado."
+            },
+
+            // Competencias Específicas
+            "CE4": {
+                category: "Competencia Específica (TYD)",
+                label: "CE4 - Comunicación y Difusión",
+                bg: "bg-slate-800",
+                desc: "Describir, representar e intercambiar ideas o soluciones a problemas tecnológicos o digitales, utilizando medios de representación, simbología y vocabulario adecuados, así como los instrumentos y recursos disponibles, valorando la utilidad de las herramientas digitales para comunicar y difundir información y propuestas.",
+                extra: "Vincular con CEv 4.1 en esta Situación de Aprendizaje."
+            },
+            "CE6": {
+                category: "Competencia Específica (TYD)",
+                label: "CE6 - Entorno Digital y Seguridad",
+                bg: "bg-slate-800",
+                desc: "Comprender los fundamentos del funcionamiento de los dispositivos y aplicaciones habituales de su entorno digital de aprendizaje, analizando sus componentes y funciones y ajustándolos a sus necesidades para hacer un uso más eficiente y seguro de los mismos y para detectar y resolver problemas técnicos sencillos.",
+                extra: "Vincular con CEv 6.2 y CEv 6.3 en esta Situación de Aprendizaje."
+            },
+
+            // Saberes Básicos
+            "TYD.3.B.3": {
+                category: "Saber Básico (Bloque B - Comunicación)",
+                label: "TYD.3.B.3 - Herramientas Digitales para Documentación Técnica",
+                bg: "bg-purple-800",
+                desc: "Herramientas digitales para la elaboración, publicación y difusión de documentación técnica e información multimedia relativa a proyectos sencillos.",
+                extra: "Movilizado en la redacción del documento accesible y la maquetación en PDF."
+            },
+            "TYD.3.D.2": {
+                category: "Saber Básico (Bloque D - Digitalización PLE)",
+                label: "TYD.3.D.2 - Edición, Configuración y Propiedad Intelectual",
+                bg: "bg-blue-800",
+                desc: "Herramientas de edición y creación de contenidos: instalación, configuración y uso responsable. Propiedad intelectual y licencias de uso.",
+                extra: "Movilizado en la creación del Decálogo y la citación ética de recursos gráficos."
+            },
+            "TYD.3.D.3": {
+                category: "Saber Básico (Bloque D - Digitalización PLE)",
+                label: "TYD.3.D.3 - Almacenamiento Seguro de la Información",
+                bg: "bg-emerald-800",
+                desc: "Técnicas de tratamiento, organización y almacenamiento seguro de la información. Copias de seguridad en la nube y estructuras jerárquicas.",
+                extra: "Movilizado en el diseño del árbol de carpetas en Google Drive."
+            },
+            "TYD.3.D.4": {
+                category: "Saber Básico (Bloque D - Digitalización PLE)",
+                label: "TYD.3.D.4 - Seguridad en la Red y Bienestar Digital",
+                bg: "bg-cyan-800",
+                desc: "Seguridad en la red: riesgos, amenazas y ataques. Medidas de protección de datos y de información. Bienestar digital: prácticas seguras y prevención de riesgos (ciberacoso, suplantación, vulneración de intimidad, contraseñas robustas).",
+                extra: "Movilizado en las 4 pautas del Decálogo y la configuración de privacidad."
+            },
+
+            // Conceptos Generales
+            "PLE": {
+                category: "Concepto Clave",
+                label: "PLE - Personal Learning Environment",
+                bg: "bg-slate-700",
+                desc: "Entorno Personal de Aprendizaje. Conjunto de fuentes de información, herramientas digitales, conexiones y actividades que cada estudiante utiliza de forma asidua para aprender, organizar sus proyectos y colaborar.",
+                extra: "En TYD 3º ESO abarca Moodle Centros, Google Workspace (@g.educaand.es), Canva/Genially y el árbol de Drive."
+            },
+            "Netiqueta": {
+                category: "Protocolo Digital",
+                label: "Netiqueta Digital",
+                bg: "bg-slate-700",
+                desc: "Conjunto de normas de comportamiento y cortesía que regulan la interacción en entornos virtuales (correos, foros, plataformas educativas) para promover el respeto, el lenguaje inclusivo y la convivencia pacífica.",
+                extra: "Se ejercita en la redacción del correo institucional y en las pautas del Decálogo."
+            },
+            "DUA": {
+                category: "Marco Metodológico",
+                label: "DUA - Diseño Universal para el Aprendizaje",
+                bg: "bg-amber-700",
+                desc: "Modelo pedagógico que promueve el diseño flexible de la enseñanza para dar respuesta a las necesidades de todo el alumnado, minimizando barreras mediante 3 principios: Múltiples formas de Representación, de Expresión y de Implicación.",
+                extra: "Aplicado en esta SdA con apoyos visuales, audios opcionales y opciones diversas de software."
+            },
+            "LOMLOE": {
+                category: "Marco Normativo Educación",
+                label: "LOMLOE - Ley Orgánica de Educación",
+                bg: "bg-slate-800",
+                desc: "Ley Orgánica 3/2020 de Educación que regula la enseñanza competencial en España, estructurada a través del Perfil de Salida (Descriptores Operativos), Competencias Específicas, Criterios de Evaluación y Saberes Básicos.",
+                extra: "Normativa aplicada junto con los Decretos y Órdenes de desarrollo de la Comunidad Autónoma de Andalucía."
+            }
+        };
+
+        // State Management
+        let currentTab = 'resumen';
+        let scores = {
+            cev41: 10,
+            cev62: 10,
+            cev63: 10
+        };
+
+        const weights = {
+            cev41: 0.30,
+            cev62: 0.40,
+            cev63: 0.30
+        };
+
+        // Session Data
+        const sessionData = {
+            1: {
+                title: "Sesión 1: Inducción al PLE, Moodle Centros y Propiedad Intelectual",
+                criterio: "CEv 6.2",
+                objetivo: "Estructurar el entorno digital de aprendizaje, explorar Moodle Centros y comprender licencias de uso y derechos de autor.",
+                pasos: [
+                    "<strong>Estructuración (10 min):</strong> Presentación del reto 'El Pasaporte Digital' y explicación del concepto de <button onclick=\"openModal('PLE')\" class=\"term-badge text-blue-700 font-semibold underline\">PLE</button>.",
+                    "<strong>Exploración (20 min):</strong> Acceso inicial a Moodle Centros. Cuestionario diagnóstico de 5 preguntas sobre propiedad intelectual (Copyright vs CC vs Open Source).",
+                    "<strong>Práctica Dirigida (20 min):</strong> Búsqueda activa de recursos libres en Wikimedia Commons, Unsplash y OpenClipart."
+                ],
+                checkpoint: "Punto de Control 1: Captura del perfil activo en Moodle Centros guardada localmente con nomenclatura adecuada."
+            },
+            2: {
+                title: "Sesión 2: Ciberseguridad, Identidad Digital y Discos Virtuales",
+                criterio: "CEv 6.2 & CEv 6.3",
+                objetivo: "Configurar la cuenta corporativa @g.educaand.es, gestionar almacenamiento seguro en la nube y aplicar ciberseguridad preventiva.",
+                pasos: [
+                    "<strong>Instrucción Analítica (15 min):</strong> Debate sobre huella digital, contraseñas seguras (passphrases >12 caracteres) y protección de datos (<button onclick=\"openModal('TYD.3.D.4')\" class=\"term-badge text-blue-700 font-mono text-xs underline\">TYD.3.D.4</button>).",
+                    "<strong>Taller Práctico (25 min):</strong> Inicio de sesión en Google Workspace corporativo, avatar neutro y verificación de credenciales seguras.",
+                    "<strong>Verificación en Parejas (10 min):</strong> Comprobación cruzada de permisos y privacidad."
+                ],
+                checkpoint: "Punto de Control 2: Captura de pantalla del perfil configurado con datos protegidos."
+            },
+            3: {
+                title: "Sesión 3: Taller de Creación Multimedia y Difusión Visual",
+                criterio: "CEv 6.2",
+                objetivo: "Diseñar una presentación interactiva tipo 'Decálogo de Ciberseguridad y Etiqueta Digital' aplicando maquetación e impacto visual.",
+                pasos: [
+                    "<strong>Exposición Técnica (15 min):</strong> Principios de diseño accesible e impacto visual positivo (<button onclick=\"openModal('TYD.3.B.3')\" class=\"term-badge text-blue-700 font-mono text-xs underline\">TYD.3.B.3</button>).",
+                    "<strong>Creación Guiada (25 min):</strong> Elaboración individual en Canva/Slides/Genially (Portada, 4 Pautas Ciberseguridad, 3 Normas Netiqueta, Licencias).",
+                    "<strong>Publicación (10 min):</strong> Generación del enlace público o de lectura compartida."
+                ],
+                checkpoint: "Punto de Control 3: Registro del enlace público activo del recurso multimedia."
+            },
+            4: {
+                title: "Sesión 4: Arquitectura del PLE en Google Drive y Maquetación PDF",
+                criterio: "CEv 6.3",
+                objetivo: "Estructurar el árbol de carpetas del PLE en Google Drive, maquetar el documento final y exportar a PDF.",
+                pasos: [
+                    "<strong>Organización en la Nube (15 min):</strong> Creación de carpetas (<button onclick=\"openModal('TYD.3.D.3')\" class=\"term-badge text-blue-700 font-mono text-xs underline\">TYD.3.D.3</button>): TYD_3ESO_Nombre_Apellidos/ 01_Pasaporte_Digital, 02_Proceso_de_Proyectos...",
+                    "<strong>Maquetación en Google Docs (30 min):</strong> Documento que recopila capturas Moodle, Perfil, Enlace Decálogo y Árbol de Drive, más reflexión crítica (5-8 líneas).",
+                    "<strong>Exportación (5 min):</strong> Descarga y verificación del PDF accesible."
+                ],
+                checkpoint: "Punto de Control 4: Archivo Pasaporte_Digital_TYD_Nombre_Apellidos.pdf generado."
+            },
+            5: {
+                title: "Sesión 5: Comunicación Técnica Formal, Entrega Criterial y Cierre",
+                criterio: "CEv 4.1",
+                objetivo: "Utilizar el correo institucional bajo cánones de comunicación técnica formal, entregar evidencias en Moodle y reflexionar sobre el aprendizaje.",
+                pasos: [
+                    "<strong>Taller de Comunicación Formal (15 min):</strong> Estructura del correo profesional: asunto normalizado, saludo formal, cuerpo claro, firma automática y adjunto.",
+                    "<strong>Envío y Entrega (25 min):</strong> Envío del correo al docente y subida simultánea del PDF a Moodle Centros.",
+                    "<strong>Autoevaluación (10 min):</strong> Formulario de reflexión metacognitiva individual (<button onclick=\"openModal('CPSAA4')\" class=\"term-badge text-blue-700 text-xs font-semibold underline\">CPSAA4</button>)."
+                ],
+                checkpoint: "Punto de Control 5: Verificación de la recepción del correo y registro de la entrega en Moodle Centros."
+            }
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            showSession(1);
+            calculateGrade();
+
+            // Keyboard navigation for Modal (ESC closes it)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+
+        // Modal Functionality
+        function openModal(key) {
+            const data = dictionary[key];
+            if (!data) return;
+
+            const modal = document.getElementById('info-modal');
+            const headerBg = document.getElementById('modal-header-bg');
+            const categoryElem = document.getElementById('modal-category');
+            const titleElem = document.getElementById('modal-title');
+            const bodyElem = document.getElementById('modal-body');
+            const extraElem = document.getElementById('modal-extra');
+
+            headerBg.className = `px-6 py-4 text-white flex justify-between items-center ${data.bg}`;
+            categoryElem.textContent = data.category;
+            titleElem.textContent = data.label;
+            bodyElem.innerHTML = data.desc;
+
+            if (data.extra) {
+                extraElem.innerHTML = data.extra;
+                extraElem.classList.remove('hidden');
+            } else {
+                extraElem.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('info-modal').classList.add('hidden');
+        }
+
+        function closeModalOnBackdrop(event) {
+            if (event.target.id === 'info-modal') {
+                closeModal();
+            }
+        }
+
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('tab-active'));
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('tab-active');
+            currentTab = tabId;
+        }
+
+        // Render Session Logic
+        function showSession(sessionNum) {
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`sbtn-${i}`);
+                if (i === sessionNum) {
+                    btn.className = "py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-blue-600 text-white border-blue-600 shadow-sm";
+                } else {
+                    btn.className = "py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm border transition-all bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200";
+                }
+            }
+
+            const data = sessionData[sessionNum];
+            const container = document.getElementById('session-container');
+            container.innerHTML = `
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                    <h3 class="text-lg font-bold text-slate-900">${data.title}</h3>
+                    <button onclick="openModal('${data.criterio.split(' ')[0]} ${data.criterio.split(' ')[1]}')" class="term-badge bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded border border-blue-200">${data.criterio} 🔍</button>
+                </div>
+                <div class="text-sm text-slate-700 font-medium">🎯 <strong>Objetivo:</strong> ${data.objetivo}</div>
+                <div class="space-y-2 text-sm text-slate-600 pt-2">
+                    <div class="font-bold text-slate-800 text-xs uppercase tracking-wider">Desarrollo de la sesión:</div>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        ${data.pasos.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 flex items-center gap-2">
+                    <span class="font-bold text-sm">🚩</span>
+                    <div><strong>Hito Evaluativo:</strong> ${data.checkpoint}</div>
+                </div>
+            `;
+        }
+
+        // Chart.js Setup
+        function initChart() {
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CEv 4.1 (Comunicación)', 'CEv 6.2 (Creación/Etiqueta)', 'CEv 6.3 (Organización)'],
+                    datasets: [{
+                        data: [30, 40, 30],
+                        backgroundColor: ['#a855f7', '#3b82f6', '#10b981'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}% de la SdA`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Interactive Grade Calculator Logic
+        function setScore(cev, score) {
+            scores[cev] = score;
+
+            // Highlight selected rubric button
+            const levelMap = { 3: 1, 5.5: 2, 7.5: 3, 10: 4, 3.5: 3 };
+            const lvl = levelMap[score] || 4;
+
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`${cev}-${i}`);
+                if (btn) {
+                    btn.className = "rubric-btn p-3 rounded-lg border text-left transition-all border-slate-200 hover:border-blue-400 bg-white";
+                }
+            }
+
+            const activeBtn = document.getElementById(`${cev}-${lvl}`);
+            if (activeBtn) {
+                activeBtn.className = "rubric-btn p-3 rounded-lg border text-left transition-all border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30";
+            }
+
+            calculateGrade();
+        }
+
+        function calculateGrade() {
+            const final = (scores.cev41 * weights.cev41) + (scores.cev62 * weights.cev62) + (scores.cev63 * weights.cev63);
+            const scoreElem = document.getElementById('final-score');
+            const badgeElem = document.getElementById('score-badge');
+
+            scoreElem.textContent = final.toFixed(1);
+
+            if (final >= 9.0) {
+                badgeElem.textContent = "Nivel: Excelente (Sobresaliente)";
+                badgeElem.className = "px-4 py-2 rounded-lg font-bold text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else if (final >= 7.0) {
+                badgeElem.textContent = "Nivel: Competente (Notable)";
+                badgeElem.className = "px-4 py-2 rounded-lg font-bold text-sm bg-blue-500/20 text-blue-300 border border-blue-500/30";
+            } else if (final >= 5.0) {
+                badgeElem.textContent = "Nivel: En Proceso (Aprobado)";
+                badgeElem.className = "px-4 py-2 rounded-lg font-bold text-sm bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            } else {
+                badgeElem.textContent = "Nivel: Iniciante (Insuficiente)";
+                badgeElem.className = "px-4 py-2 rounded-lg font-bold text-sm bg-red-500/20 text-red-300 border border-red-500/30";
+            }
+        }
+    </script>
+</body>
+</html>
+```eod
+
+### What was updated:
+1. **Interactive Definition Pop-up Modal System:**
+   - Added a responsive backdrop modal window (`#info-modal`) in JavaScript and HTML.
+   - Built a comprehensive JS dictionary containing the official definitions from the provided LOMLOE files for:
+     - **Descriptores Operativos del Perfil de Salida**: `CCL1`, `CD1`, `CD2`, `CD3`, `CD4`, `STEM4`, `CP2`, `CPSAA4`, `CPSAA5`, `CCEC3`, `CCEC4`.
+     - **Criterios de Evaluación**: `CEv 4.1`, `CEv 6.2`, `CEv 6.3`.
+     - **Competencias Específicas**: `CE4`, `CE6`.
+     - **Saberes Básicos de TYD 3º ESO**: `TYD.3.B.3`, `TYD.3.D.2`, `TYD.3.D.3`, `TYD.3.D.4`.
+     - **Conceptos pedagógicos y normativos**: `PLE`, `Netiqueta`, `DUA`, `LOMLOE`.
+2. **Interactive UI Enhancements:**
+   - All codes across tables, summary cards, rubric headers, sessions, and DUA sections are now styled clickable badges (`.term-badge`) with hover feedback and indicator icons (`🔍` / `ℹ️`).
+   - Clicking any badge instantly opens the pop-up modal with category badge, title, official LOMLOE text, and specific application details for SdA 1.
+   - Modals can be dismissed by clicking the close button, clicking anywhere on the backdrop, or pressing `ESC`.

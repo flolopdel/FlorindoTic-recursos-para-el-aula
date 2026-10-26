@@ -151,10 +151,14 @@ async function main() {
   published.push('404.html');
 
   console.log('3/5 Generando índice de búsqueda…');
-  const htmlFiles = published.filter((p) => p.startsWith('content/') && p.endsWith('.html'));
+  const htmlFiles = [];
   const index = [];
-  for (const rel of htmlFiles) {
-    const { title, text } = extractText(await fs.readFile(path.join(OUT, rel), 'utf-8'));
+  for (const rel of published.filter((p) => p.startsWith('content/') && p.endsWith('.html'))) {
+    const html = await fs.readFile(path.join(OUT, rel), 'utf-8');
+    // Las páginas de redirección (nombres antiguos) se publican pero no se indexan ni van al sitemap.
+    if (html.includes('florindotic:redirect')) continue;
+    htmlFiles.push(rel);
+    const { title, text } = extractText(html);
     index.push({ path: rel, title, text });
   }
   await fs.writeFile(path.join(OUT, 'search-index.json'), JSON.stringify(index));

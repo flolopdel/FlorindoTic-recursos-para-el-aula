@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SdA 1: Mi Identidad Digital y Pasaporte Virtual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        tech: {
+                            emerald: '#10b981',
+                            purple: '#8b5cf6',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slide-transition {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .slide-hidden-left {
+            opacity: 0;
+            transform: translateX(-60px) scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+        }
+        .slide-hidden-right {
+            opacity: 0;
+            transform: translateX(60px) scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+        }
+        .slide-active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans h-full flex flex-col justify-between overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full bg-slate-900/80 backdrop-filter blur-md border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-tech-purple flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/20">
+                <i class="fa-solid fa-passport"></i>
+            </div>
+            <div>
+                <h1 class="text-xs sm:text-sm font-bold text-slate-200 uppercase tracking-wider">Tecnología y Digitalización · 3.º ESO</h1>
+                <p class="text-xs text-brand-400 font-medium">SdA 1: Pasaporte Digital</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <span id="slide-counter" class="text-xs sm:text-sm font-semibold bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700">
+                Diapositiva <span id="current-slide-num" class="text-brand-400 font-bold">1</span> / 5
+            </span>
+            <button id="fullscreen-btn" onclick="toggleFullScreen()" class="text-slate-400 hover:text-white transition p-2 rounded-lg hover:bg-slate-800" title="Pantalla completa">
+                <i class="fa-solid fa-expand text-base"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Presentation Viewport -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center relative min-h-[550px]">
+        
+        <div id="slides-container" class="relative w-full h-full flex flex-col justify-center">
+
+            <!-- ================= SLIDE 1: INTRODUCCIÓN ================= -->
+            <section id="slide-1" class="slide-transition slide-active w-full">
+                <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute -top-24 -right-24 w-72 h-72 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-tech-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="inline-flex items-center gap-2 bg-brand-500/10 text-brand-400 border border-brand-500/30 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-6">
+                        <i class="fa-solid fa-rocket"></i> Reto Inicial del Curso
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                        Mi Identidad Digital y <span class="bg-gradient-to-r from-brand-400 via-tech-purple to-pink-400 bg-clip-text text-transparent">Pasaporte Virtual</span>
+                    </h2>
+
+                    <p class="text-slate-300 text-base sm:text-lg mb-8 max-w-3xl leading-relaxed">
+                        ¡Bienvenidas y bienvenidos a Tecnología! Antes de empezar a diseñar, programar o construir este curso, necesitamos preparar nuestras **herramientas digitales** y aprender a movernos por internet de forma **segura, ordenada y respetuosa**.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 flex items-start space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-clock text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200 text-sm">Duración</h4>
+                                <p class="text-xs text-slate-400">5 sesiones de clase (~2,5 semanas)</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 flex items-start space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-tech-emerald/20 text-tech-emerald flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-award text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200 text-sm">Puntuación</h4>
+                                <p class="text-xs text-slate-400">10% de la nota final del curso</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 flex items-start space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-tech-purple/20 text-tech-purple flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-key text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200 text-sm">Objetivo Clave</h4>
+                                <p class="text-xs text-slate-400">Conseguir tu Pasaporte Digital para trabajar todo el año</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-900/30 border border-brand-500/30 rounded-xl p-4 flex items-center justify-between">
+                        <span class="text-xs sm:text-sm text-brand-200 font-medium">
+                            <i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i>¿Sabías que tu forma de comunicarte e interactuar en internet deja una marca digital única?
+                        </span>
+                        <button onclick="goToSlide(2)" class="hidden sm:flex items-center gap-2 text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg transition">
+                            Empezar <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SLIDE 2: QUÉ VAMOS A APRENDER ================= -->
+            <section id="slide-2" class="slide-transition slide-hidden-right w-full">
+                <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl relative">
+                    
+                    <div class="mb-6">
+                        <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Lo que vas a dominar</span>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">¿Qué vas a aprender en esta unidad?</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Conceptos prácticos y útiles para tu vida escolar y personal.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <!-- Tarjeta 1 -->
+                        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 hover:border-brand-500/50 transition">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">1</div>
+                                <h4 class="font-bold text-slate-100 text-base">Tu Espacio de Trabajo Digital</h4>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300">
+                                Aprenderás a dominar el aula virtual (**Moodle Centros**) y a crear tu propio **disco en la nube** ordenado para guardar tus trabajos todo el curso.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta 2 -->
+                        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 hover:border-tech-emerald/50 transition">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">2</div>
+                                <h4 class="font-bold text-slate-100 text-base">Ciberseguridad y Protección</h4>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300">
+                                Descubrirás cómo crear **contraseñas ultra-seguras** e infranqueables, protegiendo tus datos personales y evitando riesgos informáticos.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta 3 -->
+                        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 hover:border-tech-purple/50 transition">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">3</div>
+                                <h4 class="font-bold text-slate-100 text-base">Educación en la Red (Convivencia)</h4>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300">
+                                Normas de respeto, empatía y buen comportamiento para comunicarte en grupos virtuales y trabajos colaborativos de forma positiva.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta 4 -->
+                        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 hover:border-amber-500/50 transition">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">4</div>
+                                <h4 class="font-bold text-slate-100 text-base">Derecho de Autor y Correo Formal</h4>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300">
+                                Aprenderás a usar imágenes con **licencias libres** reconociendo a los autores, y a redactar **correos profesionales** y respetuosos.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-6 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                        <p class="text-xs text-slate-400">
+                            💡 <strong class="text-slate-200">En resumen:</strong> Aprenderás a ser autónomo, seguro y respetuoso en el entorno digital del instituto.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SLIDE 3: TAREAS Y PRODUCTO FINAL ================= -->
+            <section id="slide-3" class="slide-transition slide-hidden-right w-full">
+                <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl relative">
+                    
+                    <div class="mb-6">
+                        <span class="text-xs font-bold text-tech-purple uppercase tracking-widest">Tus Entregables</span>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">¿Qué producto vas a crear?</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Tu **Pasaporte Digital** está formado por 3 componentes principales:</p>
+                    </div>
+
+                    <!-- Componentes Interactivos -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        
+                        <!-- Elemento 1 -->
+                        <div class="bg-slate-800/90 border-2 border-brand-500/40 rounded-2xl p-5 flex flex-col justify-between hover:border-brand-500 transition shadow-lg">
+                            <div>
+                                <div class="w-12 h-12 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center mb-4 text-2xl">
+                                    <i class="fa-solid fa-file-powerpoint"></i>
+                                </div>
+                                <span class="text-xs font-bold text-brand-400 uppercase">Parte 1</span>
+                                <h4 class="font-extrabold text-white text-lg mt-1 mb-2">Cartel o Presentación Visual</h4>
+                                <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                    Un **Decálogo Interactivo** en Canva, Genially o Google Slides con:
+                                </p>
+                                <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                                    <li>4 pautas de ciberseguridad</li>
+                                    <li>3 normas de respeto digital</li>
+                                    <li>Cita de autores e imágenes libres</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/60 text-xs font-semibold text-brand-300 flex items-center gap-1">
+                                <i class="fa-solid fa-palette"></i> Diseño visual
+                            </div>
+                        </div>
+
+                        <!-- Elemento 2 -->
+                        <div class="bg-slate-800/90 border-2 border-tech-emerald/40 rounded-2xl p-5 flex flex-col justify-between hover:border-tech-emerald transition shadow-lg">
+                            <div>
+                                <div class="w-12 h-12 rounded-xl bg-tech-emerald/20 text-tech-emerald flex items-center justify-center mb-4 text-2xl">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <span class="text-xs font-bold text-tech-emerald uppercase">Parte 2</span>
+                                <h4 class="font-extrabold text-white text-lg mt-1 mb-2">Documento Resumen PDF</h4>
+                                <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                    Un informe generado en Google Docs guardado como **PDF** que incluye:
+                                </p>
+                                <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                                    <li>Capturas de tu perfil en Moodle</li>
+                                    <li>Captura de tus carpetas en Drive</li>
+                                    <li>Enlace a tu presentación visual</li>
+                                    <li>Breve reflexión personal (5-8 líneas)</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/60 text-xs font-semibold text-tech-emerald flex items-center gap-1">
+                                <i class="fa-solid fa-folder-tree"></i> Organización
+                            </div>
+                        </div>
+
+                        <!-- Elemento 3 -->
+                        <div class="bg-slate-800/90 border-2 border-tech-amber/40 rounded-2xl p-5 flex flex-col justify-between hover:border-tech-amber transition shadow-lg">
+                            <div>
+                                <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4 text-2xl">
+                                    <i class="fa-solid fa-envelope-circle-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-amber-400 uppercase">Parte 3</span>
+                                <h4 class="font-extrabold text-white text-lg mt-1 mb-2">Correo Oficial Formal</h4>
+                                <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                                    Envío de un **correo electrónico formal** al profesor/a que contenga:
+                                </p>
+                                <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                                    <li>Asunto normalizado de la materia</li>
+                                    <li>Saludo respetuoso y despedida</li>
+                                    <li>Firma automática corporativa</li>
+                                    <li>Archivo PDF adjunto correctamente</li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/60 text-xs font-semibold text-amber-300 flex items-center gap-1">
+                                <i class="fa-solid fa-paper-plane"></i> Comunicación
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SLIDE 4: HOJA DE RUTA / PASO A PASO ================= -->
+            <section id="slide-4" class="slide-transition slide-hidden-right w-full">
+                <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl relative">
+                    
+                    <div class="mb-6 flex justify-between items-end">
+                        <div>
+                            <span class="text-xs font-bold text-pink-400 uppercase tracking-widest">Plan de Trabajo</span>
+                            <h3 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Planificación: Las 5 Sesiones</h3>
+                        </div>
+                        <span class="hidden sm:inline-block text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                            Paso a Paso
+                        </span>
+                    </div>
+
+                    <!-- Timeline Vertical / Horizontal -->
+                    <div class="space-y-3">
+                        
+                        <!-- Sesión 1 -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 sm:p-4 flex items-center gap-4 hover:bg-slate-800 transition">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500 text-white font-extrabold flex items-center justify-center text-sm shrink-0">
+                                S1
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-100 text-sm sm:text-base">Moodle Centros y Derechos de Autor</h4>
+                                <p class="text-xs text-slate-400">Entramos al aula virtual, completamos el cuestionario y buscamos imágenes de uso libre.</p>
+                            </div>
+                            <span class="text-xs font-semibold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-md hidden md:inline-block">Hoy</span>
+                        </div>
+
+                        <!-- Sesión 2 -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 sm:p-4 flex items-center gap-4 hover:bg-slate-800 transition">
+                            <div class="w-10 h-10 rounded-xl bg-slate-700 text-slate-300 font-extrabold flex items-center justify-center text-sm shrink-0">
+                                S2
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-100 text-sm sm:text-base">Ciberseguridad y Cuenta Oficial</h4>
+                                <p class="text-xs text-slate-400">Activamos la cuenta corporativa, configuramos contraseñas fuertes y elegimos un avatar neutro.</p>
+                            </div>
+                        </div>
+
+                        <!-- Sesión 3 -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 sm:p-4 flex items-center gap-4 hover:bg-slate-800 transition">
+                            <div class="w-10 h-10 rounded-xl bg-slate-700 text-slate-300 font-extrabold flex items-center justify-center text-sm shrink-0">
+                                S3
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-100 text-sm sm:text-base">Diseño del Decálogo Visual</h4>
+                                <p class="text-xs text-slate-400">Creamos nuestra presentación interactiva con pautas de seguridad y normas de convivencia digital.</p>
+                            </div>
+                        </div>
+
+                        <!-- Sesión 4 -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 sm:p-4 flex items-center gap-4 hover:bg-slate-800 transition">
+                            <div class="w-10 h-10 rounded-xl bg-slate-700 text-slate-300 font-extrabold flex items-center justify-center text-sm shrink-0">
+                                S4
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-100 text-sm sm:text-base">Orden en Google Drive y Documento PDF</h4>
+                                <p class="text-xs text-slate-400">Estructuramos las carpetas de la asignatura en la nube y maquetamos el informe final.</p>
+                            </div>
+                        </div>
+
+                        <!-- Sesión 5 -->
+                        <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 sm:p-4 flex items-center gap-4 hover:bg-slate-800 transition">
+                            <div class="w-10 h-10 rounded-xl bg-slate-700 text-slate-300 font-extrabold flex items-center justify-center text-sm shrink-0">
+                                S5
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-100 text-sm sm:text-base">Envío de Correo Formal y Entrega Final</h4>
+                                <p class="text-xs text-slate-400">Enviamos el e-mail oficial al docente con el archivo adjunto y entregamos la tarea en Moodle.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SLIDE 5: EVALUACIÓN Y CONSEJOS ================= -->
+            <section id="slide-5" class="slide-transition slide-hidden-right w-full">
+                <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl relative">
+                    
+                    <div class="mb-6">
+                        <span class="text-xs font-bold text-tech-emerald uppercase tracking-widest">¿Cómo sacar la máxima nota?</span>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Evaluación y Claves del Éxito</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1">Evaluaremos tu trabajo fijándonos en 3 aspectos principales:</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        
+                        <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-4">
+                            <div class="text-brand-400 font-extrabold text-2xl mb-1">40%</div>
+                            <h4 class="font-bold text-slate-100 text-sm mb-1">Presentación Visual</h4>
+                            <p class="text-xs text-slate-400">Diseño claro, sin faltas de ortografía, enlaces funcionando y citando el origen de las imágenes.</p>
+                        </div>
+
+                        <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-4">
+                            <div class="text-tech-emerald font-extrabold text-2xl mb-1">30%</div>
+                            <h4 class="font-bold text-slate-100 text-sm mb-1">Orden en la Nube</h4>
+                            <p class="text-xs text-slate-400">Carpetas de Google Drive bien estructuradas y documento PDF bien redactado y accesible.</p>
+                        </div>
+
+                        <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-4">
+                            <div class="text-amber-400 font-extrabold text-2xl mb-1">30%</div>
+                            <h4 class="font-bold text-slate-100 text-sm mb-1">Correo Oficial Formal</h4>
+                            <p class="text-xs text-slate-400">Uso del e-mail corporativo con asunto exacto, saludo, lenguaje correcto, firma y archivo adjunto.</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Interactive Checklist for Students -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-tech-emerald"></i> Consejos de Oro para la Clase de Hoy:
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg">
+                                <i class="fa-solid fa-check text-tech-emerald"></i>
+                                <span>Anota tus contraseñas en un lugar seguro.</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg">
+                                <i class="fa-solid fa-check text-tech-emerald"></i>
+                                <span>Respeta siempre el trabajo de tus compañeros.</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg">
+                                <i class="fa-solid fa-check text-tech-emerald"></i>
+                                <span>Pregunta tus dudas en cuanto las tengas.</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg">
+                                <i class="fa-solid fa-check text-tech-emerald"></i>
+                                <span>¡Completa el punto de control de cada sesión!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <span class="inline-block bg-gradient-to-r from-brand-600 to-tech-purple text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-lg">
+                            🚀 ¡Todo listo para empezar la Sesión 1!
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar & Controls -->
+    <footer class="w-full bg-slate-900/90 border-t border-slate-800 px-4 py-3 sticky bottom-0 z-50">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            
+            <!-- Previous Button -->
+            <button id="prev-btn" onclick="prevSlide()" class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 px-4 py-2.5 rounded-xl border border-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Anterior</span>
+            </button>
+
+            <!-- Dots Indicator -->
+            <div id="dots-container" class="flex items-center space-x-2">
+                <!-- Dots generated via JS -->
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" onclick="nextSlide()" class="flex items-center gap-2 text-xs sm:text-sm font-bold text-white bg-brand-600 hover:bg-brand-500 px-5 py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="hidden sm:inline">Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Interactive Navigation Scripts -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5;
+
+        // Initialize presentation
+        window.addEventListener('DOMContentLoaded', () => {
+            renderDots();
+            updateNavigation();
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+
+            // Touch Swipe Support
+            let touchstartX = 0;
+            let touchendX = 0;
+            
+            const slidesContainer = document.getElementById('slides-container');
+            slidesContainer.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+            }, false);
+
+            slidesContainer.addEventListener('touchend', e => {
+                touchendX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+
+            function handleSwipe() {
+                if (touchendX < touchstartX - 50) nextSlide();
+                if (touchendX > touchstartX + 50) prevSlide();
+            }
+        });
+
+        function renderDots() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-brand-500 w-8' : 'bg-slate-700 hover:bg-slate-500'}`;
+                dot.setAttribute('title', `Ir a diapositiva ${i}`);
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+
+        function goToSlide(slideNum) {
+            if (slideNum < 1 || slideNum > totalSlides || slideNum === currentSlide) return;
+
+            const oldSlide = document.getElementById(`slide-${currentSlide}`);
+            const newSlide = document.getElementById(`slide-${slideNum}`);
+
+            // Determine direction
+            if (slideNum > currentSlide) {
+                oldSlide.className = 'slide-transition slide-hidden-left w-full';
+                newSlide.className = 'slide-transition slide-active w-full';
+            } else {
+                oldSlide.className = 'slide-transition slide-hidden-right w-full';
+                newSlide.className = 'slide-transition slide-active w-full';
+            }
+
+            currentSlide = slideNum;
+            updateNavigation();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function updateNavigation() {
+            document.getElementById('current-slide-num').innerText = currentSlide;
+            
+            // Buttons state
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+
+            // Update dots
+            renderDots();
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error al intentar activar pantalla completa: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

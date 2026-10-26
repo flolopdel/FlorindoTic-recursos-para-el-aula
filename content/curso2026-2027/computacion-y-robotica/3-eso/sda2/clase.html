@@ -155,6 +155,10 @@ const D = {"meta": {"titulo": "SdA 2: Código en Acción - Videojuegos e Histori
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
+// Enlaces de Google Docs/Hojas/Presentaciones: «Ver anexo» (solo lectura) y «Copiar a mi Drive» (copia propia).
+const enlaceBtn = u => { const s = String(u), g = s.match(/^https:\/\/docs\.google\.com\/(?:document|spreadsheets|presentation|drawings)\/d\/[\w-]+/), b = 'class="box wa" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;';
+  return g ? `<div style="display:flex;flex-wrap:wrap;gap:.6em;margin:.6em 0"><a ${b}flex:1 1 14em" href="${esc(g[0] + '/preview')}">👁️ <b>Ver anexo</b></a><a ${b}flex:1 1 14em" href="${esc(g[0] + '/copy')}">📥 <b>Copiar a mi Drive</b></a></div>`
+           : `<a ${b}display:block;margin:.6em 0" href="${esc(s)}">🔗 <b>${esc(s.replace(/^https?:\/\//,''))}</b></a>`; };
 // **negrita** dentro de los textos
 const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
 const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
@@ -230,7 +234,7 @@ const R = {
       <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
       ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
       <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
-      ${arr(d.enlace).map(u => `<a class="box wa" style="display:block;text-decoration:none;color:inherit;margin:.6em 0" href="${esc(u)}" target="_blank" rel="noopener">🔗 <b>${esc(String(u).replace(/^https?:\/\//,''))}</b></a>`).join('')}
+      ${arr(d.enlace).map(enlaceBtn).join('')}
       ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
       ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
   },

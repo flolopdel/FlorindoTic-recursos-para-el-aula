@@ -3,7 +3,12 @@ import path from 'path';
 
 const CONTENT_DIR = path.resolve('content');
 const OUTPUT_FILE = path.resolve('menu.json');
-const HIDDEN_DIRECTORIES = new Set(['steam-4.0']);
+// Carpetas que no salen en el menú: pon "hidden": true en su meta.json.
+
+// Material del docente dentro de una SdA: va al grupo «Docente» del menú.
+const DOCENTE_FILES = new Set(['guia-profesorado.html', 'moodle.html']);
+// Dentro de una SdA, clase.html (lo que se proyecta y lo que enlaza Moodle) va primero.
+const SDA_FIRST = ['clase.html', 'guia-alumnado.html', 'teoria.html'];
 
 const WORD_LABELS = new Map([
   ['computacion', 'computación'],
@@ -29,6 +34,11 @@ const EXACT_LABELS = new Map([
   ['presentacion_digitalizacion', 'Presentación de Digitalización'],
   ['presentacion_tecnologia', 'Presentación de Tecnología'],
   ['presentacion_tecnologia_y_digitalizacion', 'Presentación de Tecnología y Digitalización'],
+  ['clase', 'Clase (para proyectar)'],
+  ['guia-profesorado', 'Guía del profesorado'],
+  ['guia-alumnado', 'Guía del alumnado'],
+  ['teoria', 'Teoría'],
+  ['moodle', 'Bloque para Moodle'],
 ]);
 
 function prettify(name) {
@@ -61,9 +71,36 @@ async function readMeta(dir) {
       title: typeof data.title === 'string' ? data.title : null,
       description: typeof data.description === 'string' ? data.description : null,
       current: data.current === true,
+      hidden: data.hidden === true,
     };
   } catch {
     return null;
+  }
+}
+
+
+// Título de una SdA generada con la skill: lo da su sdaN.json (meta.titulo y meta.subtitulo).
+async function readSdaJson(dir, entries) {
+  const f = entries.find((e) => e.isFile() && /^sda\d+\.json$/i.test(e.name));
+  if (!f) return null;
+  try {
+    const meta = JSON.parse(await fs.readFile(path.join(dir, f.name), 'utf-8')).meta || {};
+    if (typeof meta.titulo !== 'string') return null;
+    return { title: meta.titulo, description: typeof meta.subtitulo === 'string' ? meta.subtitulo : null };
+  } catch {
+    console.warn(`⚠ ${path.relative(CONTENT_DIR, path.join(dir, f.name))} no es un JSON válido: se usa el nombre de la carpeta.`);
+    return null;
+  }
+}
+
+// Páginas de redirección (nombres antiguos que se conservan para no romper enlaces): no salen en el menú.
+async function isRedirect(file) {
+  const fh = await fs.open(file, 'r');
+  try {
+    const { buffer, bytesRead } = await fh.read(Buffer.alloc(2048), 0, 2048, 0);
+    return buffer.subarray(0, bytesRead).toString('utf-8').includes('florindotic:redirect');
+  } finally {
+    await fh.close();
   }
 }
 
@@ -239,22 +276,27 @@ function landingPageTemplate({ title, description, backPath, items }) {
 
 async function walk(dir, relBase = '') {
   const entries = await fs.readdir(dir, { withFileTypes: true });
+  const inSda = relBase.split('/').some((seg) => /^sda\d+$/i.test(seg));
 
-  const dirs = entries
-    .filter((e) => e.isDirectory() && !HIDDEN_DIRECTORIES.has(e.name.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  const dirs = [];
+  for (const e of entries.filter((e) => e.isDirectory()).sort((a, b) => a.name.localeCompare(b.name, 'es'))) {
+    const childMeta = await readMeta(path.join(dir, e.name));
+    if (!childMeta?.hidden) dirs.push(e);
+  }
 
-  const files = entries
-    .filter(
-      (e) =>
-        e.isFile() &&
-        e.name.toLowerCase().endsWith('.html') &&
-        !e.name.startsWith('_')
-    )
-    .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  const files = [];
+  for (const e of entries.filter((e) => e.isFile() && e.name.toLowerCase().endsWith('.html') && !e.name.startsWith('_'))) {
+    if (!(await isRedirect(path.join(dir, e.name)))) files.push(e);
+  }
+  const rank = (n) => (inSda && SDA_FIRST.includes(n.toLowerCase()) ? SDA_FIRST.indexOf(n.toLowerCase()) : SDA_FIRST.length);
+  files.sort((a, b) => rank(a.name) - rank(b.name) || a.name.localeCompare(b.name, 'es'));
 
-  const children = [];
-  const landingItems = [];
+  const folderChildren = [];
+  const fileChildren = [];
+  const docenteChildren = [];
+  const landingFolders = [];
+  const landingFiles = [];
+  const landingDocente = [];
 
   for (const d of dirs) {
     const childPath = path.join(dir, d.name);
@@ -262,8 +304,8 @@ async function walk(dir, relBase = '') {
     const node = await walk(childPath, childRel);
     node.type = 'folder';
     node.path = childRel;
-    children.push(node);
-    landingItems.push({
+    folderChildren.push(node);
+    landingFolders.push({
       type: 'folder',
       name: node.name,
       href: node.landing ? `${d.name}/_pagina.html` : node.index ? `${d.name}/index.html` : null,
@@ -273,15 +315,19 @@ async function walk(dir, relBase = '') {
   for (const f of files) {
     const rel = relBase ? `${relBase}/${f.name}` : f.name;
     const name = prettify(f.name.replace(/\.html$/i, ''));
-    children.push({
-      type: 'file',
-      name,
-      path: `content/${rel}`,
-    });
-    landingItems.push({ type: 'file', name, href: f.name });
+    const docente = inSda && DOCENTE_FILES.has(f.name.toLowerCase());
+    (docente ? docenteChildren : fileChildren).push({ type: 'file', name, path: `content/${rel}` });
+    (docente ? landingDocente : landingFiles).push({ type: 'file', name: docente ? `Docente · ${name}` : name, href: f.name });
   }
 
-  const meta = await readMeta(dir);
+  // En una SdA: primero lo del alumnado (clase, guías, teoría), luego sesiones y al final el grupo «Docente».
+  const children = inSda ? [...fileChildren, ...folderChildren] : [...folderChildren, ...fileChildren];
+  const landingItems = inSda ? [...landingFiles, ...landingFolders, ...landingDocente] : [...landingFolders, ...landingFiles];
+  if (docenteChildren.length) {
+    children.push({ type: 'folder', name: 'Docente', path: `${relBase}/#docente`, children: docenteChildren });
+  }
+
+  const meta = (await readMeta(dir)) || (await readSdaJson(dir, entries));
   const node = { children };
 
   if (files.some((file) => file.name.toLowerCase() === 'index.html')) {
