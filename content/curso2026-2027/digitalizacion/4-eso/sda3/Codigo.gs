@@ -4,27 +4,33 @@
  *
  * Cómo usarlo:
  *  1. Entra en https://script.google.com con tu cuenta del centro → «Nuevo proyecto».
- *  2. Borra el contenido de Código.gs, pega este archivo completo y guarda (icono del disquete).
+ *  2. Crea un archivo nuevo (p. ej. «DIG4_SDA3.gs») o usa Código.gs, pega este archivo completo (puede convivir con los de otras SdA en el mismo proyecto) y guarda (icono del disquete).
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
- *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
- *   crearF1_CuantoTeCuestaTu()  →  ¿Cuánto te cuesta tu scroll? (encuesta anónima) (sesión 1, anónimo)
+ *       DIG4_SDA3_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
+ *   DIG4_SDA3_crearF1_CuantoTeCuestaTu()  →  ¿Cuánto te cuesta tu scroll? (encuesta anónima) (sesión 1, anónimo)
  *        ya creado: https://forms.gle/VdcEyGex3hpTHNjEA
- *   crearF2_TestDeNomofobiaAnonimo()  →  Test de nomofobia (anónimo) (sesión 3, anónimo)
+ *   DIG4_SDA3_crearF2_TestDeNomofobiaAnonimo()  →  Test de nomofobia (anónimo) (sesión 3, anónimo)
  *        ya creado: https://forms.gle/QJ8EuqAkaqKT1HtCA
- *   crearF3_PaseoDeGaleriaDos()  →  Paseo de galería: dos estrellas y un deseo (sesión 6, anónimo)
+ *   DIG4_SDA3_crearF3_PaseoDeGaleriaDos()  →  Paseo de galería: dos estrellas y un deseo (sesión 6, anónimo)
  *        ya creado: https://forms.gle/mY6ZWC8vV3njvxro7
- *   crearF4_CierreDelBloque1()  →  Cierre del bloque 1: mi compromiso de hábito saludable (sesión 6, anónimo)
+ *   DIG4_SDA3_crearF4_CierreDelBloque1()  →  Cierre del bloque 1: mi compromiso de hábito saludable (sesión 6, anónimo)
  *        ya creado: https://forms.gle/14yGNMkaZ4iKNifu5
- *   crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
+ *   DIG4_SDA3_crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
  *        ya creado: https://forms.gle/fFNUjtyXrQGfgzW28
+ *   DIG4_SDA3_crearF6_NosAutoevaluamosEnEl()  →  Nos autoevaluamos en el debate (sesión 11)
+ *        ya creado: https://forms.gle/JPVDxoFaLLyQe1C69
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
- *     Los formularios se guardan en la carpeta «SdA 3 · Formularios» de tu Drive.
+ *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
+ *     cuando termines, díselo a Claude y los pondrá en la web de clase.
+ *     Los formularios se guardan dentro de la carpeta de la SdA, en «SdA 3 · Formularios» de tu Drive.
  *
  * Los formularios anónimos NO recogen el correo. Con una cuenta del centro, además solo pueden responder
  * cuentas del centro (sin que quede registrado quién responde). Revisa cada formulario antes de compartirlo.
  */
 
+// Todo el código va dentro de DIG4_SDA3 para no chocar con los Codigo.gs de otras SdA del mismo proyecto.
+var DIG4_SDA3 = (function () {
 var SDA = "SdA 3";
 
 function crearTodosLosFormularios() {
@@ -39,6 +45,7 @@ function crearF2_TestDeNomofobiaAnonimo() { return crearFormulario_("F2"); }
 function crearF3_PaseoDeGaleriaDos() { return crearFormulario_("F3"); }
 function crearF4_CierreDelBloque1() { return crearFormulario_("F4"); }
 function crearF5_CierreDeLaSdA() { return crearFormulario_("F5"); }
+function crearF6_NosAutoevaluamosEnEl() { return crearFormulario_("F6"); }
 
 function crearFormulario_(id) {
   var f = FORMULARIOS.filter(function (x) { return x.id === id; })[0];
@@ -74,16 +81,38 @@ function crearFormulario_(id) {
   try { DriveApp.getFileById(form.getId()).moveTo(carpeta_()); } catch (e) { /* se queda en Mi unidad */ }
   var url = form.getPublishedUrl();
   try { url = form.shortenFormUrl(url); } catch (e) {}
+  try { registrarEnlace_(f, url, form.getEditUrl()); } catch (e) { Logger.log('No se pudo apuntar el enlace: ' + e); }
   Logger.log('✔ ' + f.id + ' «' + f.titulo + '» (' + f.sesiones + ')');
   Logger.log('    Alumnado: ' + url);
   Logger.log('    Editar y ver respuestas: ' + form.getEditUrl());
   return form;
 }
 
+var CARPETA_SDA = "1sybyZeZ-THvR-PtrO_hoSa7Xo_V6ma3K";  // carpeta de la SdA en tu Drive
+
 function carpeta_() {
   var nombre = SDA + ' · Formularios';
-  var it = DriveApp.getFoldersByName(nombre);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(nombre);
+  var raiz;
+  try { raiz = DriveApp.getFolderById(CARPETA_SDA); } catch (e) { raiz = DriveApp.getRootFolder(); }
+  var it = raiz.getFoldersByName(nombre);
+  return it.hasNext() ? it.next() : raiz.createFolder(nombre);
+}
+
+// Apunta el enlace en la hoja «SdA N · Enlaces de formularios» (Claude la lee para enlazarlos en la web de clase).
+function registrarEnlace_(f, url, edicion) {
+  var raiz;
+  try { raiz = DriveApp.getFolderById(CARPETA_SDA); } catch (e) { raiz = DriveApp.getRootFolder(); }
+  var nombre = SDA + ' · Enlaces de formularios';
+  var it = raiz.getFilesByName(nombre), ss;
+  if (it.hasNext()) ss = SpreadsheetApp.open(it.next());
+  else {
+    ss = SpreadsheetApp.create(nombre);
+    DriveApp.getFileById(ss.getId()).moveTo(raiz);
+    ss.getSheets()[0].appendRow(['id', 'titulo', 'alumnado', 'edicion', 'fecha']);
+  }
+  var h = ss.getSheets()[0], datos = h.getDataRange().getValues();
+  for (var i = 1; i < datos.length; i++) if (datos[i][0] === f.id) { h.deleteRow(i + 1); break; }
+  h.appendRow([f.id, f.titulo, url, edicion, new Date()]);
 }
 
 // ----------------------------------------------------------------- formularios (puedes editar los textos)
@@ -481,5 +510,85 @@ var FORMULARIOS = [
       }
     ],
     "sesiones": "Sesión 12"
+  },
+  {
+    "id": "F6",
+    "titulo": "Nos autoevaluamos en el debate",
+    "anonimo": false,
+    "descripcion": "Autoevaluación de tu ensayo del debate, adaptada de la plantilla «Nos autoevaluamos» de la «Guía para el debate académico en el aula» (Proyecto REA/DUA Andalucía). Recoge tu correo del centro para que el docente pueda ayudarte. Conoce tus puntos fuertes y trabaja para mejorar el resto.",
+    "confirmacion": "¡Gracias! Aplica tu propuesta de mejora en el debate de la sesión 12.",
+    "obligatorias": true,
+    "preguntas": [
+      {
+        "tipo": "opcion",
+        "titulo": "¿Qué rol tienes en el debate?",
+        "opciones": [
+          "Introductor/a",
+          "Refutador/a 1",
+          "Refutador/a 2",
+          "Conclusor/a",
+          "Moderador/a",
+          "Cronometrador/a",
+          "Relator/a-jurado"
+        ]
+      },
+      {
+        "tipo": "cuadricula",
+        "titulo": "En el ensayo…",
+        "filas": [
+          "¿He definido claramente las palabras más importantes del tema?",
+          "¿He expresado con precisión la tesis principal?",
+          "¿He conectado los argumentos con el tema?",
+          "¿He usado argumentos sólidos?",
+          "¿He evitado los argumentos falsos y poco fundamentados?",
+          "¿He hablado con buen tono, de forma pausada y tranquila?",
+          "¿He mirado a mis interlocutores?",
+          "¿Me he movido con naturalidad?",
+          "¿Mis gestos han servido para apoyar mis palabras?"
+        ],
+        "columnas": [
+          "✔ Sí",
+          "✘ Todavía no"
+        ]
+      },
+      {
+        "tipo": "parrafo",
+        "titulo": "Mi propuesta de mejora para el debate",
+        "ayuda": "Elige una de las casillas que has marcado con ✘ y escribe qué harás para mejorarla."
+      },
+      {
+        "tipo": "escala",
+        "titulo": "¿Cómo de preparado/a te sientes para el debate?",
+        "min": 1,
+        "max": 5,
+        "etiquetas": [
+          "Nada",
+          "Totalmente"
+        ],
+        "obligatoria": false
+      }
+    ],
+    "enlace": "https://forms.gle/JPVDxoFaLLyQe1C69",
+    "sesiones": "Sesión 11"
   }
 ];
+
+  return {
+    crearTodosLosFormularios: crearTodosLosFormularios,
+    crearF1_CuantoTeCuestaTu: crearF1_CuantoTeCuestaTu,
+    crearF2_TestDeNomofobiaAnonimo: crearF2_TestDeNomofobiaAnonimo,
+    crearF3_PaseoDeGaleriaDos: crearF3_PaseoDeGaleriaDos,
+    crearF4_CierreDelBloque1: crearF4_CierreDelBloque1,
+    crearF5_CierreDeLaSdA: crearF5_CierreDeLaSdA,
+    crearF6_NosAutoevaluamosEnEl: crearF6_NosAutoevaluamosEnEl
+  };
+})();
+
+// Funciones que aparecen en el desplegable «Ejecutar» de Apps Script.
+function DIG4_SDA3_crearTodosLosFormularios() { return DIG4_SDA3.crearTodosLosFormularios(); }
+function DIG4_SDA3_crearF1_CuantoTeCuestaTu() { return DIG4_SDA3.crearF1_CuantoTeCuestaTu(); }
+function DIG4_SDA3_crearF2_TestDeNomofobiaAnonimo() { return DIG4_SDA3.crearF2_TestDeNomofobiaAnonimo(); }
+function DIG4_SDA3_crearF3_PaseoDeGaleriaDos() { return DIG4_SDA3.crearF3_PaseoDeGaleriaDos(); }
+function DIG4_SDA3_crearF4_CierreDelBloque1() { return DIG4_SDA3.crearF4_CierreDelBloque1(); }
+function DIG4_SDA3_crearF5_CierreDeLaSdA() { return DIG4_SDA3.crearF5_CierreDeLaSdA(); }
+function DIG4_SDA3_crearF6_NosAutoevaluamosEnEl() { return DIG4_SDA3.crearF6_NosAutoevaluamosEnEl(); }
