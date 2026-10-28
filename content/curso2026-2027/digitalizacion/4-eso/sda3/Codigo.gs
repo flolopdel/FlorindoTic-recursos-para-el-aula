@@ -4,20 +4,21 @@
  *
  * Cómo usarlo:
  *  1. Entra en https://script.google.com con tu cuenta del centro → «Nuevo proyecto».
- *  2. Borra el contenido de Código.gs, pega este archivo completo y guarda (icono del disquete).
+ *  2. Crea un archivo nuevo (p. ej. «DIG4_SDA3.gs») o usa Código.gs, pega este archivo completo (puede convivir con los de otras SdA en el mismo proyecto) y guarda (icono del disquete).
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
- *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
- *   crearF1_CuantoTeCuestaTu()  →  ¿Cuánto te cuesta tu scroll? (encuesta anónima) (sesión 1, anónimo)
+ *       DIG4_SDA3_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
+ *   DIG4_SDA3_crearF1_CuantoTeCuestaTu()  →  ¿Cuánto te cuesta tu scroll? (encuesta anónima) (sesión 1, anónimo)
  *        ya creado: https://forms.gle/VdcEyGex3hpTHNjEA
- *   crearF2_TestDeNomofobiaAnonimo()  →  Test de nomofobia (anónimo) (sesión 3, anónimo)
+ *   DIG4_SDA3_crearF2_TestDeNomofobiaAnonimo()  →  Test de nomofobia (anónimo) (sesión 3, anónimo)
  *        ya creado: https://forms.gle/QJ8EuqAkaqKT1HtCA
- *   crearF3_PaseoDeGaleriaDos()  →  Paseo de galería: dos estrellas y un deseo (sesión 6, anónimo)
+ *   DIG4_SDA3_crearF3_PaseoDeGaleriaDos()  →  Paseo de galería: dos estrellas y un deseo (sesión 6, anónimo)
  *        ya creado: https://forms.gle/mY6ZWC8vV3njvxro7
- *   crearF4_CierreDelBloque1()  →  Cierre del bloque 1: mi compromiso de hábito saludable (sesión 6, anónimo)
+ *   DIG4_SDA3_crearF4_CierreDelBloque1()  →  Cierre del bloque 1: mi compromiso de hábito saludable (sesión 6, anónimo)
  *        ya creado: https://forms.gle/14yGNMkaZ4iKNifu5
- *   crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
+ *   DIG4_SDA3_crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
  *        ya creado: https://forms.gle/fFNUjtyXrQGfgzW28
- *   crearF6_NosAutoevaluamosEnEl()  →  Nos autoevaluamos en el debate (sesión 11)
+ *   DIG4_SDA3_crearF6_NosAutoevaluamosEnEl()  →  Nos autoevaluamos en el debate (sesión 11)
+ *        ya creado: https://forms.gle/JPVDxoFaLLyQe1C69
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
@@ -28,6 +29,8 @@
  * cuentas del centro (sin que quede registrado quién responde). Revisa cada formulario antes de compartirlo.
  */
 
+// Todo el código va dentro de DIG4_SDA3 para no chocar con los Codigo.gs de otras SdA del mismo proyecto.
+var DIG4_SDA3 = (function () {
 var SDA = "SdA 3";
 
 function crearTodosLosFormularios() {
@@ -565,6 +568,27 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/JPVDxoFaLLyQe1C69",
     "sesiones": "Sesión 11"
   }
 ];
+
+  return {
+    crearTodosLosFormularios: crearTodosLosFormularios,
+    crearF1_CuantoTeCuestaTu: crearF1_CuantoTeCuestaTu,
+    crearF2_TestDeNomofobiaAnonimo: crearF2_TestDeNomofobiaAnonimo,
+    crearF3_PaseoDeGaleriaDos: crearF3_PaseoDeGaleriaDos,
+    crearF4_CierreDelBloque1: crearF4_CierreDelBloque1,
+    crearF5_CierreDeLaSdA: crearF5_CierreDeLaSdA,
+    crearF6_NosAutoevaluamosEnEl: crearF6_NosAutoevaluamosEnEl
+  };
+})();
+
+// Funciones que aparecen en el desplegable «Ejecutar» de Apps Script.
+function DIG4_SDA3_crearTodosLosFormularios() { return DIG4_SDA3.crearTodosLosFormularios(); }
+function DIG4_SDA3_crearF1_CuantoTeCuestaTu() { return DIG4_SDA3.crearF1_CuantoTeCuestaTu(); }
+function DIG4_SDA3_crearF2_TestDeNomofobiaAnonimo() { return DIG4_SDA3.crearF2_TestDeNomofobiaAnonimo(); }
+function DIG4_SDA3_crearF3_PaseoDeGaleriaDos() { return DIG4_SDA3.crearF3_PaseoDeGaleriaDos(); }
+function DIG4_SDA3_crearF4_CierreDelBloque1() { return DIG4_SDA3.crearF4_CierreDelBloque1(); }
+function DIG4_SDA3_crearF5_CierreDeLaSdA() { return DIG4_SDA3.crearF5_CierreDeLaSdA(); }
+function DIG4_SDA3_crearF6_NosAutoevaluamosEnEl() { return DIG4_SDA3.crearF6_NosAutoevaluamosEnEl(); }
