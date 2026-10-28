@@ -307,12 +307,15 @@ function openAll(){ document.querySelectorAll('details.ses').forEach(d=>d.open=t
 /* ---------- 4. moodle ---------- */
 (function(){
   const Mo = S.moodle || {};
+  // Criterios de una Tarea: el principal y los de cada línea de su rúbrica (así llegan todos a Séneca)
+  const critsDe = m => [...new Set([m.criterio, ...arr(m.rubrica).map(l=>l.criterio)].filter(Boolean))];
   const all = S.sesiones.flatMap(s => arr(s.moodle).map(m => ({...m, n:s.n})));
   let h = `<div class="grid g2"><div class="card"><h2>Estructura del curso</h2>${Mo.estructura?`<p>${esc(Mo.estructura)}</p>`:''}${arr(Mo.secciones).map(sec=>`<div class="lab">${esc(sec.nombre)}</div>${ul(sec.elementos)}`).join('')}</div>
-    <div class="card"><h2>Libro de calificaciones</h2>${Mo.calificaciones?`<p>${esc(Mo.calificaciones)}</p>`:''}
-      <table class="tbl"><thead><tr><th>Criterio</th><th>Elementos calificables en Moodle</th></tr></thead><tbody>${IDX.criterios.map(c=>`<tr><td>${chip(c)}</td><td>${all.filter(m=>m.calificable && m.criterio===c).map(m=>`S${m.n} · ${esc(m.recurso)} «${esc(m.nombre)}»`).join('<br>') || '<span class="note">Se califica fuera de Moodle (observación, exposición…)</span>'}</td></tr>`).join('')}</tbody></table></div></div>`;
+    <div class="card"><h2>Libro de calificaciones</h2>${Mo.calificaciones?`<p>${esc(Mo.calificaciones)}</p>`:''}<p class="note">Una Tarea con rúbrica aparece en todos los criterios que evalúan sus líneas; la nota de cada criterio la calcula la pestaña «Evaluación» y es la que se pasa a Séneca.</p>
+      <table class="tbl"><thead><tr><th>Criterio</th><th>Elementos calificables en Moodle</th></tr></thead><tbody>${IDX.criterios.map(c=>`<tr><td>${chip(c)}</td><td>${all.filter(m=>m.calificable && critsDe(m).includes(c)).map(m=>{ const ls = arr(m.rubrica).filter(l=>l.criterio===c).map(l=>l.linea);
+        return `S${m.n} · ${esc(m.recurso)} «${esc(m.nombre)}»${ls.length && critsDe(m).length>1 ? `<div class="note">Líneas de la rúbrica: ${ls.map(esc).join(' · ')}</div>` : ''}`; }).join('<br>') || '<span class="note">Se califica fuera de Moodle (observación, exposición…)</span>'}</td></tr>`).join('')}</tbody></table></div></div>`;
   if(arr(Mo.configuracion).length) h += `<div class="card" style="margin-top:16px"><h2>Configuración general recomendada</h2>${ul(Mo.configuracion)}</div>`;
-  h += `<div class="card" style="margin-top:16px"><h2>Todas las actividades de Moodle</h2><div class="scroll"><table class="tbl"><thead><tr><th>Sesión</th><th>Recurso</th><th>Nombre</th><th>Corrección</th><th>Para qué</th><th>Configuración clave</th></tr></thead><tbody>${all.map(m=>`<tr><td>S${m.n}</td><td>${esc(m.recurso)}</td><td>${esc(m.nombre)}${m.criterio?' '+chip(m.criterio):''}</td><td>${corrBadge(m)||'—'}</td><td>${esc(m.uso)}</td><td>${ul(m.config)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  h += `<div class="card" style="margin-top:16px"><h2>Todas las actividades de Moodle</h2><div class="scroll"><table class="tbl"><thead><tr><th>Sesión</th><th>Recurso</th><th>Nombre</th><th>Corrección</th><th>Para qué</th><th>Configuración clave</th></tr></thead><tbody>${all.map(m=>`<tr><td>S${m.n}</td><td>${esc(m.recurso)}</td><td>${esc(m.nombre)} ${chips(critsDe(m))}</td><td>${corrBadge(m)||'—'}</td><td>${esc(m.uso)}</td><td>${ul(m.config)}</td></tr>`).join('')}</tbody></table></div></div>`;
   $('#p-moodle').innerHTML = h;
 })();
 
