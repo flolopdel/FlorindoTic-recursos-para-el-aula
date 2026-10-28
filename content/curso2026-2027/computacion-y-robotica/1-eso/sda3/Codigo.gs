@@ -8,7 +8,9 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   crearF1_AntesDeEmpezarQue()  →  Antes de empezar: ¿qué sabemos de los robots? (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/zU2bcyTVVHrQgeoJ8
  *   crearF2_AutoevaluacionQueHasConseguido()  →  Autoevaluación: ¿qué has conseguido? (sesión 9)
+ *        ya creado: https://forms.gle/TT64EkjcGhPakDzU7
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
@@ -164,6 +166,7 @@ var FORMULARIOS = [
         ]
       }
     ],
+    "enlace": "https://forms.gle/zU2bcyTVVHrQgeoJ8",
     "sesiones": "Sesión 1"
   },
   {
@@ -227,6 +230,7 @@ var FORMULARIOS = [
         ]
       }
     ],
+    "enlace": "https://forms.gle/TT64EkjcGhPakDzU7",
     "sesiones": "Sesión 9"
   }
 ];
