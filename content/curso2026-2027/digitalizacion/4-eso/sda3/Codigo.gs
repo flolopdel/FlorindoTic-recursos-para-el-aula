@@ -17,9 +17,12 @@
  *        ya creado: https://forms.gle/14yGNMkaZ4iKNifu5
  *   crearF5_CierreDeLaSdA()  →  Cierre de la SdA: votación, autoevaluación y valoración (sesión 12)
  *        ya creado: https://forms.gle/fFNUjtyXrQGfgzW28
+ *   crearF6_NosAutoevaluamosEnEl()  →  Nos autoevaluamos en el debate (sesión 11)
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
- *     Los formularios se guardan en la carpeta «SdA 3 · Formularios» de tu Drive.
+ *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
+ *     cuando termines, díselo a Claude y los pondrá en la web de clase.
+ *     Los formularios se guardan dentro de la carpeta de la SdA, en «SdA 3 · Formularios» de tu Drive.
  *
  * Los formularios anónimos NO recogen el correo. Con una cuenta del centro, además solo pueden responder
  * cuentas del centro (sin que quede registrado quién responde). Revisa cada formulario antes de compartirlo.
@@ -39,6 +42,7 @@ function crearF2_TestDeNomofobiaAnonimo() { return crearFormulario_("F2"); }
 function crearF3_PaseoDeGaleriaDos() { return crearFormulario_("F3"); }
 function crearF4_CierreDelBloque1() { return crearFormulario_("F4"); }
 function crearF5_CierreDeLaSdA() { return crearFormulario_("F5"); }
+function crearF6_NosAutoevaluamosEnEl() { return crearFormulario_("F6"); }
 
 function crearFormulario_(id) {
   var f = FORMULARIOS.filter(function (x) { return x.id === id; })[0];
@@ -74,16 +78,38 @@ function crearFormulario_(id) {
   try { DriveApp.getFileById(form.getId()).moveTo(carpeta_()); } catch (e) { /* se queda en Mi unidad */ }
   var url = form.getPublishedUrl();
   try { url = form.shortenFormUrl(url); } catch (e) {}
+  try { registrarEnlace_(f, url, form.getEditUrl()); } catch (e) { Logger.log('No se pudo apuntar el enlace: ' + e); }
   Logger.log('✔ ' + f.id + ' «' + f.titulo + '» (' + f.sesiones + ')');
   Logger.log('    Alumnado: ' + url);
   Logger.log('    Editar y ver respuestas: ' + form.getEditUrl());
   return form;
 }
 
+var CARPETA_SDA = "1sybyZeZ-THvR-PtrO_hoSa7Xo_V6ma3K";  // carpeta de la SdA en tu Drive
+
 function carpeta_() {
   var nombre = SDA + ' · Formularios';
-  var it = DriveApp.getFoldersByName(nombre);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(nombre);
+  var raiz;
+  try { raiz = DriveApp.getFolderById(CARPETA_SDA); } catch (e) { raiz = DriveApp.getRootFolder(); }
+  var it = raiz.getFoldersByName(nombre);
+  return it.hasNext() ? it.next() : raiz.createFolder(nombre);
+}
+
+// Apunta el enlace en la hoja «SdA N · Enlaces de formularios» (Claude la lee para enlazarlos en la web de clase).
+function registrarEnlace_(f, url, edicion) {
+  var raiz;
+  try { raiz = DriveApp.getFolderById(CARPETA_SDA); } catch (e) { raiz = DriveApp.getRootFolder(); }
+  var nombre = SDA + ' · Enlaces de formularios';
+  var it = raiz.getFilesByName(nombre), ss;
+  if (it.hasNext()) ss = SpreadsheetApp.open(it.next());
+  else {
+    ss = SpreadsheetApp.create(nombre);
+    DriveApp.getFileById(ss.getId()).moveTo(raiz);
+    ss.getSheets()[0].appendRow(['id', 'titulo', 'alumnado', 'edicion', 'fecha']);
+  }
+  var h = ss.getSheets()[0], datos = h.getDataRange().getValues();
+  for (var i = 1; i < datos.length; i++) if (datos[i][0] === f.id) { h.deleteRow(i + 1); break; }
+  h.appendRow([f.id, f.titulo, url, edicion, new Date()]);
 }
 
 // ----------------------------------------------------------------- formularios (puedes editar los textos)
@@ -481,5 +507,64 @@ var FORMULARIOS = [
       }
     ],
     "sesiones": "Sesión 12"
+  },
+  {
+    "id": "F6",
+    "titulo": "Nos autoevaluamos en el debate",
+    "anonimo": false,
+    "descripcion": "Autoevaluación de tu ensayo del debate, adaptada de la plantilla «Nos autoevaluamos» de la «Guía para el debate académico en el aula» (Proyecto REA/DUA Andalucía). Recoge tu correo del centro para que el docente pueda ayudarte. Conoce tus puntos fuertes y trabaja para mejorar el resto.",
+    "confirmacion": "¡Gracias! Aplica tu propuesta de mejora en el debate de la sesión 12.",
+    "obligatorias": true,
+    "preguntas": [
+      {
+        "tipo": "opcion",
+        "titulo": "¿Qué rol tienes en el debate?",
+        "opciones": [
+          "Introductor/a",
+          "Refutador/a 1",
+          "Refutador/a 2",
+          "Conclusor/a",
+          "Moderador/a",
+          "Cronometrador/a",
+          "Relator/a-jurado"
+        ]
+      },
+      {
+        "tipo": "cuadricula",
+        "titulo": "En el ensayo…",
+        "filas": [
+          "¿He definido claramente las palabras más importantes del tema?",
+          "¿He expresado con precisión la tesis principal?",
+          "¿He conectado los argumentos con el tema?",
+          "¿He usado argumentos sólidos?",
+          "¿He evitado los argumentos falsos y poco fundamentados?",
+          "¿He hablado con buen tono, de forma pausada y tranquila?",
+          "¿He mirado a mis interlocutores?",
+          "¿Me he movido con naturalidad?",
+          "¿Mis gestos han servido para apoyar mis palabras?"
+        ],
+        "columnas": [
+          "✔ Sí",
+          "✘ Todavía no"
+        ]
+      },
+      {
+        "tipo": "parrafo",
+        "titulo": "Mi propuesta de mejora para el debate",
+        "ayuda": "Elige una de las casillas que has marcado con ✘ y escribe qué harás para mejorarla."
+      },
+      {
+        "tipo": "escala",
+        "titulo": "¿Cómo de preparado/a te sientes para el debate?",
+        "min": 1,
+        "max": 5,
+        "etiquetas": [
+          "Nada",
+          "Totalmente"
+        ],
+        "obligatoria": false
+      }
+    ],
+    "sesiones": "Sesión 11"
   }
 ];
