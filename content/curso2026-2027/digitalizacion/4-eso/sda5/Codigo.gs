@@ -195,12 +195,13 @@ var FORMULARIOS = [
         "titulo": "¿Qué he logrado?",
         "filas": [
           "Distingo mapa de bits y vectorial y elijo el formato adecuado",
-          "Retoco una imagen con capas y la exporto con el tamaño correcto",
-          "Uso imágenes con licencia y las cito bien",
+          "Edito en GIMP con capas y selecciones y exporto bien",
+          "Uso imágenes de bancos libres y las cito bien",
+          "Reviso y borro los metadatos de mis fotos",
+          "Entiendo cómo aprende una IA a partir de sus datos",
           "Detecto sesgos en las imágenes generadas con IA",
-          "Compruebo si una imagen es real, retocada o generada",
-          "Etiqueto lo que he hecho con IA",
-          "He presentado mi cartel explicando mis decisiones"
+          "Comparo la edición a mano y con IA y etiqueto lo que hago con IA",
+          "He defendido mi cartel en público explicando mis decisiones"
         ],
         "columnas": [
           "Lo he logrado",
