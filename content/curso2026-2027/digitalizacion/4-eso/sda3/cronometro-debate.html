@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cronómetro del gran debate · SdA 3</title>
+<meta name="description" content="Guía de tiempos y cronómetros para el debate académico de la SdA 3 de Digitalización 4.º ESO: turnos, tarjetas de tiempo, sorteo y registro.">
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#0f172a; --mute:#475569; --line:#d6dde6;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --amber:#b45309; --amber-bg:#fef3c7; --red:#b91c1c; --red-bg:#fee2e2; --ok:#15803d;
+  --pro:#0f766e; --pro-soft:#ccfbf1; --con:#7c3aed; --con-soft:#ede9fe; --mesa:#334155; --mesa-soft:#e2e8f0;
+  --shadow:0 1px 2px rgba(15,23,42,.06),0 6px 20px rgba(15,23,42,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#121b2e; --ink:#e5e9f0; --mute:#9aa7bb; --line:#26324a;
+    --brand:#2dd4bf; --brand-soft:#0f3a37; --accent:#a78bfa; --accent-soft:#2a2350;
+    --amber:#fbbf24; --amber-bg:#3a2a07; --red:#f87171; --red-bg:#3b1414; --ok:#4ade80;
+    --pro:#2dd4bf; --pro-soft:#0f3a37; --con:#a78bfa; --con-soft:#2a2350; --mesa:#cbd5e1; --mesa-soft:#1e293b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#121b2e; --ink:#e5e9f0; --mute:#9aa7bb; --line:#26324a;
+  --brand:#2dd4bf; --brand-soft:#0f3a37; --accent:#a78bfa; --accent-soft:#2a2350;
+  --amber:#fbbf24; --amber-bg:#3a2a07; --red:#f87171; --red-bg:#3b1414; --ok:#4ade80;
+  --pro:#2dd4bf; --pro-soft:#0f3a37; --con:#a78bfa; --con-soft:#2a2350; --mesa:#cbd5e1; --mesa-soft:#1e293b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--brand)}
+.wrap{max-width:1280px;margin:0 auto;padding:12px 16px 28px}
+header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.logo{font-size:1.6rem}
+.ttl{flex:1 1 260px;min-width:0}
+.ttl h1{font-size:1.15rem;margin:0;line-height:1.2}
+.ttl .mo{color:var(--mute);font-size:.9rem;margin:2px 0 0}
+.sesmini{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px;box-shadow:var(--shadow);font-variant-numeric:tabular-nums;font-size:.92rem;white-space:nowrap}
+.sesmini b{font-size:1rem}
+.ic{border:1px solid var(--line);background:var(--card);border-radius:999px;width:36px;height:36px;display:inline-grid;place-items:center;font-size:1rem;padding:0}
+.ic:hover{border-color:var(--brand)}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+nav.tabs button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:600;font-size:.93rem}
+nav.tabs button[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"],:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:var(--bg)}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) nav.tabs button[aria-selected="true"]{color:#fff} }
+.view{display:none}
+.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-weight:700;font-size:.8rem;letter-spacing:.02em}
+.c-pro{background:var(--pro-soft);color:var(--pro)}
+.c-con{background:var(--con-soft);color:var(--con)}
+.c-mesa{background:var(--mesa-soft);color:var(--mesa)}
+.mute{color:var(--mute)}
+.small{font-size:.86rem}
+
+/* --- Debate --- */
+.rondabar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.rondabar select{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 10px;font-weight:600}
+.versus{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600}
+.stage{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:18px 16px 16px;position:relative;overflow:hidden}
+.stage::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:var(--side,var(--brand))}
+.turnlbl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.who{font-size:clamp(1.4rem,3.2vw,2.2rem);font-weight:800;margin:0;line-height:1.15}
+.team{font-size:clamp(1rem,2vw,1.25rem);color:var(--mute);margin:0}
+.ring{position:relative;width:min(70vw,360px);aspect-ratio:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .bgc{fill:none;stroke:var(--line);stroke-width:14}
+.ring .fgc{fill:none;stroke:var(--side,var(--brand));stroke-width:14;stroke-linecap:round;transition:stroke .3s}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.big{font-size:clamp(3.2rem,9vw,5.6rem);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.state{font-weight:700;margin-top:6px;font-size:1rem;min-height:1.5em}
+.stage.warn .big,.stage.warn .state{color:var(--amber)}
+.stage.warn .fgc{stroke:var(--amber)}
+.stage.over .big,.stage.over .state{color:var(--red)}
+.stage.over .fgc{stroke:var(--red)}
+.stage.over{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px var(--red-bg),var(--shadow)}}
+@media (prefers-reduced-motion: reduce){.stage.over{animation:none}}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--brand)}
+.btn.main{background:var(--brand);border-color:var(--brand);color:#fff;min-width:150px;justify-content:center;font-size:1.05rem}
+:root[data-theme="dark"] .btn.main{color:var(--bg)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.main{color:var(--bg)}}
+.btn kbd,.kb{font:600 .72rem ui-monospace,monospace;border:1px solid var(--line);border-radius:5px;padding:0 5px;color:var(--mute);background:var(--bg)}
+.btn.main kbd{color:inherit;background:transparent;border-color:currentColor;opacity:.7}
+.mod{background:var(--bg);border-radius:12px;padding:10px 14px;max-width:640px;width:100%;text-align:left;font-size:.95rem}
+.mod b{color:var(--brand)}
+.todo{max-width:640px;width:100%;text-align:left}
+.todo h3{font-size:.95rem;margin:4px 0 6px}
+.todo ul{margin:0;padding-left:1.2em}
+.todo li{margin:2px 0}
+.hint{display:flex;gap:8px;align-items:flex-start;background:var(--amber-bg);color:var(--ink);border-radius:12px;padding:8px 12px;max-width:640px;width:100%;text-align:left;font-size:.92rem}
+.side h2{font-size:1rem;margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tot{font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--mute);font-weight:600}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:0 0 10px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+ol.turns{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ol.turns li button{width:100%;display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:7px 10px}
+ol.turns li button:hover{border-color:var(--brand)}
+ol.turns li.cur button{border-color:var(--side,var(--brand));box-shadow:inset 4px 0 0 var(--side,var(--brand))}
+ol.turns li.done button{opacity:.7}
+.tn{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;font-weight:800;background:var(--bg)}
+li.done .tn{background:var(--ok);color:#fff}
+.tr{font-size:.9rem;line-height:1.2}
+.tr small{display:block;color:var(--mute);font-size:.78rem}
+.tt{font-variant-numeric:tabular-nums;font-size:.82rem;text-align:right;color:var(--mute);white-space:nowrap}
+.tt .ov{color:var(--red);font-weight:700}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+/* --- Sesión --- */
+.timeline{display:flex;height:46px;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:12px 0 4px;position:relative}
+.timeline div{display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;padding:0 4px;border-right:2px solid var(--card)}
+.timeline .now{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--ink);border-radius:2px;transition:left .5s}
+.blocks{display:grid;gap:10px;margin-top:14px}
+.blk{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card)}
+.blk.cur{border-color:var(--brand);box-shadow:inset 5px 0 0 var(--brand)}
+.blk.done{opacity:.72}
+.blk .em{font-size:1.6rem}
+.blk h3{margin:0;font-size:1.02rem}
+.blk p{margin:3px 0 0;font-size:.9rem;color:var(--mute)}
+.blk .bt{font-variant-numeric:tabular-nums;text-align:right;font-weight:700;white-space:nowrap}
+.blk .bt small{display:block;font-weight:500;color:var(--mute)}
+.sesclock{display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.sesclock .big{font-size:clamp(2.4rem,6vw,3.6rem)}
+.delta{font-weight:700}
+.delta.late{color:var(--red)} .delta.early{color:var(--ok)}
+
+/* --- Sorteo --- */
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+.teams label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem}
+input[type=text],input[type=number],select.f{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;width:100%}
+.draw{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.pair{border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.pair h3{margin:0 0 8px;font-size:1rem}
+.pair .row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--line)}
+.pair .row:first-of-type{border-top:0}
+.shuffling .pair{animation:shake .12s linear infinite}
+@keyframes shake{50%{transform:translateY(-2px)}}
+@media (prefers-reduced-motion: reduce){.shuffling .pair{animation:none}}
+
+/* --- Ajustes --- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem}
+.form .wide{grid-column:1/-1}
+.check{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:500!important}
+table.reg{width:100%;border-collapse:collapse;font-size:.92rem;font-variant-numeric:tabular-nums}
+table.reg th,table.reg td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left}
+table.reg td.n{text-align:right}
+table.reg .ov{color:var(--red);font-weight:700}
+h2.sec{font-size:1.1rem;margin:0 0 4px}
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:10px 0 0;padding:0;list-style:none}
+.principles li{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:.92rem}
+
+/* --- Tarjetas --- */
+#cards{position:fixed;inset:0;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center;padding:4vh 4vw;background:#15803d;color:#fff}
+#cards.on{display:flex}
+#cards.warn{background:#d97706}
+#cards.over{background:#b91c1c}
+#cards .cw{font-size:clamp(1.2rem,3.5vw,2.2rem);font-weight:700;opacity:.92}
+#cards .cb{font-size:clamp(4rem,16vw,12rem);font-weight:900;line-height:.95;letter-spacing:-.02em}
+#cards .ct{font-size:clamp(2.4rem,8vw,6rem);font-weight:800;font-variant-numeric:tabular-nums}
+#cards .cx{position:absolute;top:14px;right:14px;display:flex;gap:8px}
+#cards .cx button{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:8px 14px;font-weight:700}
+#cards .ch{position:absolute;bottom:14px;left:0;right:0;font-size:.9rem;opacity:.85}
+.foot{margin-top:18px;color:var(--mute);font-size:.82rem;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="logo" aria-hidden="true">⏱️</span>
+    <div class="ttl">
+      <h1>Cronómetro del gran debate</h1>
+      <p class="mo" id="mocionTop"></p>
+    </div>
+    <div class="sesmini" title="Reloj de la sesión 12 (50 min)">
+      <span>Sesión</span><b id="sesMini">0:00</b><span class="mute">/ <span id="sesMiniTot">50:00</span></span>
+      <button class="ic" id="sesMiniBtn" aria-label="Iniciar o pausar el reloj de la sesión">▶</button>
+    </div>
+    <button class="ic" id="soundBtn" aria-label="Sonido activado" title="Sonido (M)">🔔</button>
+    <button class="ic" id="themeBtn" aria-label="Cambiar tema claro u oscuro" title="Tema">🌓</button>
+    <button class="ic" id="fsBtn" aria-label="Pantalla completa" title="Pantalla completa (F)">⛶</button>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-v="debate" aria-selected="true">🎙️ Debate</button>
+    <button role="tab" data-v="sesion" aria-selected="false">🗓️ Guía de la sesión</button>
+    <button role="tab" data-v="sorteo" aria-selected="false">🎲 Sorteo</button>
+    <button role="tab" data-v="registro" aria-selected="false">📋 Registro</button>
+    <button role="tab" data-v="ajustes" aria-selected="false">⚙️ Ajustes</button>
+  </nav>
+
+  <!-- DEBATE -->
+  <section class="view on" id="v-debate" aria-label="Cronómetro de la ronda">
+    <div class="rondabar">
+      <select id="rondaSel" aria-label="Ronda"></select>
+      <div class="versus" id="versus"></div>
+    </div>
+    <div class="grid">
+      <div class="card stage" id="stage">
+        <div class="turnlbl" id="turnLbl"></div>
+        <p class="who" id="who"></p>
+        <p class="team" id="team"></p>
+        <div class="ring" aria-hidden="false">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="bgc" cx="100" cy="100" r="88"/><circle class="fgc" id="ringFg" cx="100" cy="100" r="88"/></svg>
+          <div class="num"><div class="big" id="clock" role="timer" aria-live="off">1:30</div><div class="state" id="state" aria-live="polite"></div></div>
+        </div>
+        <div class="ctrls">
+          <button class="btn" id="prevBtn" title="Turno anterior (←)">◀ Anterior <kbd>←</kbd></button>
+          <button class="btn main" id="playBtn" title="Iniciar o pausar (Espacio)">▶ Iniciar <kbd>Espacio</kbd></button>
+          <button class="btn" id="nextBtn" title="Siguiente turno (→)">Siguiente ▶ <kbd>→</kbd></button>
+        </div>
+        <div class="ctrls">
+          <button class="btn" id="resetBtn" title="Reiniciar este turno (R)">↺ Reiniciar turno <kbd>R</kbd></button>
+          <button class="btn" id="cardsBtn" title="Tarjetas a pantalla completa (T)">🃏 Tarjetas <kbd>T</kbd></button>
+          <button class="btn" id="plusBtn" title="Añadir 15 segundos a este turno">+15 s</button>
+        </div>
+        <div class="hint" id="hint" hidden></div>
+        <div class="mod" id="modLine"></div>
+        <div class="todo" id="todo"></div>
+      </div>
+      <aside class="card side" aria-label="Turnos de la ronda">
+        <h2><span id="sideTtl">Turnos</span><span class="tot" id="rondaTot">0:00 / 15:00</span></h2>
+        <div class="bar"><i id="rondaBar"></i></div>
+        <ol class="turns" id="turns"></ol>
+        <div class="legend">
+          <span class="chip c-pro">A favor</span><span class="chip c-con">En contra</span><span class="chip c-mesa">Mesa y jurado</span>
+        </div>
+        <p class="small mute" style="margin:10px 0 0">El cronometrador/a enseña la tarjeta de <b>30 segundos</b> y la de <b>tiempo</b>. Al llegar a 0 el reloj sigue contando en rojo: es el tiempo de más.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SESIÓN -->
+  <section class="view" id="v-sesion" aria-label="Guía de la sesión 12">
+    <div class="card">
+      <div class="sesclock">
+        <div>
+          <h2 class="sec">Sesión 12 · El gran debate y cierre de la SdA</h2>
+          <p class="mute small" style="margin:0">Pulsa «Empezar la sesión» al entrar en el aula. El reloj sigue corriendo aunque cambies de pestaña.</p>
+        </div>
+        <div style="text-align:right">
+          <div class="big" id="sesClock">0:00</div>
+          <div class="small"><span class="mute">de <span id="sesTot2">50:00</span> · </span><span class="delta" id="sesDelta">a tiempo</span></div>
+        </div>
+      </div>
+      <div class="timeline" id="timeline"><span class="now" id="nowMark" style="left:0"></span></div>
+      <div class="ctrls" style="justify-content:flex-start;margin-top:10px">
+        <button class="btn main" id="sesPlay">▶ Empezar la sesión</button>
+        <button class="btn" id="sesNext">Pasar al siguiente bloque ▶</button>
+        <button class="btn" id="sesReset">↺ Reiniciar la sesión</button>
+      </div>
+      <div class="blocks" id="blocks"></div>
+    </div>
+  </section>
+
+  <!-- SORTEO -->
+  <section class="view" id="v-sorteo" aria-label="Sorteo de emparejamientos y posturas">
+    <div class="card">
+      <h2 class="sec">Sorteo de emparejamientos y posturas</h2>
+      <p class="mute small" style="margin:0">Cada equipo ha preparado su rol para las dos posturas, así que la postura se sortea al empezar. Escribe los nombres si queréis y pulsa «Sortear».</p>
+      <div class="teams" id="teamInputs"></div>
+      <div class="ctrls" style="justify-content:flex-start">
+        <button class="btn main" id="drawBtn">🎲 Sortear</button>
+        <button class="btn" id="drawReset">Volver al orden fijo (A-B, C-D)</button>
+      </div>
+      <div class="draw" id="drawOut"></div>
+      <h2 class="sec" style="margin-top:18px">Principios para un buen debate</h2>
+      <p class="mute small" style="margin:0">El moderador/a los lee antes de la ronda 1.</p>
+      <ul class="principles">
+        <li>👂 Escucha con atención.</li>
+        <li>🔎 Explica tus argumentos con pruebas.</li>
+        <li>↩️ Responde al equipo contrario.</li>
+        <li>🎯 Céntrate en el tema.</li>
+        <li>🗣️ Sé claro/a y habla con calma.</li>
+        <li>🤥 No mientas ni interrumpas.</li>
+        <li>🤝 Juega limpio: respeta a la moderación y al jurado.</li>
+        <li>🏆 Lo importante no es ganar, sino argumentar bien y acercar posturas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- REGISTRO -->
+  <section class="view" id="v-registro" aria-label="Registro de tiempos">
+    <div class="card">
+      <h2 class="sec">Registro de tiempos</h2>
+      <p class="mute small" style="margin:0 0 10px">Tiempo real de cada intervención. El relator/a-jurado puede copiarlo para su ficha; el tiempo de más aparece en rojo.</p>
+      <div id="regOut"></div>
+      <div class="ctrls" style="justify-content:flex-start;margin-top:12px">
+        <button class="btn" id="copyReg">📋 Copiar resumen</button>
+        <button class="btn" id="clearReg">🗑️ Borrar los tiempos de todas las rondas</button>
+      </div>
+      <p class="small mute" id="copyMsg" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-ajustes" aria-label="Ajustes">
+    <div class="card">
+      <h2 class="sec">Ajustes</h2>
+      <p class="mute small" style="margin:0 0 12px">Los tiempos son los de la guía del debate. Se guardan en este navegador.</p>
+      <div class="form">
+        <label class="wide">Moción<input type="text" id="cfgMocion"></label>
+        <label>Introductor/a (segundos)<input type="number" min="15" step="15" id="cfgIntro"></label>
+        <label>Refutador/a 1 (segundos)<input type="number" min="15" step="15" id="cfgRef1"></label>
+        <label>Refutador/a 2 (segundos)<input type="number" min="15" step="15" id="cfgRef2"></label>
+        <label>Conclusor/a (segundos)<input type="number" min="15" step="15" id="cfgConc"></label>
+        <label>Fichas del jurado (segundos)<input type="number" min="0" step="15" id="cfgFichas"></label>
+        <label>Aviso «tarjeta» (segundos antes del final)<input type="number" min="5" step="5" id="cfgWarn"></label>
+        <label>Mesas que dirigen el debate
+          <select class="f" id="cfgMesas"><option value="2">Dos mesas (una por ronda)</option><option value="1">Una mesa para las dos rondas</option></select>
+        </label>
+        <label>Empieza cada pareja de turnos
+          <select class="f" id="cfgFirst"><option value="pro">A favor</option><option value="con">En contra</option></select>
+        </label>
+        <label class="check"><input type="checkbox" id="cfgAuto"> Al pasar de turno, arrancar el reloj solo</label>
+        <label class="check"><input type="checkbox" id="cfgSound"> Pitido en la tarjeta y al acabar el tiempo</label>
+      </div>
+      <div class="ctrls" style="justify-content:flex-start;margin-top:14px">
+        <button class="btn" id="cfgDefault">Restaurar los tiempos de la guía</button>
+      </div>
+      <h2 class="sec" style="margin-top:20px">Atajos de teclado</h2>
+      <p class="small" style="margin:4px 0 0"><span class="kb">Espacio</span> iniciar o pausar · <span class="kb">→</span> siguiente turno · <span class="kb">←</span> anterior · <span class="kb">R</span> reiniciar turno · <span class="kb">T</span> tarjetas · <span class="kb">F</span> pantalla completa · <span class="kb">M</span> sonido · <span class="kb">Esc</span> cerrar tarjetas</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>SdA 3 · Digitalización 4.º ESO · Adaptado de la «Guía para el debate académico en el aula» (Proyecto REA/DUA Andalucía, CC BY-NC-SA 4.0).</span>
+    <span><a href="clase.html">← Volver a la web de clase</a></span>
+  </div>
+</div>
+
+<!-- Tarjetas a pantalla completa -->
+<div id="cards" tabindex="-1" role="dialog" aria-modal="true" aria-label="Tarjetas de tiempo">
+  <div class="cx">
+    <button id="cardPlay">▶ / ❚❚</button>
+    <button id="cardNext">Siguiente ▶</button>
+    <button id="cardClose">✕ Cerrar</button>
+  </div>
+  <div class="cw" id="cardWho"></div>
+  <div class="cb" id="cardBig">ADELANTE</div>
+  <div class="ct" id="cardTime">1:30</div>
+  <div class="ch">Espacio: iniciar o pausar · →: siguiente turno · Esc: cerrar</div>
+</div>
+<div class="sr" aria-live="assertive" id="srLive"></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Datos de la guía del debate ---------- */
+const DEFAULTS = {
+  mocion: 'El uso de la IA generativa debería prohibirse a menores de 16 años',
+  intro: 90, ref1: 120, ref2: 120, conc: 90, fichas: 60, warn: 30,
+  mesas: 2, first: 'pro', auto: false, sound: true,
+  teams: ['Equipo A', 'Equipo B', 'Equipo C', 'Equipo D']
+};
+const ROLES = {
+  intro: { nombre: 'Introductor/a', icono: '🎬', toca: [
+    '<b>Exordio</b>: una historia, noticia o anécdota que atrae y apunta a la tesis.',
+    'Presenta al equipo y el <b>statu quo</b>: el problema que provoca el debate.',
+    'Analiza la moción y <b>define sus términos</b>.',
+    '<b>Tesis</b> en una frase y 2-3 argumentos, brevemente.',
+    'Conclusión que conecta con el exordio.'] },
+  ref1: { nombre: 'Refutador/a 1', icono: '🥊', toca: [
+    'Empieza con una <b>cita o sentencia</b>.',
+    '<b>Crítica inicial</b> a los argumentos del otro equipo.',
+    'Desarrolla <b>dos</b> de los tres argumentos propios (afirmación, razonamiento y evidencia).',
+    'Responde a una o dos preguntas y anuncia lo que dirá tu compañero/a.'], preguntas: true },
+  ref2: { nombre: 'Refutador/a 2', icono: '🛡️', toca: [
+    '<b>Crítica extensa</b> de los argumentos del otro equipo.',
+    'Expone el <b>último argumento</b> propio.',
+    'Responde a preguntas y termina con una <b>cita final</b>.'], preguntas: true },
+  conc: { nombre: 'Conclusor/a', icono: '🏁', toca: [
+    '<b>Agradece</b> al público, al jurado y al otro equipo.',
+    'Señala el <b>principal error</b> del otro equipo.',
+    'Explica cómo se han refutado sus argumentos y por qué los propios <b>siguen en pie</b>.',
+    'Cierra con una <b>moraleja</b> que enlaza con el exordio.'] },
+  fichas: { nombre: 'Fichas del jurado', icono: '📝', toca: [
+    'Cada jurado puntúa de 1 a 4: <b>introducción · evidencias · refutación · conclusión · respeto</b>.',
+    'Anota el <b>mejor argumento</b> de cada postura.',
+    'Apunta un posible <b>acuerdo</b> entre las dos posturas.'] }
+};
+const SESSION = [
+  { id: 'sorteo', em: '🎲', nombre: 'Sorteo y principios del buen debate', min: 5, txt: 'Sorteo de emparejamientos y posturas. La mesa ocupa su sitio, el moderador/a lee los principios y se reparten las fichas del jurado.', go: 'sorteo' },
+  { id: 'r1', em: '🎙️', nombre: 'Ronda 1', min: 15, txt: '8 intervenciones (14 min) y 1 min para completar las fichas del jurado.', go: 'r1' },
+  { id: 'r2', em: '🎙️', nombre: 'Ronda 2', min: 15, txt: 'Mismo orden y mismos tiempos. Valoran la otra mesa y los equipos de la ronda 1.', go: 'r2' },
+  { id: 'ver', em: '⚖️', nombre: 'Veredicto y acuerdos', min: 5, txt: 'Los relatores/as suman las fichas y anuncian el equipo que mejor ha argumentado en cada ronda, el mejor argumento de cada postura, la mejor muestra de respeto y un acuerdo entre las dos posturas.' },
+  { id: 'cierre', em: '🗳️', nombre: 'Votación final y cierre de la SdA', min: 10, txt: '¿Ha cambiado la opinión de la clase? Votación con la pregunta de las sesiones 1 y 7 y formulario de cierre.', link: 'https://forms.gle/fFNUjtyXrQGfgzW28' }
+];
+const SES_COLORS = ['#475569', '#0f766e', '#7c3aed', '#b45309', '#2563eb'];
+
+/* ---------- Estado ---------- */
+const KEY = 'florindotic-sda3-cronometro-v1';
+let cfg = Object.assign({}, DEFAULTS, { teams: DEFAULTS.teams.slice() });
+let draw = null;          // {r1:[proIdx, conIdx], r2:[proIdx, conIdx]}
+let used = {};            // used[ronda][i] = ms
+let ses = { idx: 0, elapsed: 0, blockElapsed: [0,0,0,0,0], running: false };
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (s) {
+    if (s.cfg) cfg = Object.assign(cfg, s.cfg);
+    if (s.draw) draw = s.draw;
+    if (s.used) used = s.used;
+    if (s.ses) ses = Object.assign(ses, s.ses, { running: false });
+  }
+} catch (e) {}
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify({ cfg, draw, used, ses: Object.assign({}, ses, { running: false }) })); } catch (e) {}
+}
+
+/* ---------- Utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+function fmt(ms, signed){
+  const neg = ms < 0, t = Math.abs(ms), s = neg ? Math.floor(t / 1000) : Math.ceil(t / 1000);
+  const str = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  return neg ? '+' + str : (signed ? str : str);
+}
+function fmtUp(ms){ const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function durTxt(sec){ const m = Math.floor(sec / 60), s = sec % 60; return (m ? m + ' min' : '') + (s ? (m ? ' ' : '') + s + ' s' : ''); }
+
+/* ---------- Rondas y turnos ---------- */
+function pairing(r){
+  if (r === 'ens') return [0, 1];
+  if (draw && draw[r]) return draw[r];
+  return r === 'r1' ? [0, 1] : [2, 3];
+}
+function mesaDe(r){ return r === 'r2' && +cfg.mesas === 2 ? 'Mesa 2' : 'Mesa 1'; }
+function buildTurns(r){
+  const [p, c] = pairing(r), order = cfg.first === 'con' ? ['con', 'pro'] : ['pro', 'con'];
+  const roles = r === 'ens' ? ['intro', 'ref1'] : ['intro', 'ref1', 'ref2', 'conc'];
+  const list = [];
+  roles.forEach(role => order.forEach(side => list.push({ role, side, team: side === 'pro' ? p : c, dur: +cfg[role] * 1000 })));
+  if (r !== 'ens' && +cfg.fichas > 0) list.push({ role: 'fichas', side: 'mesa', team: null, dur: +cfg.fichas * 1000 });
+  return list;
+}
+const RONDAS = { r1: 'Ronda 1', r2: 'Ronda 2', ens: 'Ensayo (sesión 11)' };
+let ronda = 'r1', turns = buildTurns(ronda), cur = 0;
+let running = false, t0 = 0, acc = 0, extra = {}; // extra[ronda][i] = ms añadidos
+let warned = false, ended = false;
+
+function usedArr(){ return used[ronda] || (used[ronda] = []); }
+function extraOf(i){ return ((extra[ronda] || {})[i]) || 0; }
+function elapsed(){ return acc + (running ? performance.now() - t0 : 0); }
+function remaining(){ return turns[cur].dur + extraOf(cur) - elapsed(); }
+
+function loadTurn(i){
+  commit();
+  cur = Math.max(0, Math.min(turns.length - 1, i));
+  acc = usedArr()[cur] || 0;
+  warned = remaining() <= cfg.warn * 1000; ended = remaining() <= 0;
+  running = false;
+  render(true);
+}
+function commit(){
+  if (!turns[cur]) return;
+  const e = elapsed();
+  if (running) { acc = e; t0 = performance.now(); }
+  usedArr()[cur] = e;
+  save();
+}
+function start(){
+  if (running) return;
+  unlockAudio();
+  running = true; t0 = performance.now();
+  wake(true); render(true);
+}
+function pause(){
+  if (!running) return;
+  acc = elapsed(); running = false; commit(); render(true);
+}
+function toggle(){ running ? pause() : start(); }
+function next(){
+  const was = running;
+  if (cur < turns.length - 1) { loadTurn(cur + 1); if (cfg.auto && was) start(); }
+  else { pause(); say('Fin de la ronda'); }
+}
+function prev(){ if (cur > 0) loadTurn(cur - 1); }
+function resetTurn(){
+  running = false; acc = 0; usedArr()[cur] = 0;
+  if (extra[ronda]) delete extra[ronda][cur];
+  warned = false; ended = false; save(); render(true);
+}
+function addTime(){
+  (extra[ronda] || (extra[ronda] = {}))[cur] = extraOf(cur) + 15000;
+  if (remaining() > cfg.warn * 1000) warned = false;
+  if (remaining() > 0) ended = false;
+  render(true);
+}
+function setRonda(r){
+  commit(); running = false;
+  ronda = r; turns = buildTurns(r);
+  const u = usedArr();
+  let i = 0; while (i < turns.length - 1 && (u[i] || 0) >= turns[i].dur) i++;
+  cur = -1; loadTurn(i);
+  $('rondaSel').value = r;
+}
+
+/* ---------- Pintado ---------- */
+const CIRC = 2 * Math.PI * 88;
+$('ringFg').style.strokeDasharray = CIRC;
+function teamName(i){ return i == null ? '' : (cfg.teams[i] || ('Equipo ' + 'ABCD'[i])); }
+function sideColor(side){ return side === 'pro' ? 'var(--pro)' : side === 'con' ? 'var(--con)' : 'var(--mesa)'; }
+function sideChip(side){ return side === 'pro' ? '<span class="chip c-pro">A FAVOR</span>' : side === 'con' ? '<span class="chip c-con">EN CONTRA</span>' : '<span class="chip c-mesa">MESA Y JURADO</span>'; }
+
+function render(full){
+  const t = turns[cur], R = ROLES[t.role], rem = remaining(), total = t.dur + extraOf(cur);
+  const st = rem <= 0 ? 'over' : rem <= cfg.warn * 1000 ? 'warn' : '';
+  const stage = $('stage');
+  stage.classList.toggle('warn', st === 'warn'); stage.classList.toggle('over', st === 'over');
+  stage.style.setProperty('--side', sideColor(t.side));
+  $('clock').textContent = fmt(rem);
+  $('ringFg').style.strokeDashoffset = CIRC * (1 - Math.max(0, Math.min(1, rem / total)));
+  $('state').textContent = st === 'over' ? '¡Tiempo! · tiempo de más' : st === 'warn' ? 'Tarjeta: últimos ' + cfg.warn + ' s' : running ? 'En marcha' : (elapsed() > 0 ? 'En pausa' : 'Preparado');
+  $('playBtn').innerHTML = (running ? '❚❚ Pausar' : (elapsed() > 0 ? '▶ Seguir' : '▶ Iniciar')) + ' <kbd>Espacio</kbd>';
+  renderCards(t, rem, st);
+  renderTotals();
+  if (!full) return;
+
+  $('turnLbl').innerHTML = `<span class="chip c-mesa">Turno ${cur + 1} de ${turns.length}</span>${sideChip(t.side)}<span class="chip c-mesa">${durTxt(Math.round(total / 1000))}</span>`;
+  $('who').textContent = R.icono + ' ' + R.nombre;
+  $('team').textContent = t.team == null ? (RONDAS[ronda] + ' · ' + mesaDe(ronda) + ' y público-jurado') : teamName(t.team);
+  const durS = Math.round(t.dur / 1000);
+  $('modLine').innerHTML = t.role === 'fichas'
+    ? `<b>Moderador/a:</b> «Gracias a los dos equipos. El jurado tiene ${durTxt(durS)} para completar sus fichas».`
+    : `<b>Moderador/a:</b> «Tiene la palabra el ${R.nombre.toLowerCase().replace('/a', '/a')} del ${esc(teamName(t.team))}, ${t.side === 'pro' ? 'a favor' : 'en contra'} de la moción. Dispone de ${durTxt(durS)}».`;
+  $('todo').innerHTML = `<h3>Qué toca en este turno</h3><ul>${R.toca.map(x => '<li>' + x + '</li>').join('')}</ul>`;
+  const h = $('hint');
+  if (R.preguntas) { h.hidden = false; h.innerHTML = '✋ <span><b>Preguntas a mano alzada.</b> El otro equipo puede pedir la palabra; el refutador/a decide si la acepta. El reloj no se detiene.</span>'; }
+  else if (t.role === 'intro' && cur === 0) { h.hidden = false; h.innerHTML = '🤫 <span>Mientras habla el otro equipo, <b>el equipo se comunica solo por escrito</b>.</span>'; }
+  else h.hidden = true;
+
+  const [p, c] = pairing(ronda);
+  $('versus').innerHTML = `<span class="chip c-pro">A favor · ${esc(teamName(p))}</span><span class="mute">vs</span><span class="chip c-con">En contra · ${esc(teamName(c))}</span>` + (ronda === 'ens' ? '' : `<span class="chip c-mesa">Dirige: ${mesaDe(ronda)}</span>`);
+  $('sideTtl').textContent = RONDAS[ronda];
+  const u = usedArr();
+  $('turns').innerHTML = turns.map((x, i) => {
+    const ux = i === cur ? elapsed() : (u[i] || 0), d = x.dur + extraOf(i), ov = ux - d;
+    const done = i !== cur && ux > 0;
+    return `<li class="${i === cur ? 'cur' : ''} ${done ? 'done' : ''}" style="--side:${sideColor(x.side)}"><button data-i="${i}" aria-current="${i === cur ? 'step' : 'false'}">
+      <span class="tn">${done ? '✓' : i + 1}</span>
+      <span class="tr">${ROLES[x.role].icono} ${ROLES[x.role].nombre}<small>${x.team == null ? 'Público-jurado' : esc(teamName(x.team)) + ' · ' + (x.side === 'pro' ? 'a favor' : 'en contra')}</small></span>
+      <span class="tt">${ux > 0 ? fmtUp(ux) + (ov > 999 ? ` <span class="ov">+${fmtUp(ov)}</span>` : '') : durTxt(Math.round(d / 1000))}</span></button></li>`;
+  }).join('');
+  $('mocionTop').textContent = 'Moción: «' + cfg.mocion + '»';
+}
+function renderTotals(){
+  const u = usedArr();
+  let used_ = 0, plan = 0;
+  turns.forEach((x, i) => { used_ += i === cur ? elapsed() : (u[i] || 0); plan += x.dur; });
+  $('rondaTot').textContent = fmtUp(used_) + ' / ' + fmtUp(plan);
+  $('rondaBar').style.width = Math.min(100, used_ / plan * 100) + '%';
+  const li = document.querySelector('#turns li.cur .tt');
+  if (li) { const d = turns[cur].dur + extraOf(cur), e = elapsed(), ov = e - d; li.innerHTML = e > 0 ? fmtUp(e) + (ov > 999 ? ` <span class="ov">+${fmtUp(ov)}</span>` : '') : durTxt(Math.round(d / 1000)); }
+}
+function renderCards(t, rem, st){
+  const c = $('cards');
+  c.classList.toggle('warn', st === 'warn'); c.classList.toggle('over', st === 'over');
+  $('cardBig').textContent = st === 'over' ? '¡TIEMPO!' : st === 'warn' ? cfg.warn + ' SEGUNDOS' : (running ? 'ADELANTE' : 'PREPARADO');
+  $('cardTime').textContent = fmt(rem);
+  $('cardWho').textContent = ROLES[t.role].nombre + (t.team == null ? '' : ' · ' + teamName(t.team) + ' · ' + (t.side === 'pro' ? 'a favor' : 'en contra'));
+}
+
+/* ---------- Sonido, voz y pantalla ---------- */
+let actx = null;
+function unlockAudio(){ try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {} }
+function beep(n, freq){
+  if (!cfg.sound || !actx) return;
+  for (let k = 0; k < n; k++) {
+    const o = actx.createOscillator(), g = actx.createGain(), at = actx.currentTime + k * 0.28;
+    o.type = 'sine'; o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(0.35, at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+    o.start(at); o.stop(at + 0.24);
+  }
+}
+function say(txt){ $('srLive').textContent = txt; }
+let lock = null;
+async function wake(on){ try { if (on && !lock && navigator.wakeLock) { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', () => { lock = null; }); } } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && (running || ses.running)) wake(true); });
+function fullscreen(){ try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {} }
+
+/* ---------- Sesión (50 min) ---------- */
+let sT0 = 0;
+function sesElapsed(){ return ses.elapsed + (ses.running ? performance.now() - sT0 : 0); }
+function sesBlockElapsed(){ return ses.blockElapsed[ses.idx] + (ses.running ? performance.now() - sT0 : 0); }
+function sesCommit(){ if (ses.running) { const d = performance.now() - sT0; ses.elapsed += d; ses.blockElapsed[ses.idx] += d; sT0 = performance.now(); } save(); }
+function sesToggle(){ unlockAudio(); if (ses.running) { sesCommit(); ses.running = false; } else { ses.running = true; sT0 = performance.now(); wake(true); } renderSes(true); }
+function sesNextBlock(){ sesCommit(); if (ses.idx < SESSION.length - 1) ses.idx++; save(); renderSes(true); const g = SESSION[ses.idx].go; if (g === 'r1' || g === 'r2') setRonda(g); }
+function sesReset(){ ses = { idx: 0, elapsed: 0, blockElapsed: [0,0,0,0,0], running: false }; save(); renderSes(true); }
+const SES_TOTAL = SESSION.reduce((a, b) => a + b.min, 0) * 60000;
+function plannedBefore(i){ return SESSION.slice(0, i).reduce((a, b) => a + b.min, 0) * 60000; }
+function renderSes(full){
+  const e = sesElapsed();
+  $('sesClock').textContent = fmtUp(e); $('sesMini').textContent = fmtUp(e);
+  $('sesMiniBtn').textContent = ses.running ? '❚❚' : '▶';
+  $('sesPlay').textContent = ses.running ? '❚❚ Pausar la sesión' : (e > 0 ? '▶ Seguir la sesión' : '▶ Empezar la sesión');
+  // retraso respecto a lo previsto: lo que debería llevar hecho el bloque actual
+  const be = sesBlockElapsed(), plan = plannedBefore(ses.idx) + Math.min(be, SESSION[ses.idx].min * 60000);
+  const late = e - plan;
+  const dl = $('sesDelta');
+  dl.textContent = Math.abs(late) < 30000 ? 'a tiempo' : late > 0 ? 'vamos ' + fmtUp(late) + ' tarde' : 'vamos ' + fmtUp(-late) + ' adelantados';
+  dl.className = 'delta ' + (Math.abs(late) < 30000 ? '' : late > 0 ? 'late' : 'early');
+  $('nowMark').style.left = Math.min(100, e / SES_TOTAL * 100) + '%';
+  SESSION.forEach((b, i) => {
+    const el = document.getElementById('bt-' + i); if (!el) return;
+    const u = i === ses.idx ? be : ses.blockElapsed[i], rem = b.min * 60000 - u;
+    el.innerHTML = (i === ses.idx ? (rem >= 0 ? 'quedan ' + fmtUp(rem + 999) : '<span style="color:var(--red)">+' + fmtUp(-rem) + '</span>') : (u > 0 ? fmtUp(u) : b.min + ' min')) + `<small>${i === ses.idx ? 'bloque actual' : u > 0 ? 'hecho' : 'previsto'}</small>`;
+  });
+  if (!full) return;
+  $('timeline').innerHTML = SESSION.map((b, i) => `<div style="flex:${b.min};background:${SES_COLORS[i]}" title="${esc(b.nombre)} · ${b.min} min">${b.min >= 10 ? esc(b.nombre.split(' ')[0] + (b.id.startsWith('r') ? ' ' + b.id.slice(1) : '')) : b.min + "'"}</div>`).join('') + '<span class="now" id="nowMark"></span>';
+  $('blocks').innerHTML = SESSION.map((b, i) => `<div class="blk ${i === ses.idx ? 'cur' : ''} ${i < ses.idx ? 'done' : ''}">
+    <span class="em" aria-hidden="true">${b.em}</span>
+    <div><h3>${esc(b.nombre)} <span class="mute small">· ${b.min} min</span></h3><p>${esc(b.txt)}</p>
+      ${b.go ? `<p><button class="btn" data-go="${b.go}" style="margin-top:6px;padding:6px 12px">${b.go === 'sorteo' ? '🎲 Ir al sorteo' : '🎙️ Abrir el cronómetro de la ' + esc(b.nombre.toLowerCase())}</button></p>` : ''}
+      ${b.link ? `<p><a class="btn" style="margin-top:6px;padding:6px 12px;text-decoration:none" href="${b.link}" target="_blank" rel="noopener">📝 Abrir el formulario de cierre</a></p>` : ''}</div>
+    <div class="bt" id="bt-${i}"></div></div>`).join('');
+  renderSes(false);
+}
+
+/* ---------- Sorteo ---------- */
+function renderTeams(){
+  $('teamInputs').innerHTML = cfg.teams.map((t, i) => `<label>Equipo ${'ABCD'[i]}<input type="text" data-team="${i}" value="${esc(t)}" maxlength="40"></label>`).join('');
+}
+function renderDraw(){
+  const card = (r) => { const [p, c] = pairing(r); return `<div class="pair"><h3>🎙️ ${RONDAS[r]} <span class="chip c-mesa">Dirige: ${mesaDe(r)}</span></h3>
+    <div class="row"><span class="chip c-pro">A FAVOR</span><b>${esc(teamName(p))}</b></div>
+    <div class="row"><span class="chip c-con">EN CONTRA</span><b>${esc(teamName(c))}</b></div></div>`; };
+  $('drawOut').innerHTML = card('r1') + card('r2') + `<p class="small mute" style="grid-column:1/-1;margin:0">${draw ? 'Resultado del sorteo guardado.' : 'Orden fijo: aún no se ha sorteado.'} El público-jurado de cada ronda son la otra mesa y los equipos que no debaten.</p>`;
+}
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function doDraw(){
+  const out = $('drawOut'); out.classList.add('shuffling');
+  const btn = $('drawBtn'); btn.disabled = true;
+  let k = 0;
+  const iv = setInterval(() => {
+    const s = shuffle([0, 1, 2, 3]); draw = { r1: [s[0], s[1]], r2: [s[2], s[3]] }; renderDraw();
+    if (++k > 12) { clearInterval(iv); out.classList.remove('shuffling'); btn.disabled = false; delete used.r1; delete used.r2; delete extra.r1; delete extra.r2; acc = 0; running = false; save(); setRonda(ronda); beep(2, 880); say('Sorteo hecho'); }
+  }, 90);
+}
+
+/* ---------- Registro ---------- */
+function regRows(r){
+  const ts = buildTurns(r), u = used[r] || [];
+  return ts.map((x, i) => ({ x, u: (r === ronda && i === cur) ? elapsed() : (u[i] || 0) }));
+}
+function renderReg(){
+  if (turns[cur]) commit();
+  $('regOut').innerHTML = ['r1', 'r2', 'ens'].map(r => {
+    const rows = regRows(r); if (!rows.some(o => o.u > 0) && r === 'ens') return '';
+    const [p, c] = pairing(r);
+    return `<h3 style="margin:14px 0 6px;font-size:1rem">${RONDAS[r]} · <span class="mute">${esc(teamName(p))} (a favor) vs ${esc(teamName(c))} (en contra)</span></h3>
+    <table class="reg"><thead><tr><th>#</th><th>Intervención</th><th>Equipo</th><th class="n">Previsto</th><th class="n">Real</th></tr></thead><tbody>${rows.map((o, i) => {
+      const ov = o.u - o.x.dur;
+      return `<tr><td>${i + 1}</td><td>${ROLES[o.x.role].nombre}</td><td>${o.x.team == null ? 'Jurado' : esc(teamName(o.x.team)) + ' · ' + (o.x.side === 'pro' ? 'a favor' : 'en contra')}</td><td class="n">${fmtUp(o.x.dur)}</td><td class="n">${o.u > 0 ? fmtUp(o.u) + (ov > 999 ? ` <span class="ov">(+${fmtUp(ov)})</span>` : '') : '—'}</td></tr>`;
+    }).join('')}</tbody></table>`;
+  }).join('');
+}
+function regText(){
+  let s = 'Debate · Moción: «' + cfg.mocion + '»\n';
+  ['r1', 'r2'].forEach(r => {
+    const [p, c] = pairing(r);
+    s += '\n' + RONDAS[r] + ': ' + teamName(p) + ' (a favor) vs ' + teamName(c) + ' (en contra)\n';
+    regRows(r).forEach((o, i) => { const ov = o.u - o.x.dur; s += (i + 1) + '. ' + ROLES[o.x.role].nombre + (o.x.team == null ? '' : ' · ' + teamName(o.x.team)) + ': ' + (o.u > 0 ? fmtUp(o.u) + (ov > 999 ? ' (+' + fmtUp(ov) + ')' : '') : '—') + ' de ' + fmtUp(o.x.dur) + '\n'; });
+  });
+  return s;
+}
+
+/* ---------- Ajustes ---------- */
+function renderCfg(){
+  $('cfgMocion').value = cfg.mocion;
+  ['intro', 'ref1', 'ref2', 'fichas', 'warn'].forEach(k => $('cfg' + k[0].toUpperCase() + k.slice(1)).value = cfg[k]);
+  $('cfgConc').value = cfg.conc;
+  $('cfgMesas').value = String(cfg.mesas); $('cfgFirst').value = cfg.first;
+  $('cfgAuto').checked = !!cfg.auto; $('cfgSound').checked = !!cfg.sound;
+  $('soundBtn').textContent = cfg.sound ? '🔔' : '🔕';
+  $('soundBtn').setAttribute('aria-label', cfg.sound ? 'Sonido activado' : 'Sonido desactivado');
+}
+function readCfg(){
+  const num = (id, min) => Math.max(min, Math.round(+$(id).value || 0));
+  cfg.mocion = $('cfgMocion').value.trim() || DEFAULTS.mocion;
+  cfg.intro = num('cfgIntro', 15); cfg.ref1 = num('cfgRef1', 15); cfg.ref2 = num('cfgRef2', 15); cfg.conc = num('cfgConc', 15);
+  cfg.fichas = num('cfgFichas', 0); cfg.warn = num('cfgWarn', 5);
+  cfg.mesas = +$('cfgMesas').value; cfg.first = $('cfgFirst').value;
+  cfg.auto = $('cfgAuto').checked; cfg.sound = $('cfgSound').checked;
+  save(); renderCfg(); setRonda(ronda); renderDraw();
+}
+
+/* ---------- Pestañas ---------- */
+function show(v){
+  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.v === v)));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
+  if (v === 'registro') renderReg();
+  if (v === 'sesion') renderSes(true);
+  try { history.replaceState(null, '', '#' + v); } catch (e) {}
+}
+document.querySelector('nav.tabs').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b) show(b.dataset.v); });
+
+/* ---------- Eventos ---------- */
+$('rondaSel').innerHTML = Object.entries(RONDAS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+$('rondaSel').addEventListener('change', e => setRonda(e.target.value));
+$('playBtn').onclick = toggle; $('nextBtn').onclick = next; $('prevBtn').onclick = prev;
+$('resetBtn').onclick = resetTurn; $('plusBtn').onclick = addTime;
+$('cardsBtn').onclick = () => openCards(true);
+$('turns').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) loadTurn(+b.dataset.i); });
+function openCards(on){ $('cards').classList.toggle('on', on); if (on) { try { $('cards').requestFullscreen && $('cards').requestFullscreen(); } catch (e) {} $('cards').focus(); } else { try { document.fullscreenElement && document.exitFullscreen(); } catch (e) {} } }
+$('cardClose').onclick = () => openCards(false); $('cardPlay').onclick = toggle; $('cardNext').onclick = next;
+$('soundBtn').onclick = () => { cfg.sound = !cfg.sound; unlockAudio(); save(); renderCfg(); };
+$('fsBtn').onclick = fullscreen;
+$('themeBtn').onclick = () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem(KEY + '-theme', r.dataset.theme); } catch (e) {}
+};
+try { const th = localStorage.getItem(KEY + '-theme'); if (th) document.documentElement.dataset.theme = th; } catch (e) {}
+$('sesMiniBtn').onclick = sesToggle; $('sesPlay').onclick = sesToggle; $('sesNext').onclick = sesNextBlock;
+$('sesReset').onclick = () => { if (confirmInline($('sesReset'), '¿Seguro? Pulsa otra vez')) sesReset(); };
+$('blocks').addEventListener('click', e => { const b = e.target.closest('button[data-go]'); if (!b) return; if (b.dataset.go === 'sorteo') show('sorteo'); else { setRonda(b.dataset.go); show('debate'); } });
+$('teamInputs').addEventListener('input', e => { const i = e.target.dataset.team; if (i == null) return; cfg.teams[+i] = e.target.value || ('Equipo ' + 'ABCD'[+i]); save(); renderDraw(); render(true); });
+$('drawBtn').onclick = doDraw;
+$('drawReset').onclick = () => { draw = null; save(); renderDraw(); setRonda(ronda); };
+$('copyReg').onclick = async () => { try { await navigator.clipboard.writeText(regText()); $('copyMsg').textContent = 'Resumen copiado.'; } catch (e) { $('copyMsg').textContent = 'No se ha podido copiar: selecciona la tabla y cópiala a mano.'; } };
+$('clearReg').onclick = () => { if (!confirmInline($('clearReg'), '¿Seguro? Pulsa otra vez')) return; used = {}; extra = {}; acc = 0; running = false; save(); setRonda(ronda); renderReg(); };
+document.querySelectorAll('#v-ajustes input, #v-ajustes select').forEach(el => el.addEventListener('change', readCfg));
+$('cfgDefault').onclick = () => { Object.assign(cfg, { intro: 90, ref1: 120, ref2: 120, conc: 90, fichas: 60, warn: 30, mocion: DEFAULTS.mocion }); save(); renderCfg(); setRonda(ronda); };
+// Confirmación sin cuadros de diálogo: el primer clic cambia el texto y el segundo confirma
+function confirmInline(btn, msg){
+  if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.orig; return true; }
+  btn.dataset.orig = btn.textContent; btn.dataset.armed = '1'; btn.textContent = msg;
+  setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.orig; } }, 3500);
+  return false;
+}
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, select, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (k === ' ' || k === 'Spacebar') { e.preventDefault(); if (document.activeElement && document.activeElement.tagName === 'BUTTON') document.activeElement.blur(); toggle(); }
+  else if (k === 'ArrowRight') { e.preventDefault(); next(); }
+  else if (k === 'ArrowLeft') { e.preventDefault(); prev(); }
+  else if (k === 'r' || k === 'R') resetTurn();
+  else if (k === 't' || k === 'T') openCards(!$('cards').classList.contains('on'));
+  else if (k === 'f' || k === 'F') fullscreen();
+  else if (k === 'm' || k === 'M') { cfg.sound = !cfg.sound; unlockAudio(); save(); renderCfg(); }
+  else if (k === 'Escape' && $('cards').classList.contains('on')) openCards(false);
+});
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && $('cards').classList.contains('on')) $('cards').classList.remove('on'); });
+window.addEventListener('beforeunload', () => { commit(); sesCommit(); });
+
+/* ---------- Bucle ---------- */
+let lastSave = 0, sesBeeped = -1;
+function tick(now){
+  if (running) {
+    const rem = remaining();
+    if (!warned && rem <= cfg.warn * 1000 && rem > 0) { warned = true; beep(1, 880); say('Tarjeta: quedan ' + cfg.warn + ' segundos'); }
+    if (!ended && rem <= 0) { ended = true; beep(3, 660); say('Tiempo'); }
+    render(false);
+    if (now - lastSave > 3000) { lastSave = now; usedArr()[cur] = elapsed(); save(); }
+  }
+  if (ses.running) {
+    renderSes(false);
+    const left = SESSION[ses.idx].min * 60000 - sesBlockElapsed();
+    if (left <= 0 && sesBeeped !== ses.idx) { sesBeeped = ses.idx; beep(2, 520); say('Se acaba el tiempo del bloque: ' + SESSION[ses.idx].nombre); }
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---------- Inicio ---------- */
+renderCfg(); renderTeams(); renderDraw();
+setRonda('r1');
+renderSes(true);
+const h = (location.hash || '').slice(1);
+if (['debate', 'sesion', 'sorteo', 'registro', 'ajustes'].includes(h)) show(h);
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
