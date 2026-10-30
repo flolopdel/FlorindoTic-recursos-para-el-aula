@@ -8,7 +8,9 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       DIG4_SDA5_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   DIG4_SDA5_crearF1_SdA5EncuestaInicial()  →  SdA 5 · Encuesta inicial (anónima) (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/DumEYmaaLG3Hk2jL6
  *   DIG4_SDA5_crearF2_SdA5AutoevaluacionFinal()  →  SdA 5 · Autoevaluación final (sesión 9)
+ *        ya creado: https://forms.gle/4p1H4XF6F35GGbP59
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 5 · Enlaces de formularios» de la carpeta de la SdA:
@@ -177,6 +179,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/DumEYmaaLG3Hk2jL6",
     "sesiones": "Sesión 1"
   },
   {
@@ -224,6 +227,7 @@ var FORMULARIOS = [
         ]
       }
     ],
+    "enlace": "https://forms.gle/4p1H4XF6F35GGbP59",
     "sesiones": "Sesión 9"
   }
 ];
