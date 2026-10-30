@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase · SdA 6: Gestión de Datos y Hoja de Cálculo Cooperativa</title>
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dbe3ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --code-bg:#0f172a; --code-ink:#e2e8f0; --slide:#ffffff; --f-ini:#2563eb; --f-des:#0f766e; --f-cie:#9333ea;
+  --f-mov:#2563eb; --f-act:#0891b2; --f-exp:#0f766e; --f-est:#7c3aed; --f-apl:#b45309; --f-con:#be123c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+@media(max-width:760px){.top{overflow-x:auto}.top .ttl{display:none}.top .tb{flex:0 0 auto}select.tb{max-width:60vw}}
+.top .ttl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.top .ttl small{font-weight:500;color:var(--muted);margin-left:8px}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+.tb[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+select.tb{max-width:42vw}
+/* ---------- índice */
+.home{max-width:1180px;margin:0 auto;padding:28px 16px 48px}
+.hero{background:linear-gradient(135deg,#134e4a,#1e3a8a);color:#fff;border-radius:18px;padding:28px 24px}
+.hero h1{margin:6px 0;font-size:clamp(26px,4vw,40px);line-height:1.1}
+.hero p{margin:6px 0;opacity:.92;font-size:18px}
+.hero .k{font-size:13px;opacity:.8;letter-spacing:.04em;text-transform:uppercase}
+.help{margin:14px 0 0;font-size:14px;opacity:.85}
+.kbd{display:inline-block;border:1px solid rgba(255,255,255,.4);border-radius:5px;padding:0 6px;font-size:12px;margin:0 2px}
+.cards{display:grid;gap:14px;margin-top:20px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.sc{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink);border-top:6px solid var(--fc,var(--brand))}
+.sc:hover{border-color:var(--fc,var(--brand));transform:translateY(-1px)}
+.sc .n{font-size:13px;font-weight:700;color:var(--fc,var(--brand));text-transform:uppercase;letter-spacing:.04em}
+.sc h3{margin:6px 0;font-size:18px;line-height:1.25}
+.sc p{margin:0;color:var(--ink2);font-size:14px}
+.sc .c{margin-top:10px;font-size:13px;color:var(--muted)}
+/* ---------- modo proyección */
+.stage{position:relative;height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:12px}
+.fs .stage{height:100vh;padding:0}
+.fs .top{display:none}
+.slide{position:relative;width:min(100%, calc((100vh - 81px) * 16 / 9));aspect-ratio:16/9;background:var(--slide);border-radius:14px;box-shadow:0 10px 40px rgba(15,23,42,.18);overflow:hidden;
+  font-size:min(2.05vw, 3.6vh);container-type:inline-size}
+.fs .slide{width:min(100vw, calc(100vh * 16 / 9));border-radius:0;box-shadow:none}
+@supports (font-size:1cqw){ .slide{font-size:2.05cqw} }
+.slide .in{position:absolute;inset:0;padding:3.2em 3.6em 3em;display:flex;flex-direction:column;overflow:auto}
+.slide .bar{position:absolute;left:0;right:0;bottom:0;height:.35em;background:var(--line)}
+.slide .bar i{display:block;height:100%;background:var(--fc,var(--brand))}
+.slide .pg{position:absolute;right:1.4em;bottom:.9em;font-size:.62em;color:var(--muted)}
+.slide .tag{position:absolute;left:5.8em;top:2.1em;font-size:.62em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fc,var(--brand))}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:0;border-radius:10px;background:rgba(15,23,42,.08);color:var(--ink2);font-size:24px;opacity:.4}
+.nav:hover{opacity:1}.nav.l{left:4px}.nav.r{right:4px}
+.fs .nav{display:none}
+.notes{position:fixed;left:16px;right:16px;bottom:16px;z-index:9;background:var(--warm-bg);border:1px solid var(--warm);color:var(--ink);border-radius:12px;padding:12px 16px;font-size:15px;max-height:30vh;overflow:auto;display:none}
+.notes.on{display:block}
+.notes b{color:var(--warm)}
+/* ---------- modo estudio */
+.study{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.study .slide{width:100%;aspect-ratio:auto;font-size:18px;margin:0 0 16px;box-shadow:none;border:1px solid var(--line);container-type:normal}
+@media(max-width:640px){.study .slide{font-size:16px}}
+.study .slide .in{position:static;padding:2.4em 1.4em 1.4em;overflow:visible}
+.study .slide .bar,.study .slide .pg{display:none}
+.study .slide .tag{left:2.3em;top:1.6em}
+.study h2.sh{margin:28px 0 12px;font-size:22px}
+/* ---------- piezas de diapositiva */
+.s-h{margin:0 0 .5em;font-size:1.75em;line-height:1.15;font-weight:800}
+.s-lead{font-size:1.1em;color:var(--ink2);margin:0 0 .7em}
+.ico{font-size:2.4em;line-height:1;margin-bottom:.2em}
+ul.pts{margin:.2em 0;padding-left:1.1em}ul.pts li{margin:.35em 0}
+.cover{justify-content:center;background:linear-gradient(135deg,var(--fc,var(--brand)),#1e3a8a);color:#fff}
+.cover .s-h{font-size:2.6em}.cover .s-lead{color:rgba(255,255,255,.9)}
+.cover .q{margin-top:1em;font-size:1.25em;font-weight:700;background:rgba(255,255,255,.14);border-radius:.5em;padding:.6em .8em}
+.cover .tag{color:rgba(255,255,255,.85)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.2em;align-items:start}
+@media(max-width:640px){.study .two{grid-template-columns:1fr}}
+.box{background:var(--bg);border-radius:.6em;padding:.8em 1em}
+.box.hl{background:var(--brand-soft)}
+.box.ac{background:var(--accent-soft)}
+.box.wa{background:var(--warm-bg)}
+.box .lb{font-size:.62em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3em}
+.ask{margin-top:auto;padding-top:.7em;font-size:1.1em;font-weight:700;color:var(--accent)}
+ol.steps{list-style:none;margin:.3em 0;padding:0;counter-reset:st;display:grid;gap:.45em}
+ol.steps li{counter-increment:st;display:flex;gap:.7em;align-items:flex-start;background:var(--bg);border-radius:.5em;padding:.45em .7em}
+ol.steps li::before{content:counter(st);flex:0 0 auto;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85em}
+ol.steps li.hid{visibility:hidden}
+.cols{display:grid;gap:1em;grid-template-columns:repeat(var(--n,2),1fr)}
+@media(max-width:640px){.study .cols{grid-template-columns:1fr}}
+.col{border:2px solid var(--line);border-radius:.6em;padding:.7em .9em}
+.col h4{margin:0 0 .3em;font-size:1.1em;color:var(--fc,var(--brand))}
+.grid-i{display:grid;gap:.7em;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}
+@media (max-width:700px){.grid-i{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gi{background:var(--bg);border-radius:.6em;padding:.7em;text-align:center}
+.gi .e{font-size:1.8em}.gi>b{display:block;margin:.2em 0}.gi>span{display:block;font-size:.85em;line-height:1.35;color:var(--ink2)}.gi>span b{color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5em;margin:.6em 0}
+.fn{padding:.55em .9em;border-radius:.5em;background:var(--brand-soft);border:2px solid var(--brand);font-weight:600;text-align:center;max-width:12em}
+.fn.inicio,.fn.fin{border-radius:2em;background:var(--accent-soft);border-color:var(--accent)}
+.fn.decision{background:var(--warm-bg);border-color:var(--warm);transform:skew(-8deg)}
+.fn.decision>span{display:inline-block;transform:skew(8deg)}
+.arr{font-size:1.3em;color:var(--muted)}
+.svgw{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.svgw svg{max-width:100%;max-height:100%;height:auto}
+pre.code{margin:.3em 0;background:var(--code-bg);color:var(--code-ink);border-radius:.6em;padding:.8em 1em;font:0.82em/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto;white-space:pre}
+.big{font-size:4.2em;font-weight:900;line-height:1;color:var(--fc,var(--brand))}
+.src{font-size:.6em;color:var(--muted);margin-top:.6em}
+.opts{display:grid;gap:.5em;margin:.4em 0}
+.opt{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:.5em;padding:.5em .8em;font-size:1em}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ko{border-color:var(--ko);background:var(--ko-bg)}
+.expl{display:none;margin-top:.4em}.expl.on{display:block}
+.chip{display:inline-block;border-radius:2em;padding:.15em .7em;font-size:.7em;font-weight:700;background:var(--warm-bg);color:var(--warm);border:1px solid var(--warm);margin-right:.4em}
+.timer{display:inline-flex;align-items:center;gap:.4em;border:2px solid var(--fc,var(--brand));color:var(--fc,var(--brand));background:transparent;border-radius:2em;padding:.2em .8em;font-weight:800;font-size:.9em}
+.timer.end{background:var(--ko);border-color:var(--ko);color:#fff}
+.vid{position:relative;flex:1;min-height:6em;border-radius:.6em;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .play{border:0;background:#dc2626;color:#fff;border-radius:.6em;padding:.6em 1.2em;font-size:1em;font-weight:800}
+.study .vid{aspect-ratio:16/9;flex:none}
+.reveal{border:1px dashed var(--muted);background:transparent;color:var(--muted);border-radius:.4em;padding:.2em .7em;font-size:.7em;margin-top:.4em}
+.empty{max-width:700px;margin:60px auto;text-align:center;color:var(--muted)}
+/* ayudas plegables por función y actividades multinivel */
+.ays{display:flex;flex-direction:column;gap:.35em;margin-top:.6em}
+details.ay{border:1px solid var(--line);border-left:.3em solid var(--ayc,var(--brand));border-radius:.5em;background:var(--card);font-size:.82em}
+details.ay>summary{cursor:pointer;padding:.35em .7em;font-weight:700;color:var(--ayc,var(--brand));list-style:none}
+details.ay>summary::-webkit-details-marker{display:none}
+details.ay>summary::after{content:' ▸';color:var(--muted)}details.ay[open]>summary::after{content:' ▾'}
+details.ay>div{padding:0 .8em .6em;color:var(--ink2)}details.ay ul{margin:.2em 0;padding-left:1.1em}
+.ay-pista{--ayc:#ca8a04}.ay-emociones{--ayc:#db2777}.ay-repaso{--ayc:#0891b2}.ay-saber_mas{--ayc:#7c3aed}
+.mlv{display:grid;gap:.7em;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));margin-top:.4em}
+@media(max-width:640px){.study .mlv{grid-template-columns:1fr}}
+.mo{border:2px solid var(--line);border-radius:.6em;padding:.6em .8em;background:var(--card)}
+.mo .L{display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:900;margin-right:.35em}
+.mo h4{margin:.1em 0 .3em;font-size:1em;display:flex;align-items:center}
+.mo .pc{display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:2em;padding:.1em .6em;margin-bottom:.3em}
+.mo p{margin:0;font-size:.88em;color:var(--ink2)}
+.gbs{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.6em}
+.gb{flex:1 1 14em;display:block;text-decoration:none;color:var(--ink);background:var(--brand-soft);border:1px solid var(--brand);border-radius:.5em;padding:.45em .8em;font-size:.82em}
+.gb:hover{filter:brightness(.97)}
+.foot{margin-top:24px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)}
+.gal{display:inline-block;margin-top:14px;background:#fff;color:#134e4a;border-radius:999px;padding:8px 16px;font-weight:700;text-decoration:none}
+@media print{.top,.nav,.notes{display:none}.study .slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top" id="top">
+  <button class="tb" id="b-home" title="Índice de sesiones (Esc)">☰ Sesiones</button>
+  <div class="ttl" id="ttl"></div>
+  <select class="tb" id="sel" aria-label="Ir a la sesión"></select>
+  <button class="tb" id="b-mode" title="Cambiar entre proyectar y estudiar (E)">📖 Estudiar</button>
+  <button class="tb" id="b-notes" title="Notas para el docente (N)" aria-pressed="false">🗒 Notas</button>
+  <button class="tb" id="b-fs" title="Pantalla completa (F)">⛶</button>
+  <button class="tb" id="b-theme" title="Tema claro / oscuro">🌓</button>
+</div>
+<div id="app"></div>
+<div class="notes" id="notes"></div>
+<script>
+const D = {"meta": {"titulo": "SdA 6: Gestión de Datos y Hoja de Cálculo Cooperativa", "subtitulo": "«Los números cuentan»: una hoja de cálculo que nos ayuda de verdad, hecha en pareja y en la nube", "curso_texto": "4.º ESO"}, "materias": "Digitalización", "reto": "«Somos el equipo de datos de 4.º: vamos a construir, en pareja y en la nube, una hoja de cálculo que resuelva un problema real (el presupuesto del viaje de fin de curso, el control de nuestros hábitos de estudio o la calculadora de nuestras notas) y que otra pareja pueda usar sin romperla.»", "sesiones": [{"n": 1, "fase": "Bloque 1 · Introducción y estructura", "titulo": "Los números de tu móvil: ¿qué es una hoja de cálculo?", "reto": "Descubrir qué datos genera nuestro día a día y dar los primeros pasos en Google Sheets: celdas, filas, columnas, rangos y tipos de datos.", "pregunta": "¿Cuántos días al año pasas mirando el móvil?", "diapositivas": [{"tipo": "dato", "valor": "45 días", "texto": "Es lo que suman **3 horas de móvil al día** durante un año: 3 × 365 = 1095 horas.", "pregunta": "¿Y si fueran 5 horas al día?", "nota": "Que apuesten antes de enseñar la cifra. Con 5 horas salen 76 días. Nadie tiene que decir su tiempo real."}, {"tipo": "practica", "titulo": "Encuesta inicial (F1)", "tiempo": 7, "enunciado": "Responde la encuesta: es **anónima** y sirve para preparar los retos de esta SdA. No hay respuestas buenas ni malas.", "nota": "Proyecta el resumen al terminar."}, {"tipo": "ejemplo", "icono": "🏀", "titulo": "La tabla de la liga", "situacion": "En la app de la liga ves la **clasificación**: partidos, victorias, puntos… y se actualiza sola tras cada jornada.", "explicacion": "Es una **hoja de cálculo**: cada dato vive en una **celda** y los puntos se calculan con una fórmula (victorias × 3 + empates).", "pregunta": "¿Qué otra tabla de tu móvil se calcula sola?"}, {"tipo": "infografia", "titulo": "Las piezas de una hoja de cálculo", "svg": "<svg viewBox=\"0 0 640 230\" role=\"img\" aria-label=\"Esquema de una hoja de cálculo con columnas, filas, una celda y un rango\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"60\" y=\"40\" width=\"420\" height=\"30\" style=\"fill:var(--brand-soft);stroke:var(--brand)\"/><text x=\"105\" y=\"61\" font-size=\"16\" style=\"fill:var(--ink)\">A<\/text><text x=\"205\" y=\"61\" font-size=\"16\" style=\"fill:var(--ink)\">B<\/text><text x=\"305\" y=\"61\" font-size=\"16\" style=\"fill:var(--ink)\">C<\/text><text x=\"405\" y=\"61\" font-size=\"16\" style=\"fill:var(--ink)\">D<\/text><rect x=\"20\" y=\"70\" width=\"40\" height=\"120\" style=\"fill:var(--brand-soft);stroke:var(--brand)\"/><text x=\"34\" y=\"92\" font-size=\"16\" style=\"fill:var(--ink)\">1<\/text><text x=\"34\" y=\"122\" font-size=\"16\" style=\"fill:var(--ink)\">2<\/text><text x=\"34\" y=\"152\" font-size=\"16\" style=\"fill:var(--ink)\">3<\/text><text x=\"34\" y=\"182\" font-size=\"16\" style=\"fill:var(--ink)\">4<\/text><rect x=\"60\" y=\"70\" width=\"420\" height=\"120\" style=\"fill:var(--card);stroke:var(--ink)\"/><rect x=\"160\" y=\"130\" width=\"100\" height=\"30\" style=\"fill:var(--accent-soft);stroke:var(--accent)\" stroke-width=\"3\"/><text x=\"178\" y=\"151\" font-size=\"15\" style=\"fill:var(--ink)\">celda B3<\/text><rect x=\"360\" y=\"70\" width=\"100\" height=\"120\" style=\"fill:none;stroke:var(--warm)\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/><text x=\"490\" y=\"110\" font-size=\"15\" style=\"fill:var(--ink)\">rango D1:D4<\/text><text x=\"490\" y=\"130\" font-size=\"14\" style=\"fill:var(--ink)\">(de D1 a D4)<\/text><text x=\"60\" y=\"25\" font-size=\"15\" style=\"fill:var(--ink)\">columnas = letras<\/text><text x=\"20\" y=\"215\" font-size=\"15\" style=\"fill:var(--ink)\">filas = números<\/text><\/svg>", "nota": "Señala cada parte en la hoja real después de la diapositiva."}, {"tipo": "pasos", "titulo": "Tu primera hoja en Drive", "progresivo": true, "pasos": ["Drive → **Nuevo → Carpeta**: «SdA6 Hoja de cálculo».", "Dentro: **Nuevo → Hojas de cálculo de Google**.", "Ponle nombre arriba a la izquierda: **SdA6_Pruebas_TuNombre**.", "Escribe: tu nombre, el número 12, el precio **2,50** y la fecha **15/02/2027**.", "Mira: ¿qué datos se van a la izquierda y cuáles a la derecha?"]}, {"tipo": "practica", "titulo": "Caza del tipo de dato", "tiempo": 15, "agrupamiento": "Parejas de mesa (cada uno en su hoja)", "enunciado": "Copia esta tabla de minutos en tu hoja. Hay **3 datos mal escritos** que la hoja no puede sumar. Encuéntralos y corrígelos.", "pasos": ["Lunes: TikTok 95 · Instagram 40 · WhatsApp 30", "Martes: TikTok **60 min** · Instagram 35 · WhatsApp 25", "Miércoles: TikTok 80 · Instagram **1.5** · WhatsApp 45", "Fecha de hoy: **31/02/2027**"], "ayudas": [{"tipo": "pista", "texto": "Si un número se queda pegado a la **izquierda**, la hoja lo trata como texto. En España los decimales llevan **coma**. ¿Febrero tiene 31 días?"}]}, {"tipo": "cierre", "puntos": ["Una hoja tiene **celdas** (B3), **rangos** (A1:C5) y **pestañas**.", "Texto a la izquierda, números a la derecha: así sabes si la hoja podrá calcular.", "Todo se guarda solo en tu **Drive**."], "pregunta": "¿Qué dato de tu vida te gustaría tener en una hoja que calcule sola?"}]}, {"n": 2, "fase": "Bloque 1 · Introducción y estructura", "titulo": "El ticket del súper: formatos y operaciones", "reto": "Dar formato a los datos (moneda, porcentaje, fecha, colores, bordes) y hacer que la hoja calcule con operaciones aritméticas.", "pregunta": "¿Cómo sabe la caja del súper cuánto tienes que pagar?", "diapositivas": [{"tipo": "ejemplo", "icono": "🧾", "titulo": "El ticket del súper", "situacion": "Compras **3 yogures a 0,45 €** y la caja escribe 1,35 € sin que nadie haga la cuenta.", "explicacion": "Dentro hay una fórmula: **unidades × precio**. Si cambia el precio, el ticket se recalcula. Hoy hacemos lo mismo en una hoja."}, {"tipo": "idea", "icono": "🟰", "titulo": "Las reglas de una fórmula", "puntos": ["Empieza siempre por **=**", "Usa celdas, no números: **=B2*C2**", "Operadores: **+  −  *  /** y paréntesis", "Porcentajes: **=D8*10%**"], "nota": "Demuestra que con =2*1,20 el total no cambia si cambias el precio."}, {"tipo": "practica", "titulo": "El ticket que se calcula solo", "tiempo": 13, "enunciado": "Crea la pestaña **Ticket** y copia la tabla. En la columna D escribe la fórmula del total de cada producto y, abajo, el total de la compra.", "pasos": ["A: Producto · B: Unidades · C: Precio · D: Total", "Pan 2 · 1,20 | Leche 6 · 0,95 | Yogur 3 · 0,45 | Pasta 2 · 1,10 | Manzanas 1 · 2,30 | Zumo 2 · 1,75", "D2: **=B2*C2** y arrastra el cuadradito azul hacia abajo", "D8: **=D2+D3+D4+D5+D6+D7**", "Cambia un precio: ¿cambia el total?"]}, {"tipo": "practica", "titulo": "Formato que ayuda a leer", "tiempo": 15, "enunciado": "Haz que tu ticket parezca de verdad.", "pasos": ["Precios y totales: **Formato → Número → Moneda**", "Cabecera en **negrita** con color de relleno", "Bordes a toda la tabla y ajusta el ancho de columnas", "**Ver → Inmovilizar → 1 fila**", "🌶️ Fila de descuento del 10 % y total final"]}, {"tipo": "quiz", "pregunta": "¿Qué fórmula calcula bien el total de la fila 4 (unidades en B4, precio en C4)?", "opciones": ["B4*C4", "=3*0,45", "=B4*C4", "=B4+C4"], "correcta": 2, "explicacion": "Empieza por **=** y usa las celdas: si cambia el precio, el total se recalcula. «=3*0,45» da bien hoy, pero no se actualiza."}, {"tipo": "cierre", "puntos": ["Las fórmulas empiezan por **=** y usan **celdas**.", "El **formato** no cambia el dato, ayuda a leerlo.", "Un Drive ordenado = encontrar tu trabajo en segundos."], "siguiente": "Funciones: SUMA, PROMEDIO y CONTAR.SI (y primera Tarea de Moodle)."}]}, {"n": 3, "fase": "Bloque 1 · Introducción y estructura", "titulo": "Mi semana en pantalla: SUMA, PROMEDIO y CONTAR.SI", "reto": "Usar funciones básicas para resumir una semana de datos y entregar la primera Tarea de Moodle.", "pregunta": "¿Qué día de la semana usas más el móvil?", "diapositivas": [{"tipo": "comparar", "titulo": "Fórmula larga vs función", "columnas": [{"titulo": "A mano", "icono": "🐢", "puntos": ["=D2+D3+D4+D5+D6+D7", "Con 300 filas… imposible"]}, {"titulo": "Con función", "icono": "⚡", "puntos": ["**=SUMA(D2:D7)**", "Igual de corta con 3 o con 3000 filas"]}]}, {"tipo": "codigo", "titulo": "Chuleta de funciones", "codigo": "=SUMA(B2:B8)        → suma todo el rango\n=PROMEDIO(B2:B8)    → media\n=MAX(B2:B8)         → el valor más alto\n=MIN(B2:B8)         → el valor más bajo\n=CONTAR.SI(B2:B8;\">120\")  → cuántos superan 120", "explicacion": ["En español se separa con **punto y coma (;)**.", "La condición de CONTAR.SI va **entre comillas**."], "pregunta": "¿Qué contaría =CONTAR.SI(B2:B8;\"<30\")?"}, {"tipo": "ejemplo", "icono": "📱", "titulo": "Bienestar digital del móvil", "situacion": "El móvil te dice «**media diaria: 3 h 12 min**» y te enseña el día que más lo usaste.", "explicacion": "Por dentro hace un **PROMEDIO** y un **MAX** de los minutos de cada día. Hoy lo calculas tú."}, {"tipo": "practica", "titulo": "Tarea 6.1 · Mi semana en pantalla", "tiempo": 28, "entrega": "Tarea 6.1 · Mi semana en pantalla", "enunciado": "Crea **SdA6_6.1_TuNombre**: filas = días, columnas = 4 apps. Usa tus minutos reales **o** estos datos de ejemplo.", "pasos": ["Ejemplo (TikTok · Instagram · WhatsApp · YouTube) L 95·40·30·20 | M 130·35·25·45 | X 80·50·45·10 | J 150·30·40·25 | V 170·60·35·60 | S 210·75·20·90 | D 185·55·30·70", "Total por app y por día con **SUMA**", "Media diaria con **PROMEDIO**; día máximo y mínimo con **MAX** y **MIN**", "Días con más de 2 h de una app: **CONTAR.SI(…;\">120\")**", "Compartir → con tu docente como **Lector** → pega el enlace en Moodle", "🌶️ Pasa los totales a horas con un decimal"], "ayudas": [{"tipo": "pista", "texto": "Si una función da **#ERROR!**, revisa que separas con **;** y que el rango tiene dos puntos (B2:B8)."}]}, {"tipo": "quiz", "pregunta": "Tienes los minutos de lunes a domingo en C2:C8. ¿Cómo calculas la media diaria?", "opciones": ["=SUMA(C2:C8)", "=PROMEDIO(C2:C8)", "=PROMEDIO(C2;C8)", "=MAX(C2:C8)"], "correcta": 1, "explicacion": "Con **dos puntos** (C2:C8) es el rango completo. Con punto y coma (C2;C8) solo haría la media de esas dos celdas."}, {"tipo": "cierre", "puntos": ["**SUMA, PROMEDIO, MAX, MIN** resumen un rango.", "**CONTAR.SI** cuenta los que cumplen una condición.", "Argumentos separados por **;**"], "siguiente": "Trabajamos en la misma hoja a la vez y aprendemos el truco del $."}]}, {"n": 4, "fase": "Bloque 2 · Pestañas y fórmulas avanzadas", "titulo": "El truco del $: referencias relativas y absolutas en una hoja compartida", "reto": "Entender qué pasa con una fórmula al arrastrarla, fijar celdas con $ y trabajar a la vez en una hoja compartida.", "pregunta": "¿Por qué una fórmula que funciona en una fila da cero en la de abajo?", "diapositivas": [{"tipo": "ejemplo", "icono": "🧭", "titulo": "Instrucciones que cambian contigo", "situacion": "Le dices a alguien «**el de tu derecha** paga el refresco». Si cambia de sitio, paga otra persona. Si dices «**paga Lucía**», da igual dónde se siente.", "explicacion": "«El de tu derecha» es una referencia **relativa** (B2). «Lucía» es **absoluta** ($F$1): siempre la misma celda."}, {"tipo": "flujo", "titulo": "Qué pasa al arrastrar hacia abajo", "nodos": [{"texto": "C2: =B2*$F$1", "tipo": "inicio"}, {"texto": "C3: =B3*$F$1 (B cambia, $F$1 no)", "tipo": "proceso"}, {"texto": "C4: =B4*$F$1", "tipo": "proceso"}, {"texto": "Todas usan el mismo IVA", "tipo": "fin"}], "nota": "Escribe primero =B2*F1, arrastra y enseña el error. Luego pulsa F4 sobre F1."}, {"tipo": "practica", "titulo": "La tienda del viaje de estudios", "tiempo": 13, "enunciado": "Pestaña **Precios**: calcula el precio final de cada producto con el IVA y el descuento fijos en dos celdas.", "pasos": ["A: Producto · B: Precio sin IVA · C: IVA · D: Precio final · E: Con descuento", "Sudadera 18 · Camiseta 8 · Gorra 6 · Botella 5 · Mochila 15 · Pulsera 2", "G1: IVA **21%** · G2: Descuento **5%**", "C2: **=B2*$G$1** · D2: **=B2+C2** · E2: **=D2*(1-$G$2)**", "Arrastra hasta la fila 7", "🌶️ Tabla de multiplicar con **=$A2*B$1**"]}, {"tipo": "pasos", "titulo": "Colaborar en vivo sin romper nada", "pasos": ["Escribe **solo en tu fila** o tu zona", "¿Quieres cambiar algo ajeno? → **comentario** (Ctrl+Alt+M) y @nombre", "**Archivo → Historial de versiones** muestra quién cambió qué", "Nunca borres el trabajo de otra persona"]}, {"tipo": "practica", "titulo": "Parejas: creamos la hoja del proyecto", "tiempo": 10, "agrupamiento": "Parejas", "enunciado": "Elegid tema y cread la hoja compartida del producto final.", "pasos": ["Tema: 🎒 presupuesto del viaje · 📚 hábitos de estudio · 🧮 calculadora de notas", "Hoja: **SdA6_Proyecto_Nombre1_Nombre2** con pestañas **Datos · Cálculos · Panel**", "Compartir: pareja = **Editor** · docente = **Comentarista**", "Roles: 🧱 arquitecto/a de datos · 🎨 diseñador/a del panel"]}, {"tipo": "quiz", "pregunta": "El descuento está en H1 y lo usan todas las filas. ¿Cómo escribes la fórmula de la fila 2?", "opciones": ["=D2*H1", "=D2*$H$1", "=$D$2*$H$1", "=D2*H$2"], "correcta": 1, "explicacion": "D2 tiene que cambiar al arrastrar (relativa) y H1 no (absoluta, **$H$1**)."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Pestaña «Precios» con referencias absolutas", "Aportación y comentario en el «Buzón de ideas»", "Hoja del proyecto creada y compartida"], "siguiente": "Pestañas que hablan entre sí y colores que avisan"}]}, {"n": 5, "fase": "Bloque 2 · Pestañas y fórmulas avanzadas", "titulo": "Pestañas que hablan entre sí y colores que avisan", "reto": "Enlazar datos entre pestañas con 'Hoja'!A1 y usar formato condicional y SI para que la hoja avise cuando algo va mal.", "pregunta": "¿Cómo sabe la app del banco que tienes que ver el saldo en rojo?", "diapositivas": [{"tipo": "ejemplo", "icono": "🏦", "titulo": "Saldo en rojo", "situacion": "Pagas unas zapatillas con la tarjeta y la pantalla de inicio del banco te pone el **saldo en rojo**.", "explicacion": "La pantalla de inicio está **enlazada** con la lista de movimientos y tiene una **regla**: si el saldo baja de 0, rojo. Son **referencias entre pestañas** y **formato condicional**."}, {"tipo": "infografia", "titulo": "Tres pestañas, un solo libro", "elementos": [{"icono": "🏷️", "titulo": "Precios", "texto": "Precio final de cada producto (lo que hiciste ayer)"}, {"icono": "🧾", "titulo": "Pedidos", "texto": "Unidades pedidas · usa **'Precios'!$E$2**"}, {"icono": "📊", "titulo": "Resumen", "texto": "Totales y avisos · usa **'Pedidos'!B12**"}], "nota": "La comilla simple solo es obligatoria si el nombre tiene espacios, pero acostumbrarse a ponerla evita errores."}, {"tipo": "practica", "titulo": "Pedidos y Resumen enlazados", "tiempo": 14, "enunciado": "Crea las pestañas **Pedidos** y **Resumen** y enlázalas con **Precios**.", "pasos": ["Pedidos: filas = Comprador 1…8 · columnas = Sudadera, Camiseta, Gorra (unidades del 0 al 3)", "Fila 11: unidades totales con **SUMA**", "Fila 12 (Sudadera): **='Precios'!$E$2*B11**", "Resumen B2: **='Pedidos'!B12+'Pedidos'!C12+'Pedidos'!D12**", "Cambia un precio en Precios: ¿cambia el Resumen?"], "ayudas": [{"tipo": "pista", "texto": "Truco: escribe **=** en Resumen, haz clic en la pestaña Pedidos, clic en la celda y pulsa Intro. Sheets escribe la referencia por ti."}]}, {"tipo": "practica", "titulo": "Colores que avisan", "tiempo": 18, "enunciado": "Selecciona el rango → **Formato → Formato condicional** y crea las alertas.", "pasos": ["Stock **menor que 5** → relleno rojo", "Ventas **mayor o igual que** el objetivo → verde", "Unidades de Pedidos → **escala de colores**", "Resumen: **=SI(B2>=B3;\"Objetivo conseguido 🎉\";\"Seguimos vendiendo\")**", "🌶️ Fórmula personalizada: **=$C2<$G$3**"]}, {"tipo": "practica", "titulo": "Vuestro proyecto: primeros datos", "tiempo": 10, "agrupamiento": "Parejas", "enunciado": "Rellenad las primeras filas de la pestaña **Datos** y decidid qué alerta de color tendrá vuestra hoja.", "pasos": ["🎒 Viaje: transporte, alojamiento, comidas, actividades", "📚 Hábitos: horas de estudio, sueño y móvil por día", "🧮 Notas: exámenes, trabajos y porcentajes de cada materia", "Dejad un comentario con la alerta elegida"]}, {"tipo": "quiz", "pregunta": "¿Qué escribes para traer a tu celda el valor de B12 de la pestaña «Pedidos»?", "opciones": ["=Pedidos.B12", "='Pedidos'!B12", "=B12(Pedidos)", "=SUMA(Pedidos)"], "correcta": 1, "explicacion": "Nombre de la pestaña entre comillas simples, **exclamación** y la celda: **'Pedidos'!B12**."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Pestañas «Pedidos» y «Resumen» enlazadas", "Reglas de formato condicional", "Pestaña «Datos» del proyecto iniciada"], "siguiente": "Mi hoja aprende trucos: Apps Script y entrega de la Tarea 6.2"}]}, {"n": 6, "fase": "Bloque 2 · Pestañas y fórmulas avanzadas", "titulo": "Mi hoja aprende trucos: Apps Script y entrega de la Tarea 6.2", "reto": "Añadir a la hoja una función propia y un menú con Apps Script, y entregar la tienda del viaje completa.", "pregunta": "¿Puede una hoja de cálculo aprender algo que no sabe hacer?", "diapositivas": [{"tipo": "ejemplo", "icono": "🚦", "titulo": "El semáforo de stock", "situacion": "En la tienda online pone «**¡Quedan 2!**» en naranja cuando casi no queda stock.", "explicacion": "Alguien programó esa regla. En Sheets no existe una función SEMAFORO, pero la podemos **programar con Apps Script**: Extensiones → Apps Script."}, {"tipo": "codigo", "titulo": "Función SEMAFORO (cópiala)", "codigo": "/** Devuelve un semáforo según el valor y un límite */\nfunction SEMAFORO(valor, limite) {\n  if (valor < limite) {\n    return \"🔴\";              // por debajo del límite\n  }\n  if (valor < limite * 2) {\n    return \"🟡\";              // cerca del límite\n  }\n  return \"🟢\";                // todo bien\n}", "explicacion": ["**function** crea la función; entre paréntesis, los datos que recibe.", "**if** comprueba una condición; **return** devuelve el resultado a la celda.", "En la hoja se usa con **;** → =SEMAFORO(C2;5)"], "pregunta": "¿Qué devuelve =SEMAFORO(7;5)?"}, {"tipo": "codigo", "titulo": "Un menú propio en tu hoja", "codigo": "function onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu(\"🎒 Mi hoja\")\n    .addItem(\"Poner fecha de hoy\", \"ponerFecha\")\n    .addToUi();\n}\n\nfunction ponerFecha() {\n  SpreadsheetApp.getActiveRange().setValue(new Date());\n}", "explicacion": ["**onOpen** se ejecuta sola al abrir la hoja.", "Al usar el menú la primera vez, Google pide **permiso**: es tu propio código."], "nota": "Si Apps Script está bloqueado para el alumnado, haz la demostración en tu cuenta y pide que expliquen el código por escrito (vale para la línea de la rúbrica)."}, {"tipo": "pasos", "titulo": "Pegar y probar", "progresivo": true, "pasos": ["Hoja → **Extensiones → Apps Script**", "Borra lo que hay y pega los dos códigos", "💾 Guardar (Ctrl+S)", "Vuelve a la hoja: en D2 escribe **=SEMAFORO(C2;5)** y arrastra", "Recarga la página: aparece el menú **🎒 Mi hoja**"]}, {"tipo": "practica", "titulo": "Tarea 6.2 · La tienda del viaje", "tiempo": 25, "entrega": "Tarea 6.2 · La tienda del viaje: pestañas, fórmulas y Apps Script", "enunciado": "Deja lista tu hoja como **SdA6_6.2_TuNombre** y entrega el enlace.", "pasos": ["☐ Pestañas **Precios, Pedidos y Resumen** enlazadas", "☐ **$** en el IVA y el descuento", "☐ Formato condicional en stock y ventas + celda **SI**", "☐ **SEMAFORO** aplicado y menú funcionando", "☐ Dos frases en Resumen: ¿qué celda cambias para subir el descuento y qué pasa?", "☐ En la carpeta SdA6 y compartida con tu docente", "🌶️ Cambia SEMAFORO para que use otro emoji u otro nivel"]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Función SEMAFORO y menú propio en Apps Script", "Hoja «La tienda del viaje» (Tarea 6.2 con rúbrica)"], "siguiente": "Gráficos que cuentan (y gráficos que engañan)"}]}, {"n": 7, "fase": "Bloque 3 · Visualización y presentación", "titulo": "Gráficos que cuentan (y gráficos que engañan)", "reto": "Elegir el gráfico adecuado para cada dato (sectores, barras, líneas), crearlo en la hoja del proyecto e interpretarlo con espíritu crítico.", "pregunta": "¿Puede un gráfico mentir con datos verdaderos?", "diapositivas": [{"tipo": "ejemplo", "icono": "📈", "titulo": "El triple… o casi lo mismo", "situacion": "Un vídeo dice: «**@creadora_A tiene el triple de seguidores que @creador_B**» y lo enseña con un gráfico de barras.", "explicacion": "Los datos: **101 000 frente a 97 000**. El eje empieza en **95 000**, por eso la barra parece el triple. Con el eje desde **0** casi no hay diferencia.", "pregunta": "¿Por qué alguien haría el gráfico así?"}, {"tipo": "comparar", "titulo": "Qué gráfico para qué", "columnas": [{"titulo": "Sectores", "icono": "🥧", "puntos": ["**Partes de un total**", "Reparto del presupuesto del viaje", "Máximo 5-6 trozos"]}, {"titulo": "Barras", "icono": "📊", "puntos": ["**Comparar** categorías", "Minutos por día, notas por materia"]}, {"titulo": "Líneas", "icono": "📈", "puntos": ["**Evolución** en el tiempo", "Horas de estudio semana a semana"]}]}, {"tipo": "pasos", "titulo": "Crear y arreglar un gráfico", "pasos": ["Selecciona el rango con su cabecera", "**Insertar → Gráfico** y elige el tipo en el editor", "Personalizar: **título**, títulos de ejes y etiquetas de datos", "Eje vertical: **mínimo 0**"]}, {"tipo": "video", "titulo": "Gráficos engañosos", "busqueda": "gráficos engañosos estadística explicación", "texto": "Fragmento corto de un vídeo que explique trucos de gráficos engañosos.", "preguntas": ["¿Qué truco usa cada gráfico?", "¿Cómo lo harías honesto?"], "nota": "Elige y prueba el vídeo antes de clase (máximo 3-4 minutos). Si no hay tiempo, sáltate esta diapositiva."}, {"tipo": "practica", "titulo": "El panel del proyecto", "tiempo": 25, "agrupamiento": "Parejas", "enunciado": "En la pestaña **Panel**, cread al menos **dos gráficos de tipos distintos** con datos de **Cálculos** y una frase de interpretación debajo de cada uno.", "pasos": ["Título que diga qué se ve", "Ejes con unidades (€, horas, puntos) y eje desde 0", "Frase: «El mayor … es … porque …»", "🎨 coloca y da formato · 🧱 revisa los rangos → después cambiáis"]}, {"tipo": "quiz", "pregunta": "Quieres enseñar cómo ha cambiado tu nota de Matemáticas en cada examen del curso. ¿Qué gráfico usas?", "opciones": ["Sectores", "Líneas", "Ninguno: mejor una tabla"], "correcta": 1, "explicacion": "Es una **evolución en el tiempo**: las líneas muestran si sube o baja de un examen a otro."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tres gráficos en la hoja 6.1", "Pestaña «Panel» del proyecto con dos gráficos interpretados"], "siguiente": "A prueba de errores: proteger, validar y probar la hoja de otra pareja"}]}, {"n": 8, "fase": "Bloque 3 · Visualización y presentación", "titulo": "A prueba de errores: proteger, validar y probar la hoja de otra pareja", "reto": "Proteger las fórmulas, limitar lo que se puede escribir con validación de datos y probar la hoja de otra pareja para encontrar fallos.", "pregunta": "¿Tu hoja sobreviviría a que otra persona la usara?", "diapositivas": [{"tipo": "ejemplo", "icono": "🧯", "titulo": "La hoja del grupo de clase", "situacion": "Alguien en el grupo de WhatsApp comparte la hoja del regalo del profe y otra persona **borra sin querer la fórmula del total**.", "explicacion": "Por eso las hojas que usan varias personas se **protegen** (solo se edita lo que toca) y se **validan** (solo se aceptan datos con sentido)."}, {"tipo": "pasos", "titulo": "Protege y valida tu hoja", "progresivo": true, "pasos": ["Pestaña Cálculos → clic derecho → **Proteger hoja** → solo editores", "Lo mismo en **Panel**", "Datos → selecciona la columna de categorías → **Datos → Validación de datos → Desplegable**", "Columna de cantidades: **número entre** 0 y un máximo", "A1 de Datos: nota con **Cómo usar esta hoja**"]}, {"tipo": "practica", "titulo": "Validación cruzada", "tiempo": 22, "agrupamiento": "Parejas (revisáis la hoja de otra pareja)", "enunciado": "Probad la hoja que os toque como si fuerais a usarla de verdad. Después rellenad el formulario **F2**.", "pasos": ["1. Leed la nota de uso: ¿se entiende qué hay que hacer?", "2. Añadid 3 datos nuevos en Datos: ¿cambian los totales y los gráficos?", "3. Escribid «mucho» donde va un número: ¿la hoja lo impide?", "4. Mirad el Panel: ¿los gráficos tienen título y eje desde 0?", "5. Dejad **3 comentarios con @**: «Al escribir… pasa… Podríais…»"]}, {"tipo": "quiz", "pregunta": "Quieres que tu pareja revisora pueda dejar comentarios, pero no cambiar nada. ¿Qué permiso le das?", "opciones": ["Editor", "Comentarista", "Lector"], "correcta": 1, "explicacion": "**Comentarista**: ve la hoja y comenta, pero no modifica. Lector solo ve; Editor puede cambiarlo todo."}, {"tipo": "practica", "titulo": "Leemos lo que nos han dicho", "tiempo": 8, "agrupamiento": "Parejas", "enunciado": "Leed los comentarios de vuestra hoja, responded o marcadlos como resueltos y apuntad en A1 las mejoras que haréis.", "pasos": ["Comentario útil → respondedlo y planead el cambio", "Comentario que no compartís → explicad por qué con respeto"]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Rangos protegidos y validación de datos en la hoja del proyecto", "Comentarios en la hoja de otra pareja", "Formulario F2 de validación cruzada"], "siguiente": "Edición final, escaparate y entrega del producto"}]}, {"n": 9, "fase": "Bloque 3 · Visualización y presentación", "titulo": "Edición final, escaparate y entrega del producto", "reto": "Aplicar las mejoras de la validación cruzada, enseñar la hoja en un minuto y entregar el producto final en pareja.", "pregunta": "¿Usaría otra persona vuestra hoja sin preguntaros nada?", "diapositivas": [{"tipo": "practica", "titulo": "Lista final antes de entregar", "tiempo": 18, "agrupamiento": "Parejas", "enunciado": "Corregid lo que os señalaron y comprobad cada punto.", "pasos": ["☐ Pestañas **Datos · Cálculos · Panel** enlazadas, sin errores", "☐ Fórmulas con **$** y **'Hoja'!celda** · SUMA, PROMEDIO, CONTAR.SI o SI", "☐ Al menos **una alerta** de color útil", "☐ **Dos gráficos** distintos con título, unidades, eje desde 0 y frase", "☐ Cálculos y Panel **protegidos** · **validación** en Datos · **nota de uso** en A1", "☐ Comentarios de la validación cruzada **resueltos**", "🌶️ SEMAFORO o menú propio con Apps Script"]}, {"tipo": "practica", "titulo": "Escaparate de un minuto", "tiempo": 17, "agrupamiento": "Media clase explica, media clase visita", "enunciado": "Dejad vuestra hoja abierta en el **Panel**. Cuando os visiten, explicad en **1 minuto**:", "pasos": ["Qué problema resuelve vuestra hoja", "Qué dice vuestro gráfico principal", "Un truco del que estáis orgullosos (una fórmula, una alerta, un script)", "A los 8 minutos, **cambio de papeles**"], "nota": "No se califica. Marca el tiempo con el temporizador."}, {"tipo": "practica", "titulo": "Tarea 6.3 · Entrega en pareja", "tiempo": 10, "agrupamiento": "Parejas", "entrega": "Tarea 6.3 · Producto final: nuestra hoja de cálculo cooperativa", "enunciado": "Una persona entrega por las dos: pega el enlace de la hoja y escribe **qué ha hecho cada persona**.", "pasos": ["Hoja compartida con tu docente como **comentarista**", "«Nombre 1: … · Nombre 2: …» (lo compararé con el historial de versiones)"]}, {"tipo": "ejemplo", "icono": "💼", "titulo": "Fuera del instituto", "situacion": "En una tienda, un taller o un club deportivo alguien lleva **las cuentas, los turnos o los resultados** en una hoja compartida.", "explicacion": "Lo que habéis hecho (**datos enlazados, alertas, gráficos y permisos**) es exactamente lo que se pide en muchos trabajos y en el bachillerato o la FP.", "pregunta": "¿Dónde usarás tú una hoja de cálculo?"}, {"tipo": "cierre", "puntos": ["Datos ordenados → fórmulas → **alertas** → **gráficos**: los números cuentan algo.", "Una hoja compartida necesita **permisos, protección y validación**.", "Lo que otra pareja ve en tu hoja te ayuda a mejorarla."], "pregunta": "¿Qué te ha costado más y qué harías distinto?"}]}], "creditos": null, "ayudas": {"pista": "💡 Pista", "emociones": "💬 Cómo me siento", "repaso": "🧭 Repasa lo aprendido", "saber_mas": "🔭 Saber más"}, "apartados": {}, "url_alumnado": null};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
+// Enlaces de Google Docs/Hojas/Presentaciones: «Ver anexo» (solo lectura) y «Copiar a mi Drive» (copia propia).
+const enlaceBtn = u => { const s = String(u), g = s.match(/^https:\/\/docs\.google\.com\/(?:document|spreadsheets|presentation|drawings)\/d\/[\w-]+/), b = 'class="box wa" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;';
+  return g ? `<div style="display:flex;flex-wrap:wrap;gap:.6em;margin:.6em 0"><a ${b}flex:1 1 14em" href="${esc(g[0] + '/preview')}">👁️ <b>Ver anexo</b></a><a ${b}flex:1 1 14em" href="${esc(g[0] + '/copy')}">📥 <b>Copiar a mi Drive</b></a></div>`
+           : `<a ${b}display:block;margin:.6em 0" href="${esc(s)}">🔗 <b>${esc(s.replace(/^https?:\/\//,''))}</b></a>`; };
+// **negrita** dentro de los textos
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
+// Admite nombres de fase compuestos («Bloque 1 · Inicio»)
+const fcol = f => FC[f] || FC[Object.keys(FC).find(k => String(f || '').includes(k))] || 'var(--brand)';
+// Fases del modelo REA (Movilizar, Activar, Explorar, Estructurar, Aplicar y comprobar, Concluir)
+Object.assign(FC, {'Movilizar':'var(--f-mov)','Activar':'var(--f-act)','Explorar':'var(--f-exp)','Estructurar':'var(--f-est)','Aplicar':'var(--f-apl)','Concluir':'var(--f-con)'});
+const st = { s: null, i: 0, mode: 'proy', notes: false, revealed: {} };
+const SES = D.sesiones;
+
+function ytId(v){
+  const m = String(v||'').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(v||'').match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+// En vistas previas protegidas (iframe sandbox, about:srcdoc) el navegador bloquea replaceState: se ignora.
+function setHash(h){ try { history.replaceState(null, '', h); } catch(e){} }
+function fmtT(s){ s = Math.max(0, s|0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+// --------------------------------------------------- renderizado de cada tipo
+const R = {
+  portada(d, s){
+    return `<div class="in cover"><div class="tag">Sesión ${s.n} · ${esc(s.fase||'')}</div>
+      <h1 class="s-h">${md(s.titulo)}</h1>${s.reto ? `<p class="s-lead">${md(s.reto)}</p>` : ''}
+      ${d.pregunta ? `<div class="q">${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  idea(d){
+    return `<div class="in">${d.icono ? `<div class="ico">${esc(d.icono)}</div>` : ''}<h2 class="s-h">${md(d.titulo)}</h2>
+      ${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${arr(d.puntos).length ? `<ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  ejemplo(d){
+    return `<div class="in"><h2 class="s-h">${d.icono ? esc(d.icono)+' ' : ''}${md(d.titulo)}</h2>
+      <div class="two"><div class="box wa"><div class="lb">En tu día a día</div>${md(d.situacion)}</div>
+      <div class="box hl"><div class="lb">¿Qué hay detrás?</div>${md(d.explicacion)}</div></div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  pasos(d, s, k){
+    const key = s.n+'-'+k, prog = d.progresivo, shown = st.revealed[key] ?? (prog ? 1 : 1e9);
+    const ps = arr(d.pasos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}"><span>${md(p)}</span></li>`).join('')}</ol>
+      ${prog && st.mode==='proy' && shown < ps.length ? `<button class="reveal" data-rev="${key}" data-max="${ps.length}">Siguiente paso (↓)</button>` : ''}</div>`;
+  },
+  comparar(d){
+    const c = arr(d.columnas);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="cols" style="--n:${c.length}">${c.map(x=>`<div class="col"><h4>${esc(x.icono||'')} ${md(x.titulo)}</h4><ul class="pts">${arr(x.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  flujo(d){
+    const n = arr(d.nodos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="flow">${n.map((x,j)=>`${j?'<span class="arr">→</span>':''}<div class="fn ${esc(x.tipo||'proceso')}"><span>${md(x.texto ?? x)}</span></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  infografia(d){
+    const body = d.svg ? `<div class="svgw">${d.svg}</div>`
+      : `<div class="grid-i" style="--cols:${Math.min(arr(d.elementos).length, arr(d.elementos).length === 4 ? 4 : 3) || 1}">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${body}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  codigo(d){
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2><div class="two" style="grid-template-columns:${d.explicacion?'1.2fr 1fr':'1fr'}">
+      <pre class="code">${esc(d.codigo)}</pre>${d.explicacion ? `<div class="box hl"><div class="lb">Qué hace</div>${arr(d.explicacion).map(x=>`<p style="margin:.2em 0">${md(x)}</p>`).join('')}</div>` : ''}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  dato(d){
+    return `<div class="in" style="justify-content:center;text-align:center"><div class="big">${esc(d.valor)}</div>
+      <p class="s-lead" style="margin-top:.5em;font-size:1.3em">${md(d.texto)}</p>${d.fuente ? `<div class="src">Fuente: ${esc(d.fuente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask" style="margin-top:1em">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  practica(d, s, k){
+    const min = +d.tiempo || 0;
+    return `<div class="in"><h2 class="s-h">🛠 ${md(d.titulo)}</h2>
+      <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
+      ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
+      <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
+      ${arr(d.enlace).map(enlaceBtn).join('')}
+      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
+      ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
+  },
+  quiz(d, s, k){
+    return `<div class="in"><h2 class="s-h">🧠 ${md(d.pregunta)}</h2>
+      <div class="opts" data-q="${s.n}-${k}" data-ok="${+d.correcta||0}">${arr(d.opciones).map((o,j)=>`<button class="opt" data-j="${j}">${String.fromCharCode(65+j)}. ${md(o)}</button>`).join('')}</div>
+      <div class="expl box hl" id="ex-${s.n}-${k}">${md(d.explicacion||'')}</div></div>`;
+  },
+  video(d){
+    const id = ytId(d.youtube), ini = +d.inicio || 0;
+    const url = id ? `https://www.youtube.com/watch?v=${id}${ini?'&t='+ini+'s':''}` : (d.busqueda ? 'https://www.youtube.com/results?search_query='+encodeURIComponent(d.busqueda) : '');
+    const box = id ? `<div class="vid" data-yt="${id}" data-ini="${ini}" data-fin="${+d.fin||0}"><button class="play">▶ Reproducir aquí</button></div>`
+      : `<a class="box wa" style="display:block;text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">🔎 Buscar en YouTube: <b>${esc(d.busqueda||'')}</b><div class="src">El docente elige el vídeo antes de clase.</div></a>`;
+    return `<div class="in"><h2 class="s-h">🎬 ${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="two" style="grid-template-columns:${arr(d.preguntas).length?'1.5fr 1fr':'1fr'};flex:1;min-height:0">${box}
+      ${arr(d.preguntas).length ? `<div class="box ac"><div class="lb">Mientras lo ves</div><ul class="pts">${arr(d.preguntas).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>` : ''}</div>
+      ${url && id ? `<div class="src"><a href="${esc(url)}" target="_blank" rel="noopener">Abrir en YouTube ↗</a>${d.duracion ? ' · '+esc(d.duracion) : ''}${ini ? ' · desde '+fmtT(ini) : ''}</div>` : ''}</div>`;
+  },
+  multinivel(d){
+    const o = arr(d.opciones);
+    return `<div class="in"><h2 class="s-h">🎚 ${md(d.titulo)}</h2>${d.enunciado ? `<p class="s-lead">${md(d.enunciado)}</p>` : ''}
+      <div class="mlv" style="--n:${Math.min(o.length,3)}">${o.map(x=>`<div class="mo"><h4><span class="L">${esc(x.letra)}</span>${md(x.titulo)}</h4>${x.proceso ? `<div class="pc">${esc(x.proceso)}</div>` : ''}<p>${md(x.enunciado)}</p></div>`).join('')}</div>
+      ${d.texto ? `<div class="src">${md(d.texto)}</div>` : ''}</div>`;
+  },
+  cierre(d){
+    return `<div class="in"><h2 class="s-h">✅ ${md(d.titulo || 'Hoy hemos aprendido')}</h2>
+      <ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>
+      ${d.siguiente ? `<div class="box ac" style="margin-top:.6em"><div class="lb">Próxima sesión</div>${md(d.siguiente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask">🚪 Pregunta de salida: ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+};
+const TAG = {idea:'Idea clave', ejemplo:'Ejemplo cotidiano', pasos:'Paso a paso', comparar:'Comparamos', flujo:'Diagrama de flujo',
+  infografia:'Infografía', codigo:'Programa', dato:'Dato', practica:'¡Manos a la obra!', quiz:'Comprueba', video:'Vídeo', cierre:'Cierre',
+  multinivel:'Elige tu opción'};
+// Ayudas plegables por función: pista, emociones, repaso y saber más
+const AYN = D.ayudas || {pista:'💡 Pista', emociones:'💬 Cómo me siento', repaso:'🧭 Repasa lo aprendido', saber_mas:'🔭 Saber más'};
+// Botones a apartados concretos de la guía del alumnado: "guia": "3.2" o ["3.2.1", "3.3"]
+function guiaHtml(g){
+  if (!arr(g).length || !D.url_alumnado) return '';
+  const A = D.apartados || {};
+  return `<div class="gbs">${arr(g).map(id => `<a class="gb" href="${esc(D.url_alumnado)}#a-${esc(id)}" target="_blank" rel="noopener">📘 <b>Guía del alumnado · ${esc(id)}</b>${A[id] ? ' ' + esc(A[id]) : ''} ↗</a>`).join('')}</div>`;
+}
+function ayudasHtml(list){
+  return arr(list).length ? `<div class="ays">${arr(list).map(a=>`<details class="ay ay-${esc(a.tipo)}"><summary>${esc(AYN[a.tipo]||'Ayuda')}${a.titulo ? ' · '+md(a.titulo) : ''}</summary><div>${a.texto ? `<p style="margin:.2em 0">${md(a.texto)}</p>` : ''}${arr(a.puntos).length ? `<ul>${arr(a.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}</div></details>`).join('')}</div>` : '';
+}
+
+function slidesOf(s){ return [{tipo:'portada', pregunta: s.pregunta}].concat(arr(s.diapositivas)); }
+function renderSlide(s, d, k, total){
+  const f = R[d.tipo] || R.idea;
+  const tag = d.tipo !== 'portada' ? `<div class="tag">${esc(TAG[d.tipo]||'')}</div>` : '';
+  let body = f(d, s, k);
+  if (arr(d.guia).length || arr(d.ayudas).length) body = body.replace(/<\/div>\s*$/, guiaHtml(d.guia) + ayudasHtml(d.ayudas) + '</div>');
+  return `<section class="slide" style="--fc:${fcol(s.fase)}" data-k="${k}">${body}${tag}
+    <div class="bar"><i style="width:${(k+1)/total*100}%"></i></div><div class="pg">${k+1} / ${total}</div></section>`;
+}
+
+// --------------------------------------------------- vistas
+function creditosHtml(){
+  const C = D.creditos; if (!C) return '';
+  const o = C.original || {}, L = C.licencia || {};
+  const lic = L.url ? `<a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.nombre)}</a>` : esc(L.nombre || '');
+  return `<div class="foot">${o.titulo ? `Adaptación de «${esc(o.titulo)}»${o.organizacion ? ' · ' + esc(o.organizacion) : ''}${arr(o.personas).length ? ' · ' + esc(arr(o.personas).map(x => x.nombres).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3).join(', ')) : ''}. ` : ''}${C.adaptacion && C.adaptacion.autoria ? 'Adaptación: ' + esc(C.adaptacion.autoria) + '. ' : ''}Licencia ${lic}.${D.url_alumnado ? ` Créditos completos en la <a href="${esc(D.url_alumnado)}#creditos">guía del alumnado</a>.` : ''}</div>`;
+}
+function home(){
+  st.s = null; document.body.classList.remove('fs');
+  $('#ttl').innerHTML = esc(D.meta.titulo || 'Sesiones');
+  $('#sel').value = ''; $('#notes').classList.remove('on');
+  $('#app').innerHTML = `<div class="home"><div class="hero"><div class="k">${esc([D.meta.curso_texto, D.materias].filter(Boolean).join(' · '))}</div>
+    <h1>${esc(D.meta.titulo||'')}</h1>${D.meta.subtitulo ? `<p>${esc(D.meta.subtitulo)}</p>` : ''}
+    ${D.reto ? `<p><b>Reto:</b> ${esc(D.reto)}</p>` : ''}
+    ${D.url_alumnado ? `<a class="gal" href="${esc(D.url_alumnado)}">📘 Guía del alumnado: apartados, actividades y ayudas</a>` : ''}
+    <p class="help">Elige una sesión. Proyectar: <span class="kbd">←</span><span class="kbd">→</span> pasar · <span class="kbd">F</span> pantalla completa · <span class="kbd">N</span> notas del docente · <span class="kbd">E</span> modo estudio · <span class="kbd">Esc</span> volver aquí.</p></div>
+    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${fcol(s.fase)}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div>${creditosHtml()}</div>`;
+  setHash('#');
+  wire();
+}
+function show(n, i){
+  const s = SES.find(x => x.n == n); if (!s) return home();
+  const sl = slidesOf(s);
+  st.s = s; st.i = Math.max(0, Math.min(i|0, sl.length - 1));
+  $('#ttl').innerHTML = `Sesión ${s.n}. ${esc(s.titulo)}<small>${esc(D.meta.titulo||'')}</small>`;
+  $('#sel').value = String(s.n);
+  $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar';
+  if (st.mode === 'proy') {
+    $('#app').innerHTML = `<div class="stage"><button class="nav l" id="pv" aria-label="Anterior">‹</button>${renderSlide(s, sl[st.i], st.i, sl.length)}<button class="nav r" id="nx" aria-label="Siguiente">›</button></div>`;
+    $('#pv').onclick = prev; $('#nx').onclick = next;
+  } else {
+    $('#app').innerHTML = `<div class="study">${sl.map((d,k)=>renderSlide(s, d, k, sl.length)).join('')}
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:20px">${SES.find(x=>x.n==s.n-1) ? `<button class="tb" data-s="${s.n-1}">← Sesión ${s.n-1}</button>` : '<span></span>'}${SES.find(x=>x.n==s.n+1) ? `<button class="tb" data-s="${s.n+1}">Sesión ${s.n+1} →</button>` : ''}</div></div>`;
+    window.scrollTo(0, 0);
+  }
+  const nt = st.mode === 'proy' ? sl[st.i].nota : null;
+  $('#notes').innerHTML = nt ? `<b>Notas para el docente:</b> ${md(nt)}` : '<b>Notas:</b> sin notas en esta diapositiva.';
+  $('#notes').classList.toggle('on', st.notes && st.mode === 'proy');
+  setHash(`#s${s.n}-${st.i + 1}`);
+  wire();
+  fit();
+}
+function next(){
+  if (!st.s) return; const sl = slidesOf(st.s), d = sl[st.i];
+  if (d.tipo === 'pasos' && d.progresivo) { const key = st.s.n+'-'+st.i, v = st.revealed[key] ?? 1;
+    if (v < arr(d.pasos).length) { st.revealed[key] = v + 1; return show(st.s.n, st.i); } }
+  if (st.i < sl.length - 1) show(st.s.n, st.i + 1);
+  else { const nx = SES.find(x => x.n == st.s.n + 1); if (nx) show(nx.n, 0); }
+}
+function prev(){ if (!st.s) return; if (st.i > 0) show(st.s.n, st.i - 1); else { const p = SES.find(x => x.n == st.s.n - 1); if (p) show(p.n, slidesOf(p).length - 1); } }
+
+// Si el contenido no cabe en la diapositiva proyectada, reduce la letra (hasta un 62 %)
+function fit(){
+  const sl = document.querySelector('.stage .slide'); if (!sl) return;
+  const inn = sl.querySelector('.in'); sl.style.fontSize = '';
+  const base = parseFloat(getComputedStyle(sl).fontSize); let f = base;
+  while (inn.scrollHeight > inn.clientHeight + 1 && f > base * 0.62) { f *= 0.96; sl.style.fontSize = f + 'px'; }
+}
+let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fit, 80); });
+let timers = {};
+document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('ay')) fit(); }, true);
+function wire(){
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => show(+b.dataset.s, 0));
+  document.querySelectorAll('.opts').forEach(q => q.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+    const ok = +q.dataset.ok; q.querySelectorAll('.opt').forEach(x => x.classList.remove('ok','ko'));
+    o.classList.add(+o.dataset.j === ok ? 'ok' : 'ko'); q.querySelectorAll('.opt')[ok]?.classList.add('ok');
+    document.getElementById('ex-' + q.dataset.q)?.classList.add('on');
+  }));
+  document.querySelectorAll('.reveal').forEach(b => b.onclick = () => { st.revealed[b.dataset.rev] = (st.revealed[b.dataset.rev] ?? 1) + 1; show(st.s.n, st.i); });
+  document.querySelectorAll('.vid').forEach(v => { const b = v.querySelector('.play'); if (b) b.onclick = () => {
+    const p = new URLSearchParams({autoplay: '1', rel: '0'}); if (+v.dataset.ini) p.set('start', v.dataset.ini); if (+v.dataset.fin) p.set('end', v.dataset.fin);
+    v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.yt}?${p}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>`; }; });
+  document.querySelectorAll('.timer').forEach(b => {
+    const k = b.dataset.k, paint = () => { const t = timers[k]; if (!t) return; const left = Math.round((t.end - Date.now())/1000);
+      b.textContent = left > 0 ? '⏱ ' + fmtT(left) : '⏰ ¡Tiempo!'; b.classList.toggle('end', left <= 0); };
+    if (timers[k]) paint();
+    b.onclick = () => { if (timers[k]) { clearInterval(timers[k].iv); delete timers[k]; b.textContent = '⏱ ' + (b.dataset.timer/60) + ' min'; b.classList.remove('end'); return; }
+      timers[k] = { end: Date.now() + b.dataset.timer * 1000 }; timers[k].iv = setInterval(() => { if (!document.body.contains(b)) return; paint(); }, 500); paint(); };
+  });
+}
+
+// --------------------------------------------------- controles
+$('#sel').innerHTML = `<option value="">Ir a la sesión…</option>` + SES.map(s => `<option value="${s.n}">S${s.n}. ${esc(s.titulo)}</option>`).join('');
+$('#sel').onchange = e => e.target.value ? show(+e.target.value, 0) : home();
+$('#b-home').onclick = home;
+$('#b-mode').onclick = () => { st.mode = st.mode === 'proy' ? 'est' : 'proy'; st.s ? show(st.s.n, st.i) : null; $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar'; };
+$('#b-notes').onclick = () => { st.notes = !st.notes; $('#b-notes').setAttribute('aria-pressed', st.notes); $('#notes').classList.toggle('on', st.notes && st.mode === 'proy' && !!st.s); };
+$('#b-fs').onclick = toggleFs;
+$('#b-theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('clase-theme', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('clase-theme'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+function toggleFs(){
+  if (!st.s) return;
+  if (st.mode !== 'proy') { st.mode = 'proy'; show(st.s.n, st.i); }
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.().catch(()=>{}); document.body.classList.add('fs'); }
+  else { document.exitFullscreen?.(); document.body.classList.remove('fs'); }
+}
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('fs', !!document.fullscreenElement); setTimeout(fit, 120); });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = e.key;
+  if (st.s && st.mode === 'proy' && ['ArrowRight','ArrowDown','PageDown',' '].includes(k)) { e.preventDefault(); next(); }
+  else if (st.s && st.mode === 'proy' && ['ArrowLeft','ArrowUp','PageUp'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home' && st.s && st.mode === 'proy') show(st.s.n, 0);
+  else if (k === 'End' && st.s && st.mode === 'proy') show(st.s.n, slidesOf(st.s).length - 1);
+  else if (k === 'f' || k === 'F') toggleFs();
+  else if (k === 'n' || k === 'N') $('#b-notes').click();
+  else if ((k === 'e' || k === 'E') && st.s) $('#b-mode').click();
+  else if (k === 'Escape' && !document.fullscreenElement) home();
+});
+// Enlaces directos también con la página ya abierta (#s3-2 en la barra de direcciones o en un enlace)
+addEventListener('hashchange', () => { let h = null; try { h = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){} if (h) show(+h[1], (+h[2] || 1) - 1); });
+// enlace directo: #s3-2 (sesión 3, diapositiva 2)
+let m = null; try { m = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){}
+if (!SES.length) $('#app').innerHTML = '<div class="empty">Esta situación de aprendizaje todavía no tiene diapositivas de clase.</div>';
+else if (m) show(+m[1], (+m[2] || 1) - 1); else home();
+</script>
+</body>
+</html>
