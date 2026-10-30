@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase · SdA 4: Arquitectura, Sistemas Operativos y Elección Consciente</title>
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dbe3ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --code-bg:#0f172a; --code-ink:#e2e8f0; --slide:#ffffff; --f-ini:#2563eb; --f-des:#0f766e; --f-cie:#9333ea;
+  --f-mov:#2563eb; --f-act:#0891b2; --f-exp:#0f766e; --f-est:#7c3aed; --f-apl:#b45309; --f-con:#be123c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+@media(max-width:760px){.top{overflow-x:auto}.top .ttl{display:none}.top .tb{flex:0 0 auto}select.tb{max-width:60vw}}
+.top .ttl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.top .ttl small{font-weight:500;color:var(--muted);margin-left:8px}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+.tb[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+select.tb{max-width:42vw}
+/* ---------- índice */
+.home{max-width:1180px;margin:0 auto;padding:28px 16px 48px}
+.hero{background:linear-gradient(135deg,#134e4a,#1e3a8a);color:#fff;border-radius:18px;padding:28px 24px}
+.hero h1{margin:6px 0;font-size:clamp(26px,4vw,40px);line-height:1.1}
+.hero p{margin:6px 0;opacity:.92;font-size:18px}
+.hero .k{font-size:13px;opacity:.8;letter-spacing:.04em;text-transform:uppercase}
+.help{margin:14px 0 0;font-size:14px;opacity:.85}
+.kbd{display:inline-block;border:1px solid rgba(255,255,255,.4);border-radius:5px;padding:0 6px;font-size:12px;margin:0 2px}
+.cards{display:grid;gap:14px;margin-top:20px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.sc{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink);border-top:6px solid var(--fc,var(--brand))}
+.sc:hover{border-color:var(--fc,var(--brand));transform:translateY(-1px)}
+.sc .n{font-size:13px;font-weight:700;color:var(--fc,var(--brand));text-transform:uppercase;letter-spacing:.04em}
+.sc h3{margin:6px 0;font-size:18px;line-height:1.25}
+.sc p{margin:0;color:var(--ink2);font-size:14px}
+.sc .c{margin-top:10px;font-size:13px;color:var(--muted)}
+/* ---------- modo proyección */
+.stage{position:relative;height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:12px}
+.fs .stage{height:100vh;padding:0}
+.fs .top{display:none}
+.slide{position:relative;width:min(100%, calc((100vh - 81px) * 16 / 9));aspect-ratio:16/9;background:var(--slide);border-radius:14px;box-shadow:0 10px 40px rgba(15,23,42,.18);overflow:hidden;
+  font-size:min(2.05vw, 3.6vh);container-type:inline-size}
+.fs .slide{width:min(100vw, calc(100vh * 16 / 9));border-radius:0;box-shadow:none}
+@supports (font-size:1cqw){ .slide{font-size:2.05cqw} }
+.slide .in{position:absolute;inset:0;padding:3.2em 3.6em 3em;display:flex;flex-direction:column;overflow:auto}
+.slide .bar{position:absolute;left:0;right:0;bottom:0;height:.35em;background:var(--line)}
+.slide .bar i{display:block;height:100%;background:var(--fc,var(--brand))}
+.slide .pg{position:absolute;right:1.4em;bottom:.9em;font-size:.62em;color:var(--muted)}
+.slide .tag{position:absolute;left:5.8em;top:2.1em;font-size:.62em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fc,var(--brand))}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:0;border-radius:10px;background:rgba(15,23,42,.08);color:var(--ink2);font-size:24px;opacity:.4}
+.nav:hover{opacity:1}.nav.l{left:4px}.nav.r{right:4px}
+.fs .nav{display:none}
+.notes{position:fixed;left:16px;right:16px;bottom:16px;z-index:9;background:var(--warm-bg);border:1px solid var(--warm);color:var(--ink);border-radius:12px;padding:12px 16px;font-size:15px;max-height:30vh;overflow:auto;display:none}
+.notes.on{display:block}
+.notes b{color:var(--warm)}
+/* ---------- modo estudio */
+.study{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.study .slide{width:100%;aspect-ratio:auto;font-size:18px;margin:0 0 16px;box-shadow:none;border:1px solid var(--line);container-type:normal}
+@media(max-width:640px){.study .slide{font-size:16px}}
+.study .slide .in{position:static;padding:2.4em 1.4em 1.4em;overflow:visible}
+.study .slide .bar,.study .slide .pg{display:none}
+.study .slide .tag{left:2.3em;top:1.6em}
+.study h2.sh{margin:28px 0 12px;font-size:22px}
+/* ---------- piezas de diapositiva */
+.s-h{margin:0 0 .5em;font-size:1.75em;line-height:1.15;font-weight:800}
+.s-lead{font-size:1.1em;color:var(--ink2);margin:0 0 .7em}
+.ico{font-size:2.4em;line-height:1;margin-bottom:.2em}
+ul.pts{margin:.2em 0;padding-left:1.1em}ul.pts li{margin:.35em 0}
+.cover{justify-content:center;background:linear-gradient(135deg,var(--fc,var(--brand)),#1e3a8a);color:#fff}
+.cover .s-h{font-size:2.6em}.cover .s-lead{color:rgba(255,255,255,.9)}
+.cover .q{margin-top:1em;font-size:1.25em;font-weight:700;background:rgba(255,255,255,.14);border-radius:.5em;padding:.6em .8em}
+.cover .tag{color:rgba(255,255,255,.85)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.2em;align-items:start}
+@media(max-width:640px){.study .two{grid-template-columns:1fr}}
+.box{background:var(--bg);border-radius:.6em;padding:.8em 1em}
+.box.hl{background:var(--brand-soft)}
+.box.ac{background:var(--accent-soft)}
+.box.wa{background:var(--warm-bg)}
+.box .lb{font-size:.62em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3em}
+.ask{margin-top:auto;padding-top:.7em;font-size:1.1em;font-weight:700;color:var(--accent)}
+ol.steps{list-style:none;margin:.3em 0;padding:0;counter-reset:st;display:grid;gap:.45em}
+ol.steps li{counter-increment:st;display:flex;gap:.7em;align-items:flex-start;background:var(--bg);border-radius:.5em;padding:.45em .7em}
+ol.steps li::before{content:counter(st);flex:0 0 auto;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85em}
+ol.steps li.hid{visibility:hidden}
+.cols{display:grid;gap:1em;grid-template-columns:repeat(var(--n,2),1fr)}
+@media(max-width:640px){.study .cols{grid-template-columns:1fr}}
+.col{border:2px solid var(--line);border-radius:.6em;padding:.7em .9em}
+.col h4{margin:0 0 .3em;font-size:1.1em;color:var(--fc,var(--brand))}
+.grid-i{display:grid;gap:.7em;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}
+@media (max-width:700px){.grid-i{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gi{background:var(--bg);border-radius:.6em;padding:.7em;text-align:center}
+.gi .e{font-size:1.8em}.gi>b{display:block;margin:.2em 0}.gi>span{display:block;font-size:.85em;line-height:1.35;color:var(--ink2)}.gi>span b{color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5em;margin:.6em 0}
+.fn{padding:.55em .9em;border-radius:.5em;background:var(--brand-soft);border:2px solid var(--brand);font-weight:600;text-align:center;max-width:12em}
+.fn.inicio,.fn.fin{border-radius:2em;background:var(--accent-soft);border-color:var(--accent)}
+.fn.decision{background:var(--warm-bg);border-color:var(--warm);transform:skew(-8deg)}
+.fn.decision>span{display:inline-block;transform:skew(8deg)}
+.arr{font-size:1.3em;color:var(--muted)}
+.svgw{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.svgw svg{max-width:100%;max-height:100%;height:auto}
+pre.code{margin:.3em 0;background:var(--code-bg);color:var(--code-ink);border-radius:.6em;padding:.8em 1em;font:0.82em/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto;white-space:pre}
+.big{font-size:4.2em;font-weight:900;line-height:1;color:var(--fc,var(--brand))}
+.src{font-size:.6em;color:var(--muted);margin-top:.6em}
+.opts{display:grid;gap:.5em;margin:.4em 0}
+.opt{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:.5em;padding:.5em .8em;font-size:1em}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ko{border-color:var(--ko);background:var(--ko-bg)}
+.expl{display:none;margin-top:.4em}.expl.on{display:block}
+.chip{display:inline-block;border-radius:2em;padding:.15em .7em;font-size:.7em;font-weight:700;background:var(--warm-bg);color:var(--warm);border:1px solid var(--warm);margin-right:.4em}
+.timer{display:inline-flex;align-items:center;gap:.4em;border:2px solid var(--fc,var(--brand));color:var(--fc,var(--brand));background:transparent;border-radius:2em;padding:.2em .8em;font-weight:800;font-size:.9em}
+.timer.end{background:var(--ko);border-color:var(--ko);color:#fff}
+.vid{position:relative;flex:1;min-height:6em;border-radius:.6em;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .play{border:0;background:#dc2626;color:#fff;border-radius:.6em;padding:.6em 1.2em;font-size:1em;font-weight:800}
+.study .vid{aspect-ratio:16/9;flex:none}
+.reveal{border:1px dashed var(--muted);background:transparent;color:var(--muted);border-radius:.4em;padding:.2em .7em;font-size:.7em;margin-top:.4em}
+.empty{max-width:700px;margin:60px auto;text-align:center;color:var(--muted)}
+/* ayudas plegables por función y actividades multinivel */
+.ays{display:flex;flex-direction:column;gap:.35em;margin-top:.6em}
+details.ay{border:1px solid var(--line);border-left:.3em solid var(--ayc,var(--brand));border-radius:.5em;background:var(--card);font-size:.82em}
+details.ay>summary{cursor:pointer;padding:.35em .7em;font-weight:700;color:var(--ayc,var(--brand));list-style:none}
+details.ay>summary::-webkit-details-marker{display:none}
+details.ay>summary::after{content:' ▸';color:var(--muted)}details.ay[open]>summary::after{content:' ▾'}
+details.ay>div{padding:0 .8em .6em;color:var(--ink2)}details.ay ul{margin:.2em 0;padding-left:1.1em}
+.ay-pista{--ayc:#ca8a04}.ay-emociones{--ayc:#db2777}.ay-repaso{--ayc:#0891b2}.ay-saber_mas{--ayc:#7c3aed}
+.mlv{display:grid;gap:.7em;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));margin-top:.4em}
+@media(max-width:640px){.study .mlv{grid-template-columns:1fr}}
+.mo{border:2px solid var(--line);border-radius:.6em;padding:.6em .8em;background:var(--card)}
+.mo .L{display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:900;margin-right:.35em}
+.mo h4{margin:.1em 0 .3em;font-size:1em;display:flex;align-items:center}
+.mo .pc{display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:2em;padding:.1em .6em;margin-bottom:.3em}
+.mo p{margin:0;font-size:.88em;color:var(--ink2)}
+.gbs{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.6em}
+.gb{flex:1 1 14em;display:block;text-decoration:none;color:var(--ink);background:var(--brand-soft);border:1px solid var(--brand);border-radius:.5em;padding:.45em .8em;font-size:.82em}
+.gb:hover{filter:brightness(.97)}
+.foot{margin-top:24px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)}
+.gal{display:inline-block;margin-top:14px;background:#fff;color:#134e4a;border-radius:999px;padding:8px 16px;font-weight:700;text-decoration:none}
+@media print{.top,.nav,.notes{display:none}.study .slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top" id="top">
+  <button class="tb" id="b-home" title="Índice de sesiones (Esc)">☰ Sesiones</button>
+  <div class="ttl" id="ttl"></div>
+  <select class="tb" id="sel" aria-label="Ir a la sesión"></select>
+  <button class="tb" id="b-mode" title="Cambiar entre proyectar y estudiar (E)">📖 Estudiar</button>
+  <button class="tb" id="b-notes" title="Notas para el docente (N)" aria-pressed="false">🗒 Notas</button>
+  <button class="tb" id="b-fs" title="Pantalla completa (F)">⛶</button>
+  <button class="tb" id="b-theme" title="Tema claro / oscuro">🌓</button>
+</div>
+<div id="app"></div>
+<div class="notes" id="notes"></div>
+<script>
+const D = {"meta": {"titulo": "SdA 4: Arquitectura, Sistemas Operativos y Elección Consciente", "subtitulo": "«Compra con cabeza»: recomendamos un ordenador, un smartphone o un smartwatch que dure", "curso_texto": "4.º ESO"}, "materias": "Digitalización", "reto": "«Somos el equipo de “Compra con cabeza”, la sección de consejos tecnológicos del instituto. Familias y compañeros nos piden que les digamos qué ordenador, smartphone o smartwatch comprar con su presupuesto, sin tirar el dinero ni el planeta. Vamos a hacerles un estudio de mercado serio y una recomendación que se pueda defender.»", "sesiones": [{"n": 1, "fase": "Inicio", "titulo": "¿Por qué mi móvil «muere» a los dos años?", "reto": "Contar cómo usamos y cambiamos nuestros dispositivos y conocer el encargo de «Compra con cabeza».", "pregunta": "¿Por qué cambiamos de móvil cuando todavía funciona?", "diapositivas": [{"tipo": "ejemplo", "icono": "📱", "titulo": "¿Móvil nuevo o batería nueva?", "situacion": "Tu móvil tiene **2 años** y ya no aguanta el día. Opción A: uno nuevo por **249 €**. Opción B: cambiar la batería por unos **60 €**.", "explicacion": "Muchas veces no falla el móvil entero: falla **una pieza** (la batería) o el **software** (memoria llena, sin actualizaciones). Saber qué hay dentro te ahorra dinero.", "pregunta": "¿Qué harías tú? ¿Y por qué?", "nota": "Votación a mano alzada. Pide 3-4 «storytimes» y apunta las causas en la pizarra: batería, caída, memoria llena, sin actualizaciones, capricho."}, {"tipo": "practica", "titulo": "Encuesta F1: mis dispositivos", "tiempo": 10, "agrupamiento": "Individual", "enunciado": "Responde la **encuesta anónima F1**. No hay respuestas buenas ni malas: queremos saber cómo usamos la tecnología en esta clase.", "pasos": ["Abre la encuesta con el botón.", "Contesta con sinceridad: es anónima.", "Pulsa «Enviar» y espera a ver los resultados."], "enlace": "https://forms.gle/XncaqS4XMdakZ28y7"}, {"tipo": "dato", "valor": "62 millones de toneladas", "texto": "de residuos electrónicos en el mundo en 2022. Solo el **22,3 %** se recogió y recicló de forma documentada.", "fuente": "Global E-waste Monitor 2024 (UNITAR / UIT)", "pregunta": "¿Dónde acabó tu último móvil?", "nota": "Antes, proyecta el resumen de respuestas de F1 y comenta: ¿cuántos cambiaron el móvil sin que estuviera roto?"}, {"tipo": "idea", "icono": "🛒", "titulo": "El reto: «Compra con cabeza»", "texto": "Somos la sección de consejos tecnológicos del instituto. Un cliente nos da su **presupuesto** y lo que necesita, y le recomendamos **un dispositivo que dure**.", "puntos": ["Tarea 4.1 · Radiografía del ordenador del aula (sesión 3)", "Tarea 4.2 · Diagnóstico y puesta a punto (sesión 5)", "Tarea 4.3 · Estudio de mercado y recomendación (sesión 8)", "Trabajáis en pareja, **entregáis cada uno lo vuestro**"], "nota": "Enseña el informe modelo de un cliente ficticio. Recuerda que las rúbricas están en Moodle desde hoy."}, {"tipo": "practica", "titulo": "Lo que sé y lo que quiero saber", "tiempo": 10, "agrupamiento": "Individual", "enunciado": "En tu cuaderno escribe **3 palabras técnicas** que ya conozcas y **1 duda** que te gustaría resolver antes de comprar tu próximo dispositivo.", "pasos": ["Ejemplos de palabras: RAM, gigas, Android, batería, procesador…", "Ejemplo de duda: «¿Merece la pena un móvil reacondicionado?»", "Guarda la página: la usaremos en la última sesión."]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Encuesta F1 (diagnóstica)", "Lo que sé y lo que quiero saber (cuaderno)"], "siguiente": "Dentro de la caja: el ordenador y el móvil por dentro"}]}, {"n": 2, "fase": "Desarrollo", "titulo": "Dentro de la caja: el ordenador y el móvil por dentro", "reto": "Identificar las piezas principales de un ordenador, saber qué hace cada una y encontrarlas en un móvil y un smartwatch.", "pregunta": "Si tu ordenador fuera una cocina, ¿quién sería el cocinero?", "diapositivas": [{"tipo": "pasos", "titulo": "Antes de tocar nada: seguridad", "pasos": ["El equipo, **siempre desenchufado**.", "La fuente de alimentación **no se abre**.", "Toca una parte metálica antes de coger piezas (electricidad estática).", "Coge las tarjetas **por los bordes**."], "progresivo": true, "nota": "Abre el ordenador viejo delante del grupo y pregunta qué creen que es cada pieza antes de nombrarla."}, {"tipo": "infografia", "titulo": "La cocina del ordenador", "elementos": [{"icono": "👨‍🍳", "titulo": "CPU = cocinero", "texto": "Hace los cálculos. Más núcleos = más cocineros."}, {"icono": "🍽️", "titulo": "RAM = encimera", "texto": "Lo que se usa ahora. Rápida, pero se vacía al apagar."}, {"icono": "🥫", "titulo": "SSD / HDD = despensa", "texto": "Guarda fotos, apps y el sistema. No se borra."}, {"icono": "🏠", "titulo": "Placa base = cocina", "texto": "Conecta todas las piezas."}, {"icono": "🔌", "titulo": "Fuente / batería", "texto": "Da la energía."}, {"icono": "⌨️", "titulo": "Entrada y salida", "texto": "Teclado, cámara, sensores → pantalla, altavoz."}]}, {"tipo": "practica", "titulo": "Estaciones de componentes", "tiempo": 17, "agrupamiento": "Parejas", "enunciado": "Pasad por las **4 mesas** (unos 4 minutos en cada una). En el cuaderno, para cada pieza: **nombre · para qué sirve · ¿la tiene el móvil?**", "pasos": ["Mesa 1: módulos de RAM.", "Mesa 2: disco HDD y SSD (¿qué diferencias ves?).", "Mesa 3: procesador, disipador y ventilador.", "Mesa 4: placa base y fuente."], "material": ["Piezas reales o fotos ampliadas", "Cuaderno"]}, {"tipo": "comparar", "titulo": "Ordenador, móvil y reloj", "columnas": [{"titulo": "Sobremesa", "icono": "🖥️", "puntos": ["Piezas separadas", "Se amplía la RAM y el disco", "Se repara por piezas"]}, {"titulo": "Móvil", "icono": "📱", "puntos": ["Casi todo en **un chip (SoC)**", "RAM y memoria soldadas", "Batería normalmente pegada"]}, {"titulo": "Smartwatch", "icono": "⌚", "puntos": ["SoC diminuto", "Nada ampliable", "Reparar es muy difícil"]}], "pregunta": "¿Cuál de los tres durará más años si lo cuidas? ¿Por qué?"}, {"tipo": "quiz", "pregunta": "Abres 20 pestañas y el ordenador va lento aunque el disco está casi vacío. ¿Qué pieza se ha quedado corta?", "opciones": ["El almacenamiento (SSD)", "La RAM", "La fuente de alimentación"], "correcta": 1, "explicacion": "Lo que tienes abierto ahora vive en la **RAM** (la encimera). Si se llena, el sistema va lento aunque la despensa esté vacía."}, {"tipo": "ejemplo", "icono": "📵", "titulo": "«Almacenamiento lleno»", "situacion": "Tu móvil de **64 GB** está lleno de fotos y vídeos y no tiene ranura para tarjeta. En un sobremesa pondrías otro disco; en el móvil, **no puedes**.", "explicacion": "La memoria del móvil va **soldada** junto al **SoC** (*System on a Chip*: CPU, gráfica y más en un solo chip). Por eso, al comprar, hay que acertar con la capacidad desde el principio.", "pregunta": "¿Cuántos GB crees que necesitas tú? ¿Por qué?"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tabla pieza-función-equivalente en el móvil (cuaderno)", "Respuestas al quiz"], "siguiente": "Leer una ficha técnica sin que te la cuelen"}]}, {"n": 3, "fase": "Desarrollo", "titulo": "Leer una ficha técnica sin que te la cuelen", "reto": "Entender los números de una ficha técnica y obtener las especificaciones reales del ordenador del aula.", "pregunta": "Dos portátiles cuestan lo mismo. ¿Cuál es la trampa?", "diapositivas": [{"tipo": "ejemplo", "icono": "🎣", "titulo": "La ficha trampa: dos portátiles a 399 €", "situacion": "**Portátil A «¡1 TB!»**: 4 GB de RAM, disco HDD de 1 TB, procesador básico de 2 núcleos. **Portátil B**: 8 GB de RAM, SSD de 512 GB, procesador de gama media de 6 núcleos.", "explicacion": "El A presume del **tamaño** del disco, pero con 4 GB de RAM y un **HDD** lento irá lento desde el primer día. El B es más rápido y durará más.", "pregunta": "¿Cuál comprarías? ¿Qué número te ha engañado?", "nota": "Vota primero sin explicar. El A llama la atención con el tamaño del disco, pero con 4 GB de RAM y HDD irá lento desde el primer día."}, {"tipo": "infografia", "titulo": "Los números que importan", "elementos": [{"icono": "🧠", "titulo": "CPU: GHz y núcleos", "texto": "Velocidad y cuántas tareas a la vez."}, {"icono": "🍽️", "titulo": "RAM (GB)", "texto": "Cuánto puede tener abierto a la vez."}, {"icono": "💾", "titulo": "Almacenamiento", "texto": "GB o TB. **SSD** mucho más rápido que HDD."}, {"icono": "🖼️", "titulo": "Pantalla", "texto": "Pulgadas y resolución (HD, Full HD, 4K)."}, {"icono": "🔋", "titulo": "Batería", "texto": "mAh en móviles, Wh en portátiles."}, {"icono": "⚙️", "titulo": "Sistema operativo", "texto": "Cuál y **hasta cuándo** se actualiza."}], "nota": "Mínimos orientativos para estudiar: 8 GB de RAM y SSD de 256 GB. Para editar vídeo o jugar: 16 GB de RAM, SSD de 512 GB y gráfica dedicada o integrada potente."}, {"tipo": "pasos", "titulo": "¿Dónde miro las especificaciones?", "pasos": ["**Windows**: Configuración > Sistema > Información (procesador, RAM, versión).", "**Windows**: Ctrl + Mayús + Esc > Rendimiento (núcleos, disco SSD o HDD, gráficas).", "**Linux**: Configuración > Acerca de (procesador, memoria, disco, versión).", "**Linux**: Monitor del sistema > Recursos (gráficas de CPU y memoria)."]}, {"tipo": "practica", "titulo": "Radiografía del ordenador del aula", "tiempo": 22, "agrupamiento": "Individual", "enunciado": "Busca los **5 datos** de tu ordenador y haz **2 capturas**. Entrégalo en Moodle.", "pasos": ["Procesador y número de núcleos.", "RAM (GB).", "Almacenamiento: SSD o HDD y capacidad.", "Sistema operativo y versión.", "Captura 1: especificaciones. Captura 2: gráfica de rendimiento.", "Escribe una frase: ¿sirve para editar vídeo? Justifícalo con un dato."], "entrega": "Tarea 4.1 · Radiografía del ordenador del aula"}, {"tipo": "quiz", "pregunta": "Para editar vídeos de TikTok sin esperar, ¿qué dos datos miras primero?", "opciones": ["Pulgadas y color de la carcasa", "RAM y tipo de almacenamiento (SSD)", "Número de puertos USB y peso"], "correcta": 1, "explicacion": "Editar vídeo necesita mucha **RAM** para tener el proyecto abierto y un **SSD** rápido para leer los clips."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tarea 4.1 · Radiografía del ordenador del aula"], "siguiente": "El sistema operativo: el jefe de obra"}]}, {"n": 4, "fase": "Desarrollo", "titulo": "El sistema operativo: el jefe de obra", "reto": "Comprobar cómo el sistema operativo reparte la CPU y la RAM y conocer los pasos para instalar y mantener uno.", "pregunta": "¿Quién decide qué programa usa el procesador en cada momento?", "diapositivas": [{"tipo": "ejemplo", "icono": "🧑‍⚖️", "titulo": "El árbitro del partido", "situacion": "En un partido hay 22 jugadores y un balón. Sin **árbitro**, todos lo quieren a la vez.", "explicacion": "En tu ordenador hay decenas de programas y una CPU. El **sistema operativo** es el árbitro: reparte la CPU y la RAM, guarda los archivos, controla los dispositivos y los usuarios.", "pregunta": "¿Qué pasaría si dos programas escribieran a la vez en la misma parte de la RAM?"}, {"tipo": "practica", "titulo": "Prueba de estrés", "tiempo": 13, "agrupamiento": "Individual", "enunciado": "Abre el **Administrador de tareas** (Ctrl + Mayús + Esc) o el **Monitor del sistema** y anota en tu cuaderno el uso de **CPU** y **RAM**.", "pasos": ["Con 1 pestaña del navegador.", "Con 5 pestañas.", "Con 15 pestañas y un vídeo en reproducción.", "Cierra el proceso que más memoria gasta. ¿Cuánto baja?"], "material": ["Tabla: Pestañas · CPU % · RAM %"]}, {"tipo": "infografia", "titulo": "Familias de sistemas operativos", "elementos": [{"icono": "🖥️", "titulo": "Windows · macOS", "texto": "Ordenadores. Privativos."}, {"icono": "🐧", "titulo": "Linux", "texto": "Ordenadores. **Libre** y gratuito; revive equipos viejos."}, {"icono": "💻", "titulo": "ChromeOS", "texto": "Portátiles Chromebook."}, {"icono": "📱", "titulo": "Android · iOS", "texto": "Móviles y tabletas."}, {"icono": "⌚", "titulo": "Wear OS · watchOS", "texto": "Relojes inteligentes."}], "nota": "Ejemplo real: Windows 10 dejó de tener soporte gratuito el 14 de octubre de 2025. Muchos equipos que funcionaban bien no podían pasar a Windows 11: una alternativa es instalar un Linux ligero."}, {"tipo": "video", "titulo": "Así se instala un sistema operativo", "busqueda": "instalar Ubuntu paso a paso español", "texto": "Mira el fragmento y apunta los pasos que veas.", "preguntas": ["¿Desde dónde arranca el ordenador para instalar?", "¿En qué momento se crea el usuario?", "¿Por qué hay que hacer antes una copia de seguridad?"], "nota": "Si hay una máquina virtual preparada (VirtualBox), haz tú la demostración en lugar del vídeo."}, {"tipo": "practica", "titulo": "Ordena la instalación", "tiempo": 8, "agrupamiento": "Parejas", "enunciado": "Copiad en el cuaderno estos pasos **en el orden correcto**.", "pasos": ["Elegir el disco o la partición.", "Hacer una copia de seguridad.", "Crear el usuario y la contraseña.", "Arrancar desde el USB.", "Instalar actualizaciones y controladores.", "Crear un USB de arranque.", "Elegir idioma y teclado."], "ayudas": [{"tipo": "pista", "titulo": "Solución para comprobar", "texto": "Copia de seguridad → USB de arranque → arrancar desde el USB → idioma y teclado → disco o partición → usuario y contraseña → actualizaciones y controladores."}]}, {"tipo": "quiz", "pregunta": "¿Qué NO hace el sistema operativo?", "opciones": ["Repartir la RAM entre programas", "Fabricar el procesador", "Gestionar usuarios y permisos"], "correcta": 1, "explicacion": "El sistema operativo es **software**: gestiona el hardware, pero no lo fabrica."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tabla de la prueba de estrés (cuaderno)", "Pasos de instalación ordenados (cuaderno)"], "siguiente": "Taller de puesta a punto"}]}, {"n": 5, "fase": "Desarrollo", "titulo": "Taller de puesta a punto", "reto": "Diagnosticar por qué un equipo va lento y aplicar configuraciones del sistema operativo que alarguen su vida.", "pregunta": "¿Hay que tirar el portátil de Álex o se puede salvar?", "diapositivas": [{"tipo": "ejemplo", "icono": "💻", "titulo": "El portátil de Álex", "situacion": "Tiene 4 años. Tarda **3 minutos** en arrancar, la batería dura **1 hora**, el disco está al **95 %**, se abren **30 programas** al encender y lleva **un año** sin actualizarse.", "explicacion": "Álex quiere comprar otro. Pero casi todos esos síntomas tienen **arreglo**: limpiar, configurar o cambiar una pieza.", "pregunta": "¿Cuál de los síntomas crees que es el más grave?"}, {"tipo": "practica", "titulo": "Diagnóstico guiado (A1, parte 1)", "tiempo": 12, "agrupamiento": "Individual", "enunciado": "Abre la **plantilla A1** y relaciona cada síntoma con su **causa** y con el **dato** que lo demuestra.", "pasos": ["Ejemplo resuelto: disco al 95 % → almacenamiento lleno → captura de Almacenamiento.", "Arranque lento → ¿?", "Batería de 1 hora → ¿?", "30 programas al inicio → ¿?", "Sin actualizar → ¿?"], "enlace": "https://docs.google.com/document/d/1Vlw27f0AlxFBfyxJzyCTlZTxivt5xPi_UXERDZ3wwCk/copy"}, {"tipo": "pasos", "titulo": "Los 6 ajustes de la puesta a punto", "pasos": ["**Actualizaciones**: ¿hay pendientes?", "**Programas de inicio**: desactiva los que no necesitas.", "**Almacenamiento**: Sensor de almacenamiento o liberar espacio.", "**Energía / batería**: modo equilibrado o ahorro.", "**Cuenta de usuario**: ¿estándar o administrador?", "**Accesibilidad**: activa una opción útil (tamaño de texto, modo oscuro, lupa…)."], "texto": "Windows: Configuración. Linux: Configuración y Aplicaciones al inicio."}, {"tipo": "practica", "titulo": "Configuración real (A1, parte 2)", "tiempo": 20, "agrupamiento": "Individual", "enunciado": "Revisa los **6 ajustes** en tu ordenador del aula (y, si quieres, en tu móvil). Pega una **captura** de cada uno en A1 y explica qué has visto o cambiado.", "pasos": ["Sin datos personales en las capturas (ni nombres, ni correos, ni fotos).", "Si un ajuste está bloqueado por el centro, haz captura del aviso y explícalo."]}, {"tipo": "practica", "titulo": "Plan de mantenimiento y entrega", "tiempo": 10, "agrupamiento": "Individual", "enunciado": "En la **parte 3 de A1** escribe 5 hábitos de mantenimiento y decide: ¿el portátil de Álex se **repara**, se **mejora** o se **cambia**? Justifícalo.", "pasos": ["Usa el comienzo: «Yo le recomiendo a Álex… porque…».", "Revisa la lista «Antes de entregar».", "Descarga A1 en PDF y súbelo a Moodle."], "entrega": "Tarea 4.2 · Diagnóstico y puesta a punto de un equipo"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tarea 4.2 · Diagnóstico y puesta a punto (plantilla A1)"], "siguiente": "Obsolescencia programada y ciclo de vida"}]}, {"n": 6, "fase": "Desarrollo", "titulo": "Obsolescencia programada y ciclo de vida", "reto": "Distinguir los tipos de obsolescencia, recorrer el ciclo de vida de un móvil y elegir nuestros criterios de compra sostenible.", "pregunta": "¿Tu móvil está viejo o te han convencido de que lo está?", "diapositivas": [{"tipo": "practica", "titulo": "¿Programada o percibida?", "tiempo": 8, "agrupamiento": "Toda la clase", "enunciado": "Hay tres tipos de obsolescencia: **de software** (deja de actualizarse), **técnica o de diseño** (una pieza falla y no se puede cambiar) y **percibida** (funciona, pero «parece viejo»). Vota cada caso y justifícalo.", "pasos": ["Caso 1: un ordenador que va bien, pero ya no recibe actualizaciones de seguridad.", "Caso 2: un móvil con la batería pegada que cuesta mucho cambiar.", "Caso 3: sale un modelo nuevo con un color nuevo y casi nada más, y el tuyo te parece viejo."], "ayudas": [{"tipo": "pista", "titulo": "Solución para comprobar", "texto": "Caso 1: de software (p. ej. Windows 10, sin soporte gratuito desde octubre de 2025). Caso 2: técnica o de diseño. Caso 3: percibida."}]}, {"tipo": "infografia", "titulo": "El viaje de un móvil", "svg": "<svg viewBox=\"0 0 640 220\" role=\"img\" aria-label=\"Ciclo de vida de un móvil: materias primas, fabricación, transporte, uso y fin de vida, con flecha de vuelta por reparar, reacondicionar y reciclar\"><rect x=\"10\" y=\"60\" width=\"110\" height=\"60\" rx=\"10\" style=\"fill:var(--warm-bg);stroke:var(--warm)\"/><text x=\"65\" y=\"86\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">⛏️ Materias<\/text><text x=\"65\" y=\"106\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">primas<\/text><rect x=\"135\" y=\"60\" width=\"110\" height=\"60\" rx=\"10\" style=\"fill:var(--brand-soft);stroke:var(--brand)\"/><text x=\"190\" y=\"96\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">🏭 Fabricación<\/text><rect x=\"260\" y=\"60\" width=\"110\" height=\"60\" rx=\"10\" style=\"fill:var(--brand-soft);stroke:var(--brand)\"/><text x=\"315\" y=\"96\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">🚢 Transporte<\/text><rect x=\"385\" y=\"60\" width=\"110\" height=\"60\" rx=\"10\" style=\"fill:var(--accent-soft);stroke:var(--accent)\"/><text x=\"440\" y=\"96\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">📱 Uso (tú)<\/text><rect x=\"510\" y=\"60\" width=\"120\" height=\"60\" rx=\"10\" style=\"fill:var(--accent-soft);stroke:var(--accent)\"/><text x=\"570\" y=\"86\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ink)\">♻️ Fin de vida<\/text><text x=\"570\" y=\"106\" text-anchor=\"middle\" font-size=\"13\" style=\"fill:var(--ink)\">(tú decides)<\/text><path d=\"M120 90 H135 M245 90 H260 M370 90 H385 M495 90 H510\" style=\"stroke:var(--ink);fill:none\" stroke-width=\"2\"/><path d=\"M570 120 C570 190 190 190 190 120\" style=\"stroke:var(--ok);fill:none\" stroke-width=\"3\" stroke-dasharray=\"6 5\"/><text x=\"380\" y=\"200\" text-anchor=\"middle\" font-size=\"15\" style=\"fill:var(--ok)\">reparar · reacondicionar · reciclar materiales<\/text><text x=\"320\" y=\"35\" text-anchor=\"middle\" font-size=\"16\" style=\"fill:var(--ink)\">Puedes influir en las fases verdes<\/text><\/svg>", "nota": "Pregunta en qué fase está el mayor impacto (extracción y fabricación) y por qué alargar el uso es la mejor forma de reducirlo."}, {"tipo": "ejemplo", "icono": "🗄️", "titulo": "El cajón de los móviles viejos", "situacion": "En muchas casas hay un cajón con dos o tres móviles viejos «por si acaso». En nuestra encuesta F1, ¿cuántos dijeron «está en un cajón»?", "explicacion": "En el mundo, solo el **22,3 %** de los residuos electrónicos de 2022 se recogió y recicló de forma documentada (Global E-waste Monitor 2024). Un móvil en un cajón **no se reutiliza ni se recicla**.", "pregunta": "¿Qué podrías hacer hoy con el móvil viejo de tu cajón?"}, {"tipo": "infografia", "titulo": "La etiqueta de los móviles (UE, desde junio de 2025)", "elementos": [{"icono": "⚡", "titulo": "Eficiencia A-G", "texto": "Cuánta energía gasta."}, {"icono": "🔋", "titulo": "Batería", "texto": "Horas por carga y **ciclos** hasta el 80 %."}, {"icono": "📉", "titulo": "Caídas A-E", "texto": "Cuánto aguanta los golpes."}, {"icono": "🔧", "titulo": "Reparabilidad A-E", "texto": "Piezas, herramientas, **actualizaciones**."}, {"icono": "💧", "titulo": "IP", "texto": "Protección contra polvo y agua."}], "nota": "Proyecta una etiqueta real de un móvil (de una tienda o de la base de datos EPREL de la UE) para la práctica siguiente."}, {"tipo": "practica", "titulo": "Lee la etiqueta", "tiempo": 6, "agrupamiento": "Parejas", "enunciado": "Mirad la **etiqueta del móvil** que está en pantalla y responded en el cuaderno.", "pasos": ["¿Qué clase de **reparabilidad** tiene?", "¿Cuántos **ciclos** aguanta la batería hasta el 80 %?", "¿Lo recomendaríais a alguien que quiere que le dure muchos años? ¿Por qué?"]}, {"tipo": "practica", "titulo": "Mis 5 criterios verdes", "tiempo": 15, "agrupamiento": "Individual", "enunciado": "Escribe en tu cuaderno **5 criterios de sostenibilidad** que usarás en tu estudio de mercado y explica cada uno en una frase.", "pasos": ["Ideas: reparabilidad, años de actualizaciones, batería reemplazable, reacondicionado, eficiencia, qué hago con el viejo.", "Ejemplo: «Años de actualizaciones: si recibe más años, lo podré usar más tiempo con seguridad».", "Los copiarás en la plantilla A2."]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Clasificación de los tres casos", "Mis 5 criterios verdes (cuaderno)"], "siguiente": "Estudio de mercado I: el encargo"}]}, {"n": 7, "fase": "Desarrollo", "titulo": "Estudio de mercado I: el encargo", "reto": "Elegir un cliente, traducir sus necesidades a especificaciones técnicas y encontrar tres candidatos dentro de su presupuesto.", "pregunta": "Si tu cliente tiene 200 €, ¿qué es lo primero que miras?", "diapositivas": [{"tipo": "infografia", "titulo": "Elige tu cliente", "elementos": [{"icono": "🎬", "titulo": "Lucía · 650 €", "texto": "Portátil para Bachillerato y editar vídeos de TikTok."}, {"icono": "👴", "titulo": "Manuel · 200 €", "texto": "72 años. Smartphone fácil, videollamadas y mucha batería."}, {"icono": "🎮", "titulo": "Sara · 800 €", "texto": "PC o portátil para Fortnite y Minecraft."}, {"icono": "🏃", "titulo": "Hugo · 150 €", "texto": "Smartwatch con GPS para correr y bici."}, {"icono": "🏠", "titulo": "Familia Ruiz · 450 €", "texto": "Sobremesa para deberes y gestiones."}, {"icono": "📸", "titulo": "Nora · 350 €", "texto": "Smartphone con buena cámara para Instagram."}], "nota": "Cada estudiante elige uno. Las parejas pueden compartir cliente, pero cada estudiante entrega su propio informe."}, {"tipo": "ejemplo", "icono": "📝", "titulo": "De necesidades a especificaciones", "situacion": "Cliente de ejemplo: «Quiero **ver series** y hacer **trabajos en Google Docs**».", "explicacion": "Traducción: **8 GB de RAM**, **SSD de 256 GB**, pantalla **Full HD**, Wi-Fi 6 y un sistema operativo con **actualizaciones al menos hasta 2031**.", "pregunta": "¿Qué cambiarías si además quisiera editar vídeo?"}, {"tipo": "practica", "titulo": "Búsqueda de tres candidatos (A2, partes 1 y 2)", "tiempo": 23, "agrupamiento": "Parejas de apoyo · entrega individual", "enunciado": "Escribe las especificaciones mínimas de tu cliente y busca **3 modelos** dentro de su presupuesto. Completa la **tabla comparativa** de la **plantilla A2**.", "pasos": ["Al menos **uno reacondicionado** o de la generación anterior.", "Precio, procesador, RAM, almacenamiento, pantalla, batería.", "Sistema operativo y **hasta cuándo** se actualiza.", "Reparabilidad (etiqueta UE si es móvil o tableta).", "Pega el **enlace** de donde sacas cada dato."], "material": ["Webs de fabricantes", "Tiendas online", "Base de datos EPREL de la UE"], "enlace": "https://docs.google.com/document/d/1g0qzSvk8z6iWNAsvf3lnJQ3bcojLXwtX1a5CdM-V0xs/copy"}, {"tipo": "practica", "titulo": "Control de calidad", "tiempo": 10, "agrupamiento": "Parejas", "enunciado": "Intercambia la tabla con tu pareja y revisa **4 cosas**. Corrige lo que falte.", "pasos": ["☐ Los tres modelos caben en el presupuesto.", "☐ No hay casillas vacías.", "☐ Cada dato tiene su enlace.", "☐ Hay al menos un reacondicionado o modelo anterior."]}, {"tipo": "quiz", "pregunta": "Manuel tiene 200 € y quiere un móvil fácil con mucha batería. ¿Qué dato es MENOS importante para él?", "opciones": ["La capacidad de la batería (mAh)", "Que tenga cuatro cámaras traseras", "Los años de actualizaciones"], "correcta": 1, "explicacion": "Para Manuel importan la **batería**, la facilidad de uso y que se **actualice** muchos años. Cuatro cámaras encarecen el móvil y no las necesita."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Plantilla A2, partes 1 y 2 (tabla comparativa)"], "siguiente": "Estudio de mercado II: la recomendación"}]}, {"n": 8, "fase": "Desarrollo", "titulo": "Estudio de mercado II: la recomendación", "reto": "Analizar el ciclo de vida del dispositivo elegido y escribir una recomendación fundamentada para el cliente.", "pregunta": "¿Qué hace que una recomendación te convenza?", "diapositivas": [{"tipo": "ejemplo", "icono": "💬", "titulo": "Una recomendación que convence", "situacion": "«Te recomiendo el **modelo X reacondicionado (420 €)** porque tiene **16 GB de RAM** y **SSD de 512 GB**, suficiente para editar vídeo. **Aunque** pesa 1,8 kg, **durará** porque recibe actualizaciones hasta 2031 y la batería se puede cambiar. Tu portátil viejo puedes **donarlo** o llevarlo al punto limpio.»", "explicacion": "Convence porque da **datos**, compara, reconoce un **punto débil** y piensa en el **futuro**.", "pregunta": "¿Qué frase quitarías y cuál añadirías?"}, {"tipo": "practica", "titulo": "Ciclo de vida del elegido (A2, parte 3)", "tiempo": 15, "agrupamiento": "Individual", "enunciado": "Analiza el modelo que vas a recomendar con tus **5 criterios verdes** de la sesión 6.", "pasos": ["¿Hasta cuándo se actualiza el sistema operativo?", "¿Qué reparabilidad tiene? ¿Se cambia la batería?", "¿Es reacondicionado o de la generación anterior?", "¿Qué hace el cliente con su dispositivo viejo?"], "enlace": "https://docs.google.com/document/d/1g0qzSvk8z6iWNAsvf3lnJQ3bcojLXwtX1a5CdM-V0xs/copy"}, {"tipo": "practica", "titulo": "Mi recomendación (A2, parte 4)", "tiempo": 18, "agrupamiento": "Individual", "enunciado": "Escribe la recomendación para tu cliente siguiendo el modelo y añade una frase sobre **accesibilidad**.", "pasos": ["Te recomiendo… porque… (2 datos técnicos).", "Aunque… (1 punto débil).", "Durará porque… (actualizaciones, reparación, batería).", "Es fácil de usar para ti porque…", "Opcional: resumen visual tipo post de Instagram en Canva o Genially (pega el enlace en A2)."]}, {"tipo": "practica", "titulo": "Revisión y entrega", "tiempo": 10, "agrupamiento": "Parejas de apoyo · entrega individual", "enunciado": "Tu pareja te lee la recomendación en voz alta: ¿se entiende? Repasa la lista **«Antes de entregar»**, descarga A2 en **PDF** y súbelo.", "entrega": "Tarea 4.3 · Estudio de mercado y recomendación"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tarea 4.3 · Estudio de mercado y recomendación (plantilla A2)"], "siguiente": "Feria «Compra con cabeza»"}]}, {"n": 9, "fase": "Cierre", "titulo": "Feria «Compra con cabeza»", "reto": "Compartir las recomendaciones, valorar las de otros compañeros y comprometernos con un uso más sostenible de nuestros dispositivos.", "pregunta": "¿Qué harás distinto la próxima vez que compres un dispositivo?", "diapositivas": [{"tipo": "practica", "titulo": "Paseo por la galería", "tiempo": 20, "agrupamiento": "Individual", "enunciado": "Deja tu recomendación abierta en la pantalla. Visita **3 recomendaciones de clientes distintos** y deja un pósit en cada una.", "pasos": ["«Me convence porque…»", "«Yo cambiaría…»", "No visites a tu pareja de apoyo.", "Comentarios con respeto: valoramos el trabajo, no a la persona."], "material": ["Pósits"]}, {"tipo": "ejemplo", "icono": "🏆", "titulo": "Premio «Compra con cabeza»", "situacion": "En YouTube y TikTok, ¿de qué reviews te fías más: de las que dicen «¡es el mejor!» o de las que dan **datos** y cuentan los **fallos**?", "explicacion": "Así votamos hoy la recomendación **más convincente** de cada cliente: la que da datos, reconoce un punto débil y piensa en **cuánto durará**.", "pregunta": "¿Qué dato te ha convencido más de todo lo que has visto?", "nota": "Votación a mano alzada. Es un reconocimiento, no cuenta en la nota."}, {"tipo": "practica", "titulo": "Autoevaluación (F2)", "tiempo": 12, "agrupamiento": "Individual", "enunciado": "Responde el formulario **F2**: valora tu informe con las líneas de la rúbrica y cuéntanos qué has aprendido.", "pasos": ["Sé sincero/a: sirve para mejorar.", "Mira tu informe mientras respondes."], "enlace": "https://forms.gle/EeqPnQY5kWMkPbmv6"}, {"tipo": "practica", "titulo": "Mi compromiso", "tiempo": 13, "agrupamiento": "Individual", "enunciado": "Vuelve a la página de la **sesión 1**: responde la duda que escribiste y escribe **un compromiso concreto**.", "pasos": ["Ejemplo: «Activaré las actualizaciones automáticas y cambiaré la batería en lugar del móvil».", "Puede ser una frase o un dibujo.", "Si quieres, léelo en voz alta."]}, {"tipo": "cierre", "titulo": "Lo que nos llevamos", "puntos": ["Dentro de cada dispositivo: CPU, RAM, almacenamiento y SO.", "Una ficha técnica se lee con datos, no con anuncios.", "Configurar y mantener alarga la vida del equipo.", "Comprar con cabeza: necesidades, presupuesto y ciclo de vida."], "pregunta": "¿Qué consejo le darías a alguien que va a comprar su primer móvil?"}]}], "creditos": null, "ayudas": {"pista": "💡 Pista", "emociones": "💬 Cómo me siento", "repaso": "🧭 Repasa lo aprendido", "saber_mas": "🔭 Saber más"}, "apartados": {}, "url_alumnado": null};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
+// Enlaces de Google Docs/Hojas/Presentaciones: «Ver anexo» (solo lectura) y «Copiar a mi Drive» (copia propia).
+const enlaceBtn = u => { const s = String(u), g = s.match(/^https:\/\/docs\.google\.com\/(?:document|spreadsheets|presentation|drawings)\/d\/[\w-]+/), b = 'class="box wa" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;';
+  return g ? `<div style="display:flex;flex-wrap:wrap;gap:.6em;margin:.6em 0"><a ${b}flex:1 1 14em" href="${esc(g[0] + '/preview')}">👁️ <b>Ver anexo</b></a><a ${b}flex:1 1 14em" href="${esc(g[0] + '/copy')}">📥 <b>Copiar a mi Drive</b></a></div>`
+           : `<a ${b}display:block;margin:.6em 0" href="${esc(s)}">🔗 <b>${esc(s.replace(/^https?:\/\//,''))}</b></a>`; };
+// **negrita** dentro de los textos
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
+// Admite nombres de fase compuestos («Bloque 1 · Inicio»)
+const fcol = f => FC[f] || FC[Object.keys(FC).find(k => String(f || '').includes(k))] || 'var(--brand)';
+// Fases del modelo REA (Movilizar, Activar, Explorar, Estructurar, Aplicar y comprobar, Concluir)
+Object.assign(FC, {'Movilizar':'var(--f-mov)','Activar':'var(--f-act)','Explorar':'var(--f-exp)','Estructurar':'var(--f-est)','Aplicar':'var(--f-apl)','Concluir':'var(--f-con)'});
+const st = { s: null, i: 0, mode: 'proy', notes: false, revealed: {} };
+const SES = D.sesiones;
+
+function ytId(v){
+  const m = String(v||'').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(v||'').match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+// En vistas previas protegidas (iframe sandbox, about:srcdoc) el navegador bloquea replaceState: se ignora.
+function setHash(h){ try { history.replaceState(null, '', h); } catch(e){} }
+function fmtT(s){ s = Math.max(0, s|0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+// --------------------------------------------------- renderizado de cada tipo
+const R = {
+  portada(d, s){
+    return `<div class="in cover"><div class="tag">Sesión ${s.n} · ${esc(s.fase||'')}</div>
+      <h1 class="s-h">${md(s.titulo)}</h1>${s.reto ? `<p class="s-lead">${md(s.reto)}</p>` : ''}
+      ${d.pregunta ? `<div class="q">${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  idea(d){
+    return `<div class="in">${d.icono ? `<div class="ico">${esc(d.icono)}</div>` : ''}<h2 class="s-h">${md(d.titulo)}</h2>
+      ${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${arr(d.puntos).length ? `<ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  ejemplo(d){
+    return `<div class="in"><h2 class="s-h">${d.icono ? esc(d.icono)+' ' : ''}${md(d.titulo)}</h2>
+      <div class="two"><div class="box wa"><div class="lb">En tu día a día</div>${md(d.situacion)}</div>
+      <div class="box hl"><div class="lb">¿Qué hay detrás?</div>${md(d.explicacion)}</div></div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  pasos(d, s, k){
+    const key = s.n+'-'+k, prog = d.progresivo, shown = st.revealed[key] ?? (prog ? 1 : 1e9);
+    const ps = arr(d.pasos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}"><span>${md(p)}</span></li>`).join('')}</ol>
+      ${prog && st.mode==='proy' && shown < ps.length ? `<button class="reveal" data-rev="${key}" data-max="${ps.length}">Siguiente paso (↓)</button>` : ''}</div>`;
+  },
+  comparar(d){
+    const c = arr(d.columnas);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="cols" style="--n:${c.length}">${c.map(x=>`<div class="col"><h4>${esc(x.icono||'')} ${md(x.titulo)}</h4><ul class="pts">${arr(x.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  flujo(d){
+    const n = arr(d.nodos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="flow">${n.map((x,j)=>`${j?'<span class="arr">→</span>':''}<div class="fn ${esc(x.tipo||'proceso')}"><span>${md(x.texto ?? x)}</span></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  infografia(d){
+    const body = d.svg ? `<div class="svgw">${d.svg}</div>`
+      : `<div class="grid-i" style="--cols:${Math.min(arr(d.elementos).length, arr(d.elementos).length === 4 ? 4 : 3) || 1}">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${body}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  codigo(d){
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2><div class="two" style="grid-template-columns:${d.explicacion?'1.2fr 1fr':'1fr'}">
+      <pre class="code">${esc(d.codigo)}</pre>${d.explicacion ? `<div class="box hl"><div class="lb">Qué hace</div>${arr(d.explicacion).map(x=>`<p style="margin:.2em 0">${md(x)}</p>`).join('')}</div>` : ''}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  dato(d){
+    return `<div class="in" style="justify-content:center;text-align:center"><div class="big">${esc(d.valor)}</div>
+      <p class="s-lead" style="margin-top:.5em;font-size:1.3em">${md(d.texto)}</p>${d.fuente ? `<div class="src">Fuente: ${esc(d.fuente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask" style="margin-top:1em">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  practica(d, s, k){
+    const min = +d.tiempo || 0;
+    return `<div class="in"><h2 class="s-h">🛠 ${md(d.titulo)}</h2>
+      <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
+      ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
+      <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
+      ${arr(d.enlace).map(enlaceBtn).join('')}
+      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
+      ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
+  },
+  quiz(d, s, k){
+    return `<div class="in"><h2 class="s-h">🧠 ${md(d.pregunta)}</h2>
+      <div class="opts" data-q="${s.n}-${k}" data-ok="${+d.correcta||0}">${arr(d.opciones).map((o,j)=>`<button class="opt" data-j="${j}">${String.fromCharCode(65+j)}. ${md(o)}</button>`).join('')}</div>
+      <div class="expl box hl" id="ex-${s.n}-${k}">${md(d.explicacion||'')}</div></div>`;
+  },
+  video(d){
+    const id = ytId(d.youtube), ini = +d.inicio || 0;
+    const url = id ? `https://www.youtube.com/watch?v=${id}${ini?'&t='+ini+'s':''}` : (d.busqueda ? 'https://www.youtube.com/results?search_query='+encodeURIComponent(d.busqueda) : '');
+    const box = id ? `<div class="vid" data-yt="${id}" data-ini="${ini}" data-fin="${+d.fin||0}"><button class="play">▶ Reproducir aquí</button></div>`
+      : `<a class="box wa" style="display:block;text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">🔎 Buscar en YouTube: <b>${esc(d.busqueda||'')}</b><div class="src">El docente elige el vídeo antes de clase.</div></a>`;
+    return `<div class="in"><h2 class="s-h">🎬 ${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="two" style="grid-template-columns:${arr(d.preguntas).length?'1.5fr 1fr':'1fr'};flex:1;min-height:0">${box}
+      ${arr(d.preguntas).length ? `<div class="box ac"><div class="lb">Mientras lo ves</div><ul class="pts">${arr(d.preguntas).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>` : ''}</div>
+      ${url && id ? `<div class="src"><a href="${esc(url)}" target="_blank" rel="noopener">Abrir en YouTube ↗</a>${d.duracion ? ' · '+esc(d.duracion) : ''}${ini ? ' · desde '+fmtT(ini) : ''}</div>` : ''}</div>`;
+  },
+  multinivel(d){
+    const o = arr(d.opciones);
+    return `<div class="in"><h2 class="s-h">🎚 ${md(d.titulo)}</h2>${d.enunciado ? `<p class="s-lead">${md(d.enunciado)}</p>` : ''}
+      <div class="mlv" style="--n:${Math.min(o.length,3)}">${o.map(x=>`<div class="mo"><h4><span class="L">${esc(x.letra)}</span>${md(x.titulo)}</h4>${x.proceso ? `<div class="pc">${esc(x.proceso)}</div>` : ''}<p>${md(x.enunciado)}</p></div>`).join('')}</div>
+      ${d.texto ? `<div class="src">${md(d.texto)}</div>` : ''}</div>`;
+  },
+  cierre(d){
+    return `<div class="in"><h2 class="s-h">✅ ${md(d.titulo || 'Hoy hemos aprendido')}</h2>
+      <ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>
+      ${d.siguiente ? `<div class="box ac" style="margin-top:.6em"><div class="lb">Próxima sesión</div>${md(d.siguiente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask">🚪 Pregunta de salida: ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+};
+const TAG = {idea:'Idea clave', ejemplo:'Ejemplo cotidiano', pasos:'Paso a paso', comparar:'Comparamos', flujo:'Diagrama de flujo',
+  infografia:'Infografía', codigo:'Programa', dato:'Dato', practica:'¡Manos a la obra!', quiz:'Comprueba', video:'Vídeo', cierre:'Cierre',
+  multinivel:'Elige tu opción'};
+// Ayudas plegables por función: pista, emociones, repaso y saber más
+const AYN = D.ayudas || {pista:'💡 Pista', emociones:'💬 Cómo me siento', repaso:'🧭 Repasa lo aprendido', saber_mas:'🔭 Saber más'};
+// Botones a apartados concretos de la guía del alumnado: "guia": "3.2" o ["3.2.1", "3.3"]
+function guiaHtml(g){
+  if (!arr(g).length || !D.url_alumnado) return '';
+  const A = D.apartados || {};
+  return `<div class="gbs">${arr(g).map(id => `<a class="gb" href="${esc(D.url_alumnado)}#a-${esc(id)}" target="_blank" rel="noopener">📘 <b>Guía del alumnado · ${esc(id)}</b>${A[id] ? ' ' + esc(A[id]) : ''} ↗</a>`).join('')}</div>`;
+}
+function ayudasHtml(list){
+  return arr(list).length ? `<div class="ays">${arr(list).map(a=>`<details class="ay ay-${esc(a.tipo)}"><summary>${esc(AYN[a.tipo]||'Ayuda')}${a.titulo ? ' · '+md(a.titulo) : ''}</summary><div>${a.texto ? `<p style="margin:.2em 0">${md(a.texto)}</p>` : ''}${arr(a.puntos).length ? `<ul>${arr(a.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}</div></details>`).join('')}</div>` : '';
+}
+
+function slidesOf(s){ return [{tipo:'portada', pregunta: s.pregunta}].concat(arr(s.diapositivas)); }
+function renderSlide(s, d, k, total){
+  const f = R[d.tipo] || R.idea;
+  const tag = d.tipo !== 'portada' ? `<div class="tag">${esc(TAG[d.tipo]||'')}</div>` : '';
+  let body = f(d, s, k);
+  if (arr(d.guia).length || arr(d.ayudas).length) body = body.replace(/<\/div>\s*$/, guiaHtml(d.guia) + ayudasHtml(d.ayudas) + '</div>');
+  return `<section class="slide" style="--fc:${fcol(s.fase)}" data-k="${k}">${body}${tag}
+    <div class="bar"><i style="width:${(k+1)/total*100}%"></i></div><div class="pg">${k+1} / ${total}</div></section>`;
+}
+
+// --------------------------------------------------- vistas
+function creditosHtml(){
+  const C = D.creditos; if (!C) return '';
+  const o = C.original || {}, L = C.licencia || {};
+  const lic = L.url ? `<a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.nombre)}</a>` : esc(L.nombre || '');
+  return `<div class="foot">${o.titulo ? `Adaptación de «${esc(o.titulo)}»${o.organizacion ? ' · ' + esc(o.organizacion) : ''}${arr(o.personas).length ? ' · ' + esc(arr(o.personas).map(x => x.nombres).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3).join(', ')) : ''}. ` : ''}${C.adaptacion && C.adaptacion.autoria ? 'Adaptación: ' + esc(C.adaptacion.autoria) + '. ' : ''}Licencia ${lic}.${D.url_alumnado ? ` Créditos completos en la <a href="${esc(D.url_alumnado)}#creditos">guía del alumnado</a>.` : ''}</div>`;
+}
+function home(){
+  st.s = null; document.body.classList.remove('fs');
+  $('#ttl').innerHTML = esc(D.meta.titulo || 'Sesiones');
+  $('#sel').value = ''; $('#notes').classList.remove('on');
+  $('#app').innerHTML = `<div class="home"><div class="hero"><div class="k">${esc([D.meta.curso_texto, D.materias].filter(Boolean).join(' · '))}</div>
+    <h1>${esc(D.meta.titulo||'')}</h1>${D.meta.subtitulo ? `<p>${esc(D.meta.subtitulo)}</p>` : ''}
+    ${D.reto ? `<p><b>Reto:</b> ${esc(D.reto)}</p>` : ''}
+    ${D.url_alumnado ? `<a class="gal" href="${esc(D.url_alumnado)}">📘 Guía del alumnado: apartados, actividades y ayudas</a>` : ''}
+    <p class="help">Elige una sesión. Proyectar: <span class="kbd">←</span><span class="kbd">→</span> pasar · <span class="kbd">F</span> pantalla completa · <span class="kbd">N</span> notas del docente · <span class="kbd">E</span> modo estudio · <span class="kbd">Esc</span> volver aquí.</p></div>
+    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${fcol(s.fase)}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div>${creditosHtml()}</div>`;
+  setHash('#');
+  wire();
+}
+function show(n, i){
+  const s = SES.find(x => x.n == n); if (!s) return home();
+  const sl = slidesOf(s);
+  st.s = s; st.i = Math.max(0, Math.min(i|0, sl.length - 1));
+  $('#ttl').innerHTML = `Sesión ${s.n}. ${esc(s.titulo)}<small>${esc(D.meta.titulo||'')}</small>`;
+  $('#sel').value = String(s.n);
+  $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar';
+  if (st.mode === 'proy') {
+    $('#app').innerHTML = `<div class="stage"><button class="nav l" id="pv" aria-label="Anterior">‹</button>${renderSlide(s, sl[st.i], st.i, sl.length)}<button class="nav r" id="nx" aria-label="Siguiente">›</button></div>`;
+    $('#pv').onclick = prev; $('#nx').onclick = next;
+  } else {
+    $('#app').innerHTML = `<div class="study">${sl.map((d,k)=>renderSlide(s, d, k, sl.length)).join('')}
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:20px">${SES.find(x=>x.n==s.n-1) ? `<button class="tb" data-s="${s.n-1}">← Sesión ${s.n-1}</button>` : '<span></span>'}${SES.find(x=>x.n==s.n+1) ? `<button class="tb" data-s="${s.n+1}">Sesión ${s.n+1} →</button>` : ''}</div></div>`;
+    window.scrollTo(0, 0);
+  }
+  const nt = st.mode === 'proy' ? sl[st.i].nota : null;
+  $('#notes').innerHTML = nt ? `<b>Notas para el docente:</b> ${md(nt)}` : '<b>Notas:</b> sin notas en esta diapositiva.';
+  $('#notes').classList.toggle('on', st.notes && st.mode === 'proy');
+  setHash(`#s${s.n}-${st.i + 1}`);
+  wire();
+  fit();
+}
+function next(){
+  if (!st.s) return; const sl = slidesOf(st.s), d = sl[st.i];
+  if (d.tipo === 'pasos' && d.progresivo) { const key = st.s.n+'-'+st.i, v = st.revealed[key] ?? 1;
+    if (v < arr(d.pasos).length) { st.revealed[key] = v + 1; return show(st.s.n, st.i); } }
+  if (st.i < sl.length - 1) show(st.s.n, st.i + 1);
+  else { const nx = SES.find(x => x.n == st.s.n + 1); if (nx) show(nx.n, 0); }
+}
+function prev(){ if (!st.s) return; if (st.i > 0) show(st.s.n, st.i - 1); else { const p = SES.find(x => x.n == st.s.n - 1); if (p) show(p.n, slidesOf(p).length - 1); } }
+
+// Si el contenido no cabe en la diapositiva proyectada, reduce la letra (hasta un 62 %)
+function fit(){
+  const sl = document.querySelector('.stage .slide'); if (!sl) return;
+  const inn = sl.querySelector('.in'); sl.style.fontSize = '';
+  const base = parseFloat(getComputedStyle(sl).fontSize); let f = base;
+  while (inn.scrollHeight > inn.clientHeight + 1 && f > base * 0.62) { f *= 0.96; sl.style.fontSize = f + 'px'; }
+}
+let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fit, 80); });
+let timers = {};
+document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('ay')) fit(); }, true);
+function wire(){
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => show(+b.dataset.s, 0));
+  document.querySelectorAll('.opts').forEach(q => q.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+    const ok = +q.dataset.ok; q.querySelectorAll('.opt').forEach(x => x.classList.remove('ok','ko'));
+    o.classList.add(+o.dataset.j === ok ? 'ok' : 'ko'); q.querySelectorAll('.opt')[ok]?.classList.add('ok');
+    document.getElementById('ex-' + q.dataset.q)?.classList.add('on');
+  }));
+  document.querySelectorAll('.reveal').forEach(b => b.onclick = () => { st.revealed[b.dataset.rev] = (st.revealed[b.dataset.rev] ?? 1) + 1; show(st.s.n, st.i); });
+  document.querySelectorAll('.vid').forEach(v => { const b = v.querySelector('.play'); if (b) b.onclick = () => {
+    const p = new URLSearchParams({autoplay: '1', rel: '0'}); if (+v.dataset.ini) p.set('start', v.dataset.ini); if (+v.dataset.fin) p.set('end', v.dataset.fin);
+    v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.yt}?${p}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>`; }; });
+  document.querySelectorAll('.timer').forEach(b => {
+    const k = b.dataset.k, paint = () => { const t = timers[k]; if (!t) return; const left = Math.round((t.end - Date.now())/1000);
+      b.textContent = left > 0 ? '⏱ ' + fmtT(left) : '⏰ ¡Tiempo!'; b.classList.toggle('end', left <= 0); };
+    if (timers[k]) paint();
+    b.onclick = () => { if (timers[k]) { clearInterval(timers[k].iv); delete timers[k]; b.textContent = '⏱ ' + (b.dataset.timer/60) + ' min'; b.classList.remove('end'); return; }
+      timers[k] = { end: Date.now() + b.dataset.timer * 1000 }; timers[k].iv = setInterval(() => { if (!document.body.contains(b)) return; paint(); }, 500); paint(); };
+  });
+}
+
+// --------------------------------------------------- controles
+$('#sel').innerHTML = `<option value="">Ir a la sesión…</option>` + SES.map(s => `<option value="${s.n}">S${s.n}. ${esc(s.titulo)}</option>`).join('');
+$('#sel').onchange = e => e.target.value ? show(+e.target.value, 0) : home();
+$('#b-home').onclick = home;
+$('#b-mode').onclick = () => { st.mode = st.mode === 'proy' ? 'est' : 'proy'; st.s ? show(st.s.n, st.i) : null; $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar'; };
+$('#b-notes').onclick = () => { st.notes = !st.notes; $('#b-notes').setAttribute('aria-pressed', st.notes); $('#notes').classList.toggle('on', st.notes && st.mode === 'proy' && !!st.s); };
+$('#b-fs').onclick = toggleFs;
+$('#b-theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('clase-theme', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('clase-theme'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+function toggleFs(){
+  if (!st.s) return;
+  if (st.mode !== 'proy') { st.mode = 'proy'; show(st.s.n, st.i); }
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.().catch(()=>{}); document.body.classList.add('fs'); }
+  else { document.exitFullscreen?.(); document.body.classList.remove('fs'); }
+}
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('fs', !!document.fullscreenElement); setTimeout(fit, 120); });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = e.key;
+  if (st.s && st.mode === 'proy' && ['ArrowRight','ArrowDown','PageDown',' '].includes(k)) { e.preventDefault(); next(); }
+  else if (st.s && st.mode === 'proy' && ['ArrowLeft','ArrowUp','PageUp'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home' && st.s && st.mode === 'proy') show(st.s.n, 0);
+  else if (k === 'End' && st.s && st.mode === 'proy') show(st.s.n, slidesOf(st.s).length - 1);
+  else if (k === 'f' || k === 'F') toggleFs();
+  else if (k === 'n' || k === 'N') $('#b-notes').click();
+  else if ((k === 'e' || k === 'E') && st.s) $('#b-mode').click();
+  else if (k === 'Escape' && !document.fullscreenElement) home();
+});
+// Enlaces directos también con la página ya abierta (#s3-2 en la barra de direcciones o en un enlace)
+addEventListener('hashchange', () => { let h = null; try { h = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){} if (h) show(+h[1], (+h[2] || 1) - 1); });
+// enlace directo: #s3-2 (sesión 3, diapositiva 2)
+let m = null; try { m = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){}
+if (!SES.length) $('#app').innerHTML = '<div class="empty">Esta situación de aprendizaje todavía no tiene diapositivas de clase.</div>';
+else if (m) show(+m[1], (+m[2] || 1) - 1); else home();
+</script>
+</body>
+</html>
