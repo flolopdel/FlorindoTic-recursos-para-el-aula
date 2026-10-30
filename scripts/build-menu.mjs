@@ -39,6 +39,7 @@ const EXACT_LABELS = new Map([
   ['guia-alumnado', 'Guía del alumnado'],
   ['teoria', 'Teoría'],
   ['moodle', 'Bloque para Moodle'],
+  ['cronometro-debate', 'Cronómetro del debate'],
 ]);
 
 function prettify(name) {
