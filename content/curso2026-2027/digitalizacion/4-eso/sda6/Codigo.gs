@@ -8,7 +8,9 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       DIG4_SDA6_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   DIG4_SDA6_crearF1_SdA6EncuestaInicial()  →  SdA 6 · Encuesta inicial: hojas de cálculo (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/bo7v8fkz6RNPRYKv9
  *   DIG4_SDA6_crearF2_SdA6ValidacionCruzada()  →  SdA 6 · Validación cruzada entre parejas (sesión 8)
+ *        ya creado: https://forms.gle/Tc6YxwGWGiDJCzBG9
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 6 · Enlaces de formularios» de la carpeta de la SdA:
@@ -164,6 +166,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/bo7v8fkz6RNPRYKv9",
     "sesiones": "Sesión 1"
   },
   {
@@ -220,6 +223,7 @@ var FORMULARIOS = [
         "ayuda": "Usad el modelo: «Al escribir… pasa… Podríais…»"
       }
     ],
+    "enlace": "https://forms.gle/Tc6YxwGWGiDJCzBG9",
     "sesiones": "Sesión 8"
   }
 ];
