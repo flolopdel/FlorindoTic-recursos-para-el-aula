@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase · SdA 9: IA, Big Data, e-Administración y Comercio Electrónico</title>
+<style>
+:root{
+  --bg:#eef2f6; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dbe3ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --code-bg:#0f172a; --code-ink:#e2e8f0; --slide:#ffffff; --f-ini:#2563eb; --f-des:#0f766e; --f-cie:#9333ea;
+  --f-mov:#2563eb; --f-act:#0891b2; --f-exp:#0f766e; --f-est:#7c3aed; --f-apl:#b45309; --f-con:#be123c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --code-bg:#020617; --code-ink:#e2e8f0; --slide:#111a2e; --f-ini:#60a5fa; --f-des:#2dd4bf; --f-cie:#c084fc;
+    --f-mov:#60a5fa; --f-act:#22d3ee; --f-exp:#2dd4bf; --f-est:#c084fc; --f-apl:#fbbf24; --f-con:#fb7185;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+@media(max-width:760px){.top{overflow-x:auto}.top .ttl{display:none}.top .tb{flex:0 0 auto}select.tb{max-width:60vw}}
+.top .ttl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.top .ttl small{font-weight:500;color:var(--muted);margin-left:8px}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+.tb[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+select.tb{max-width:42vw}
+/* ---------- índice */
+.home{max-width:1180px;margin:0 auto;padding:28px 16px 48px}
+.hero{background:linear-gradient(135deg,#134e4a,#1e3a8a);color:#fff;border-radius:18px;padding:28px 24px}
+.hero h1{margin:6px 0;font-size:clamp(26px,4vw,40px);line-height:1.1}
+.hero p{margin:6px 0;opacity:.92;font-size:18px}
+.hero .k{font-size:13px;opacity:.8;letter-spacing:.04em;text-transform:uppercase}
+.help{margin:14px 0 0;font-size:14px;opacity:.85}
+.kbd{display:inline-block;border:1px solid rgba(255,255,255,.4);border-radius:5px;padding:0 6px;font-size:12px;margin:0 2px}
+.cards{display:grid;gap:14px;margin-top:20px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.sc{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink);border-top:6px solid var(--fc,var(--brand))}
+.sc:hover{border-color:var(--fc,var(--brand));transform:translateY(-1px)}
+.sc .n{font-size:13px;font-weight:700;color:var(--fc,var(--brand));text-transform:uppercase;letter-spacing:.04em}
+.sc h3{margin:6px 0;font-size:18px;line-height:1.25}
+.sc p{margin:0;color:var(--ink2);font-size:14px}
+.sc .c{margin-top:10px;font-size:13px;color:var(--muted)}
+/* ---------- modo proyección */
+.stage{position:relative;height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:12px}
+.fs .stage{height:100vh;padding:0}
+.fs .top{display:none}
+.slide{position:relative;width:min(100%, calc((100vh - 81px) * 16 / 9));aspect-ratio:16/9;background:var(--slide);border-radius:14px;box-shadow:0 10px 40px rgba(15,23,42,.18);overflow:hidden;
+  font-size:min(2.05vw, 3.6vh);container-type:inline-size}
+.fs .slide{width:min(100vw, calc(100vh * 16 / 9));border-radius:0;box-shadow:none}
+@supports (font-size:1cqw){ .slide{font-size:2.05cqw} }
+.slide .in{position:absolute;inset:0;padding:3.2em 3.6em 3em;display:flex;flex-direction:column;overflow:auto}
+.slide .bar{position:absolute;left:0;right:0;bottom:0;height:.35em;background:var(--line)}
+.slide .bar i{display:block;height:100%;background:var(--fc,var(--brand))}
+.slide .pg{position:absolute;right:1.4em;bottom:.9em;font-size:.62em;color:var(--muted)}
+.slide .tag{position:absolute;left:5.8em;top:2.1em;font-size:.62em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fc,var(--brand))}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:0;border-radius:10px;background:rgba(15,23,42,.08);color:var(--ink2);font-size:24px;opacity:.4}
+.nav:hover{opacity:1}.nav.l{left:4px}.nav.r{right:4px}
+.fs .nav{display:none}
+.notes{position:fixed;left:16px;right:16px;bottom:16px;z-index:9;background:var(--warm-bg);border:1px solid var(--warm);color:var(--ink);border-radius:12px;padding:12px 16px;font-size:15px;max-height:30vh;overflow:auto;display:none}
+.notes.on{display:block}
+.notes b{color:var(--warm)}
+/* ---------- modo estudio */
+.study{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.study .slide{width:100%;aspect-ratio:auto;font-size:18px;margin:0 0 16px;box-shadow:none;border:1px solid var(--line);container-type:normal}
+@media(max-width:640px){.study .slide{font-size:16px}}
+.study .slide .in{position:static;padding:2.4em 1.4em 1.4em;overflow:visible}
+.study .slide .bar,.study .slide .pg{display:none}
+.study .slide .tag{left:2.3em;top:1.6em}
+.study h2.sh{margin:28px 0 12px;font-size:22px}
+/* ---------- piezas de diapositiva */
+.s-h{margin:0 0 .5em;font-size:1.75em;line-height:1.15;font-weight:800}
+.s-lead{font-size:1.1em;color:var(--ink2);margin:0 0 .7em}
+.ico{font-size:2.4em;line-height:1;margin-bottom:.2em}
+ul.pts{margin:.2em 0;padding-left:1.1em}ul.pts li{margin:.35em 0}
+.cover{justify-content:center;background:linear-gradient(135deg,var(--fc,var(--brand)),#1e3a8a);color:#fff}
+.cover .s-h{font-size:2.6em}.cover .s-lead{color:rgba(255,255,255,.9)}
+.cover .q{margin-top:1em;font-size:1.25em;font-weight:700;background:rgba(255,255,255,.14);border-radius:.5em;padding:.6em .8em}
+.cover .tag{color:rgba(255,255,255,.85)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.2em;align-items:start}
+@media(max-width:640px){.study .two{grid-template-columns:1fr}}
+.box{background:var(--bg);border-radius:.6em;padding:.8em 1em}
+.box.hl{background:var(--brand-soft)}
+.box.ac{background:var(--accent-soft)}
+.box.wa{background:var(--warm-bg)}
+.box .lb{font-size:.62em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3em}
+.ask{margin-top:auto;padding-top:.7em;font-size:1.1em;font-weight:700;color:var(--accent)}
+ol.steps{list-style:none;margin:.3em 0;padding:0;counter-reset:st;display:grid;gap:.45em}
+ol.steps li{counter-increment:st;display:flex;gap:.7em;align-items:flex-start;background:var(--bg);border-radius:.5em;padding:.45em .7em}
+ol.steps li::before{content:counter(st);flex:0 0 auto;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85em}
+ol.steps li.hid{visibility:hidden}
+.cols{display:grid;gap:1em;grid-template-columns:repeat(var(--n,2),1fr)}
+@media(max-width:640px){.study .cols{grid-template-columns:1fr}}
+.col{border:2px solid var(--line);border-radius:.6em;padding:.7em .9em}
+.col h4{margin:0 0 .3em;font-size:1.1em;color:var(--fc,var(--brand))}
+.grid-i{display:grid;gap:.7em;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr))}
+@media (max-width:700px){.grid-i{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gi{background:var(--bg);border-radius:.6em;padding:.7em;text-align:center}
+.gi .e{font-size:1.8em}.gi>b{display:block;margin:.2em 0}.gi>span{display:block;font-size:.85em;line-height:1.35;color:var(--ink2)}.gi>span b{color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5em;margin:.6em 0}
+.fn{padding:.55em .9em;border-radius:.5em;background:var(--brand-soft);border:2px solid var(--brand);font-weight:600;text-align:center;max-width:12em}
+.fn.inicio,.fn.fin{border-radius:2em;background:var(--accent-soft);border-color:var(--accent)}
+.fn.decision{background:var(--warm-bg);border-color:var(--warm);transform:skew(-8deg)}
+.fn.decision>span{display:inline-block;transform:skew(8deg)}
+.arr{font-size:1.3em;color:var(--muted)}
+.svgw{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.svgw svg{max-width:100%;max-height:100%;height:auto}
+pre.code{margin:.3em 0;background:var(--code-bg);color:var(--code-ink);border-radius:.6em;padding:.8em 1em;font:0.82em/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto;white-space:pre}
+.big{font-size:4.2em;font-weight:900;line-height:1;color:var(--fc,var(--brand))}
+.src{font-size:.6em;color:var(--muted);margin-top:.6em}
+.opts{display:grid;gap:.5em;margin:.4em 0}
+.opt{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:.5em;padding:.5em .8em;font-size:1em}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ko{border-color:var(--ko);background:var(--ko-bg)}
+.expl{display:none;margin-top:.4em}.expl.on{display:block}
+.chip{display:inline-block;border-radius:2em;padding:.15em .7em;font-size:.7em;font-weight:700;background:var(--warm-bg);color:var(--warm);border:1px solid var(--warm);margin-right:.4em}
+.timer{display:inline-flex;align-items:center;gap:.4em;border:2px solid var(--fc,var(--brand));color:var(--fc,var(--brand));background:transparent;border-radius:2em;padding:.2em .8em;font-weight:800;font-size:.9em}
+.timer.end{background:var(--ko);border-color:var(--ko);color:#fff}
+.vid{position:relative;flex:1;min-height:6em;border-radius:.6em;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .play{border:0;background:#dc2626;color:#fff;border-radius:.6em;padding:.6em 1.2em;font-size:1em;font-weight:800}
+.study .vid{aspect-ratio:16/9;flex:none}
+.reveal{border:1px dashed var(--muted);background:transparent;color:var(--muted);border-radius:.4em;padding:.2em .7em;font-size:.7em;margin-top:.4em}
+.empty{max-width:700px;margin:60px auto;text-align:center;color:var(--muted)}
+/* ayudas plegables por función y actividades multinivel */
+.ays{display:flex;flex-direction:column;gap:.35em;margin-top:.6em}
+details.ay{border:1px solid var(--line);border-left:.3em solid var(--ayc,var(--brand));border-radius:.5em;background:var(--card);font-size:.82em}
+details.ay>summary{cursor:pointer;padding:.35em .7em;font-weight:700;color:var(--ayc,var(--brand));list-style:none}
+details.ay>summary::-webkit-details-marker{display:none}
+details.ay>summary::after{content:' ▸';color:var(--muted)}details.ay[open]>summary::after{content:' ▾'}
+details.ay>div{padding:0 .8em .6em;color:var(--ink2)}details.ay ul{margin:.2em 0;padding-left:1.1em}
+.ay-pista{--ayc:#ca8a04}.ay-emociones{--ayc:#db2777}.ay-repaso{--ayc:#0891b2}.ay-saber_mas{--ayc:#7c3aed}
+.mlv{display:grid;gap:.7em;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));margin-top:.4em}
+@media(max-width:640px){.study .mlv{grid-template-columns:1fr}}
+.mo{border:2px solid var(--line);border-radius:.6em;padding:.6em .8em;background:var(--card)}
+.mo .L{display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--fc,var(--brand));color:#fff;font-weight:900;margin-right:.35em}
+.mo h4{margin:.1em 0 .3em;font-size:1em;display:flex;align-items:center}
+.mo .pc{display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:2em;padding:.1em .6em;margin-bottom:.3em}
+.mo p{margin:0;font-size:.88em;color:var(--ink2)}
+.gbs{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.6em}
+.gb{flex:1 1 14em;display:block;text-decoration:none;color:var(--ink);background:var(--brand-soft);border:1px solid var(--brand);border-radius:.5em;padding:.45em .8em;font-size:.82em}
+.gb:hover{filter:brightness(.97)}
+.foot{margin-top:24px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)}
+.gal{display:inline-block;margin-top:14px;background:#fff;color:#134e4a;border-radius:999px;padding:8px 16px;font-weight:700;text-decoration:none}
+@media print{.top,.nav,.notes{display:none}.study .slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top" id="top">
+  <button class="tb" id="b-home" title="Índice de sesiones (Esc)">☰ Sesiones</button>
+  <div class="ttl" id="ttl"></div>
+  <select class="tb" id="sel" aria-label="Ir a la sesión"></select>
+  <button class="tb" id="b-mode" title="Cambiar entre proyectar y estudiar (E)">📖 Estudiar</button>
+  <button class="tb" id="b-notes" title="Notas para el docente (N)" aria-pressed="false">🗒 Notas</button>
+  <button class="tb" id="b-fs" title="Pantalla completa (F)">⛶</button>
+  <button class="tb" id="b-theme" title="Tema claro / oscuro">🌓</button>
+</div>
+<div id="app"></div>
+<div class="notes" id="notes"></div>
+<script>
+const D = {"meta": {"titulo": "SdA 9: IA, Big Data, e-Administración y Comercio Electrónico", "subtitulo": "«Ciudadanía digital 360»: una web interactiva hecha con IA para no perderse en la red ni en los trámites", "curso_texto": "4.º ESO"}, "materias": "Digitalización", "reto": "«El departamento de Orientación nos ha pedido una web sencilla e interactiva para el alumnado que deja la ESO: cómo funciona la IA que usamos cada día, qué sesgos tiene, cómo se hacen los trámites con la Administración y cómo comprar en internet sin sustos. La vamos a crear nosotros, usando la IA con cabeza.»", "sesiones": [{"n": 1, "fase": "Bloque 1 · Big Data e IA", "titulo": "¿Cuántos datos dejas en una hora de TikTok?", "reto": "Descubrir que cada gesto en una app es un dato y entender las 5 V del Big Data con ejemplos propios.", "pregunta": "¿Qué sabe de ti una app que usas cada día sin que se lo hayas contado?", "diapositivas": [{"tipo": "ejemplo", "icono": "📱", "titulo": "Tu «Para ti» no es casualidad", "situacion": "Ves dos vídeos de motos hasta el final y al día siguiente tu «Para ti» está **lleno de motos**.", "explicacion": "La app guarda cada gesto: cuánto tiempo miras, si repites, si das like o pasas rápido. Con millones de personas haciendo lo mismo, un algoritmo **predice** qué te va a enganchar.", "pregunta": "¿Qué sabe TikTok de ti sin que se lo hayas dicho?", "nota": "Apunta las respuestas en la pizarra: las usaréis en la actividad final de la sesión."}, {"tipo": "practica", "titulo": "Encuesta inicial", "tiempo": 8, "enunciado": "Responde el formulario **F1**. Es **anónimo**: contesta con sinceridad. Luego veremos los resultados de la clase.", "nota": "Proyecta el resumen de respuestas de Google Forms y comenta dos datos.", "enlace": "https://forms.gle/ygAGuZJALDraY4PK6"}, {"tipo": "infografia", "titulo": "Las 5 V del Big Data", "elementos": [{"icono": "📦", "titulo": "Volumen", "texto": "Muchísimos datos: todo tu año de canciones en Spotify Wrapped."}, {"icono": "⚡", "titulo": "Velocidad", "texto": "Llegan y se procesan al momento: el atasco en Google Maps."}, {"icono": "🧩", "titulo": "Variedad", "texto": "Fotos, mensajes, ubicaciones, compras… de la misma cuenta."}, {"icono": "🔍", "titulo": "Veracidad", "texto": "¿Son fiables? Bots, cuentas falsas y reseñas compradas."}, {"icono": "💰", "titulo": "Valor", "texto": "Para qué sirven: anuncios, recomendaciones, decisiones."}], "nota": "Pide un ejemplo propio de cada V antes de pasar a la siguiente diapositiva."}, {"tipo": "quiz", "pregunta": "Instagram detecta en segundos que un vídeo se está haciendo viral y lo enseña a más gente. ¿Qué V del Big Data es la más importante aquí?", "opciones": ["Variedad", "Velocidad", "Veracidad"], "correcta": 1, "explicacion": "Es la **velocidad**: los datos se procesan casi en tiempo real para decidir qué mostrar."}, {"tipo": "practica", "titulo": "Mi rastro de datos en una hora", "tiempo": 12, "enunciado": "Elige **una app** que uses cada día. En el cuaderno, haz una tabla con 3 columnas: **dato que genero · V del Big Data · para qué lo usa la empresa**. Escribe 5 filas.", "pasos": ["Ejemplo: «Cuánto tiempo miro cada vídeo · Volumen · Saber qué me engancha».", "Piensa en lo que haces: buscar, pausar, dar like, compartir, comprar.", "Marca con ⭐ el dato que menos te gusta que guarden."], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Si no se te ocurren datos", "puntos": ["La hora a la que te conectas.", "Desde dónde te conectas.", "A quién sigues y a quién escribes.", "Qué buscas y qué compras."]}]}, {"tipo": "video", "titulo": "Big Data explicado en pocos minutos", "busqueda": "qué es el big data explicado para jóvenes", "texto": "Opcional si sobra tiempo o para repasar en casa.", "preguntas": ["¿Qué ejemplo del vídeo se parece más a tu app?", "¿Qué V del Big Data aparece más?"]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Encuesta inicial F1 (diagnóstica)", "Tabla «Mi rastro de datos» en el cuaderno"], "siguiente": "Hablar con la IA: prompts que funcionan y respuestas que mienten"}]}, {"n": 2, "fase": "Bloque 1 · Big Data e IA", "titulo": "Hablar con la IA: prompts que funcionan y respuestas que mienten", "reto": "Escribir prompts completos para un modelo de lenguaje y comprobar sus respuestas con fuentes fiables.", "pregunta": "Si la IA suena tan segura, ¿cómo sabes si te está diciendo la verdad?", "diapositivas": [{"tipo": "ejemplo", "icono": "⌨️", "titulo": "El autocompletado de tu móvil", "situacion": "Escribes «nos vemos en» y el teclado te sugiere **«el insti»** o **«la plaza»**.", "explicacion": "Predice la palabra más probable a partir de lo que tú sueles escribir. Un chatbot hace lo mismo a lo grande: ha «leído» **muchísimos textos** y predice la respuesta palabra a palabra. No consulta la verdad: **calcula lo más probable**.", "pregunta": "¿Por qué entonces puede inventarse cosas?"}, {"tipo": "comparar", "titulo": "Prompt pobre vs. prompt RCTF", "columnas": [{"icono": "😴", "titulo": "Pobre", "puntos": ["«Hazme un horario de estudio»", "Respuesta genérica", "No sabe nada de ti"]}, {"icono": "🎯", "titulo": "RCTF", "puntos": ["**R**ol: actúa como orientador/a", "**C**ontexto: 4.º ESO, exámenes, entreno martes y jueves", "**T**area: horario de 5 días", "**F**ormato: en una tabla"]}], "nota": "Deja esta diapositiva proyectada durante el taller como chuleta."}, {"tipo": "practica", "titulo": "Taller de prompts", "tiempo": 20, "enunciado": "En **Gemini** (cuenta del centro), prueba el mismo encargo con un prompt pobre y con uno **RCTF**. Copia los dos prompts en la **parte 1 de la plantilla A1** y escribe qué mejoró.", "pasos": ["Abre gemini.google.com con tu cuenta @g.educaand.es.", "Escribe el prompt pobre y mira la respuesta.", "Abre un chat nuevo y escribe el prompt RCTF.", "Compara y apúntalo en A1."], "agrupamiento": "Individual", "entrega": "Tarea 9.1 · Laboratorio de IA (se entrega en la sesión 3)", "ayudas": [{"tipo": "pista", "titulo": "Otros encargos si no quieres el horario", "puntos": ["Una rutina de entrenamiento para principiantes.", "Ideas para un vídeo de TikTok sobre tu pueblo.", "Un menú de cena barato para 4 personas."]}], "enlace": "https://docs.google.com/document/d/1kpg1C2adE804Hu-MMWKiKE41CLFPcNcX5oL223yDv70/copy"}, {"tipo": "practica", "titulo": "Caza la alucinación", "tiempo": 15, "enunciado": "Pregunta a Gemini **3 datos comprobables** y busca la respuesta en una **fuente oficial**. Marca en A1: ✅ correcta · ⚠️ dudosa · ❌ falsa.", "pasos": ["Habitantes de tu municipio → INE o web del ayuntamiento.", "Autor de «Platero y yo» y año de publicación → biblioteca o enciclopedia.", "Fecha de aprobación de la Constitución española → BOE."], "agrupamiento": "Individual"}, {"tipo": "quiz", "pregunta": "La IA te da una cifra con mucha seguridad y sin fuente. ¿Qué haces?", "opciones": ["La copio: si lo dice tan segura, será verdad", "La compruebo en una fuente oficial antes de usarla", "Le pregunto otra vez y, si repite lo mismo, es cierta"], "correcta": 1, "explicacion": "Repetirse no la hace verdadera. **La IA propone, yo compruebo**: siempre con una fuente fiable."}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Parte 1 de la plantilla A1: prompts comparados y datos comprobados"], "siguiente": "Sesgos, brecha digital y soberanía tecnológica"}]}, {"n": 3, "fase": "Bloque 1 · Big Data e IA", "titulo": "Sesgos, brecha digital y soberanía tecnológica", "reto": "Detectar sesgos en las respuestas de la IA y explicar quién se queda fuera de la digitalización y por qué importa dónde están los datos.", "pregunta": "¿Puede una máquina tener prejuicios?", "diapositivas": [{"tipo": "ejemplo", "icono": "🎨", "titulo": "«Dibuja a una persona que dirige una empresa»", "situacion": "Pedimos a la IA personas con distintos trabajos y casi siempre salen **los mismos perfiles** para los mismos puestos.", "explicacion": "La IA aprende de textos e imágenes de internet. Si en esos datos hay estereotipos, **los repite y los amplifica**. Eso es un **sesgo algorítmico**.", "pregunta": "¿Qué consecuencias tendría si una IA así filtrara currículums?", "nota": "Haz la prueba en directo con Gemini; si las respuestas salen equilibradas, coméntalo también: las empresas corrigen algunos sesgos, pero no todos."}, {"tipo": "practica", "titulo": "Laboratorio de sesgos", "tiempo": 17, "enunciado": "Haz las **dos pruebas** en Gemini y anota lo que observas en la **parte 2 de A1**.", "pasos": ["Prueba 1 · Estereotipo: «Dame 5 nombres para personajes de una serie que trabajan de enfermero/a, piloto y limpiador/a». ¿Qué género y origen tienen?", "Prueba 2 · Encuadre: pregunta «¿Es bueno que los jóvenes usen redes sociales?».", "En un chat nuevo: «¿Por qué las redes sociales son peligrosas para los jóvenes?».", "Compara: ¿cambia la respuesta según cómo preguntas?"], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Qué mirar en la prueba 2", "puntos": ["¿Da los dos lados o solo uno?", "¿Usa palabras positivas o negativas?", "¿Te da la razón con lo que ya insinuabas en la pregunta?"]}], "enlace": "https://docs.google.com/document/d/1kpg1C2adE804Hu-MMWKiKE41CLFPcNcX5oL223yDv70/copy"}, {"tipo": "comparar", "titulo": "Brecha digital: ¿quién se queda fuera?", "columnas": [{"icono": "👵", "titulo": "La abuela y su cita médica", "puntos": ["Todo es por app (ClicSalud+)", "No tiene smartphone o no sabe usarlo", "Depende de que alguien le ayude"]}, {"icono": "🌍", "titulo": "Otros colectivos", "puntos": ["Zonas rurales sin buena conexión", "Familias sin ordenador", "Personas con discapacidad o que no dominan el idioma"]}], "pregunta": "¿Has hecho tú algún trámite por alguien de tu familia?"}, {"tipo": "idea", "icono": "🏛️", "titulo": "Soberanía tecnológica", "texto": "¿Dónde se guardan tus fotos, tus mensajes y lo que le preguntas a la IA?", "puntos": ["Casi siempre en **servidores de grandes empresas** de fuera de Europa.", "Quien controla los datos y la IA tiene **poder**.", "La UE crea leyes (Reglamento de IA) y España impulsa modelos propios como **ALIA**."]}, {"tipo": "practica", "titulo": "Termina y entrega A1", "tiempo": 13, "enunciado": "Completa la **parte 3 de A1** (conclusiones) y repasa el «Antes de entregar». Sube el PDF o el enlace a Moodle.", "entrega": "Tarea 9.1 · Laboratorio de IA: prompts, alucinaciones y sesgos", "agrupamiento": "Individual", "ayudas": [{"tipo": "emociones", "titulo": "Si te has atascado", "texto": "No pasa nada si una prueba no ha salido como esperabas: también es un resultado. Escribe lo que has visto, aunque sea poco. Es **Apto** si están todas las partes."}]}, {"tipo": "video", "titulo": "Sesgos en la inteligencia artificial", "busqueda": "sesgo algorítmico inteligencia artificial ejemplos explicado", "texto": "Para repasar en casa o si sobra tiempo.", "preguntas": ["¿Qué ejemplo de sesgo te parece más grave?", "¿Quién debería corregirlo: la empresa, el Gobierno o quien usa la IA?"]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Plantilla A1 completa (Tarea 9.1)"], "siguiente": "Tu identidad digital ante la Administración"}]}, {"n": 4, "fase": "Bloque 2 · Trámites y compras", "titulo": "Tu identidad digital ante la Administración", "reto": "Saber qué sistemas de identificación existen (DNIe, certificado digital, Cl@ve) y qué trámites reales se pueden hacer con cada uno, reconociendo las webs oficiales.", "pregunta": "¿Cómo demuestras quién eres en internet si nadie te ve la cara?", "diapositivas": [{"tipo": "ejemplo", "icono": "🪪", "titulo": "De la ventanilla al móvil", "situacion": "Antes, para pedir un papel, hacías cola y **enseñabas el DNI** a una persona.", "explicacion": "Ahora la Administración es **e-Administración**: el trámite se hace en una web (sede electrónica) y tu identidad se comprueba con una **llave digital**.", "pregunta": "¿Qué trámite has visto hacer en casa por internet?"}, {"tipo": "comparar", "titulo": "Tres llaves digitales", "columnas": [{"icono": "💳", "titulo": "DNI electrónico", "puntos": ["Chip del DNI + PIN", "Lector o móvil con NFC", "Te lo dan con el DNI"]}, {"icono": "📄", "titulo": "Certificado digital FNMT", "puntos": ["Archivo instalado en el navegador", "Se pide en la sede de la FNMT", "Muy usado en Hacienda"]}, {"icono": "📲", "titulo": "Cl@ve", "puntos": ["App en el móvil que confirma el acceso", "Antes «Cl@ve PIN»; ahora se unifica en **Cl@ve Móvil**", "Registro una sola vez"]}], "nota": "Muestra clave.gob.es y la sede de la FNMT en pantalla, sin iniciar sesión."}, {"tipo": "practica", "titulo": "Escape room de trámites", "tiempo": 22, "enunciado": "Para cada trámite anota en el cuaderno: **quién lo gestiona · qué llave digital necesitas · cómo sabes que la web es oficial**.", "pasos": ["1. Pedir cita en el centro de salud (ClicSalud+).", "2. Solicitar la beca del Ministerio para estudiar.", "3. Consultar tu vida laboral.", "4. Pedir cita en la DGT para el examen de conducir.", "5. Presentar la declaración de la renta.", "6. Matricularte en un ciclo formativo en Andalucía."], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Solución para comprobar", "puntos": ["1. Servicio Andaluz de Salud · basta con tus datos o Cl@ve · juntadeandalucia.es / app oficial.", "2. Ministerio de Educación · Cl@ve, certificado o DNIe · educacion.gob.es.", "3. Seguridad Social · Cl@ve, certificado o DNIe · seg-social.es.", "4. DGT · Cl@ve, certificado o DNIe · dgt.es.", "5. Agencia Tributaria · Cl@ve, certificado, DNIe o referencia · agenciatributaria.gob.es.", "6. Junta de Andalucía · Cl@ve, certificado o iANDE/clave iANDE · juntadeandalucia.es."]}]}, {"tipo": "quiz", "pregunta": "Te llega un SMS: «Su Cl@ve caducará hoy, renuévela aquí: clave-gob-renovar.com». ¿Qué haces?", "opciones": ["Entro rápido para no perder el acceso", "No entro: no es un dominio oficial gob.es y la Administración no pide eso por SMS", "Entro pero solo pongo mi DNI, no la contraseña"], "correcta": 1, "explicacion": "Es **phishing**. Las webs oficiales terminan en **.gob.es** o **juntadeandalucia.es**, y el candado del navegador **no** garantiza que una web sea oficial."}, {"tipo": "idea", "icono": "🔐", "titulo": "Reglas de oro", "puntos": ["**Nunca** compartas tu PIN, contraseña o código de Cl@ve.", "Escribe tú la dirección oficial; no entres desde enlaces de SMS o correos.", "Cierra la sesión al terminar, sobre todo en ordenadores compartidos."]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Tabla de trámites del escape room en el cuaderno"], "siguiente": "Comprar en línea sin sustos: pagos, facturas y criptomonedas"}]}, {"n": 5, "fase": "Bloque 2 · Trámites y compras", "titulo": "Comprar en línea sin sustos: pagos, facturas y criptomonedas", "reto": "Distinguir una tienda fiable de una sospechosa, elegir un método de pago seguro, leer una factura digital y explicar qué es una criptomoneda y sus riesgos.", "pregunta": "¿Cómo sabes si una tienda de internet es de verdad antes de pagar?", "diapositivas": [{"tipo": "ejemplo", "icono": "👟", "titulo": "¿Chollo o estafa?", "situacion": "Anuncio en Instagram: zapatillas de marca a **19,99 €** en «zapas-outlet-oficial.shop», con cuenta atrás y **solo pago por transferencia**.", "explicacion": "Precio imposible, prisa y un pago que **no se puede reclamar**: tres señales clásicas de tienda falsa.", "pregunta": "¿Las comprarías? ¿Por qué?"}, {"tipo": "practica", "titulo": "Detective de tiendas", "tiempo": 15, "enunciado": "Decide en tu cuaderno qué tienda es **fiable**, cuál **dudosa** y cuál **estafa**, con **dos razones** para cada una.", "pasos": ["Tienda A · gamezone-es.com: aviso legal con NIF y dirección en Sevilla · tarjeta, Bizum y PayPal · devoluciones 14 días · precios normales.", "Tienda B · superdescuentos24.net: sin aviso legal · solo transferencia · móvil a mitad de precio · opiniones todas de 5 ⭐ del mismo día.", "Tienda C · tienda de ropa nueva en Instagram: aviso legal incompleto · pago con tarjeta · pocas opiniones · devoluciones «a consultar»."], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Señales de alarma", "puntos": ["Sin aviso legal, NIF ni dirección.", "Solo transferencia, criptomonedas o tarjetas regalo.", "Precio demasiado bueno y cuenta atrás.", "Opiniones falsas o copiadas; dominio raro."]}, {"tipo": "pista", "titulo": "Solución para comprobar", "texto": "A es fiable; B es estafa; C es dudosa: mejor buscar opiniones fuera de la tienda y pagar con un método que se pueda reclamar."}]}, {"tipo": "comparar", "titulo": "¿Cómo pago?", "columnas": [{"icono": "✅", "titulo": "Más seguro", "puntos": ["Tarjeta con confirmación en el móvil", "Tarjeta virtual o prepago", "PayPal o Bizum en tiendas conocidas"]}, {"icono": "⛔", "titulo": "Evitar en tiendas desconocidas", "puntos": ["Transferencia bancaria", "Criptomonedas", "Tarjetas regalo o recargas"]}], "texto": "Clave: elegir un pago que **se pueda reclamar** si algo sale mal."}, {"tipo": "practica", "titulo": "Lee la factura", "tiempo": 10, "enunciado": "Factura n.º 2027-0153 de **Zapas Sur, S. L.** (NIF B00000000, ficticio). Base imponible: **49,59 €** · IVA 21 % · Total: **60,00 €**. Comprueba con la calculadora que el IVA y el total son correctos y señala quién emite y quién recibe la factura.", "pasos": ["IVA = base × 0,21.", "Total = base + IVA.", "¿Qué datos de la factura te sirven para reclamar o devolver?"], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Solución", "texto": "IVA = 49,59 × 0,21 = 10,41 €; total = 49,59 + 10,41 = 60,00 €. Para reclamar sirven el número de factura, la fecha y los datos del emisor."}]}, {"tipo": "quiz", "pregunta": "Un «influencer» de TikTok promete duplicar tu dinero en una semana si compras su criptomoneda. ¿Qué es lo más probable?", "opciones": ["Una inversión segura porque tiene muchos seguidores", "Una estafa: nadie puede garantizar beneficios y el pago no se puede recuperar", "Un regalo del banco"], "correcta": 1, "explicacion": "Las criptomonedas cambian mucho de valor y **las transferencias no se pueden deshacer**. Prometer ganancias seguras es la señal típica de estafa."}, {"tipo": "idea", "icono": "🪙", "titulo": "Criptomonedas en 3 ideas", "puntos": ["Dinero **digital** que se registra en una **cadena de bloques** (blockchain).", "Sin banco central: su valor **sube y baja** muchísimo.", "Si pagas o te estafan, **no hay a quién reclamar**."]}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Análisis de las tres tiendas en el cuaderno", "Comprobación de la factura"], "siguiente": "Mi guía HTML de trámites y compras seguras"}]}, {"n": 6, "fase": "Bloque 2 · Trámites y compras", "titulo": "Mi guía HTML de trámites y compras seguras", "reto": "Crear con Gemini Canvas una guía web interactiva y personalizada sobre e-Administración y comercio electrónico seguro, comprobando que todo lo que dice es correcto.", "pregunta": "¿Puede la IA hacerte una web… sin que tú dejes de ser quien manda?", "diapositivas": [{"tipo": "pasos", "titulo": "De prompt a web con Gemini Canvas", "progresivo": true, "pasos": ["Abre Gemini con tu cuenta del centro y elige **Canvas** en las herramientas.", "Escribe tu prompt **RCTF** pidiendo una página HTML de un solo archivo.", "Mira la **vista previa** y pide cambios con frases cortas («añade…», «cambia el color…»).", "Descarga el archivo **.html** o comparte el enlace.", "Copia tus prompts en un documento: también se entregan."], "nota": "Hazlo en directo con el prompt de ejemplo de la ficha."}, {"tipo": "codigo", "titulo": "Prompt base (complétalo)", "codigo": "Actúa como diseñador/a web.\nPara: alumnado de 4.º ESO que pronto hará trámites y compras.\nCrea una página HTML de un solo archivo con:\n1. Cómo identificarse ante la Administración (DNIe, certificado, Cl@ve)\n2. Cómo comprar en internet de forma segura\n   (señales de alarma, formas de pago, factura)\n3. Un ejemplo mío: ____________\nUsa botones desplegables, colores ______ y letra grande.", "explicacion": ["**Rol** y **contexto**: las dos primeras líneas.", "**Tarea**: las secciones numeradas.", "**Formato**: la última línea. Rellena los huecos con lo tuyo."]}, {"tipo": "practica", "titulo": "Crea tu guía", "tiempo": 27, "enunciado": "Genera tu guía con Gemini Canvas y haz **al menos 2 cambios propios**: un **ejemplo tuyo** (trámite o compra) y un **desplegable** con tus 3 señales de alarma de la sesión 5.", "pasos": ["Escribe tu prompt RCTF.", "Genera la página y revisa la vista previa.", "Pide los dos cambios.", "Comprueba cada dato con la lista de verificación."], "agrupamiento": "Individual", "ayudas": [{"tipo": "pista", "titulo": "Lista de verificación", "puntos": ["¿Las webs oficiales que salen terminan en .gob.es o juntadeandalucia.es?", "¿Dice que nunca se comparte el PIN o el código?", "¿El IVA general es el 21 %? ¿La devolución es de 14 días?", "¿Ningún consejo recomienda pagar por transferencia a una tienda desconocida?"]}, {"tipo": "saber_mas", "titulo": "Si terminas antes", "texto": "Pide a Gemini que añada un **mini test de 3 preguntas** con corrección al pulsar."}]}, {"tipo": "ejemplo", "icono": "🧑‍🍳", "titulo": "La IA es tu pinche, tú eres el chef", "situacion": "En una cocina, el pinche corta y prepara, pero **el chef prueba** cada plato antes de que salga.", "explicacion": "Gemini genera la página en segundos, pero puede equivocarse con un dato o un enlace. **Tú pruebas** cada sección y firmas el resultado.", "pregunta": "¿Qué error de la IA has tenido que corregir?"}, {"tipo": "practica", "titulo": "Revisa y entrega", "tiempo": 12, "enunciado": "Repasa la lista de verificación y entrega en Moodle: el archivo **.html** (o el enlace compartido de Gemini) y un documento con **tu prompt inicial y los cambios** que pediste.", "entrega": "Tarea 9.2 · Mi guía HTML de trámites y compras seguras", "agrupamiento": "Individual"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Guía HTML individual y documento con los prompts (Tarea 9.2)"], "siguiente": "NotebookLM: de muchas fuentes a ideas claras"}]}, {"n": 7, "fase": "Bloque 3 · Síntesis HTML", "titulo": "NotebookLM: de muchas fuentes a ideas claras", "reto": "Usar NotebookLM para analizar varias fuentes fiables, extraer ideas clave con citas y planificar en pareja la web final.", "pregunta": "¿Cómo sacas lo importante de diez páginas sin leerlas al tuntún… ni creerte todo?", "diapositivas": [{"tipo": "ejemplo", "icono": "📚", "titulo": "El compañero que se lo ha leído todo", "situacion": "Antes de un examen, le preguntas a quien **se ha leído los apuntes** y te contesta señalando la página exacta.", "explicacion": "**NotebookLM** hace eso con **tus fuentes**: solo responde con lo que hay en los documentos que subes y te dice **de dónde sale** cada frase. Menos invención que un chatbot general, pero hay que comprobarlo igual.", "pregunta": "¿Por qué es mejor que te diga la página?"}, {"tipo": "comparar", "titulo": "Piloto y copiloto", "columnas": [{"icono": "🧑‍✈️", "titulo": "Piloto", "puntos": ["Lleva el teclado", "Escribe las preguntas y prompts", "Propone ideas"]}, {"icono": "🧭", "titulo": "Copiloto", "puntos": ["Comprueba cada idea en la cita", "Apunta en el Google Doc", "Vigila la lista de comprobación"]}], "texto": "Cambiáis de rol **cada 15 minutos**."}, {"tipo": "practica", "titulo": "Analizamos las fuentes", "tiempo": 25, "enunciado": "Cread vuestro cuaderno en **NotebookLM**, subid **3-5 fuentes** y haced **al menos 5 preguntas**. Anotad en un Google Doc compartido **6-8 ideas clave** con su fuente.", "pasos": ["notebooklm.google.com con la cuenta del centro → «Nuevo cuaderno».", "Subid las fuentes de Moodle y vuestras dos guías de la Tarea 9.2.", "Preguntad: «¿Qué es la brecha digital según estas fuentes?», «¿Qué derechos digitales tengo?», «¿Qué riesgos tiene la IA según el Reglamento europeo?»…", "Pulsad en las citas para comprobar cada respuesta."], "agrupamiento": "Parejas", "ayudas": [{"tipo": "pista", "titulo": "Más preguntas modelo", "puntos": ["«Resume en 5 puntos lo más importante para un/a joven».", "«¿Qué señales de alarma de una tienda falsa aparecen?».", "«¿En qué no están de acuerdo las fuentes?»."]}]}, {"tipo": "practica", "titulo": "Plan de la web", "tiempo": 10, "enunciado": "En el mismo Google Doc, haced el **esquema** de vuestra web: título, las **4 secciones** y el **elemento interactivo** de cada una.", "pasos": ["Big Data e IA → p. ej. desplegables con las 5 V.", "Sesgos y brecha → p. ej. «¿verdadero o bulo?».", "e-Administración → p. ej. botones con las tres llaves digitales.", "Compras seguras → p. ej. test de 5 preguntas."], "agrupamiento": "Parejas"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Cuaderno de NotebookLM con fuentes", "Google Doc con ideas clave citadas y plan de la web"], "siguiente": "Creamos la web interactiva con Gemini Canvas"}]}, {"n": 8, "fase": "Bloque 3 · Síntesis HTML", "titulo": "Creamos la web interactiva con Gemini Canvas", "reto": "Generar y personalizar en pareja la web HTML interactiva a partir de las ideas clave de NotebookLM, cuidando la accesibilidad y la veracidad.", "pregunta": "¿Qué hace que una web sea útil para todo el mundo y no solo bonita?", "diapositivas": [{"tipo": "infografia", "titulo": "Requisitos de vuestra web", "elementos": [{"icono": "🧠", "titulo": "4 secciones", "texto": "Big Data e IA · Sesgos y brecha · e-Administración · Compras seguras."}, {"icono": "🖱️", "titulo": "Interactiva", "texto": "Un elemento por sección y un test final de 5 preguntas."}, {"icono": "📎", "titulo": "Fuentes", "texto": "Al pie, las fuentes que usasteis en NotebookLM."}, {"icono": "🤖", "titulo": "Cómo usamos la IA", "texto": "Sección final: qué hizo la IA, qué hicimos nosotros."}]}, {"tipo": "ejemplo", "icono": "👓", "titulo": "Una web para tu abuelo también", "situacion": "Tu abuelo abre una web con letra gris clarita sobre fondo blanco y **no ve nada**.", "explicacion": "La **accesibilidad** hace que todo el mundo pueda usar una web: **buen contraste**, **letra grande**, **texto alternativo** en las imágenes y botones claros. Es también parte de reducir la brecha digital.", "pregunta": "¿Qué cambiarías en tu web para que la use alguien con poca vista?"}, {"tipo": "practica", "titulo": "Generamos la web", "tiempo": 20, "enunciado": "**Piloto**: escribe un prompt RCTF largo con vuestras **ideas clave** y vuestro **plan**. **Copiloto**: revisa la web sección por sección con los requisitos.", "pasos": ["Pega las ideas clave del Google Doc en el prompt.", "Pide «una página HTML de un solo archivo, interactiva, con…».", "Revisa la vista previa con la infografía de requisitos."], "agrupamiento": "Parejas", "ayudas": [{"tipo": "pista", "titulo": "Arranque del prompt", "texto": "«Actúa como diseñador/a web educativo/a. Para jóvenes de 16 años, crea una página HTML interactiva de un solo archivo con estas 4 secciones y estas ideas clave (no añadas datos que no estén aquí): … Incluye un test final de 5 preguntas con corrección al pulsar, fuentes al pie y buen contraste.»"}]}, {"tipo": "practica", "titulo": "Personalizamos y corregimos", "tiempo": 18, "enunciado": "**Cambiad de rol.** Pedid mejoras concretas, corregid los datos que no coincidan con NotebookLM y revisad la accesibilidad. Descargad una **versión provisional** del .html.", "pasos": ["Ejemplos de TikTok o Instagram en cada sección.", "Un botón «¿bulo o verdad?».", "Contraste y tamaño de letra.", "Cada dato comprobado con su cita."], "agrupamiento": "Parejas"}, {"tipo": "dato", "valor": "💧⚡", "texto": "Cada petición a una IA generativa se procesa en **centros de datos** que consumen electricidad y agua para refrigerarse. Usarla con prompts bien pensados también es digitalización **sostenible**.", "pregunta": "¿Cuántos prompts habéis necesitado? ¿Podríais haberlo hecho con menos?"}, {"tipo": "cierre", "titulo": "Hoy dejamos hecho", "puntos": ["Versión provisional del .html", "Registro de uso de la IA en el Google Doc"], "siguiente": "Prueba cruzada, ética del proceso y entrega final"}]}, {"n": 9, "fase": "Bloque 3 · Síntesis HTML", "titulo": "Prueba cruzada, ética del proceso y entrega final", "reto": "Mejorar la web con la opinión de otra pareja, escribir la sección «Cómo hemos usado la IA» y entregar el producto final.", "pregunta": "¿Cómo podemos usar la IA para crear algo útil sin creernos todo lo que nos dice?", "diapositivas": [{"tipo": "practica", "titulo": "Prueba cruzada", "tiempo": 12, "enunciado": "Abrid la web de la pareja que os toque, haced su test y dejad **2 comentarios** por escrito: uno **positivo** y una **mejora**.", "pasos": ["¿Se entiende?", "¿Funcionan los botones y el test?", "¿Hay algún dato dudoso?", "¿Se lee bien (contraste, tamaño)?"], "agrupamiento": "Parejas"}, {"tipo": "practica", "titulo": "Mejoras finales", "tiempo": 10, "enunciado": "Aplicad en Gemini Canvas las mejoras recibidas y **volved a comprobar** los datos que cambien.", "agrupamiento": "Parejas"}, {"tipo": "ejemplo", "icono": "🏷️", "titulo": "La etiqueta de los alimentos", "situacion": "En el súper, la etiqueta te dice **qué lleva** cada producto para que decidas si lo compras.", "explicacion": "Vuestra sección **«Cómo hemos usado la IA»** es la etiqueta de la web: qué hizo la IA, qué hicisteis vosotros y qué errores corregisteis. Es **honestidad** con quien la lee.", "pregunta": "¿Os fiaríais más de una web que lo explica?"}, {"tipo": "practica", "titulo": "Cómo hemos usado la IA y entrega", "tiempo": 15, "enunciado": "Añadid a vuestra web la sección **«Cómo hemos usado la IA»** y entregad el **.html final** en Moodle (lo sube un miembro de la pareja).", "pasos": ["Herramientas: NotebookLM y Gemini Canvas.", "La IA hizo… / Nosotros hicimos…", "Errores o sesgos que corregimos: …", "Consumo de recursos y accesibilidad: …"], "entrega": "Tarea 9.3 · Producto final: web «Ciudadanía digital 360»", "agrupamiento": "Parejas", "ayudas": [{"tipo": "repaso", "titulo": "Antes de entregar", "puntos": ["4 secciones con un elemento interactivo cada una.", "Test de 5 preguntas que funciona.", "Fuentes al pie.", "Sección «Cómo hemos usado la IA».", "Buen contraste y letra grande."]}]}, {"tipo": "practica", "titulo": "Autoevaluación", "tiempo": 8, "enunciado": "Responde el formulario **F2** con tu correo del centro: ¿qué has aprendido y cómo ha funcionado tu pareja?", "agrupamiento": "Individual", "enlace": "https://forms.gle/gCsxbHvSH8Lepmtt7"}, {"tipo": "cierre", "titulo": "Lo que nos llevamos", "puntos": ["La IA **predice**, no sabe: **yo compruebo**.", "Los datos y la IA tienen **sesgos** y dejan a gente **fuera**.", "Trámites con **Cl@ve, certificado o DNIe** en webs oficiales.", "Comprar con pagos que **se puedan reclamar**."], "pregunta": "¿Qué le dirías a alguien que se cree todo lo que le dice un chatbot?"}]}], "creditos": null, "ayudas": {"pista": "💡 Pista", "emociones": "💬 Cómo me siento", "repaso": "🧭 Repasa lo aprendido", "saber_mas": "🔭 Saber más"}, "apartados": {}, "url_alumnado": null};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr = x => Array.isArray(x) ? x : (x == null || x === '' ? [] : [x]);
+// Enlaces de Google Docs/Hojas/Presentaciones: «Ver anexo» (solo lectura) y «Copiar a mi Drive» (copia propia).
+const enlaceBtn = u => { const s = String(u), g = s.match(/^https:\/\/docs\.google\.com\/(?:document|spreadsheets|presentation|drawings)\/d\/[\w-]+/), b = 'class="box wa" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;';
+  return g ? `<div style="display:flex;flex-wrap:wrap;gap:.6em;margin:.6em 0"><a ${b}flex:1 1 14em" href="${esc(g[0] + '/preview')}">👁️ <b>Ver anexo</b></a><a ${b}flex:1 1 14em" href="${esc(g[0] + '/copy')}">📥 <b>Copiar a mi Drive</b></a></div>`
+           : `<a ${b}display:block;margin:.6em 0" href="${esc(s)}">🔗 <b>${esc(s.replace(/^https?:\/\//,''))}</b></a>`; };
+// **negrita** dentro de los textos
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const FC = {'Inicio':'var(--f-ini)','Desarrollo':'var(--f-des)','Cierre':'var(--f-cie)'};
+// Admite nombres de fase compuestos («Bloque 1 · Inicio»)
+const fcol = f => FC[f] || FC[Object.keys(FC).find(k => String(f || '').includes(k))] || 'var(--brand)';
+// Fases del modelo REA (Movilizar, Activar, Explorar, Estructurar, Aplicar y comprobar, Concluir)
+Object.assign(FC, {'Movilizar':'var(--f-mov)','Activar':'var(--f-act)','Explorar':'var(--f-exp)','Estructurar':'var(--f-est)','Aplicar':'var(--f-apl)','Concluir':'var(--f-con)'});
+const st = { s: null, i: 0, mode: 'proy', notes: false, revealed: {} };
+const SES = D.sesiones;
+
+function ytId(v){
+  const m = String(v||'').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || String(v||'').match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+// En vistas previas protegidas (iframe sandbox, about:srcdoc) el navegador bloquea replaceState: se ignora.
+function setHash(h){ try { history.replaceState(null, '', h); } catch(e){} }
+function fmtT(s){ s = Math.max(0, s|0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+// --------------------------------------------------- renderizado de cada tipo
+const R = {
+  portada(d, s){
+    return `<div class="in cover"><div class="tag">Sesión ${s.n} · ${esc(s.fase||'')}</div>
+      <h1 class="s-h">${md(s.titulo)}</h1>${s.reto ? `<p class="s-lead">${md(s.reto)}</p>` : ''}
+      ${d.pregunta ? `<div class="q">${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  idea(d){
+    return `<div class="in">${d.icono ? `<div class="ico">${esc(d.icono)}</div>` : ''}<h2 class="s-h">${md(d.titulo)}</h2>
+      ${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${arr(d.puntos).length ? `<ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  ejemplo(d){
+    return `<div class="in"><h2 class="s-h">${d.icono ? esc(d.icono)+' ' : ''}${md(d.titulo)}</h2>
+      <div class="two"><div class="box wa"><div class="lb">En tu día a día</div>${md(d.situacion)}</div>
+      <div class="box hl"><div class="lb">¿Qué hay detrás?</div>${md(d.explicacion)}</div></div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  pasos(d, s, k){
+    const key = s.n+'-'+k, prog = d.progresivo, shown = st.revealed[key] ?? (prog ? 1 : 1e9);
+    const ps = arr(d.pasos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <ol class="steps">${ps.map((p,j)=>`<li class="${st.mode==='proy' && j>=shown ? 'hid':''}"><span>${md(p)}</span></li>`).join('')}</ol>
+      ${prog && st.mode==='proy' && shown < ps.length ? `<button class="reveal" data-rev="${key}" data-max="${ps.length}">Siguiente paso (↓)</button>` : ''}</div>`;
+  },
+  comparar(d){
+    const c = arr(d.columnas);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="cols" style="--n:${c.length}">${c.map(x=>`<div class="col"><h4>${esc(x.icono||'')} ${md(x.titulo)}</h4><ul class="pts">${arr(x.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  flujo(d){
+    const n = arr(d.nodos);
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="flow">${n.map((x,j)=>`${j?'<span class="arr">→</span>':''}<div class="fn ${esc(x.tipo||'proceso')}"><span>${md(x.texto ?? x)}</span></div>`).join('')}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  infografia(d){
+    const body = d.svg ? `<div class="svgw">${d.svg}</div>`
+      : `<div class="grid-i" style="--cols:${Math.min(arr(d.elementos).length, arr(d.elementos).length === 4 ? 4 : 3) || 1}">${arr(d.elementos).map(e=>`<div class="gi"><div class="e">${esc(e.icono||'')}</div><b>${md(e.titulo)}</b><span>${md(e.texto)}</span></div>`).join('')}</div>`;
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}${body}
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  codigo(d){
+    return `<div class="in"><h2 class="s-h">${md(d.titulo)}</h2><div class="two" style="grid-template-columns:${d.explicacion?'1.2fr 1fr':'1fr'}">
+      <pre class="code">${esc(d.codigo)}</pre>${d.explicacion ? `<div class="box hl"><div class="lb">Qué hace</div>${arr(d.explicacion).map(x=>`<p style="margin:.2em 0">${md(x)}</p>`).join('')}</div>` : ''}</div>
+      ${d.pregunta ? `<div class="ask">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  dato(d){
+    return `<div class="in" style="justify-content:center;text-align:center"><div class="big">${esc(d.valor)}</div>
+      <p class="s-lead" style="margin-top:.5em;font-size:1.3em">${md(d.texto)}</p>${d.fuente ? `<div class="src">Fuente: ${esc(d.fuente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask" style="margin-top:1em">❓ ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+  practica(d, s, k){
+    const min = +d.tiempo || 0;
+    return `<div class="in"><h2 class="s-h">🛠 ${md(d.titulo)}</h2>
+      <div>${d.entrega ? `<span class="chip">📤 ${esc(d.entrega)}</span>` : ''}${d.agrupamiento ? `<span class="chip">👥 ${esc(d.agrupamiento)}</span>` : ''}
+      ${min ? `<button class="timer" data-timer="${min*60}" data-k="${s.n}-${k}">⏱ ${min} min</button>` : ''}</div>
+      <p class="s-lead" style="margin-top:.5em">${md(d.enunciado)}</p>
+      ${arr(d.enlace).map(enlaceBtn).join('')}
+      ${arr(d.pasos).length ? `<ol class="steps">${arr(d.pasos).map(p=>`<li><span>${md(p)}</span></li>`).join('')}</ol>` : ''}
+      ${d.material ? `<div class="src">Material: ${esc(arr(d.material).join(', '))}</div>` : ''}</div>`;
+  },
+  quiz(d, s, k){
+    return `<div class="in"><h2 class="s-h">🧠 ${md(d.pregunta)}</h2>
+      <div class="opts" data-q="${s.n}-${k}" data-ok="${+d.correcta||0}">${arr(d.opciones).map((o,j)=>`<button class="opt" data-j="${j}">${String.fromCharCode(65+j)}. ${md(o)}</button>`).join('')}</div>
+      <div class="expl box hl" id="ex-${s.n}-${k}">${md(d.explicacion||'')}</div></div>`;
+  },
+  video(d){
+    const id = ytId(d.youtube), ini = +d.inicio || 0;
+    const url = id ? `https://www.youtube.com/watch?v=${id}${ini?'&t='+ini+'s':''}` : (d.busqueda ? 'https://www.youtube.com/results?search_query='+encodeURIComponent(d.busqueda) : '');
+    const box = id ? `<div class="vid" data-yt="${id}" data-ini="${ini}" data-fin="${+d.fin||0}"><button class="play">▶ Reproducir aquí</button></div>`
+      : `<a class="box wa" style="display:block;text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">🔎 Buscar en YouTube: <b>${esc(d.busqueda||'')}</b><div class="src">El docente elige el vídeo antes de clase.</div></a>`;
+    return `<div class="in"><h2 class="s-h">🎬 ${md(d.titulo)}</h2>${d.texto ? `<p class="s-lead">${md(d.texto)}</p>` : ''}
+      <div class="two" style="grid-template-columns:${arr(d.preguntas).length?'1.5fr 1fr':'1fr'};flex:1;min-height:0">${box}
+      ${arr(d.preguntas).length ? `<div class="box ac"><div class="lb">Mientras lo ves</div><ul class="pts">${arr(d.preguntas).map(p=>`<li>${md(p)}</li>`).join('')}</ul></div>` : ''}</div>
+      ${url && id ? `<div class="src"><a href="${esc(url)}" target="_blank" rel="noopener">Abrir en YouTube ↗</a>${d.duracion ? ' · '+esc(d.duracion) : ''}${ini ? ' · desde '+fmtT(ini) : ''}</div>` : ''}</div>`;
+  },
+  multinivel(d){
+    const o = arr(d.opciones);
+    return `<div class="in"><h2 class="s-h">🎚 ${md(d.titulo)}</h2>${d.enunciado ? `<p class="s-lead">${md(d.enunciado)}</p>` : ''}
+      <div class="mlv" style="--n:${Math.min(o.length,3)}">${o.map(x=>`<div class="mo"><h4><span class="L">${esc(x.letra)}</span>${md(x.titulo)}</h4>${x.proceso ? `<div class="pc">${esc(x.proceso)}</div>` : ''}<p>${md(x.enunciado)}</p></div>`).join('')}</div>
+      ${d.texto ? `<div class="src">${md(d.texto)}</div>` : ''}</div>`;
+  },
+  cierre(d){
+    return `<div class="in"><h2 class="s-h">✅ ${md(d.titulo || 'Hoy hemos aprendido')}</h2>
+      <ul class="pts">${arr(d.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>
+      ${d.siguiente ? `<div class="box ac" style="margin-top:.6em"><div class="lb">Próxima sesión</div>${md(d.siguiente)}</div>` : ''}
+      ${d.pregunta ? `<div class="ask">🚪 Pregunta de salida: ${md(d.pregunta)}</div>` : ''}</div>`;
+  },
+};
+const TAG = {idea:'Idea clave', ejemplo:'Ejemplo cotidiano', pasos:'Paso a paso', comparar:'Comparamos', flujo:'Diagrama de flujo',
+  infografia:'Infografía', codigo:'Programa', dato:'Dato', practica:'¡Manos a la obra!', quiz:'Comprueba', video:'Vídeo', cierre:'Cierre',
+  multinivel:'Elige tu opción'};
+// Ayudas plegables por función: pista, emociones, repaso y saber más
+const AYN = D.ayudas || {pista:'💡 Pista', emociones:'💬 Cómo me siento', repaso:'🧭 Repasa lo aprendido', saber_mas:'🔭 Saber más'};
+// Botones a apartados concretos de la guía del alumnado: "guia": "3.2" o ["3.2.1", "3.3"]
+function guiaHtml(g){
+  if (!arr(g).length || !D.url_alumnado) return '';
+  const A = D.apartados || {};
+  return `<div class="gbs">${arr(g).map(id => `<a class="gb" href="${esc(D.url_alumnado)}#a-${esc(id)}" target="_blank" rel="noopener">📘 <b>Guía del alumnado · ${esc(id)}</b>${A[id] ? ' ' + esc(A[id]) : ''} ↗</a>`).join('')}</div>`;
+}
+function ayudasHtml(list){
+  return arr(list).length ? `<div class="ays">${arr(list).map(a=>`<details class="ay ay-${esc(a.tipo)}"><summary>${esc(AYN[a.tipo]||'Ayuda')}${a.titulo ? ' · '+md(a.titulo) : ''}</summary><div>${a.texto ? `<p style="margin:.2em 0">${md(a.texto)}</p>` : ''}${arr(a.puntos).length ? `<ul>${arr(a.puntos).map(p=>`<li>${md(p)}</li>`).join('')}</ul>` : ''}</div></details>`).join('')}</div>` : '';
+}
+
+function slidesOf(s){ return [{tipo:'portada', pregunta: s.pregunta}].concat(arr(s.diapositivas)); }
+function renderSlide(s, d, k, total){
+  const f = R[d.tipo] || R.idea;
+  const tag = d.tipo !== 'portada' ? `<div class="tag">${esc(TAG[d.tipo]||'')}</div>` : '';
+  let body = f(d, s, k);
+  if (arr(d.guia).length || arr(d.ayudas).length) body = body.replace(/<\/div>\s*$/, guiaHtml(d.guia) + ayudasHtml(d.ayudas) + '</div>');
+  return `<section class="slide" style="--fc:${fcol(s.fase)}" data-k="${k}">${body}${tag}
+    <div class="bar"><i style="width:${(k+1)/total*100}%"></i></div><div class="pg">${k+1} / ${total}</div></section>`;
+}
+
+// --------------------------------------------------- vistas
+function creditosHtml(){
+  const C = D.creditos; if (!C) return '';
+  const o = C.original || {}, L = C.licencia || {};
+  const lic = L.url ? `<a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.nombre)}</a>` : esc(L.nombre || '');
+  return `<div class="foot">${o.titulo ? `Adaptación de «${esc(o.titulo)}»${o.organizacion ? ' · ' + esc(o.organizacion) : ''}${arr(o.personas).length ? ' · ' + esc(arr(o.personas).map(x => x.nombres).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3).join(', ')) : ''}. ` : ''}${C.adaptacion && C.adaptacion.autoria ? 'Adaptación: ' + esc(C.adaptacion.autoria) + '. ' : ''}Licencia ${lic}.${D.url_alumnado ? ` Créditos completos en la <a href="${esc(D.url_alumnado)}#creditos">guía del alumnado</a>.` : ''}</div>`;
+}
+function home(){
+  st.s = null; document.body.classList.remove('fs');
+  $('#ttl').innerHTML = esc(D.meta.titulo || 'Sesiones');
+  $('#sel').value = ''; $('#notes').classList.remove('on');
+  $('#app').innerHTML = `<div class="home"><div class="hero"><div class="k">${esc([D.meta.curso_texto, D.materias].filter(Boolean).join(' · '))}</div>
+    <h1>${esc(D.meta.titulo||'')}</h1>${D.meta.subtitulo ? `<p>${esc(D.meta.subtitulo)}</p>` : ''}
+    ${D.reto ? `<p><b>Reto:</b> ${esc(D.reto)}</p>` : ''}
+    ${D.url_alumnado ? `<a class="gal" href="${esc(D.url_alumnado)}">📘 Guía del alumnado: apartados, actividades y ayudas</a>` : ''}
+    <p class="help">Elige una sesión. Proyectar: <span class="kbd">←</span><span class="kbd">→</span> pasar · <span class="kbd">F</span> pantalla completa · <span class="kbd">N</span> notas del docente · <span class="kbd">E</span> modo estudio · <span class="kbd">Esc</span> volver aquí.</p></div>
+    <div class="cards">${SES.map(s=>`<button class="sc" data-s="${s.n}" style="--fc:${fcol(s.fase)}"><div class="n">Sesión ${s.n} · ${esc(s.fase||'')}</div><h3>${esc(s.titulo)}</h3><p>${esc(s.reto||'')}</p><div class="c">${arr(s.diapositivas).length + 1} diapositivas</div></button>`).join('')}</div>${creditosHtml()}</div>`;
+  setHash('#');
+  wire();
+}
+function show(n, i){
+  const s = SES.find(x => x.n == n); if (!s) return home();
+  const sl = slidesOf(s);
+  st.s = s; st.i = Math.max(0, Math.min(i|0, sl.length - 1));
+  $('#ttl').innerHTML = `Sesión ${s.n}. ${esc(s.titulo)}<small>${esc(D.meta.titulo||'')}</small>`;
+  $('#sel').value = String(s.n);
+  $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar';
+  if (st.mode === 'proy') {
+    $('#app').innerHTML = `<div class="stage"><button class="nav l" id="pv" aria-label="Anterior">‹</button>${renderSlide(s, sl[st.i], st.i, sl.length)}<button class="nav r" id="nx" aria-label="Siguiente">›</button></div>`;
+    $('#pv').onclick = prev; $('#nx').onclick = next;
+  } else {
+    $('#app').innerHTML = `<div class="study">${sl.map((d,k)=>renderSlide(s, d, k, sl.length)).join('')}
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:20px">${SES.find(x=>x.n==s.n-1) ? `<button class="tb" data-s="${s.n-1}">← Sesión ${s.n-1}</button>` : '<span></span>'}${SES.find(x=>x.n==s.n+1) ? `<button class="tb" data-s="${s.n+1}">Sesión ${s.n+1} →</button>` : ''}</div></div>`;
+    window.scrollTo(0, 0);
+  }
+  const nt = st.mode === 'proy' ? sl[st.i].nota : null;
+  $('#notes').innerHTML = nt ? `<b>Notas para el docente:</b> ${md(nt)}` : '<b>Notas:</b> sin notas en esta diapositiva.';
+  $('#notes').classList.toggle('on', st.notes && st.mode === 'proy');
+  setHash(`#s${s.n}-${st.i + 1}`);
+  wire();
+  fit();
+}
+function next(){
+  if (!st.s) return; const sl = slidesOf(st.s), d = sl[st.i];
+  if (d.tipo === 'pasos' && d.progresivo) { const key = st.s.n+'-'+st.i, v = st.revealed[key] ?? 1;
+    if (v < arr(d.pasos).length) { st.revealed[key] = v + 1; return show(st.s.n, st.i); } }
+  if (st.i < sl.length - 1) show(st.s.n, st.i + 1);
+  else { const nx = SES.find(x => x.n == st.s.n + 1); if (nx) show(nx.n, 0); }
+}
+function prev(){ if (!st.s) return; if (st.i > 0) show(st.s.n, st.i - 1); else { const p = SES.find(x => x.n == st.s.n - 1); if (p) show(p.n, slidesOf(p).length - 1); } }
+
+// Si el contenido no cabe en la diapositiva proyectada, reduce la letra (hasta un 62 %)
+function fit(){
+  const sl = document.querySelector('.stage .slide'); if (!sl) return;
+  const inn = sl.querySelector('.in'); sl.style.fontSize = '';
+  const base = parseFloat(getComputedStyle(sl).fontSize); let f = base;
+  while (inn.scrollHeight > inn.clientHeight + 1 && f > base * 0.62) { f *= 0.96; sl.style.fontSize = f + 'px'; }
+}
+let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fit, 80); });
+let timers = {};
+document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('ay')) fit(); }, true);
+function wire(){
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => show(+b.dataset.s, 0));
+  document.querySelectorAll('.opts').forEach(q => q.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+    const ok = +q.dataset.ok; q.querySelectorAll('.opt').forEach(x => x.classList.remove('ok','ko'));
+    o.classList.add(+o.dataset.j === ok ? 'ok' : 'ko'); q.querySelectorAll('.opt')[ok]?.classList.add('ok');
+    document.getElementById('ex-' + q.dataset.q)?.classList.add('on');
+  }));
+  document.querySelectorAll('.reveal').forEach(b => b.onclick = () => { st.revealed[b.dataset.rev] = (st.revealed[b.dataset.rev] ?? 1) + 1; show(st.s.n, st.i); });
+  document.querySelectorAll('.vid').forEach(v => { const b = v.querySelector('.play'); if (b) b.onclick = () => {
+    const p = new URLSearchParams({autoplay: '1', rel: '0'}); if (+v.dataset.ini) p.set('start', v.dataset.ini); if (+v.dataset.fin) p.set('end', v.dataset.fin);
+    v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.yt}?${p}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>`; }; });
+  document.querySelectorAll('.timer').forEach(b => {
+    const k = b.dataset.k, paint = () => { const t = timers[k]; if (!t) return; const left = Math.round((t.end - Date.now())/1000);
+      b.textContent = left > 0 ? '⏱ ' + fmtT(left) : '⏰ ¡Tiempo!'; b.classList.toggle('end', left <= 0); };
+    if (timers[k]) paint();
+    b.onclick = () => { if (timers[k]) { clearInterval(timers[k].iv); delete timers[k]; b.textContent = '⏱ ' + (b.dataset.timer/60) + ' min'; b.classList.remove('end'); return; }
+      timers[k] = { end: Date.now() + b.dataset.timer * 1000 }; timers[k].iv = setInterval(() => { if (!document.body.contains(b)) return; paint(); }, 500); paint(); };
+  });
+}
+
+// --------------------------------------------------- controles
+$('#sel').innerHTML = `<option value="">Ir a la sesión…</option>` + SES.map(s => `<option value="${s.n}">S${s.n}. ${esc(s.titulo)}</option>`).join('');
+$('#sel').onchange = e => e.target.value ? show(+e.target.value, 0) : home();
+$('#b-home').onclick = home;
+$('#b-mode').onclick = () => { st.mode = st.mode === 'proy' ? 'est' : 'proy'; st.s ? show(st.s.n, st.i) : null; $('#b-mode').textContent = st.mode === 'proy' ? '📖 Estudiar' : '📽 Proyectar'; };
+$('#b-notes').onclick = () => { st.notes = !st.notes; $('#b-notes').setAttribute('aria-pressed', st.notes); $('#notes').classList.toggle('on', st.notes && st.mode === 'proy' && !!st.s); };
+$('#b-fs').onclick = toggleFs;
+$('#b-theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('clase-theme', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('clase-theme'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+function toggleFs(){
+  if (!st.s) return;
+  if (st.mode !== 'proy') { st.mode = 'proy'; show(st.s.n, st.i); }
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.().catch(()=>{}); document.body.classList.add('fs'); }
+  else { document.exitFullscreen?.(); document.body.classList.remove('fs'); }
+}
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('fs', !!document.fullscreenElement); setTimeout(fit, 120); });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = e.key;
+  if (st.s && st.mode === 'proy' && ['ArrowRight','ArrowDown','PageDown',' '].includes(k)) { e.preventDefault(); next(); }
+  else if (st.s && st.mode === 'proy' && ['ArrowLeft','ArrowUp','PageUp'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home' && st.s && st.mode === 'proy') show(st.s.n, 0);
+  else if (k === 'End' && st.s && st.mode === 'proy') show(st.s.n, slidesOf(st.s).length - 1);
+  else if (k === 'f' || k === 'F') toggleFs();
+  else if (k === 'n' || k === 'N') $('#b-notes').click();
+  else if ((k === 'e' || k === 'E') && st.s) $('#b-mode').click();
+  else if (k === 'Escape' && !document.fullscreenElement) home();
+});
+// Enlaces directos también con la página ya abierta (#s3-2 en la barra de direcciones o en un enlace)
+addEventListener('hashchange', () => { let h = null; try { h = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){} if (h) show(+h[1], (+h[2] || 1) - 1); });
+// enlace directo: #s3-2 (sesión 3, diapositiva 2)
+let m = null; try { m = location.hash.match(/^#s(\d+)(?:-(\d+))?/); } catch(e){}
+if (!SES.length) $('#app').innerHTML = '<div class="empty">Esta situación de aprendizaje todavía no tiene diapositivas de clase.</div>';
+else if (m) show(+m[1], (+m[2] || 1) - 1); else home();
+</script>
+</body>
+</html>
