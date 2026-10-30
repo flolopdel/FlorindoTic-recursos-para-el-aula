@@ -8,8 +8,11 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       DIG4_SDA8_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   DIG4_SDA8_crearF1_SdA8EncuestaInicial()  →  SdA 8 · Encuesta inicial: ¿cómo me conecto? (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/6iP5K5HYDA8iqykF6
  *   DIG4_SDA8_crearF2_SdA8CoevaluacionDel()  →  SdA 8 · Coevaluación del estreno de los vídeos (sesión 9, anónimo)
+ *        ya creado: https://forms.gle/pT3X4kruPvs49NyQA
  *   DIG4_SDA8_crearF3_SdA8AutoevaluacionFinal()  →  SdA 8 · Autoevaluación final (sesión 9)
+ *        ya creado: https://forms.gle/ribtQSs7ykF9JgQo7
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 8 · Enlaces de formularios» de la carpeta de la SdA:
@@ -188,6 +191,7 @@ var FORMULARIOS = [
         "titulo": "¿Qué te gustaría aprender sobre seguridad en Internet?"
       }
     ],
+    "enlace": "https://forms.gle/6iP5K5HYDA8iqykF6",
     "sesiones": "Sesión 1"
   },
   {
@@ -244,6 +248,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/pT3X4kruPvs49NyQA",
     "sesiones": "Sesión 9"
   },
   {
@@ -305,6 +310,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/ribtQSs7ykF9JgQo7",
     "sesiones": "Sesión 9"
   }
 ];
