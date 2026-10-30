@@ -8,8 +8,11 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       DIG4_SDA7_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   DIG4_SDA7_crearF1_SdA7EncuestaInicial()  →  SdA 7 · Encuesta inicial: jugar y programar (anónima) (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/W2Lz8dhpVJz1sKgW9
  *   DIG4_SDA7_crearF2_SdA7PlaytestingPruebo()  →  SdA 7 · Playtesting: pruebo el juego de otra persona (sesiones 9, 15, anónimo)
+ *        ya creado: https://forms.gle/cvWS1MECi1KLZqbU6
  *   DIG4_SDA7_crearF3_SdA7AutoevaluacionFinal()  →  SdA 7 · Autoevaluación final (sesión 15)
+ *        ya creado: https://forms.gle/kVv4xPzmF7qkV1ks8
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 7 · Enlaces de formularios» de la carpeta de la SdA:
@@ -181,6 +184,7 @@ var FORMULARIOS = [
         "titulo": "¿Qué te gustaría que tuviera tu videojuego?"
       }
     ],
+    "enlace": "https://forms.gle/W2Lz8dhpVJz1sKgW9",
     "sesiones": "Sesión 1"
   },
   {
@@ -244,6 +248,7 @@ var FORMULARIOS = [
         "obligatoria": true
       }
     ],
+    "enlace": "https://forms.gle/cvWS1MECi1KLZqbU6",
     "sesiones": "Sesiones 9, 15"
   },
   {
@@ -294,6 +299,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/kVv4xPzmF7qkV1ks8",
     "sesiones": "Sesión 15"
   }
 ];
