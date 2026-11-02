@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Piedra, papel o tijera por radio</title>
+<meta name="description" content="Laboratorio de ampliación de la SdA 3 de Computación y Robótica 1.º ESO: dos parejas juegan a piedra, papel o tijera con sus micro:bit, la jugada viaja por radio y cada placa calcula quién gana.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --tu:#ca8a04; --riv:#0891b2; --otra:#9333ea;
+  --mesa:#e7ecef; --placa:#1f2937; --placa-borde:#111827; --led-off:#3b1d1d; --led-on:#ff3b30; --oro:#c8a23a;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --tu:#facc15; --riv:#22d3ee; --otra:#c084fc; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+    --code-bg:#020617;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --tu:#facc15; --riv:#22d3ee; --otra:#c084fc; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+  --code-bg:#020617;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-in a.tb,.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.cab-in .ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;background:var(--mesa);border-radius:12px;overflow:hidden}
+.escena svg{display:block;width:100%;height:auto}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:640px;flex:1}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;gap:12px;font-size:13px;color:var(--muted);padding:0 10px 8px}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques */
+.pila{margin:0 0 12px;font:600 13px/1.35 system-ui,sans-serif}
+.blk{--c:#1e90ff;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;margin:2px 0;position:relative;transition:box-shadow .15s}
+.blk.hat{border-radius:14px 14px 6px 6px;padding-top:7px}
+.blk .cuerpo{margin:4px 0 2px 10px;padding:3px 0 3px 8px;border-left:3px solid rgba(255,255,255,.55);background:var(--bg);border-radius:0 6px 6px 0}
+.blk .cuerpo .blk{margin:3px 6px 3px 0}
+.rama{display:block}
+.rama + .cuerpo{margin-bottom:4px}
+.pill{display:inline-block;background:rgba(255,255,255,.92);color:#111827;border-radius:999px;padding:0 7px;margin:0 2px;font-weight:700}
+.pill.var{background:#dc143c;color:#fff;border:1px solid rgba(255,255,255,.6)}
+.pill.par{background:#ff8c00;color:#fff}
+.pill.mat{background:#9400d3;color:#fff}
+.pill.log{background:#00a4a6;color:#fff}
+.pill.ico{background:#1e90ff;color:#fff;padding:1px 6px}
+.mini{display:inline-grid;grid-template-columns:repeat(5,4px);gap:1px;vertical-align:middle;background:#0b1220;padding:2px;border-radius:3px}
+.mini i{width:4px;height:4px;background:#3b1d1d;display:block}.mini i.on{background:#ff3b30}
+.on-tu{box-shadow:0 0 0 3px var(--tu)}
+.on-riv{box-shadow:0 0 0 3px var(--riv)}
+.on-tu.on-riv{box-shadow:0 0 0 3px var(--tu),0 0 0 6px var(--riv)}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.on-tu{background:rgba(250,204,21,.22);box-shadow:inset 4px 0 0 var(--tu)}
+pre.codigo span.on-riv{background:rgba(34,211,238,.18);box-shadow:inset 4px 0 0 var(--riv)}
+pre.codigo span.on-tu.on-riv{background:rgba(160,220,120,.2)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.18)}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px}
+@media(max-width:980px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:18px}
+.medida-item.mal .v{color:var(--ko)}
+.rompelo{margin-bottom:12px}.rompelo h3{margin:0 0 6px;font-size:15px}
+.interruptor{display:flex;gap:8px;align-items:center}
+.rango{display:flex;gap:10px;align-items:center}.rango input{flex:1}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.reglas td.g{background:var(--ok-bg)}.reglas td.p{background:var(--ko-bg)}.reglas td.e{background:var(--bg)}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+.svg-pieza:focus{outline:none}.svg-pieza:focus-visible > *{stroke:var(--brand);stroke-width:3}
+@media print{.cab,.banco,.botonera{display:none}}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Piedra, papel o tijera por radio <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 3 · Computación y Robótica 1.º ESO</span></div>
+    <a class="tb" href="clase.html#s7-1">📽 Clase</a>
+    <a class="tb ocultar-movil" href="guia-alumnado.html#a-5">📘 Guía del alumnado</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 3 · Nuestra placa robótica</a> / <a href="guia-alumnado.html#a-5">5. Nos ponemos manos a la obra</a> / Para profundizar</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Laboratorio de ampliación · segundo producto de la SdA 3</p>
+  <h1>Piedra, papel o tijera por radio</h1>
+  <p class="lab-sub">Dos parejas juegan, cada una con su micro:bit. La jugada viaja por radio de una placa a la otra y cada placa decide quién gana. Si las dos aplican la misma regla, llegan al mismo resultado, cada una visto desde su lado.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>Parejas que ya tienen el programa de chequeo funcionando (sesiones 5-7)</dd></div>
+    <div><dt>Material</dt><dd>Una micro:bit por pareja; se juega contra otra pareja</dd></div>
+    <div><dt>Programa</dt><dd>Piedra, papel o tijera con radio, variables y «si… si no»</dd></div>
+    <div><dt>Referencia</dt><dd>Bloques de radio de MakeCode y su código fuente</dd></div>
+  </dl>
+</header>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong>La mesa vista desde arriba</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optTransp" aria-pressed="false">Transparente</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+        </div>
+      </div>
+      <div class="escena" id="escena">
+        <svg id="svg" viewBox="0 0 960 560" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Mesa vista desde arriba con tres micro:bit: la vuestra a la izquierda, la de la pareja rival a la derecha y la de otra pareja de la clase abajo. Cada placa muestra su matriz de 25 LED ampliada. Al enviar, sale una onda de radio desde la placa.</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera" aria-label="Acciones sobre las placas">
+        <button type="button" class="boton peq" data-accion="agitar-tu">🤚 Agitar vuestra placa</button>
+        <button type="button" class="boton peq sec" data-accion="agitar-riv">🤚 Agitar la placa rival</button>
+        <button type="button" class="boton peq sec" data-accion="a">A en las dos: marcador</button>
+        <button type="button" class="boton peq sec" data-accion="b">B en las dos: ronda nueva</button>
+      </div>
+      <p class="escena-pie">Pulsa una pieza del dibujo para saber qué hace. Con «Transparente» se ven las piezas de la cara de atrás: la antena, el procesador y el acelerómetro (la posición es aproximada).</p>
+    </div>
+
+    <aside class="programa" aria-label="El programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Formato del programa">
+          <button type="button" role="tab" id="tabBloques" aria-selected="true">Bloques</button>
+          <button type="button" role="tab" id="tabPython" aria-selected="false">Python</button>
+        </div>
+        <div class="seg" id="idioma" aria-label="Idioma de los bloques">
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <div class="leyenda-hl"><span style="--c:var(--tu)">Vuestra placa</span><span style="--c:var(--riv)">Placa rival</span></div>
+      <div class="programa-cuerpo">
+        <div id="bloques"></div>
+        <pre class="codigo" id="python" hidden></pre>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiarJS">Copiar para MakeCode (JavaScript)</button>
+        <button type="button" class="boton sec peq" id="copiarPy">Copiar Python</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar una ronda</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.4">Cámara lenta</option>
+          <option value="1" selected>Tiempo real</option>
+          <option value="3">Rápido (×3)</option>
+        </select>
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases de una ronda">
+        <li>1. Agitáis vuestra placa: sale 1, 2 o 3 y se guarda en «mia»</li>
+        <li>2. La radio envía el número con vuestro grupo a todas las placas cercanas</li>
+        <li>3. Solo la placa del mismo grupo lo acepta: la rival lo guarda en «rival» y espera</li>
+        <li>4. La pareja rival agita: ya tiene las dos jugadas y compara</li>
+        <li>5. Su número viaja de vuelta y vuestra placa también compara</li>
+        <li>6. Las dos muestran la jugada rival y el resultado</li>
+      </ol>
+      <p class="narracion" id="narracion" aria-live="polite">Pulsa «Empezar una ronda» para verla paso a paso, o «Automático» para que se juegue sola. También puedes agitar las placas con los botones de debajo del dibujo.</p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Placa</th><th>Grupo</th><th>mia</th><th>rival</th><th>Último resultado</th><th>ganadas</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <div class="medidas">
+        <div class="medida-item" id="mDist"><span class="et">Distancia entre las dos parejas</span><span class="v num" id="vDist">—</span></div>
+        <div class="medida-item" id="mSenal"><span class="et">Señal que llega a la otra placa</span><span class="v num" id="vSenal">—</span></div>
+        <div class="medida-item" id="mCuadra"><span class="et">¿Las dos placas coinciden?</span><span class="v" id="vCuadra">—</span></div>
+      </div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo"><h3>Grupo de la pareja rival</h3>
+        <div class="seg" id="ctlGrupoRiv"><button type="button" data-v="23" aria-pressed="true">23 (el vuestro)</button><button type="button" data-v="42" aria-pressed="false">42 (otro)</button></div></div>
+      <div class="rompelo"><h3>Grupo de otra pareja de la clase</h3>
+        <div class="seg" id="ctlGrupoOtra"><button type="button" data-v="42" aria-pressed="true">42 (otro)</button><button type="button" data-v="23" aria-pressed="false">23 (se cuela en vuestra partida)</button></div></div>
+      <div class="rompelo"><h3>El programa</h3>
+        <label class="interruptor" for="ctlPrisa"><input type="checkbox" id="ctlPrisa"> Comparar sin esperar la jugada rival (el error común)</label></div>
+      <div class="rompelo"><h3><label for="ctlDist">Distancia entre las dos parejas</label></h3>
+        <div class="rango"><input type="range" id="ctlDist" min="1" max="40" step="1" value="4"><span class="num" id="ctlDistTxt">4 m</span></div></div>
+      <div class="rompelo"><label class="interruptor" for="ctlPared"><input type="checkbox" id="ctlPared"> Poner una pared entre las dos parejas</label></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">Cada placa guarda su jugada, espera a que llegue la del rival por radio y solo entonces compara. Como las dos usan la misma regla, (mia − rival + 3) mod 3, una dice «gano» y la otra «pierdo», o las dos «empate».</p>
+  <div class="dos">
+    <div>
+      <h3 style="margin:6px 0">Cómo sale el resultado</h3>
+      <p style="margin:4px 0;color:var(--ink2)">Piedra = 1, papel = 2, tijera = 3. «mod 3» es el resto de dividir entre 3 (en MakeCode, el bloque «resto de»). Se suma 3 para que el número nunca sea negativo.</p>
+      <table class="reglas" aria-label="Resultado según tu jugada y la del rival">
+        <thead><tr><th>mia \ rival</th><th>1 piedra</th><th>2 papel</th><th>3 tijera</th></tr></thead>
+        <tbody>
+          <tr><th>1 piedra</th><td class="e">0 empate</td><td class="p">2 pierdo</td><td class="g">1 gano</td></tr>
+          <tr><th>2 papel</th><td class="g">1 gano</td><td class="e">0 empate</td><td class="p">2 pierdo</td></tr>
+          <tr><th>3 tijera</th><td class="p">2 pierdo</td><td class="g">1 gano</td><td class="e">0 empate</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin:6px 0">Un ejemplo</h3>
+      <p style="margin:4px 0">Sacáis <b>papel (2)</b> y la pareja rival, <b>piedra (1)</b>.</p>
+      <p style="margin:4px 0">Vuestra placa: (2 − 1 + 3) mod 3 = 4 mod 3 = <b>1 → gano</b> 😊</p>
+      <p style="margin:4px 0">La placa rival: (1 − 2 + 3) mod 3 = 2 mod 3 = <b>2 → pierdo</b> ☹️</p>
+      <p style="margin:4px 0;color:var(--ink2)">Cada placa pone su jugada en «mia» y la que le llega en «rival», así que el mismo programa sirve para las dos.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Comparar en cuanto agitas</h2>
+  <div class="dos">
+    <div>
+      <p>Si «comparar» no comprueba que «rival» ya tiene un número, compara nada más agitar. La jugada rival todavía no ha llegado y «rival» vale 0, así que la cuenta da cualquier cosa: con piedra «ganas», con papel «pierdes» y con tijera «empatas». Además enseña tijera como jugada rival, porque mostrarJugada(0) cae en el «si no».</p>
+      <p>Cuando por fin llega la jugada de verdad, «mia» ya está a 0 y la placa ya no compara. Por eso la condición es <b>mia &gt; 0 y rival &gt; 0</b>.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Activa el error y juega una ronda: vuestra placa da un resultado antes de que la rival agite, y las dos placas no coinciden.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica con el material real</p>
+  <h2 id="tPractica">Dos parejas, dos micro:bit, mejor de cinco</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li>Juntaos con otra pareja y elegid un grupo del 0 al 255 que no use nadie más en la clase. Escribidlo en la pizarra para que nadie lo repita.</li>
+      <li>Montad el programa en <a href="https://makecode.microbit.org/" target="_blank" rel="noopener">MakeCode</a> (o copiadlo con «Copiar para MakeCode» y pegadlo en la pestaña JavaScript). Cambiad el 23 por vuestro grupo. Las dos parejas cargan el mismo programa en su placa.</li>
+      <li>Contad «piedra, papel o… ¡tijera!» y agitad. Cada placa enseña su jugada, la del rival y el resultado.</li>
+      <li>Después de cada ronda, comprobad que una placa dice 😊 y la otra ☹️, o las dos 😐. Si no coinciden, algo falla: pulsad B en las dos y repetid.</li>
+      <li>Jugad al mejor de cinco. Al terminar, pulsad A en las dos: vuestras ganadas más las suyas más los empates tienen que sumar las rondas jugadas.</li>
+      <li>Separaos poco a poco por el pasillo hasta que deje de llegar la jugada. Probad también con una puerta cerrada entre medias.</li>
+      <li>Para la feria: grabad una ronda en vídeo (sin caras) y explicad cómo decide cada placa quién gana.</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar la práctica por hecha</h3>
+      <ul class="comprobacion" id="comprobacion">
+        <li><label><input type="checkbox"> Nuestro grupo no lo usa ninguna otra pareja.</label></li>
+        <li><label><input type="checkbox"> En cinco rondas, las dos placas han dado resultados que coinciden.</label></li>
+        <li><label><input type="checkbox"> Los marcadores de las dos placas cuadran con las rondas jugadas.</label></li>
+        <li><label><input type="checkbox"> Sabemos explicar la regla (mia − rival + 3) mod 3 con un ejemplo.</label></li>
+        <li><label><input type="checkbox"> Hemos comprobado qué pasa si la jugada no llega, y cómo seguir con B.</label></li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Entregadlo en la <b>Tarea 3.3</b> junto al programa de chequeo: el archivo .hex o el enlace de MakeCode, y el vídeo de una ronda.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false">
+    <fieldset class="pregunta" data-correcta="b" data-expl="Vuestra placa: (2 − 1 + 3) mod 3 = 1, gano. La rival tiene las jugadas al revés: (1 − 2 + 3) mod 3 = 2, pierdo. Cada una cuenta desde su lado y las dos coinciden.">
+      <legend>1. Vuestra placa saca papel (2) y la rival, piedra (1). ¿Qué muestra cada una al final?</legend>
+      <label class="opcion"><input type="radio" name="q1" value="a"><span>Las dos muestran 😊: ha ganado el papel.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="b"><span>La vuestra 😊 (gano) y la rival ☹️ (pierdo).</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="c"><span>Las dos 😐, porque cada una ve una jugada distinta.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="c" data-expl="Si compara sin comprobar que «rival» es mayor que 0, compara con un 0: la jugada rival todavía no ha llegado. La condición tiene que ser «mia > 0 y rival > 0».">
+      <legend>2. Agitáis y vuestra placa enseña el resultado al momento, antes de que la otra pareja agite. ¿Qué falla?</legend>
+      <label class="opcion"><input type="radio" name="q2" value="a"><span>La radio va demasiado rápido.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="b"><span>Las dos parejas están en grupos distintos.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="c"><span>El programa compara sin esperar: «rival» todavía vale 0.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="a" data-expl="La onda llega a todas las placas cercanas y todas las del mismo grupo la aceptan. Su jugada entra en vuestra variable «rival» como si fuera la de vuestra pareja rival.">
+      <legend>3. Otra pareja de la clase juega con vuestro mismo grupo. ¿Qué puede pasar?</legend>
+      <label class="opcion"><input type="radio" name="q3" value="a"><span>Su jugada llega a vuestras placas y se toma como la del rival.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="b"><span>Nada: la radio solo va de una placa a la que tiene delante.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="c"><span>Sus placas dejan de funcionar.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+  </form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de MakeCode y de su código</h3><ul>
+      <li>El grupo va del 0 al 255. Si no se elige, es el 0: el código actual de MakeCode lo pone así («antes era un número sacado del programa»).</li>
+      <li>La radio arranca con la potencia 6 de 7 (0 dBm).</li>
+      <li>Cada paquete llega a todas las placas cercanas; solo lo aceptan las del mismo grupo y entonces se lanza «al recibir radio».</li>
+      <li>«elegir al azar de 1 a 3» puede dar 1, 2 o 3.</li>
+      <li>Los iconos son los de MakeCode: cuadrado pequeño, cuadrado y tijeras para las jugadas; contento, triste y «meh» para el resultado. Los dibujos de los LED son los de su código.</li>
+      <li>«resto de» da el resto de la división; sumar 3 evita los números negativos.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>Cuánto se debilita la señal con la distancia y con la pared, y el límite de −95 dBm para entender un paquete: en un edificio real depende de las paredes, los cuerpos y otras radios.</li>
+      <li>La onda se dibuja a cámara lenta: la real tarda millonésimas de segundo.</li>
+      <li>La posición de la antena, el procesador y el acelerómetro en el dibujo.</li>
+      <li>Los textos de los bloques en español: no se han podido comprobar en el editor y pueden variar un poco según la versión de MakeCode. Los de inglés salen de su código.</li>
+      <li>Un artículo del soporte de micro:bit dice que, sin «establecer grupo», cada programa usa un grupo propio. Es la forma antigua: hoy es el 0. Por si acaso, poned siempre el grupo.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Microsoft MakeCode. <a href="https://makecode.microbit.org/reference/radio/set-group" target="_blank" rel="noopener">radio set group</a>: grupos del 0 al 255 y grupo 0 por defecto.</li>
+    <li>Microsoft MakeCode. <a href="https://makecode.microbit.org/projects/rock-paper-scissors" target="_blank" rel="noopener">Rock Paper Scissors</a>: «al agitar», «elegir al azar de 1 a 3» y los iconos de cada jugada.</li>
+    <li>Microsoft. <a href="https://github.com/microsoft/pxt-common-packages/blob/master/libs/radio/radio.cpp" target="_blank" rel="noopener">pxt-common-packages, libs/radio/radio.cpp</a>: grupo 0 y potencia 6 al arrancar la radio, y textos de los bloques de radio.</li>
+    <li>Microsoft. <a href="https://github.com/microsoft/pxt-microbit/blob/master/libs/core/icons.ts" target="_blank" rel="noopener">pxt-microbit, libs/core/icons.ts</a>: dibujo de cada icono en los 25 LED.</li>
+    <li>Micro:bit Educational Foundation. <a href="https://support.microbit.org/support/solutions/articles/19000030849-how-to-use-radio-group-codes-with-the-makecode-editor" target="_blank" rel="noopener">How to use radio group codes with the MakeCode editor</a>: describe la forma antigua de elegir el grupo por defecto.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="guia-alumnado.html#a-5"><small>Volver a</small>5. Nos ponemos manos a la obra</a>
+  <a href="clase.html#s7-1"><small>Web de clase</small>Sesión 7. El programa de chequeo</a>
+  <a href="clase.html#s9-1"><small>Siguiente</small>Sesión 9. Feria de proyectos</a>
+</nav>
+<p class="pie">Laboratorio de ampliación de la SdA 3 «Nuestra placa robótica se comunica con el mundo», adaptación del REA del Proyecto REA Andalucía (Consejería de Educación y Deporte, Junta de Andalucía). Licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>. La simulación es un modelo simplificado y marca lo que no se ha podido comprobar. micro:bit es una marca de la Micro:bit Educational Foundation.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const GRUPO = 23;
+
+/* ------------------------------------------------------------ iconos (pxt-microbit, libs/core/icons.ts) */
+const ICONOS = {
+  SmallSquare: ['.....', '.###.', '.#.#.', '.###.', '.....'],
+  Square:      ['#####', '#...#', '#...#', '#...#', '#####'],
+  Scissors:    ['##..#', '##.#.', '..#..', '##.#.', '##..#'],
+  Happy:       ['.....', '.#.#.', '.....', '#...#', '.###.'],
+  Sad:         ['.....', '.#.#.', '.....', '.###.', '#...#'],
+  Meh:         ['##.##', '.....', '...#.', '..#..', '.#...']
+};
+const DIGITOS = {
+  0:['.##..','#..#.','#..#.','#..#.','.##..'], 1:['..#..','.##..','..#..','..#..','.###.'], 2:['###..','...#.','.##..','#....','####.'],
+  3:['###..','...#.','.##..','...#.','###..'], 4:['..##.','.#.#.','#..#.','#####','...#.'], 5:['####.','#....','###..','...#.','###..'],
+  6:['.##..','#....','###..','#..#.','.##..'], 7:['####.','...#.','..#..','.#...','.#...'], 8:['.##..','#..#.','.##..','#..#.','.##..'],
+  9:['.##..','#..#.','.###.','...#.','.##..']
+};
+const NOMBRE_JUGADA = {1:'piedra', 2:'papel', 3:'tijera'};
+const ICONO_JUGADA = j => j === 1 ? 'SmallSquare' : (j === 2 ? 'Square' : 'Scissors');
+const mini = nombre => `<span class="mini" aria-hidden="true">${ICONOS[nombre].join('').split('').map(c => `<i class="${c === '#' ? 'on' : ''}"></i>`).join('')}</span>`;
+
+/* ------------------------------------------------------------ el programa: una sola definición
+   B(id, categoría, texto ES, texto EN, cuerpo) · las marcas {v:x} {p:x} {n:x} {i:Icono} {m:x} {l:x} se pintan como piezas */
+const CAT = {basico:'#1e90ff', entrada:'#d400d4', radio:'#e3008c', logica:'#00a4a6', variables:'#dc143c', mates:'#9400d3', funciones:'#3455db'};
+let prisa = false;
+function programa(){
+  const cond = prisa
+    ? {es:'{v:mia} {l:>} {n:0}', en:'{v:mia} {l:>} {n:0}', py:'mia > 0', js:'mia > 0'}
+    : {es:'{v:mia} {l:>} {n:0} {l:y} {v:rival} {l:>} {n:0}', en:'{v:mia} {l:>} {n:0} {l:and} {v:rival} {l:>} {n:0}', py:'mia > 0 and rival > 0', js:'mia > 0 && rival > 0'};
+  return [
+    {hat:true, id:'ini', cat:'basico', es:'al iniciar', en:'on start', py:null, cuerpo:[
+      {id:'ini_v', cat:'variables', es:'establecer {v:mia} a {n:0} · {v:rival} a {n:0} · {v:ganadas} a {n:0}', en:'set {v:mia} to {n:0} · {v:rival} to {n:0} · {v:ganadas} to {n:0}', py:['mia = 0','rival = 0','ganadas = 0','resultado = 0','suya = 0'], js:['let mia = 0','let rival = 0','let ganadas = 0','let resultado = 0','let suya = 0']},
+      {id:'ini_g', cat:'radio', es:'radio establecer grupo {n:23}', en:'radio set group {n:23}', py:['radio.set_group(23)'], js:['radio.setGroup(23)']}
+    ]},
+    {hat:true, id:'fm', cat:'funciones', es:'función mostrarJugada {p:jugada}', en:'function mostrarJugada {p:jugada}', py:'def mostrar_jugada(jugada):', js:'function mostrarJugada (jugada: number) {', cuerpo:[
+      {si:true, id:'fm_si', ramas:[
+        {id:'fm_1', es:'si {v:jugada} {l:=} {n:1} entonces', en:'if {v:jugada} {l:=} {n:1} then', py:'if jugada == 1:', js:'if (jugada == 1) {', cuerpo:[
+          {id:'fm_i1', cat:'basico', es:'mostrar ícono {i:SmallSquare}', en:'show icon {i:SmallSquare}', py:['basic.show_icon(IconNames.SMALL_SQUARE)'], js:['basic.showIcon(IconNames.SmallSquare)']}]},
+        {id:'fm_2', es:'si no, si {v:jugada} {l:=} {n:2} entonces', en:'else if {v:jugada} {l:=} {n:2} then', py:'elif jugada == 2:', js:'} else if (jugada == 2) {', cuerpo:[
+          {id:'fm_i2', cat:'basico', es:'mostrar ícono {i:Square}', en:'show icon {i:Square}', py:['basic.show_icon(IconNames.SQUARE)'], js:['basic.showIcon(IconNames.Square)']}]},
+        {id:'fm_3', es:'si no', en:'else', py:'else:', js:'} else {', cuerpo:[
+          {id:'fm_i3', cat:'basico', es:'mostrar ícono {i:Scissors}', en:'show icon {i:Scissors}', py:['basic.show_icon(IconNames.SCISSORS)'], js:['basic.showIcon(IconNames.Scissors)']}]}
+      ]}
+    ]},
+    {hat:true, id:'fc', cat:'funciones', es:'función comparar', en:'function comparar', py:'def comparar():', pyGlobal:'global mia, rival, ganadas, resultado, suya', js:'function comparar () {', cuerpo:[
+      {si:true, id:'fc_si', ramas:[
+        {id:'fc_if', es:'si ' + cond.es + ' entonces', en:'if ' + cond.en + ' then', py:'if ' + cond.py + ':', js:'if (' + cond.js + ') {', cambiado:prisa, cuerpo:[
+          {id:'fc_res', cat:'variables', es:'establecer {v:resultado} a {m:resto de (mia − rival + 3) ÷ 3}', en:'set {v:resultado} to {m:remainder of (mia − rival + 3) ÷ 3}', py:['resultado = (mia - rival + 3) % 3'], js:['resultado = (mia - rival + 3) % 3']},
+          {id:'fc_suya', cat:'variables', es:'establecer {v:suya} a {v:rival}', en:'set {v:suya} to {v:rival}', py:['suya = rival'], js:['suya = rival']},
+          {id:'fc_0', cat:'variables', es:'establecer {v:mia} a {n:0} · {v:rival} a {n:0}', en:'set {v:mia} to {n:0} · {v:rival} to {n:0}', py:['mia = 0','rival = 0'], js:['mia = 0','rival = 0']},
+          {id:'fc_p1', cat:'basico', es:'pausa (ms) {n:1000}', en:'pause (ms) {n:1000}', py:['basic.pause(1000)'], js:['basic.pause(1000)']},
+          {id:'fc_ver', cat:'funciones', es:'llamar mostrarJugada {v:suya}', en:'call mostrarJugada {v:suya}', py:['mostrar_jugada(suya)'], js:['mostrarJugada(suya)']},
+          {id:'fc_p2', cat:'basico', es:'pausa (ms) {n:1000}', en:'pause (ms) {n:1000}', py:['basic.pause(1000)'], js:['basic.pause(1000)']},
+          {si:true, id:'fc_r', ramas:[
+            {id:'fc_e', es:'si {v:resultado} {l:=} {n:0} entonces', en:'if {v:resultado} {l:=} {n:0} then', py:'if resultado == 0:', js:'if (resultado == 0) {', cuerpo:[
+              {id:'fc_ie', cat:'basico', es:'mostrar ícono {i:Meh}', en:'show icon {i:Meh}', py:['basic.show_icon(IconNames.MEH)'], js:['basic.showIcon(IconNames.Meh)']}]},
+            {id:'fc_g', es:'si no, si {v:resultado} {l:=} {n:1} entonces', en:'else if {v:resultado} {l:=} {n:1} then', py:'elif resultado == 1:', js:'} else if (resultado == 1) {', cuerpo:[
+              {id:'fc_sum', cat:'variables', es:'cambiar {v:ganadas} por {n:1}', en:'change {v:ganadas} by {n:1}', py:['ganadas += 1'], js:['ganadas += 1']},
+              {id:'fc_ig', cat:'basico', es:'mostrar ícono {i:Happy}', en:'show icon {i:Happy}', py:['basic.show_icon(IconNames.HAPPY)'], js:['basic.showIcon(IconNames.Happy)']}]},
+            {id:'fc_p', es:'si no', en:'else', py:'else:', js:'} else {', cuerpo:[
+              {id:'fc_ip', cat:'basico', es:'mostrar ícono {i:Sad}', en:'show icon {i:Sad}', py:['basic.show_icon(IconNames.SAD)'], js:['basic.showIcon(IconNames.Sad)']}]}
+          ]}
+        ]}
+      ]}
+    ]},
+    {hat:true, id:'ag', cat:'entrada', es:'al agitar', en:'on shake', py:'def on_gesture_shake():', pyGlobal:'global mia', pyReg:'input.on_gesture(Gesture.SHAKE, on_gesture_shake)', js:'input.onGesture(Gesture.Shake, function () {', jsEnd:'})', cuerpo:[
+      {si:true, id:'ag_si', ramas:[
+        {id:'ag_if', es:'si {v:mia} {l:=} {n:0} entonces', en:'if {v:mia} {l:=} {n:0} then', py:'if mia == 0:', js:'if (mia == 0) {', cuerpo:[
+          {id:'ag_az', cat:'variables', es:'establecer {v:mia} a {m:elegir al azar de 1 a 3}', en:'set {v:mia} to {m:pick random 1 to 3}', py:['mia = randint(1, 3)'], js:['mia = randint(1, 3)']},
+          {id:'ag_env', cat:'radio', es:'radio enviar número {v:mia}', en:'radio send number {v:mia}', py:['radio.send_number(mia)'], js:['radio.sendNumber(mia)']},
+          {id:'ag_ver', cat:'funciones', es:'llamar mostrarJugada {v:mia}', en:'call mostrarJugada {v:mia}', py:['mostrar_jugada(mia)'], js:['mostrarJugada(mia)']},
+          {id:'ag_cmp', cat:'funciones', es:'llamar comparar', en:'call comparar', py:['comparar()'], js:['comparar()']}
+        ]}
+      ]}
+    ]},
+    {hat:true, id:'rx', cat:'radio', es:'al recibir radio {p:receivedNumber}', en:'on radio received {p:receivedNumber}', py:'def on_received_number(receivedNumber):', pyGlobal:'global rival', pyReg:'radio.on_received_number(on_received_number)', js:'radio.onReceivedNumber(function (receivedNumber) {', jsEnd:'})', cuerpo:[
+      {id:'rx_set', cat:'variables', es:'establecer {v:rival} a {v:receivedNumber}', en:'set {v:rival} to {v:receivedNumber}', py:['rival = receivedNumber'], js:['rival = receivedNumber']},
+      {id:'rx_cmp', cat:'funciones', es:'llamar comparar', en:'call comparar', py:['comparar()'], js:['comparar()']}
+    ]},
+    {hat:true, id:'ba', cat:'entrada', es:'al presionar el botón {n:A}', en:'on button {n:A} pressed', py:'def on_button_pressed_a():', pyReg:'input.on_button_pressed(Button.A, on_button_pressed_a)', js:'input.onButtonPressed(Button.A, function () {', jsEnd:'})', cuerpo:[
+      {id:'ba_n', cat:'basico', es:'mostrar número {v:ganadas}', en:'show number {v:ganadas}', py:['basic.show_number(ganadas)'], js:['basic.showNumber(ganadas)']}
+    ]},
+    {hat:true, id:'bb', cat:'entrada', es:'al presionar el botón {n:B}', en:'on button {n:B} pressed', py:'def on_button_pressed_b():', pyGlobal:'global mia, rival', pyReg:'input.on_button_pressed(Button.B, on_button_pressed_b)', js:'input.onButtonPressed(Button.B, function () {', jsEnd:'})', cuerpo:[
+      {id:'bb_0', cat:'variables', es:'establecer {v:mia} a {n:0} · {v:rival} a {n:0}', en:'set {v:mia} to {n:0} · {v:rival} to {n:0}', py:['mia = 0','rival = 0'], js:['mia = 0','rival = 0']},
+      {id:'bb_c', cat:'basico', es:'borrar la pantalla', en:'clear screen', py:['basic.clear_screen()'], js:['basic.clearScreen()']}
+    ]}
+  ];
+}
+
+/* ------------------------------------------------------------ pintar bloques */
+let idioma = 'es';
+function piezas(txt){
+  return esc(txt).replace(/\{(\w):([^}]*)\}/g, (m, t, v) => {
+    if (t === 'i') return `<span class="pill ico">${mini(v)}</span>`;
+    const cls = {v:'var', p:'par', m:'mat', l:'log', n:''}[t] || '';
+    return `<span class="pill ${cls}">${v}</span>`;
+  });
+}
+function pintaBloque(b){
+  if (b.si){
+    return `<div class="blk" style="--c:${CAT.logica}" data-b="${b.id}">${b.ramas.map(r => `<span class="rama ${r.cambiado ? 'cambiado' : ''}" data-b="${r.id}">${piezas(r[idioma])}</span><div class="cuerpo">${r.cuerpo.map(pintaBloque).join('')}</div>`).join('')}</div>`;
+  }
+  return `<div class="blk ${b.hat ? 'hat' : ''}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${piezas(b[idioma])}${b.cuerpo ? `<div class="cuerpo">${b.cuerpo.map(pintaBloque).join('')}</div>` : ''}</div>`;
+}
+function textoPython(prog){
+  const L = [];
+  const add = (id, txt, nivel) => L.push({id, txt: '    '.repeat(nivel) + txt});
+  const cuerpo = (lista, nivel) => lista.forEach(b => {
+    if (b.si) b.ramas.forEach(r => { add(r.id, r.py, nivel); cuerpo(r.cuerpo, nivel + 1); });
+    else b.py.forEach(t => add(b.id, t, nivel));
+  });
+  prog.forEach(h => {
+    if (h.id === 'ini'){ cuerpo(h.cuerpo, 0); L.push({id:'', txt:''}); return; }
+    add(h.id, h.py, 0);
+    if (h.pyGlobal) add(h.id, h.pyGlobal, 1);
+    cuerpo(h.cuerpo, 1);
+    if (h.pyReg) add(h.id, h.pyReg, 0);
+    L.push({id:'', txt:''});
+  });
+  return L;
+}
+function textoJS(prog){
+  const L = [];
+  const add = (t, n) => L.push('    '.repeat(n) + t);
+  const cuerpo = (lista, n) => lista.forEach(b => {
+    if (b.si){ b.ramas.forEach((r, k) => { add(r.js, n); cuerpo(r.cuerpo, n + 1); }); add('}', n); }
+    else b.js.forEach(t => add(t, n));
+  });
+  prog.forEach(h => {
+    if (h.id === 'ini'){ cuerpo(h.cuerpo, 0); L.push(''); return; }
+    add(h.js, 0); cuerpo(h.cuerpo, 1); add(h.jsEnd || '}', 0); L.push('');
+  });
+  return L.join('\n').trim() + '\n';
+}
+function pintaPrograma(){
+  const prog = programa();
+  // las funciones se definen antes de usarlas también en Python
+  $('#bloques').innerHTML = prog.map(h => `<div class="pila">${pintaBloque(h)}</div>`).join('');
+  const py = textoPython(prog);
+  $('#python').innerHTML = py.map(l => `<span data-b="${l.id}" class="${prisa && l.id === 'fc_if' ? 'cambiado' : ''}">${esc(l.txt) || ' '}</span>`).join('');
+  marcaResaltado();
+}
+const resalte = {tu:null, riv:null};
+function hl(p, id){ if (p.key === 'otra') return; resalte[p.key] = id; marcaResaltado(); }
+function marcaResaltado(){
+  document.querySelectorAll('.on-tu,.on-riv').forEach(e => e.classList.remove('on-tu', 'on-riv'));
+  for (const k of ['tu', 'riv']){
+    const id = resalte[k]; if (!id) continue;
+    document.querySelectorAll(`[data-b="${id}"]`).forEach(e => e.classList.add('on-' + k));
+  }
+}
+
+/* ------------------------------------------------------------ escena SVG */
+const svg = $('#svg');
+const el = (tag, at = {}, padre = svg) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); padre.appendChild(e); return e; };
+const PIEZAS = {
+  botonA: ['Botón A', 'Una entrada: al pulsarlo se lanza «al presionar el botón A».', 'En este juego enseña el marcador: cuántas rondas ha ganado esta placa.'],
+  botonB: ['Botón B', 'Otra entrada, con su propio evento.', 'Empieza una ronda nueva: pone a 0 las dos jugadas y borra la pantalla. Sirve si una jugada se ha perdido por el camino.'],
+  leds: ['Matriz de 25 LED', 'Una salida: 5 × 5 luces que forman dibujos, letras y números.', 'Enseña vuestra jugada, la del rival y el resultado: 😊 gano, ☹️ pierdo, 😐 empate.'],
+  antena: ['Antena de radio (2,4 GHz)', 'Una pista del circuito con forma especial que emite y recibe ondas de radio. La radio va dentro del procesador.', 'Envía vuestra jugada a todas las placas cercanas y recibe la del rival.'],
+  procesador: ['Procesador (nRF52833 en la micro:bit V2)', 'El cerebro: ejecuta el programa y lleva dentro la radio.', 'Guarda «mia» y «rival», hace la cuenta y decide qué icono enseñar.'],
+  acel: ['Acelerómetro', 'Un sensor que mide el movimiento y la inclinación.', 'Detecta que agitáis la placa y lanza «al agitar»: así se elige la jugada al azar.']
+};
+const PLACAS = {};
+function dibujaPlaca(key, x, y, esc_, titulo, color){
+  const g = el('g', {transform:`translate(${x} ${y}) scale(${esc_})`, 'data-placa':key});
+  const L = {};
+  L.titulo = el('text', {x:150, y:-12, 'text-anchor':'middle', 'font-size':20, 'font-weight':800, fill:color}, g); L.titulo.textContent = titulo;
+  el('rect', {x:0, y:0, width:300, height:236, rx:20, fill:'var(--placa)', stroke:'var(--placa-borde)', 'stroke-width':3, class:'cuerpo-placa'}, g);
+  // conector de borde
+  el('rect', {x:6, y:204, width:288, height:28, rx:4, fill:'var(--oro)', opacity:.9}, g);
+  ['0','1','2','3V','GND'].forEach((t, k) => { const c = el('circle', {cx:30 + k * 60, cy:218, r:9, fill:'var(--placa)'}, g); });
+  // logo
+  el('ellipse', {cx:150, cy:24, rx:20, ry:11, fill:'none', stroke:'var(--oro)', 'stroke-width':3}, g);
+  // atrás (transparente)
+  const atras = el('g', {class:'atras', opacity:0, 'pointer-events':'none'}, g);
+  const pz = (id, contenido) => { const a = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':PIEZAS[id][0], 'data-pieza':id}, atras); contenido(a); return a; };
+  pz('antena', a => { el('path', {d:'M 214 14 h 14 v 14 h 14 v -14 h 14 v 14 h 14 v -14 h 14', fill:'none', stroke:'#fbbf24', 'stroke-width':4, 'stroke-dasharray':'none'}, a); el('rect', {x:206, y:6, width:90, height:30, fill:'transparent', stroke:'#fbbf24', 'stroke-dasharray':'5 4', rx:6}, a); });
+  pz('procesador', a => { el('rect', {x:124, y:84, width:52, height:52, rx:4, fill:'rgba(148,163,184,.25)', stroke:'#cbd5e1', 'stroke-dasharray':'5 4', 'stroke-width':2}, a); });
+  pz('acel', a => { el('rect', {x:24, y:22, width:26, height:26, rx:3, fill:'rgba(148,163,184,.25)', stroke:'#cbd5e1', 'stroke-dasharray':'5 4', 'stroke-width':2}, a); });
+  L.etAtras = [['Antena', 251, 52], ['Procesador', 150, 114], ['Acelerómetro', 46, 66]].map(([t, cx, cy]) => { const e = el('text', {x:cx, y:cy, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#fde68a', stroke:'#111827', 'stroke-width':3, 'paint-order':'stroke', class:'nombre'}, atras); e.textContent = t; return e; });
+  L.atras = atras;
+  // botones
+  const bA = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':'Botón A de ' + titulo, 'data-pieza':'botonA', 'data-boton':'A'}, g);
+  el('rect', {x:16, y:86, width:44, height:44, rx:8, fill:'#374151'}, bA); el('circle', {cx:38, cy:108, r:14, fill:'#111827', stroke:'#9ca3af', 'stroke-width':2}, bA);
+  const tA = el('text', {x:38, y:150, 'text-anchor':'middle', 'font-size':16, 'font-weight':800, fill:'#e5e7eb'}, bA); tA.textContent = 'A';
+  const bB = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':'Botón B de ' + titulo, 'data-pieza':'botonB', 'data-boton':'B'}, g);
+  el('rect', {x:240, y:86, width:44, height:44, rx:8, fill:'#374151'}, bB); el('circle', {cx:262, cy:108, r:14, fill:'#111827', stroke:'#9ca3af', 'stroke-width':2}, bB);
+  const tB = el('text', {x:262, y:150, 'text-anchor':'middle', 'font-size':16, 'font-weight':800, fill:'#e5e7eb'}, bB); tB.textContent = 'B';
+  // matriz ampliada
+  const m = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':'Matriz de LED de ' + titulo, 'data-pieza':'leds'}, g);
+  el('rect', {x:84, y:44, width:132, height:132, rx:8, fill:'#0b0f17'}, m);
+  L.leds = [];
+  for (let f = 0; f < 5; f++) for (let c = 0; c < 5; c++) L.leds.push(el('rect', {x:92 + c * 24, y:52 + f * 24, width:18, height:18, rx:4, fill:'var(--led-off)'}, m));
+  L.nombres = [['Botón A', 38, 176], ['Botón B', 262, 176], ['25 LED', 150, 196]].map(([t, cx, cy]) => { const e = el('text', {x:cx, y:cy, 'text-anchor':'middle', 'font-size':12, 'font-weight':700, fill:'#cbd5e1', class:'nombre'}, g); e.textContent = t; return e; });
+  L.estado = el('text', {x:150, y:264, 'text-anchor':'middle', 'font-size':17, 'font-weight':700, fill:'var(--ink)'}, g);
+  g.appendChild(atras); // por encima, como si se viera a través
+  L.g = g;
+  return L;
+}
+// mesa
+el('rect', {x:0, y:0, width:960, height:560, fill:'var(--mesa)'});
+const pared = el('g', {opacity:0});
+el('rect', {x:470, y:70, width:20, height:300, fill:'#94a3b8', stroke:'#64748b'}, pared);
+const tPared = el('text', {x:480, y:62, 'text-anchor':'middle', 'font-size':15, 'font-weight':700, fill:'var(--ink2)'}, pared); tPared.textContent = 'pared';
+const lineaDist = el('line', {x1:340, y1:378, x2:620, y2:378, stroke:'var(--muted)', 'stroke-dasharray':'6 5', 'stroke-width':2});
+const tDist = el('text', {x:480, y:371, 'text-anchor':'middle', 'font-size':16, 'font-weight':700, fill:'var(--ink2)'});
+const capaOndas = el('g', {});
+const paquete = el('g', {opacity:0});
+const paqRect = el('rect', {x:0, y:0, width:220, height:30, rx:15, fill:'var(--card)', stroke:'var(--accent)', 'stroke-width':2}, paquete);
+const paqTxt = el('text', {x:110, y:20, 'text-anchor':'middle', 'font-size':15, 'font-weight':700, fill:'var(--ink)'}, paquete);
+
+PLACAS.tu = Object.assign(dibujaPlaca('tu', 40, 90, 1, 'Vuestra placa', 'var(--tu)'), {centro:[190, 208]});
+PLACAS.riv = Object.assign(dibujaPlaca('riv', 620, 90, 1, 'Placa rival', 'var(--riv)'), {centro:[770, 208]});
+PLACAS.otra = Object.assign(dibujaPlaca('otra', 395, 405, 0.5, 'Otra pareja', 'var(--otra)'), {centro:[470, 464]});
+
+/* ------------------------------------------------------------ estado de las placas */
+function nuevaPlaca(key, nombre, grupo){ return {key, nombre, grupo, v:{mia:0, rival:0, ganadas:0, resultado:0, suya:0}, pantalla:null, ultimo:'—', calc:null, aviso:''}; }
+const P = {tu:nuevaPlaca('tu', 'Vuestra placa', GRUPO), riv:nuevaPlaca('riv', 'Placa rival', GRUPO), otra:nuevaPlaca('otra', 'Otra pareja', 42)};
+let distancia = 4, conPared = false, vel = 1, epoca = 0;
+function sleep(ms){ const e = epoca; return new Promise(r => setTimeout(() => { if (e === epoca) r(); }, ms / vel)); }
+function pinta(p){
+  const L = PLACAS[p.key], img = p.pantalla;
+  L.leds.forEach((r, k) => r.setAttribute('fill', img && img[Math.floor(k / 5)][k % 5] === '#' ? 'var(--led-on)' : 'var(--led-off)'));
+  L.estado.textContent = p.aviso || '';
+}
+async function mostrarIcono(p, nombre){ p.pantalla = ICONOS[nombre]; pinta(p); refresca(); await sleep(600); }
+async function mostrarNumero(p, n){ p.pantalla = DIGITOS[Math.min(9, n)]; pinta(p); refresca(); await sleep(800); }
+
+/* ------------------------------------------------------------ la simulación ejecuta el mismo programa */
+async function mostrarJugada(p, jugada){
+  hl(p, 'fm');
+  if (jugada == 1){ hl(p, 'fm_1'); hl(p, 'fm_i1'); await mostrarIcono(p, 'SmallSquare'); }
+  else if (jugada == 2){ hl(p, 'fm_2'); hl(p, 'fm_i2'); await mostrarIcono(p, 'Square'); }
+  else { hl(p, 'fm_3'); hl(p, 'fm_i3'); await mostrarIcono(p, 'Scissors'); }
+}
+async function comparar(p){
+  hl(p, 'fc'); hl(p, 'fc_if');
+  const v = p.v;
+  const condicion = prisa ? (v.mia > 0) : (v.mia > 0 && v.rival > 0);
+  if (!condicion){ refresca(); return; }
+  // estas líneas no tienen pausas: se ejecutan de una vez, como en la micro:bit
+  v.resultado = (v.mia - v.rival + 3) % 3; hl(p, 'fc_res');
+  p.calc = {mia:v.mia, rival:v.rival, res:v.resultado};
+  v.suya = v.rival; hl(p, 'fc_suya');
+  v.mia = 0; v.rival = 0; hl(p, 'fc_0');
+  refresca();
+  hl(p, 'fc_p1'); await sleep(1000);
+  hl(p, 'fc_ver'); await mostrarJugada(p, v.suya);
+  hl(p, 'fc_p2'); await sleep(1000);
+  if (v.resultado == 0){ hl(p, 'fc_e'); hl(p, 'fc_ie'); p.ultimo = 'empate 😐'; await mostrarIcono(p, 'Meh'); }
+  else if (v.resultado == 1){ hl(p, 'fc_g'); v.ganadas += 1; hl(p, 'fc_sum'); p.ultimo = 'gano 😊'; await mostrarIcono(p, 'Happy'); }
+  else { hl(p, 'fc_p'); hl(p, 'fc_ip'); p.ultimo = 'pierdo ☹️'; await mostrarIcono(p, 'Sad'); }
+  refresca();
+}
+async function alAgitar(p){
+  hl(p, 'ag'); hl(p, 'ag_if');
+  if (p.v.mia == 0){
+    p.v.mia = 1 + Math.floor(Math.random() * 3); hl(p, 'ag_az'); refresca();
+    hl(p, 'ag_env'); radioEnviar(p, p.v.mia);
+    hl(p, 'ag_ver'); await mostrarJugada(p, p.v.mia);
+    hl(p, 'ag_cmp'); await comparar(p);
+  }
+}
+async function alRecibir(p, n){
+  hl(p, 'rx'); p.v.rival = n; hl(p, 'rx_set'); refresca();
+  hl(p, 'rx_cmp'); await comparar(p);
+}
+async function botonA(p){ hl(p, 'ba'); hl(p, 'ba_n'); await mostrarNumero(p, p.v.ganadas); }
+function botonB(p){ hl(p, 'bb'); p.v.mia = 0; p.v.rival = 0; hl(p, 'bb_0'); p.pantalla = null; hl(p, 'bb_c'); p.aviso = ''; pinta(p); refresca(); }
+
+/* ------------------------------------------------------------ radio */
+const DIST_OTRA = 3; // la otra pareja está cerca de las dos
+function senal(de, a){
+  const d = (de === 'otra' || a === 'otra') ? DIST_OTRA : distancia;
+  const pared_ = conPared && de !== 'otra' && a !== 'otra' ? 10 : 0;
+  return Math.round(0 - (40 + 35 * Math.log10(Math.max(d, 0.5))) - pared_);   // potencia 6 = 0 dBm; pérdida aproximada
+}
+let enGuion = false, pendientes = [];
+function radioEnviar(p, n){
+  const pkt = {de:p.key, grupo:p.grupo, n};
+  if (enGuion){ pendientes.push(pkt); mostrarPaquete(pkt); return; }
+  (async () => { mostrarPaquete(pkt); await onda(pkt); await sleep(150); entregar(pkt); })();
+}
+function mostrarPaquete(pkt){
+  const [cx] = PLACAS[pkt.de].centro;
+  const y = pkt.de === 'otra' ? 372 : 30;
+  paquete.setAttribute('transform', `translate(${Math.min(730, Math.max(10, cx - 110))} ${y})`);
+  paqTxt.textContent = `📦 grupo ${pkt.grupo} · número ${pkt.n}`;
+  paquete.setAttribute('opacity', 1);
+}
+async function onda(pkt){
+  const [cx, cy] = PLACAS[pkt.de].centro;
+  const c = el('circle', {cx, cy, r:20, fill:'none', stroke:'var(--accent)', 'stroke-width':4}, capaOndas);
+  const c2 = el('circle', {cx, cy, r:10, fill:'none', stroke:'var(--accent)', 'stroke-width':2}, capaOndas);
+  const t0 = performance.now(), dur = 900 / vel, e = epoca;
+  await new Promise(res => {
+    const paso = t => {
+      if (e !== epoca){ c.remove(); c2.remove(); return; }
+      const k = Math.max(0, Math.min(1, (t - t0) / dur));
+      c.setAttribute('r', 20 + k * 760); c.setAttribute('stroke-opacity', 1 - k);
+      c2.setAttribute('r', 10 + k * 560); c2.setAttribute('stroke-opacity', .8 - .8 * k);
+      if (k < 1) requestAnimationFrame(paso); else { c.remove(); c2.remove(); res(); }
+    };
+    requestAnimationFrame(paso);
+  });
+}
+function entregar(pkt){
+  const textos = [];
+  for (const k of ['tu', 'riv', 'otra']){
+    if (k === pkt.de) continue;
+    const q = P[k], s = senal(pkt.de, k);
+    if (pkt.de !== 'otra' && k !== 'otra') ultimaSenal = s;
+    if (s < -95){ q.aviso = `✖ no llega (${s} dBm)`; textos.push(`${q.nombre}: no le llega (${s} dBm)`); }
+    else if (q.grupo !== pkt.grupo){ q.aviso = `✖ descartado: grupo ${pkt.grupo}`; textos.push(`${q.nombre}: lo descarta (es del grupo ${q.grupo})`); }
+    else { q.aviso = `✔ aceptado: ${pkt.n} (${NOMBRE_JUGADA[pkt.n]})`; textos.push(`${q.nombre}: lo acepta`); if (k !== 'otra' || pkt.de !== 'otra') alRecibir(q, pkt.n); }
+    pinta(q);
+  }
+  paquete.setAttribute('opacity', 0);
+  refresca();
+  return textos;
+}
+
+/* ------------------------------------------------------------ monitor y explicaciones */
+let ultimaSenal = null;
+function refresca(){
+  $('#monitor').innerHTML = ['tu', 'riv', 'otra'].map(k => { const p = P[k];
+    return `<tr><th scope="row" style="color:var(--${k === 'tu' ? 'tu' : k === 'riv' ? 'riv' : 'otra'})">${p.nombre}</th><td class="num">${p.grupo}</td><td class="num">${p.v.mia}${p.v.mia ? ' ' + NOMBRE_JUGADA[p.v.mia] : ''}</td><td class="num">${p.v.rival}${p.v.rival ? ' ' + NOMBRE_JUGADA[p.v.rival] : ''}</td><td>${p.ultimo}${p.calc ? `<br><small>(${p.calc.mia} − ${p.calc.rival} + 3) mod 3 = ${p.calc.res}</small>` : ''}</td><td class="num">${p.v.ganadas}</td></tr>`; }).join('');
+  $('#vDist').textContent = distancia + ' m' + (conPared ? ' + pared' : '');
+  const s = senal('tu', 'riv');
+  $('#vSenal').textContent = s + ' dBm' + (s < -95 ? ' · no llega' : '');
+  $('#mSenal').classList.toggle('mal', s < -95);
+  const a = P.tu.calc, b = P.riv.calc;
+  let cuadra = '—';
+  if (a && b){
+    const ok = a.mia === b.rival && a.rival === b.mia && ((a.res === 0 && b.res === 0) || (a.res === 1 && b.res === 2) || (a.res === 2 && b.res === 1));
+    cuadra = ok ? '✔ sí' : '✖ no';
+    $('#mCuadra').classList.toggle('mal', !ok);
+  } else $('#mCuadra').classList.remove('mal');
+  $('#vCuadra').textContent = cuadra;
+}
+function explica(){
+  const t = [];
+  if (P.riv.grupo !== GRUPO) t.push('<p><b>Grupos distintos.</b> Vuestra jugada llega a la placa rival, pero la descarta porque es del grupo 23 y ella escucha el 42. A vosotros os pasa lo mismo con la suya. Nadie tiene las dos jugadas y las dos placas se quedan esperando.</p>');
+  if (P.otra.grupo === GRUPO) t.push('<p><b>Una pareja se cuela.</b> La otra pareja usa vuestro grupo: cuando agita, su número entra en «rival» de vuestras placas como si fuera de vuestra pareja rival. Comparáis con la jugada equivocada y los resultados no cuadran.</p>');
+  if (prisa) t.push('<p><b>Comparar sin esperar.</b> La condición solo mira «mia &gt; 0». Vuestra placa compara al agitar, con «rival» a 0: el resultado depende solo de vuestra jugada. Cuando llega la de verdad, «mia» ya es 0 y no se vuelve a comparar.</p>');
+  const s = senal('tu', 'riv');
+  if (s < -95) t.push(`<p><b>La señal no llega.</b> A ${distancia} m${conPared ? ' y con una pared' : ''} llega con ${s} dBm, por debajo de −95 dBm (aproximado): el paquete se pierde sin avisar. Una placa compara y la otra se queda esperando. Con B empezáis de nuevo.</p>`);
+  else if (conPared || distancia > 15) t.push(`<p>La señal llega con ${s} dBm. Todavía se entiende, pero cuanto más lejos y más paredes, más débil.</p>`);
+  $('#explica').innerHTML = t.join('') || '<p>Todo normal: las dos parejas usan el grupo 23, la otra pareja el 42 y estáis cerca. Prueba a cambiar algo.</p>';
+}
+
+/* ------------------------------------------------------------ una ronda guiada */
+const FASES = [...document.querySelectorAll('#fases li')];
+function fase(k){ FASES.forEach((li, i) => { li.classList.toggle('activa', i === k); li.classList.toggle('hecha', k >= 0 && i < k); }); }
+const narra = h => { $('#narracion').innerHTML = h; };
+let modo = 'paso', enRonda = false, abrir = null;
+function puerta(){
+  if (modo === 'auto') return sleep(1700);
+  $('#btnPaso').textContent = 'Siguiente paso';
+  return new Promise(r => { abrir = r; });
+}
+async function esperaPantallas(){ await sleep(3200); }
+async function ronda(){
+  enRonda = true; botonesManuales(false); const e = epoca;
+  ['tu', 'riv', 'otra'].forEach(k => { const p = P[k]; p.aviso = ''; p.calc = null; p.ultimo = '—'; if (!p.v.mia && !p.v.rival) { p.pantalla = null; } pinta(p); });
+  refresca(); enGuion = true; pendientes = [];
+  // 1
+  fase(0);
+  const pTu = alAgitar(P.tu);
+  await sleep(50); if (e !== epoca) return;
+  if (!P.tu.v.mia && !P.tu.calc){ narra('Vuestra placa ya tenía una jugada guardada de antes («mia» no era 0), así que «al agitar» no hace nada. Pulsad B para empezar una ronda nueva.'); }
+  else narra(`Agitáis vuestra placa: «elegir al azar de 1 a 3» da <b>${P.tu.calc ? P.tu.calc.mia : P.tu.v.mia}</b> (${NOMBRE_JUGADA[P.tu.calc ? P.tu.calc.mia : P.tu.v.mia]}). Se guarda en «mia», se envía por radio y se enseña su icono.` + (prisa ? ' <b>¡Ojo!</b> Con el error activado, la placa compara ya, con «rival» a 0.' : ''));
+  await puerta(); if (e !== epoca) return;
+  // 2
+  fase(1);
+  const pk = pendientes.shift();
+  if (pk){
+    narra(`La radio empaqueta el número con el grupo (${pk.grupo}) y la onda sale en todas direcciones: llega a la placa rival y también a la de la otra pareja.`);
+    await onda(pk); if (e !== epoca) return;
+    $('#vSenal').textContent = senal('tu', 'riv') + ' dBm';
+  } else narra('No se ha enviado nada en esta ronda.');
+  await puerta(); if (e !== epoca) return;
+  // 3
+  fase(2);
+  if (pk){
+    const tx = entregar(pk);
+    const rivAcepta = P.riv.v.rival === pk.n;
+    narra(tx.join(' · ') + '. ' + (rivAcepta ? 'La placa rival guarda vuestra jugada en «rival» y llama a «comparar»: como su «mia» es 0, todavía no compara. Espera.' : 'La placa rival no tiene vuestra jugada.'));
+  }
+  await puerta(); if (e !== epoca) return;
+  // 4
+  fase(3);
+  enGuion = false;
+  narra('La otra pareja de la clase también juega: agita su placa y su onda os llega' + (P.otra.grupo === GRUPO ? ', <b>con vuestro mismo grupo</b>.' : ', pero es del grupo 42.'));
+  await alAgitar(P.otra); if (e !== epoca) return;
+  await sleep(1300); if (e !== epoca) return;
+  enGuion = true;
+  alAgitar(P.riv);
+  await sleep(700); if (e !== epoca) return;
+  const rc = P.riv.calc;
+  narra(`La pareja rival agita y sale <b>${rc ? rc.mia : P.riv.v.mia}</b> (${NOMBRE_JUGADA[rc ? rc.mia : P.riv.v.mia] || '—'}). ` + (rc ? `Ya tiene las dos jugadas y compara: (${rc.mia} − ${rc.rival} + 3) mod 3 = ${rc.res}.` : 'Todavía no tiene vuestra jugada, así que no compara.'));
+  await puerta(); if (e !== epoca) return;
+  // 5
+  fase(4);
+  const pk2 = pendientes.shift(); enGuion = false;
+  if (pk2){
+    await onda(pk2); if (e !== epoca) return;
+    const antes = P.tu.calc;
+    const tx = entregar(pk2);
+    await sleep(60); if (e !== epoca) return;
+    const tc = P.tu.calc;
+    narra(tx.filter(t => t.startsWith('Vuestra')).join('') + '. ' + (tc && tc !== antes ? `Vuestra placa ya tiene las dos jugadas y compara: (${tc.mia} − ${tc.rival} + 3) mod 3 = ${tc.res}.` : 'Vuestra placa no compara: le falta una jugada o ya había comparado antes.'));
+  } else narra('La placa rival no ha enviado nada.');
+  await puerta(); if (e !== epoca) return;
+  // 6
+  fase(5);
+  narra('Las dos placas enseñan la jugada rival y, un segundo después, el resultado…');
+  await esperaPantallas(); if (e !== epoca) return;
+  const a = P.tu.calc, b = P.riv.calc;
+  let txt;
+  if (a && b){
+    const ok = a.mia === b.rival && a.rival === b.mia && ((a.res === 0 && b.res === 0) || (a.res === 1 && b.res === 2) || (a.res === 2 && b.res === 1));
+    txt = `Vuestra placa: ${P.tu.ultimo}. Placa rival: ${P.riv.ultimo}. ` + (ok ? '<b>Coinciden</b>: cada una ha hecho la cuenta desde su lado.' : '<b>No coinciden</b>: alguna ha comparado con una jugada que no era la buena. Mira «Estropéalo a propósito».');
+  } else if (a || b){
+    txt = `${a ? 'Vuestra placa' : 'La placa rival'} ha comparado, pero ${a ? 'la rival' : 'la vuestra'} no: le falta una jugada.` +
+      (P.otra.grupo === GRUPO ? ' Además, la jugada de la otra pareja se ha colado en vuestra partida.' : '') + ' En la clase, pulsad B en las dos y repetid la ronda.';
+  } else txt = 'Ninguna placa ha llegado a comparar: a las dos les falta una jugada. En la clase, pulsad B en las dos y repetid la ronda.';
+  narra(txt);
+  explica(); refresca();
+  enRonda = false; botonesManuales(true);
+  $('#btnPaso').textContent = 'Otra ronda';
+  if (modo === 'auto'){ await sleep(2200); if (e !== epoca || modo !== 'auto') return; ['tu', 'riv', 'otra'].forEach(k => botonB(P[k])); ronda(); }
+}
+function botonesManuales(si){ document.querySelectorAll('[data-accion]').forEach(b => b.disabled = !si); }
+function reiniciar(conMarcador){
+  epoca++; enRonda = false; enGuion = false; pendientes = []; abrir = null;
+  capaOndas.innerHTML = ''; paquete.setAttribute('opacity', 0);
+  ['tu', 'riv', 'otra'].forEach(k => { const p = P[k]; p.v.mia = 0; p.v.rival = 0; p.v.resultado = 0; p.v.suya = 0; if (conMarcador) p.v.ganadas = 0; p.pantalla = null; p.aviso = ''; p.calc = null; p.ultimo = '—'; pinta(p); });
+  resalte.tu = resalte.riv = null; marcaResaltado();
+  fase(-1); botonesManuales(true); refresca(); explica();
+  $('#btnPaso').textContent = 'Empezar una ronda';
+}
+
+/* ------------------------------------------------------------ controles */
+$('#btnPaso').onclick = () => {
+  if (modo === 'auto'){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); }
+  if (enRonda && abrir){ const r = abrir; abrir = null; r(); return; }
+  if (!enRonda){ ['tu', 'riv', 'otra'].forEach(k => botonB(P[k])); ronda(); }
+};
+$('#btnAuto').onclick = () => {
+  const on = modo !== 'auto';
+  modo = on ? 'auto' : 'paso';
+  $('#btnAuto').setAttribute('aria-pressed', String(on));
+  if (on){ if (abrir){ const r = abrir; abrir = null; r(); } else if (!enRonda){ ['tu', 'riv', 'otra'].forEach(k => botonB(P[k])); ronda(); } }
+};
+$('#btnReiniciar').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(true); narra('Todo a cero, marcadores incluidos.'); };
+$('#velocidad').onchange = e => { vel = +e.target.value; };
+document.querySelectorAll('[data-accion]').forEach(b => b.onclick = () => {
+  const a = b.dataset.accion; enGuion = false;
+  if (a === 'agitar-tu'){ alAgitar(P.tu); narra('Agitáis vuestra placa: su jugada sale por radio.'); }
+  if (a === 'agitar-riv'){ alAgitar(P.riv); narra('La pareja rival agita su placa.'); }
+  if (a === 'a'){ botonA(P.tu); botonA(P.riv); narra(`Marcador: vuestra placa ${P.tu.v.ganadas}, la rival ${P.riv.v.ganadas}.`); }
+  if (a === 'b'){ botonB(P.tu); botonB(P.riv); narra('Ronda nueva: las dos placas ponen «mia» y «rival» a 0 y borran la pantalla.'); }
+  setTimeout(() => { explica(); refresca(); }, 3600 / vel);
+});
+// piezas del dibujo
+function abrePieza(id){ const [t, x, u] = PIEZAS[id]; $('#piezaTitulo').textContent = t; $('#piezaTexto').textContent = x; $('#piezaUso').textContent = u; $('#pieza').hidden = false; }
+svg.addEventListener('click', ev => {
+  const pz = ev.target.closest('[data-pieza]'); if (!pz) return;
+  const placa = ev.target.closest('[data-placa]').dataset.placa;
+  abrePieza(pz.dataset.pieza);
+  if (pz.dataset.boton && !enRonda && placa !== 'otra'){ if (pz.dataset.boton === 'A') botonA(P[placa]); else botonB(P[placa]); }
+});
+svg.addEventListener('keydown', ev => { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.dataset && ev.target.dataset.pieza){ ev.preventDefault(); ev.target.dispatchEvent(new MouseEvent('click', {bubbles:true})); } });
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+// opciones de la vista
+$('#optTransp').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on));
+  Object.values(PLACAS).forEach(L => { L.atras.setAttribute('opacity', on ? 1 : 0); L.atras.setAttribute('pointer-events', on ? 'auto' : 'none'); L.g.querySelector('.cuerpo-placa').setAttribute('fill-opacity', on ? .45 : 1); }); };
+$('#optNombres').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on));
+  svg.querySelectorAll('.nombre').forEach(t => t.setAttribute('display', on ? 'inline' : 'none')); };
+// programa
+$('#tabBloques').onclick = () => { $('#tabBloques').setAttribute('aria-selected', 'true'); $('#tabPython').setAttribute('aria-selected', 'false'); $('#bloques').hidden = false; $('#python').hidden = true; $('#idioma').hidden = false; };
+$('#tabPython').onclick = () => { $('#tabPython').setAttribute('aria-selected', 'true'); $('#tabBloques').setAttribute('aria-selected', 'false'); $('#bloques').hidden = true; $('#python').hidden = false; $('#idioma').hidden = true; };
+$('#idioma').onclick = e => { const b = e.target.closest('[data-lang]'); if (!b) return; idioma = b.dataset.lang; $('#idioma').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintaPrograma(); };
+function copiar(texto){
+  const ok = () => { $('#copiado').textContent = 'Copiado ✓'; setTimeout(() => $('#copiado').textContent = '', 1800); };
+  const manual = () => { const t = $('#copiaManual'); t.hidden = false; t.value = texto; t.select(); $('#copiado').textContent = 'Selecciona y copia (Ctrl+C)'; };
+  try { navigator.clipboard.writeText(texto).then(ok, manual); } catch(e){ manual(); }
+}
+$('#copiarJS').onclick = () => copiar(textoJS(programa()));
+$('#copiarPy').onclick = () => copiar(textoPython(programa()).map(l => l.txt).join('\n').trim() + '\n');
+// estropéalo
+function segmento(sel, cb){ $(sel).onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; $(sel).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); cb(+b.dataset.v); }; }
+segmento('#ctlGrupoRiv', v => { P.riv.grupo = v; PLACAS.riv.titulo.textContent = 'Placa rival · grupo ' + v; explica(); refresca(); });
+segmento('#ctlGrupoOtra', v => { P.otra.grupo = v; PLACAS.otra.titulo.textContent = 'Otra pareja · grupo ' + v; explica(); refresca(); });
+$('#ctlPrisa').onchange = e => { prisa = e.target.checked; pintaPrograma(); explica(); };
+$('#ctlDist').oninput = e => { distancia = +e.target.value; $('#ctlDistTxt').textContent = distancia + ' m'; dibujaDistancia(); explica(); refresca(); };
+$('#ctlPared').onchange = e => { conPared = e.target.checked; pared.setAttribute('opacity', conPared ? 1 : 0); explica(); refresca(); };
+function dibujaDistancia(){ tDist.textContent = distancia + ' m'; }
+$('#normalidad').onclick = () => {
+  P.riv.grupo = GRUPO; P.otra.grupo = 42; prisa = false; distancia = 4; conPared = false;
+  $('#ctlGrupoRiv').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === '23')));
+  $('#ctlGrupoOtra').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === '42')));
+  $('#ctlPrisa').checked = false; $('#ctlDist').value = 4; $('#ctlDistTxt').textContent = '4 m'; $('#ctlPared').checked = false; pared.setAttribute('opacity', 0);
+  PLACAS.riv.titulo.textContent = 'Placa rival · grupo 23'; PLACAS.otra.titulo.textContent = 'Otra pareja · grupo 42';
+  dibujaDistancia(); pintaPrograma(); reiniciar(false); narra('Todo vuelve a la normalidad (los marcadores se mantienen).');
+};
+$('#probarError').onclick = () => {
+  $('#ctlPrisa').checked = true; prisa = true; pintaPrograma(); explica();
+  modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(false);
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+  ['tu', 'riv', 'otra'].forEach(k => botonB(P[k])); ronda();
+};
+// preguntas
+document.querySelectorAll('.pregunta').forEach(f => f.addEventListener('change', () => {
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+}));
+// comprobación (se guarda en el navegador)
+const CLAVE = 'lab-ppt-radio-sda3';
+let marcas = []; try { marcas = JSON.parse(localStorage.getItem(CLAVE) || '[]'); } catch(e){}
+document.querySelectorAll('#comprobacion input').forEach((c, i) => { c.checked = !!marcas[i]; c.onchange = () => { marcas[i] = c.checked; try { localStorage.setItem(CLAVE, JSON.stringify(marcas)); } catch(e){} }; });
+// tema
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+// arranque
+PLACAS.riv.titulo.textContent = 'Placa rival · grupo 23'; PLACAS.otra.titulo.textContent = 'Otra pareja · grupo 42'; PLACAS.tu.titulo.textContent = 'Vuestra placa · grupo 23';
+dibujaDistancia(); pintaPrograma(); refresca(); explica();
+window.__lab = {P, ronda, programa, textoJS, textoPython, reiniciar, set modo(v){ modo = v; }, get enRonda(){ return enRonda; }};
+})();
+</script>
+</body>
+</html>
