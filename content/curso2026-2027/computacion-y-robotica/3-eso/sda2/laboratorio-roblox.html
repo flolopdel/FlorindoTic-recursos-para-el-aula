@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tu obby en Roblox</title>
+<meta name="description" content="Laboratorio de profundización de la SdA 2 de Computación y Robótica 3.º ESO: un obby en Roblox Studio programado en Luau, con una simulación para probar y estropear sus scripts.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --tu:#ca8a04; --riv:#0891b2; --otra:#9333ea;
+  --mesa:#e7ecef; --placa:#1f2937; --placa-borde:#111827; --led-off:#3b1d1d; --led-on:#ff3b30; --oro:#c8a23a;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --tu:#facc15; --riv:#22d3ee; --otra:#c084fc; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+    --code-bg:#020617;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --tu:#facc15; --riv:#22d3ee; --otra:#c084fc; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+  --code-bg:#020617;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-in a.tb,.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.cab-in .ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;background:var(--mesa);border-radius:12px;overflow:hidden}
+.escena svg{display:block;width:100%;height:auto}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:640px;flex:1}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;gap:12px;font-size:13px;color:var(--muted);padding:0 10px 8px}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques */
+.pila{margin:0 0 12px;font:600 13px/1.35 system-ui,sans-serif}
+.blk{--c:#1e90ff;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;margin:2px 0;position:relative;transition:box-shadow .15s}
+.blk.hat{border-radius:14px 14px 6px 6px;padding-top:7px}
+.blk .cuerpo{margin:4px 0 2px 10px;padding:3px 0 3px 8px;border-left:3px solid rgba(255,255,255,.55);background:var(--bg);border-radius:0 6px 6px 0}
+.blk .cuerpo .blk{margin:3px 6px 3px 0}
+.rama{display:block}
+.rama + .cuerpo{margin-bottom:4px}
+.pill{display:inline-block;background:rgba(255,255,255,.92);color:#111827;border-radius:999px;padding:0 7px;margin:0 2px;font-weight:700}
+.pill.var{background:#dc143c;color:#fff;border:1px solid rgba(255,255,255,.6)}
+.pill.par{background:#ff8c00;color:#fff}
+.pill.mat{background:#9400d3;color:#fff}
+.pill.log{background:#00a4a6;color:#fff}
+.pill.ico{background:#1e90ff;color:#fff;padding:1px 6px}
+.mini{display:inline-grid;grid-template-columns:repeat(5,4px);gap:1px;vertical-align:middle;background:#0b1220;padding:2px;border-radius:3px}
+.mini i{width:4px;height:4px;background:#3b1d1d;display:block}.mini i.on{background:#ff3b30}
+.on-tu{box-shadow:0 0 0 3px var(--tu)}
+.on-riv{box-shadow:0 0 0 3px var(--riv)}
+.on-tu.on-riv{box-shadow:0 0 0 3px var(--tu),0 0 0 6px var(--riv)}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.on-tu{background:rgba(250,204,21,.22);box-shadow:inset 4px 0 0 var(--tu)}
+pre.codigo span.on-riv{background:rgba(34,211,238,.18);box-shadow:inset 4px 0 0 var(--riv)}
+pre.codigo span.on-tu.on-riv{background:rgba(160,220,120,.2)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.18)}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px}
+@media(max-width:980px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:18px}
+.medida-item.mal .v{color:var(--ko)}
+.rompelo{margin-bottom:12px}.rompelo h3{margin:0 0 6px;font-size:15px}
+.interruptor{display:flex;gap:8px;align-items:center}
+.rango{display:flex;gap:10px;align-items:center}.rango input{flex:1}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.reglas td.g{background:var(--ok-bg)}.reglas td.p{background:var(--ko-bg)}.reglas td.e{background:var(--bg)}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+.svg-pieza:focus{outline:none}.svg-pieza:focus-visible > *{stroke:var(--brand);stroke-width:3}
+@media print{.cab,.banco,.botonera{display:none}}
+
+/* --- laboratorio Roblox --- */
+:root{--lava:#ea580c;--lava2:#fb923c;--vacio:#0f172a;--suelo:#64748b;--plat:#0ea5e9;--elev:#a855f7;--cp:#22c55e;--meta:#eab308;--piel:#fcd34d;--torso:#2563eb;--piernas:#1e3a8a;--cielo:#dbeafe}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--cielo:#0c1a33;--suelo:#475569}}
+:root[data-theme="dark"]{--cielo:#0c1a33;--suelo:#475569}
+.escena{background:var(--cielo)}
+.escena:focus{outline:3px solid var(--brand);outline-offset:2px}
+.mandos-tactiles{display:flex;gap:8px;margin-top:8px}
+.mandos-tactiles .boton{min-width:64px;font-size:20px;touch-action:none;user-select:none}
+.mandos-tactiles .boton.peq{min-width:0;font-size:14px}
+.programa-cuerpo{max-height:470px}
+.salida{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:8px 12px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;height:9.5em;overflow:auto;margin-top:10px}
+.salida div{white-space:pre-wrap}.salida .err{color:#fca5a5}.salida .warn{color:#fde68a}.salida .info{color:#93c5fd}
+.props{width:100%;border-collapse:collapse;font-size:14px}
+.props td,.props th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+.props td.mal{color:var(--ko);font-weight:800}
+.puente{width:100%;border-collapse:collapse;font-size:15px;margin-top:12px}
+.puente th,.puente td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+.puente thead th{background:var(--bg);font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.puente code{font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--bg);padding:1px 4px;border-radius:4px}
+.niveles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:12px}
+.niveles > div{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.niveles h3{margin:0 0 6px;font-size:16px}
+.niveles .si{border-top:5px solid var(--ok)}.niveles .ojo{border-top:5px solid var(--tu)}.niveles .no{border-top:5px solid var(--ko)}
+.crit{border-left:4px solid var(--accent);background:var(--bg);border-radius:0 10px 10px 0;padding:8px 12px;margin:8px 0}
+.crit b{color:var(--accent)}
+.rub{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.rub th,.rub td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+.rub thead th{background:var(--bg)}
+.rub td small{color:var(--muted)}
+.docente{border:1px dashed var(--line);border-radius:12px;padding:10px 14px;margin:10px 0 0}
+.docente summary{cursor:pointer;font-weight:700}
+.aviso{background:var(--warm-bg);border-radius:12px;padding:12px 16px;margin-top:12px}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Tu obby en Roblox <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 2 · Computación y Robótica 3.º ESO</span></div>
+    <a class="tb" href="clase.html#s16-1">📽 Clase</a>
+    <a class="tb ocultar-movil" href="https://create.roblox.com/docs/studio/setting-up-roblox-studio" target="_blank" rel="noopener">🧱 Roblox Studio</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 2 · Código en Acción</a> / Sesión 17 (extra de profundización) / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Sesión 17 · laboratorio de profundización (voluntario)</p>
+  <h1>Tu obby en Roblox: de MakeCode Arcade a Luau</h1>
+  <p class="lab-sub">Ya sabes programar un juego en MakeCode Arcade. Ahora das el salto a <b>Roblox Studio</b>, la herramienta con la que se crean los juegos de Roblox. Construirás un <b>obby</b> (carrera de obstáculos) con lava, puntos de control y un ascensor, programado en <b>Luau</b>, y podrás jugarlo en la propia plataforma. Aquí lo pruebas antes en una simulación y la rompes a propósito para entender cada script.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>Quien ha entregado la Tarea 2.6 y quiere profundizar</dd></div>
+    <div><dt>Material</dt><dd>Ordenador del aula (Windows) con Roblox Studio y una cuenta de Roblox</dd></div>
+    <div><dt>Programa</dt><dd>Eventos <code>Touched</code>, leaderstats, lista de checkpoints y TweenService</dd></div>
+    <div><dt>Tiempo</dt><dd>1 sesión de 50 min (se puede seguir en casa)</dd></div>
+  </dl>
+</header>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong>El obby visto de lado</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+          <button type="button" id="optToques" aria-pressed="false">Ver toques</button>
+        </div>
+      </div>
+      <div class="escena" id="escena" tabindex="0" aria-label="Simulación del obby. Usa las flechas o A y D para moverte y la barra espaciadora para saltar.">
+        <svg id="svg" viewBox="0 0 960 420" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Vista lateral de un obby: plataforma de inicio, un hueco al vacío, una plataforma, un charco de lava, el checkpoint 1, un ascensor morado sobre otro charco de lava, una repisa alta con el checkpoint 2 y la meta a la derecha.</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="mandos-tactiles" aria-label="Mandos">
+        <button type="button" class="boton sec" data-tecla="izq" aria-label="Izquierda">◀</button>
+        <button type="button" class="boton sec" data-tecla="der" aria-label="Derecha">▶</button>
+        <button type="button" class="boton sec" data-tecla="saltar" aria-label="Saltar">⤒</button>
+        <button type="button" class="boton peq sec" id="btnBola" style="margin-left:auto">⚽ Soltar una bola en la lava</button>
+      </div>
+      <p class="escena-pie">Haz clic en la escena y juega con las flechas (o A y D) y la barra espaciadora, o con los botones. Pulsa una pieza del dibujo para saber qué es en Roblox Studio.</p>
+    </div>
+
+    <aside class="programa" aria-label="El programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Script">
+          <button type="button" role="tab" data-tab="etapas" aria-selected="true">Etapas</button>
+          <button type="button" role="tab" data-tab="lava" aria-selected="false">Lava</button>
+          <button type="button" role="tab" data-tab="ascensor" aria-selected="false">Ascensor</button>
+          <button type="button" role="tab" data-tab="props" aria-selected="false">Propiedades</button>
+        </div>
+      </div>
+      <div class="leyenda-hl"><span style="--c:var(--tu)">Línea que se acaba de ejecutar</span><span style="--c:var(--ko)">Cambiada en «Estropéalo»</span></div>
+      <div class="programa-cuerpo">
+        <p id="dondeVa" style="margin:0 0 8px;font-size:14px;color:var(--muted)"></p>
+        <pre class="codigo" id="codigo"></pre>
+        <table class="props" id="props" hidden>
+          <thead><tr><th>Pieza</th><th>Propiedad</th><th>Valor</th></tr></thead>
+          <tbody id="propsCuerpo"></tbody>
+        </table>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiar">Copiar este script (versión correcta)</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnAuto" aria-pressed="false">▶ Que lo juegue solo</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar el servidor</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.4">Cámara lenta</option>
+          <option value="1" selected>Tiempo real</option>
+        </select>
+      </div>
+      <ol class="fases" id="fases" aria-label="Partes del obby">
+        <li data-f="0">1. Apareces en la SpawnLocation de inicio</li>
+        <li data-f="1">2. Saltas el vacío sobre una plataforma anclada</li>
+        <li data-f="2">3. Esquivas la lava: si la tocas, Health = 0</li>
+        <li data-f="3">4. Checkpoint 1: Etapa = 1 y reapareces aquí</li>
+        <li data-f="4">5. El ascensor sube con TweenService</li>
+        <li data-f="5">6. Checkpoint 2: Etapa = 2</li>
+        <li data-f="6">7. Meta: Etapa = 3 y obby completado</li>
+      </ol>
+      <p class="narracion" id="narracion" aria-live="polite">Juega tú o pulsa «Que lo juegue solo». Mira qué línea de cada script se ejecuta al tocar cada pieza.</p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Jugador</th><th>Etapa (leaderstats)</th><th>RespawnLocation (servidor)</th><th>Health</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <div class="medidas">
+        <div class="medida-item" id="mToques"><span class="et">Veces que se ha disparado Touched</span><span class="v num" id="vToques">0</span></div>
+        <div class="medida-item" id="mMuertes"><span class="et">Veces que has reaparecido</span><span class="v num" id="vMuertes">0</span></div>
+        <div class="medida-item" id="mTiempo"><span class="et">Tiempo desde que arrancó el servidor</span><span class="v num" id="vTiempo">0 s</span></div>
+      </div>
+      <div class="salida" id="salida" aria-live="polite" aria-label="Ventana Salida (Output) de Roblox Studio"></div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo"><h3>Script «Etapas»</h3>
+        <label class="interruptor" for="bSuma"><input type="checkbox" id="bSuma"> Sumar 1 a Etapa en cada toque, sin comprobar el número (el error común)</label>
+        <label class="interruptor" for="bCliente" style="margin-top:6px"><input type="checkbox" id="bCliente"> Guardar el checkpoint desde un LocalScript (en el cliente)</label></div>
+      <div class="rompelo"><h3>Script «Lava»</h3>
+        <label class="interruptor" for="bHumanoid"><input type="checkbox" id="bHumanoid"> No comprobar si lo que toca tiene Humanoid (prueba después a soltar la bola)</label></div>
+      <div class="rompelo"><h3>Script «Ascensor»</h3>
+        <label class="interruptor" for="bRepite"><input type="checkbox" id="bRepite"> Poner repeatCount = 0 en lugar de −1</label></div>
+      <div class="rompelo"><h3>Propiedades de las piezas</h3>
+        <label class="interruptor" for="bAnclado"><input type="checkbox" id="bAnclado"> Ascensor con Anchored = false</label>
+        <label class="interruptor" for="bColision" style="margin-top:6px"><input type="checkbox" id="bColision"> Plataforma del vacío con CanCollide = false</label></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">Roblox funciona con eventos, igual que MakeCode Arcade. Cuando una pieza toca a otra se dispara <code>Touched</code> y tu función decide qué hacer. La diferencia es que en Roblox todo es una pieza 3D con propiedades, y el código se escribe en texto, en Luau.</p>
+  <h3 style="margin:16px 0 0">Lo que ya sabes, con otro nombre</h3>
+  <div class="tabla-envoltura">
+  <table class="puente">
+    <thead><tr><th>Idea</th><th>MakeCode Arcade (JavaScript)</th><th>Roblox Studio (Luau)</th></tr></thead>
+    <tbody>
+      <tr><td>Evento de choque</td><td><code>sprites.onOverlap(…, function (a, b) { })</code></td><td><code>pieza.Touched:Connect(function(otraParte) end)</code></td></tr>
+      <tr><td>Perder</td><td><code>info.changeLifeBy(-1)</code> o <code>game.gameOver(false)</code></td><td><code>humanoid.Health = 0</code> (el personaje cae y reaparece)</td></tr>
+      <tr><td>Marcador</td><td><code>info.changeScoreBy(1)</code></td><td>Carpeta <code>leaderstats</code> con un <code>IntValue</code>: <code>etapa.Value = 2</code></td></tr>
+      <tr><td>Paredes y suelo</td><td>Tiles marcados como pared en el tilemap</td><td>Piezas con <code>Anchored = true</code> (no se caen) y <code>CanCollide = true</code> (no se atraviesan)</td></tr>
+      <tr><td>Algo que se mueve solo</td><td><code>game.onUpdateInterval(…)</code> o <code>animation</code></td><td><code>TweenService:Create(pieza, info, destino):Play()</code></td></tr>
+      <tr><td>Lista</td><td><code>let niveles = [ … ]</code>, <code>niveles[i]</code></td><td>Tabla: <code>local checkpoints = workspace.Checkpoints:GetChildren()</code> y <code>for _, cp in ipairs(checkpoints) do</code></td></tr>
+      <tr><td>Sintaxis</td><td><code>{ }</code>, <code>let</code>, <code>//</code>, <code>!=</code></td><td><code>then … end</code>, <code>local</code>, <code>--</code>, <code>~=</code>, <code>nil</code> = «no hay nada»</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Sumar 1 cada vez que se toca el checkpoint</h2>
+  <div class="dos">
+    <div>
+      <p><code>Touched</code> no se dispara una sola vez. Cada pieza del cuerpo (pies, piernas, torso) es una parte distinta, y al andar las piernas se mueven y tocan la pieza una y otra vez. Si el script hace <code>etapa.Value = etapa.Value + 1</code>, al pisar el checkpoint 1 la etapa sube a 5, 9, 14…</p>
+      <p>La solución no es «contar toques». Es que cada checkpoint sepa <b>qué número es</b> (su nombre: «1», «2», «3») y solo cambie la etapa si es mayor que la que tienes: <code>if numero &gt; etapa.Value then</code>. Así da igual cuántas veces se dispare, y además no se puede retroceder.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Activa el error y pasa por el checkpoint 1 andando: mira cómo se dispara Touched y cómo se dispara la etapa.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica en Roblox Studio</p>
+  <h2 id="tPractica">Construye y programa tu obby</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li><b>Abre Roblox Studio</b> con tu cuenta y crea una experiencia nueva con la plantilla <b>Baseplate</b>. Guárdala ya en tu ordenador: <i>Archivo → Guardar en archivo</i> (<code>.rbxl</code>).</li>
+      <li><b>Construye el recorrido</b> con piezas (<i>Part</i>): una plataforma sobre el vacío, una pieza de lava (material Neon, color naranja), un ascensor y una repisa alta. Selecciónalas todas y comprueba en <i>Propiedades</i> que tienen <b>Anchored</b> marcado.</li>
+      <li><b>Checkpoints:</b> crea una carpeta <code>Checkpoints</code> en Workspace con tres <i>SpawnLocation</i> llamadas <code>1</code>, <code>2</code> y <code>3</code> (la 3 es la meta). La SpawnLocation de inicio queda fuera de la carpeta.</li>
+      <li><b>Scripts:</b> pon un <i>Script</i> «Etapas» en <code>ServerScriptService</code>, un <i>Script</i> «Lava» dentro de la lava y otro «Ascensor» dentro del ascensor. Copia los tres desde el panel del programa y lee cada línea antes de pegarla.</li>
+      <li><b>Prueba</b> con <i>Jugar</i> (F5). Abre <i>Vista → Salida</i> para ver los errores. Provoca a propósito dos de los fallos de este laboratorio y anota qué ves.</li>
+      <li><b>Hazlo tuyo:</b> añade al menos una cosa que no esté aquí: una segunda lava que se mueve, una pieza que te lanza hacia arriba, un tiempo récord… Cámbiale el nombre a las variables si quieres, pero explica qué hace cada una.</li>
+      <li><b>Publícalo como privado</b> (<i>Archivo → Publicar en Roblox</i>, sin hacerlo público) y juégalo desde la app o la web de Roblox con tu cuenta. Si quieres que sea público, entrégalo en Moodle: lo publica el docente desde su cuenta.</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar el laboratorio por hecho</h3>
+      <ul class="comprobacion" id="comprobacion">
+        <li><label><input type="checkbox"> Todas las piezas fijas tienen Anchored y el suelo, CanCollide.</label></li>
+        <li><label><input type="checkbox"> Al tocar la lava el personaje cae y reaparece en el último checkpoint.</label></li>
+        <li><label><input type="checkbox"> La etapa sube de uno en uno (1, 2, 3) y no se dispara al andar.</label></li>
+        <li><label><input type="checkbox"> El ascensor sube y baja sin parar.</label></li>
+        <li><label><input type="checkbox"> He añadido una mecánica propia y sé explicar su código.</label></li>
+        <li><label><input type="checkbox"> El nombre de la experiencia y la descripción no llevan mis datos.</label></li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Entrégalo en la tarea opcional de Moodle <b>«2.8: Laboratorio Roblox (profundización)»</b>: el archivo <code>.rbxl</code>, un vídeo corto o tres capturas del obby funcionando (sin tu cara ni tu nombre de usuario real) y un texto que explique los tres scripts y los dos fallos que has provocado.</p>
+    </div>
+  </div>
+  <details class="docente">
+    <summary>Para el docente: antes de la sesión</summary>
+    <ul>
+      <li>Los ordenadores del aula tienen Windows: instala Roblox Studio en ellos antes de la sesión (requiere Windows 10 o posterior y unos 3 GB de RAM; la primera descarga tarda varios minutos).</li>
+      <li>Studio pide iniciar sesión con una <b>cuenta de Roblox</b>. Es una cuenta personal en una plataforma externa: el laboratorio es voluntario, con conocimiento de la familia, y nadie debe crearse una cuenta para aprobar. Quien no quiera, puede hacer la simulación y las preguntas de esta página.</li>
+      <li>Recuerda al alumnado que cierre sesión en Studio al terminar, porque los ordenadores del aula son compartidos.</li>
+      <li>Los juegos se quedan <b>privados</b>. Si alguno merece publicarse, ábrelo desde su <code>.rbxl</code> y publícalo desde tu cuenta (que cumple los requisitos de Roblox), citando a su autor/a con su alias.</li>
+      <li>En Moodle, crea la Tarea opcional «2.8: Laboratorio Roblox (profundización)» con entrega de archivos (<code>.rbxl</code>, <code>.mp4</code>, <code>.png</code>, <code>.pdf</code>) y la rúbrica de esta página. No cambia nada de las Tareas 2.1-2.7.</li>
+    </ul>
+  </details>
+</section>
+
+<section class="bloque" aria-labelledby="tPublicar">
+  <p class="etq">Verlo en la plataforma</p>
+  <h2 id="tPublicar">¿Quién puede jugar tu obby?</h2>
+  <div class="niveles">
+    <div class="si"><h3>✅ Privado: lo juegas tú</h3><p>Publícalo sin hacerlo público. Una experiencia privada la puede jugar quien tiene permiso de acceso o edición: tú, desde la app o la web de Roblox, igual que cualquier otro juego. Es lo que hacemos en el laboratorio: tu juego se queda privado.</p></div>
+    <div class="ojo"><h3>🧑‍🏫 Público: lo publica el docente</h3><p>Desde diciembre de 2025, para publicar una experiencia pública Roblox pide al creador <b>verificar su identidad</b> o haber hecho una <b>compra con dinero real</b>. Tú no tienes que hacer nada de eso: si quieres que tu obby sea público, dilo en la entrega y el docente lo publica desde su cuenta, citándote con tu alias.</p></div>
+  </div>
+  <div class="aviso">
+    <h3 style="margin:0 0 6px">Ciberseguridad en Roblox</h3>
+    <ul style="margin:0;padding-left:1.2em">
+      <li><b>Tu cuenta:</b> un nombre de usuario sin tu nombre real ni tu edad, una contraseña que no uses en otro sitio y la <b>verificación en dos pasos</b> activada. Nunca compartas la contraseña ni la «cookie» de tu sesión: es la forma más habitual de robar cuentas.</li>
+      <li><b>La Toolbox (Creator Store):</b> los modelos gratuitos pueden traer scripts escondidos que hacen cosas que no esperas. Si usas uno, ábrelo en el <i>Explorer</i> y borra cualquier script que no entiendas.</li>
+      <li><b>Lo que publicas:</b> el nombre, la descripción y el icono del juego no llevan tu nombre, tu centro ni fotos tuyas.</li>
+      <li><b>Las personas:</b> no aceptes regalos, Robux ni «ayudas» de desconocidos a cambio de tu cuenta o de salir de la plataforma. Si algo te incomoda, bloquea, denuncia en Roblox y cuéntaselo a un adulto.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tEval">
+  <p class="etq">Cómo se evalúa</p>
+  <h2 id="tEval">Criterios y rúbrica del laboratorio</h2>
+  <p style="color:var(--ink2)">Es una actividad voluntaria de profundización y sirve de evidencia extra de tres criterios de la SdA. El docente decide cómo la tiene en cuenta (por ejemplo, para subir la nota de un criterio).</p>
+  <div class="crit"><b>CYR.3.1.3</b> · Entender cómo funciona un programa informático, la manera de elaborarlo y sus principales componentes.</div>
+  <div class="crit"><b>CYR.3.2.1</b> · Conocer y resolver la variedad de problemas posibles, desarrollando un programa informático y generalizando las soluciones, tanto de forma individual como trabajando en equipo, colaborando y comunicándose de forma adecuada.</div>
+  <div class="crit"><b>CYR.3.6.2</b> · Acceder a servicios de intercambio y publicación de información digital aplicando criterios de seguridad y uso responsable.</div>
+  <p style="font-size:14px;color:var(--muted)">Saberes: CYR.3.A.1 (de lenguajes visuales a textuales), CYR.3.A.3, CYR.3.A.4, CYR.3.A.5 y CYR.3.I.4.</p>
+  <div class="tabla-envoltura">
+  <table class="rub">
+    <thead><tr><th>Línea</th><th>1</th><th>3</th><th>5</th><th>7</th><th>10</th></tr></thead>
+    <tbody>
+      <tr><td><b>El obby funciona</b><br><small>CYR.3.2.1</small></td><td>No se puede jugar.</td><td>Se juega, pero falla la lava, los checkpoints o el ascensor.</td><td>Lava, checkpoints y ascensor funcionan.</td><td>Todo funciona y añade una mecánica propia.</td><td>Mecánica propia bien resuelta y recorrido equilibrado, probado por otra persona.</td></tr>
+      <tr><td><b>Explicación de los scripts en Luau</b><br><small>CYR.3.1.3</small></td><td>No explica el código.</td><td>Describe qué hace el juego, no el código.</td><td>Explica los tres scripts línea a línea.</td><td>Además los relaciona con MakeCode Arcade (Touched ↔ onOverlap…).</td><td>Explica también el código de su mecánica propia y por qué está en el servidor.</td></tr>
+      <tr><td><b>Depuración</b><br><small>CYR.3.2.1</small></td><td>No hay fallos provocados ni anotados.</td><td>Anota un fallo sin explicar la causa.</td><td>Dos fallos provocados con su causa.</td><td>Dos fallos con causa y solución comprobada en Studio.</td><td>Además resuelve un fallo propio que no estaba en el laboratorio.</td></tr>
+      <tr><td><b>Publicación responsable</b><br><small>CYR.3.6.2</small></td><td>No se publica o lleva datos personales.</td><td>Publicado, con algún dato que sobra.</td><td>Publicado como privado y sin datos personales.</td><td>Además explica quién puede jugarlo y cómo protege su cuenta (verificación en dos pasos, contraseña única).</td><td>Además revisa los modelos de la Toolbox que usa y explica por qué el juego se publica privado.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false">
+    <fieldset class="pregunta" data-correcta="b" data-expl="Touched se dispara cada vez que una parte del cuerpo empieza a tocar el checkpoint, y al andar pasa muchas veces. Con «etapa.Value = etapa.Value + 1» cada toque suma. Hay que usar el número del checkpoint: si numero > etapa.Value, entonces etapa.Value = numero.">
+      <legend>1. Pisas el checkpoint 1 y la Etapa pasa a 14. ¿Qué le pasa al script?</legend>
+      <label class="opcion"><input type="radio" name="q1" value="a"><span>El leaderstats se llama mal.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="b"><span>Suma 1 en cada toque, y Touched se dispara muchas veces.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="c"><span>El checkpoint no tiene Anchored.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="c" data-expl="La bola no es un personaje: no tiene Humanoid, así que FindFirstChild devuelve nil. Sin «if humanoid then», el script intenta cambiar la vida de nil y da ese error. El «if» es como el «if» de MakeCode que comprueba antes de actuar.">
+      <legend>2. Una bola cae en la lava y en Salida aparece «attempt to index nil with 'Health'». ¿Por qué?</legend>
+      <label class="opcion"><input type="radio" name="q2" value="a"><span>La lava está demasiado caliente para la bola.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="b"><span>La bola tiene demasiada vida.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="c"><span>El script no comprueba si lo que toca tiene Humanoid: la bola no tiene.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="a" data-expl="Privado y con tu cuenta lo puedes jugar ya en Roblox. Para hacerlo público Roblox pide verificar la identidad o una compra con dinero real, y eso no se hace para una tarea de clase. Si quieres que sea público, lo publica el docente desde su cuenta.">
+      <legend>3. Quieres ver tu obby dentro de Roblox. ¿Qué es lo correcto en clase?</legend>
+      <label class="opcion"><input type="radio" name="q3" value="a"><span>Publicarlo como privado y jugarlo con tu cuenta.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="b"><span>Verificar tu identidad con tu DNI para hacerlo público.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="c"><span>Pedir la cuenta de un adulto y su contraseña.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+  </form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de la documentación de Roblox</h3><ul>
+      <li>El script de la lava es el del tutorial oficial «Deadly lava»: <code>Touched</code>, <code>FindFirstChild("Humanoid")</code> y <code>Health = 0</code>.</li>
+      <li>La carpeta del marcador tiene que llamarse <code>leaderstats</code>, en minúsculas, y colgar del jugador. El nombre del <code>IntValue</code> es lo que se ve en el marcador.</li>
+      <li><code>TweenInfo.new(tiempo, estilo, dirección, repeticiones, invertir)</code>: con <code>-1</code> se repite sin fin y con <code>true</code> vuelve a la posición inicial.</li>
+      <li>Roblox Studio funciona en Windows (10 o posterior) y macOS, y se entra con una cuenta de Roblox.</li>
+      <li>Desde el 17 de diciembre de 2025, para publicar o actualizar una experiencia pública hace falta verificar la identidad o haber comprado con dinero real desde 2025, y la experiencia necesita una etiqueta de madurez. Las experiencias privadas las juega quien tiene permiso. Estas normas pueden cambiar: compruébalas antes.</li>
+      <li>Un cambio hecho desde el cliente (LocalScript) no lo ve el servidor: por eso el checkpoint se guarda en un Script de servidor.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>Es 2D y de lado; Roblox es 3D. Las distancias, la gravedad y el salto están ajustados para que el recorrido se pueda hacer, no son los de Roblox.</li>
+      <li>Cuántas veces se dispara <code>Touched</code> al andar: aquí, una vez al entrar y luego cada 0,12 s mientras te mueves. En Roblox depende de cuántas partes del cuerpo tocan y de la animación.</li>
+      <li>Al morir, Roblox espera 5 segundos (<code>Players.RespawnTime</code>); aquí, 1,5 s.</li>
+      <li>Caer al vacío: en Roblox el personaje se destruye al bajar de cierta altura (<code>FallenPartsDestroyHeight</code>); aquí, al salir por abajo.</li>
+      <li>Una plataforma movida con TweenService no arrastra bien al personaje en horizontal: por eso el ascensor es vertical. Aquí el personaje siempre se mueve con él.</li>
+      <li><code>GetChildren()</code> no garantiza el orden: por eso cada checkpoint usa su nombre («1», «2», «3») como número.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Roblox Creator Hub. <a href="https://create.roblox.com/docs/studio/setting-up-roblox-studio" target="_blank" rel="noopener">Set up Roblox Studio</a>: sistemas operativos, memoria e inicio de sesión con cuenta.</li>
+    <li>Roblox Creator Hub. <a href="https://create.roblox.com/docs/tutorials/use-case-tutorials/scripting/basic-scripting/deadly-lava" target="_blank" rel="noopener">Deadly lava</a>: script de la lava.</li>
+    <li>Roblox Creator Hub. <a href="https://create.roblox.com/docs/players/leaderboards" target="_blank" rel="noopener">In-experience leaderboards</a>: carpeta <code>leaderstats</code> e <code>IntValue</code>.</li>
+    <li>Roblox Creator Hub. <a href="https://create.roblox.com/docs/reference/engine/datatypes/TweenInfo" target="_blank" rel="noopener">TweenInfo</a> y <a href="https://create.roblox.com/docs/reference/engine/classes/SpawnLocation" target="_blank" rel="noopener">SpawnLocation</a>: parámetros del tween y uso como checkpoint.</li>
+    <li>Roblox Developer Forum. <a href="https://devforum.roblox.com/t/new-requirements-to-publish-and-update-public-experiences/4143953" target="_blank" rel="noopener">New Requirements to Publish and Update Public Experiences</a> (11 y 17 de diciembre de 2025).</li>
+    <li>Roblox Developer Forum. <a href="https://devforum.roblox.com/t/respawnlocation/517730" target="_blank" rel="noopener">RespawnLocation</a>: el servidor no ve los cambios hechos desde el cliente.</li>
+    <li>Yedai Escuela de Robótica. <a href="https://escuelayedai.com/roblox-studio-iniciacion-taller/" target="_blank" rel="noopener">Roblox Studio Iniciación</a>: contenidos de un taller de obby (piezas, Anchored, CanCollide, scripts y etapas).</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s16-1"><small>Anterior</small>Sesión 16. Arcade Game Fair (II)</a>
+  <a href="clase.html"><small>Web de clase</small>Todas las sesiones de la SdA 2</a>
+  <a href="https://create.roblox.com/docs/studio/setting-up-roblox-studio" target="_blank" rel="noopener"><small>Fuera de la web</small>Instalar Roblox Studio</a>
+</nav>
+<p class="pie">Laboratorio de profundización de la SdA 2 «Código en Acción» de Computación y Robótica 3.º ESO. Licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>. La simulación es un modelo simplificado y marca lo que es aproximado. Roblox y Roblox Studio son marcas de Roblox Corporation; esta página no está relacionada con Roblox Corporation.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const ALIAS = 'PixelPanda_23';
+
+/* ------------------------------------------------------------ estado de los fallos */
+const B = {suma:false, cliente:false, humanoid:false, repite:false, anclado:false, colision:false};
+
+/* ------------------------------------------------------------ scripts (línea a línea, con id para resaltar) */
+function scriptEtapas(){
+  const L = [];
+  const a = (t, id, cambiado) => L.push({t, id, cambiado});
+  a('-- Script «Etapas» · ServerScriptService', 'cab', B.cliente);
+  if (B.cliente) a('-- ⚠ Está en un LocalScript: se ejecuta en el cliente', 'cab2', true);
+  a('local Players = game:GetService("Players")');
+  a('local checkpoints = workspace.Checkpoints:GetChildren() -- lista: "1", "2", "3"', 'lista');
+  a('');
+  a('Players.PlayerAdded:Connect(function(player)', 'add');
+  a('\tlocal leaderstats = Instance.new("Folder")', 'add');
+  a('\tleaderstats.Name = "leaderstats" -- en minúsculas', 'add');
+  a('\tleaderstats.Parent = player', 'add');
+  a('\tlocal etapa = Instance.new("IntValue")', 'add');
+  a('\tetapa.Name = "Etapa"', 'add');
+  a('\tetapa.Value = 0', 'add');
+  a('\tetapa.Parent = leaderstats', 'add');
+  a('end)', 'add');
+  a('');
+  a('for _, checkpoint in ipairs(checkpoints) do', 'for');
+  a('\tlocal numero = tonumber(checkpoint.Name)', 'for');
+  a('\tcheckpoint.Touched:Connect(function(otraParte)', 'touch');
+  a('\t\tlocal player = Players:GetPlayerFromCharacter(otraParte.Parent)', 'touch');
+  a('\t\tif player == nil then return end', 'touch');
+  a('\t\tlocal etapa = player.leaderstats.Etapa', 'touch');
+  if (B.suma){
+    a('\t\tetapa.Value = etapa.Value + 1', 'sube', true);
+    a('\t\tplayer.RespawnLocation = checkpoint', 'resp', B.cliente);
+  } else {
+    a('\t\tif numero > etapa.Value then', 'si');
+    a('\t\t\tetapa.Value = numero', 'sube');
+    a('\t\t\tplayer.RespawnLocation = checkpoint', 'resp', B.cliente);
+    a('\t\tend', 'si');
+  }
+  a('\tend)', 'touch');
+  a('end', 'for');
+  return L;
+}
+function scriptLava(){
+  const L = [], a = (t, id, c) => L.push({t, id, cambiado:c});
+  a('-- Script «Lava» · dentro de la pieza de lava');
+  a('local lava = script.Parent');
+  a('');
+  a('local function matar(otraParte)', 'f');
+  a('\tlocal personaje = otraParte.Parent', 'f');
+  a('\tlocal humanoid = personaje:FindFirstChild("Humanoid")', 'f');
+  if (B.humanoid){
+    a('\thumanoid.Health = 0 -- sin comprobar', 'mata', true);
+  } else {
+    a('\tif humanoid then', 'si');
+    a('\t\thumanoid.Health = 0', 'mata');
+    a('\tend', 'si');
+  }
+  a('end', 'f');
+  a('');
+  a('lava.Touched:Connect(matar)', 'conn');
+  return L;
+}
+function scriptAscensor(){
+  const L = [], a = (t, id, c) => L.push({t, id, cambiado:c});
+  a('-- Script «Ascensor» · dentro del ascensor (Anchored = true)', 'cab', B.anclado);
+  a('local TweenService = game:GetService("TweenService")');
+  a('local ascensor = script.Parent');
+  a('');
+  a(`local info = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, ${B.repite ? '0' : '-1'}, true)`, 'info', B.repite);
+  a('local destino = { Position = ascensor.Position + Vector3.new(0, 12, 0) }', 'dest');
+  a('');
+  a('TweenService:Create(ascensor, info, destino):Play()', 'play');
+  return L;
+}
+const CORRECTO = () => { const g = {...B}; Object.keys(B).forEach(k => B[k] = false); const t = {etapas: texto(scriptEtapas()), lava: texto(scriptLava()), ascensor: texto(scriptAscensor())}; Object.assign(B, g); return t; };
+const texto = L => L.map(l => l.t).join('\n') + '\n';
+
+/* ------------------------------------------------------------ mundo (vista lateral 960 × 420) */
+const MUNDO = [
+  {id:'inicio', x:0,   y:340, w:150, h:80,  tipo:'spawn', nombre:'SpawnLocation (inicio)', texto:'Una SpawnLocation es una pieza donde aparecen los jugadores. Está fuera de la carpeta Checkpoints, así que todos empiezan aquí.', uso:'Propiedades: Anchored = true, Neutral = true.'},
+  {id:'platA',  x:230, y:340, w:100, h:24,  tipo:'solida', nombre:'Plataforma (Part)', texto:'Una pieza normal. Con Anchored = true no se cae y con CanCollide = true no se atraviesa.', uso:'Prueba en «Estropéalo» a quitarle CanCollide.'},
+  {id:'lava1',  x:330, y:356, w:100, h:64,  tipo:'lava', nombre:'Lava (Part con un Script)', texto:'Material Neon, color naranja. Su Script conecta el evento Touched con la función matar.', uso:'Si lo que toca tiene Humanoid, pone Health = 0.'},
+  {id:'suelo1', x:430, y:340, w:140, h:80,  tipo:'solida', nombre:'Suelo (Part)', texto:'Suelo anclado donde está el checkpoint 1.', uso:'Anchored = true, CanCollide = true.'},
+  {id:'cp1',    x:470, y:334, w:56,  h:6,   tipo:'cp', n:1, nombre:'Checkpoint «1» (SpawnLocation)', texto:'Está en la carpeta Checkpoints y se llama «1». El script Etapas lee su nombre como número.', uso:'Al tocarlo: Etapa = 1 y RespawnLocation = este checkpoint.'},
+  {id:'lava2',  x:570, y:384, w:90,  h:36,  tipo:'lava', nombre:'Lava bajo el ascensor', texto:'Otra pieza de lava con el mismo Script. Si caes del ascensor, la tocas.', uso:'El mismo script sirve para todas las lavas.'},
+  {id:'elev',   x:590, y:340, w:70,  h:16,  tipo:'elev', nombre:'Ascensor (Part con TweenService)', texto:'Sube 12 studs y vuelve a bajar sin parar. TweenService cambia su posición poco a poco.', uso:'Anchored = true: si no, la física lo deja caer.'},
+  {id:'repisa', x:660, y:210, w:160, h:210, tipo:'solida', nombre:'Repisa alta (Part)', texto:'Demasiado alta para saltar desde el suelo: solo se llega con el ascensor.', uso:'Anchored = true, CanCollide = true.'},
+  {id:'cp2',    x:700, y:204, w:56,  h:6,   tipo:'cp', n:2, nombre:'Checkpoint «2» (SpawnLocation)', texto:'Se llama «2». Si mueres en la lava del final, reapareces aquí.', uso:'Al tocarlo: Etapa = 2.'},
+  {id:'lava3',  x:820, y:392, w:30,  h:28,  tipo:'lava', nombre:'Lava final', texto:'Un último hueco con lava.', uso:'Mismo Script de lava.'},
+  {id:'meta',   x:850, y:260, w:110, h:160, tipo:'solida', nombre:'Plataforma de la meta', texto:'La última plataforma.', uso:'Anchored = true.'},
+  {id:'cp3',    x:880, y:254, w:56,  h:6,   tipo:'cp', n:3, meta:true, nombre:'Checkpoint «3»: la meta', texto:'Es otro checkpoint de la carpeta, llamado «3». Al tocarlo, Etapa = 3: obby completado.', uso:'Puedes añadir un mensaje o un sonido de victoria.'},
+];
+const P_ = id => MUNDO.find(o => o.id === id);
+const ELEV_Y0 = 340, ELEV_SUBE = 138;     // 12 studs ≈ 130 px en el dibujo
+const G = 1500, VSALTO = 600, VEL = 190, ANCHO = 22, ALTO = 34;
+const RESPAWN = {inicio:{x:60, y:340, nombre:'SpawnLocation (inicio)'}, cp1:{x:498, y:334, nombre:'Checkpoint 1'}, cp2:{x:728, y:204, nombre:'Checkpoint 2'}, cp3:{x:908, y:254, nombre:'Checkpoint 3 (meta)'}};
+
+/* ------------------------------------------------------------ estado */
+let S;
+function nuevoEstado(){
+  return {
+    t:0, jug:{x:60, y:340, vx:0, vy:0, suelo:null, vivo:true, muerte:0, vida:100},
+    etapa:0, etapaCliente:0, resp:'inicio', toques:0, muertes:0, completado:false,
+    elev:{y:ELEV_Y0, vy:0, caido:false, cayendo:false}, bola:null, tocando:{}, ultimoToque:{},
+    fase:0, ultimaLinea:{}, salida:[]
+  };
+}
+const teclas = {izq:false, der:false, saltar:false};
+let auto = false, vel = 1;
+
+/* ------------------------------------------------------------ dibujo */
+const svg = $('#svg');
+const el = (tag, at, padre = svg) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); padre.appendChild(e); return e; };
+const COL = {solida:'var(--suelo)', spawn:'var(--suelo)', lava:'var(--lava)', elev:'var(--elev)', cp:'var(--cp)'};
+const R = {};
+function dibujaMundo(){
+  svg.innerHTML = '';
+  el('rect', {x:0, y:0, width:960, height:420, style:'fill:var(--cielo)'});
+  el('rect', {x:0, y:412, width:960, height:8, style:'fill:var(--vacio);opacity:.55'});
+  el('text', {x:190, y:404, 'text-anchor':'middle', 'font-size':13, style:'fill:var(--muted)', class:'nombre'}).textContent = 'vacío';
+  for (const o of MUNDO){
+    const g = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':o.nombre, 'data-id':o.id});
+    const r = el('rect', {x:o.x, y:o.y, width:o.w, height:o.h, rx:o.tipo === 'cp' ? 2 : 4, style:`fill:${o.meta ? 'var(--meta)' : COL[o.tipo]};stroke:rgba(0,0,0,.25)`}, g);
+    if (o.tipo === 'lava') el('rect', {x:o.x, y:o.y, width:o.w, height:5, style:'fill:var(--lava2)'}, g);
+    if (o.tipo === 'spawn') el('rect', {x:30, y:334, width:60, height:6, rx:2, style:'fill:#cbd5e1;stroke:#94a3b8'}, g);
+    R[o.id] = {g, r};
+    g.addEventListener('click', () => muestraPieza(o));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); muestraPieza(o); } });
+  }
+  // banderas
+  el('line', {x1:908, y1:254, x2:908, y2:200, style:'stroke:var(--ink2);stroke-width:3'});
+  el('path', {d:'M908 200 L944 212 L908 224 Z', style:'fill:var(--meta)'});
+  // nombres
+  const N = [['Inicio', 75, 330], ['Plataforma', 280, 330], ['Lava', 380, 348], ['CP 1', 498, 326], ['Ascensor', 625, 0], ['CP 2', 728, 196], ['Meta', 905, 190]];
+  R.nombres = N.map(([t, x, y]) => { const e = el('text', {x, y, 'text-anchor':'middle', 'font-size':14, 'font-weight':700, style:'fill:var(--ink);pointer-events:none', class:'nombre'}); e.textContent = t; return e; });
+  // bola
+  R.bola = el('circle', {cx:-50, cy:-50, r:11, style:'fill:#f8fafc;stroke:#334155;stroke-width:2'});
+  // jugador (cabeza, torso, piernas)
+  R.jug = el('g', {});
+  R.piernas = el('rect', {x:-10, y:-14, width:20, height:14, style:'fill:var(--piernas)'}, R.jug);
+  R.torso = el('rect', {x:-11, y:-28, width:22, height:14, style:'fill:var(--torso)'}, R.jug);
+  R.cabeza = el('rect', {x:-7, y:-40, width:14, height:12, rx:2, style:'fill:var(--piel)'}, R.jug);
+  R.marca = el('text', {x:0, y:-46, 'text-anchor':'middle', 'font-size':12, 'font-weight':700, style:'fill:var(--ink)'}, R.jug);
+  R.marca.textContent = ALIAS;
+  R.toque = el('circle', {cx:0, cy:0, r:16, style:'fill:none;stroke:var(--tu);stroke-width:3;opacity:0'});
+  R.banner = el('g', {style:'display:none'});
+  el('rect', {x:300, y:60, width:360, height:70, rx:14, style:'fill:var(--card);stroke:var(--meta);stroke-width:3'}, R.banner);
+  R.bannerT = el('text', {x:480, y:104, 'text-anchor':'middle', 'font-size':24, 'font-weight':800, style:'fill:var(--ink)'}, R.banner);
+}
+function muestraPieza(o){
+  $('#piezaTitulo').textContent = o.nombre; $('#piezaTexto').textContent = o.texto; $('#piezaUso').textContent = o.uso; $('#pieza').hidden = false;
+}
+$('#piezaCerrar').onclick = () => $('#pieza').hidden = true;
+
+function pinta(){
+  const j = S.jug, e = S.elev;
+  R.elev.r.setAttribute('y', e.y);
+  P_('elev').y = e.y;
+  R.platA.r.style.opacity = B.colision ? .45 : 1;
+  R.platA.r.style.strokeDasharray = B.colision ? '6 4' : '';
+  R.nombres[4].setAttribute('y', e.y - 8);
+  R.jug.setAttribute('transform', `translate(${j.x} ${j.y})`);
+  if (!j.vivo){ // personaje «roto»
+    const k = Math.min(1, (S.t - j.muerte) * 2);
+    R.cabeza.setAttribute('transform', `translate(${-14 * k} ${20 * k}) rotate(${-60 * k})`);
+    R.torso.setAttribute('transform', `translate(${10 * k} ${14 * k}) rotate(${40 * k})`);
+    R.piernas.setAttribute('transform', `translate(0 ${4 * k})`);
+  } else { [R.cabeza, R.torso, R.piernas].forEach(p => p.removeAttribute('transform')); }
+  if (S.bola){ R.bola.setAttribute('cx', S.bola.x); R.bola.setAttribute('cy', S.bola.y); } else { R.bola.setAttribute('cx', -50); }
+  R.banner.style.display = S.completado ? '' : 'none';
+  R.bannerT.textContent = '🏁 ¡Obby completado!';
+}
+
+/* ------------------------------------------------------------ física */
+function solidos(){
+  return MUNDO.filter(o => o.tipo !== 'cp' && !(o.id === 'platA' && B.colision));
+}
+const solapa = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+function caja(j){ return {x:j.x - ANCHO / 2, y:j.y - ALTO, w:ANCHO, h:ALTO}; }
+
+function pasoAscensor(dt){
+  const e = S.elev;
+  if (B.anclado){
+    if (!e.caido){ e.vy += G * dt; e.y += e.vy * dt; P_('elev').y = e.y; const tope = P_('lava2').y - P_('elev').h; if (e.y >= tope){ e.y = tope; P_('elev').y = tope; e.vy = 0; if (!e.caido){ e.caido = true; log('warn', 'Workspace.Ascensor: Anchored = false → la física lo ha dejado caer sobre la lava.'); } } }
+    return 0;
+  }
+  const T = 3, ciclo = S.t % (2 * T);
+  let y;
+  if (B.repite && S.t >= 2 * T) y = ELEV_Y0;
+  else y = ciclo < T ? ELEV_Y0 - ELEV_SUBE * (ciclo / T) : ELEV_Y0 - ELEV_SUBE * (1 - (ciclo - T) / T);
+  const dy = y - e.y; e.y = y; P_('elev').y = y; return dy;
+}
+
+function paso(dt){
+  S.t += dt;
+  const dyElev = pasoAscensor(dt);
+  const j = S.jug;
+  if (!j.vivo){
+    if (S.t - j.muerte > 1.5) reaparece();
+    actualizaBola(dt); return;
+  }
+  if (S.completado){ j.vx = 0; }
+  // entrada
+  const ent = auto ? piloto() : teclas;
+  j.vx = S.completado ? 0 : (ent.der ? VEL : 0) - (ent.izq ? VEL : 0);
+  if (ent.saltar && j.suelo){ j.vy = -VSALTO; j.suelo = null; }
+  // arrastre del ascensor
+  if (j.suelo === 'elev') j.y += dyElev;
+  // eje x
+  j.x += j.vx * dt;
+  for (const o of solidos()){ const c = caja(j); if (solapa(c, o)){ if (j.vx > 0) j.x = o.x - ANCHO / 2; else if (j.vx < 0) j.x = o.x + o.w + ANCHO / 2; } }
+  j.x = Math.max(ANCHO / 2, Math.min(960 - ANCHO / 2, j.x));
+  // eje y
+  j.vy += G * dt; j.y += j.vy * dt; j.suelo = null;
+  for (const o of solidos()){
+    const c = caja(j);
+    if (solapa(c, o)){
+      if (j.vy >= 0 && c.y + c.h - o.y < 26){ j.y = o.y; j.vy = 0; j.suelo = o.id; }
+      else if (j.vy < 0){ j.y = o.y + o.h + ALTO; j.vy = 0; }
+    }
+  }
+  // contactos (Touched)
+  const c = caja(j), pies = {x:c.x, y:c.y, w:c.w, h:c.h + 2};
+  for (const o of MUNDO){
+    const toca = solapa(pies, o);
+    if (toca && (o.tipo === 'lava' || o.tipo === 'cp')){
+      const nuevo = !S.tocando[o.id];
+      const repite = !nuevo && j.vx !== 0 && S.t - (S.ultimoToque[o.id] || 0) > 0.12;
+      if (nuevo || repite){ S.ultimoToque[o.id] = S.t; touched(o); if (!j.vivo) break; }
+    }
+    S.tocando[o.id] = toca;
+  }
+  if (j.vivo && j.y > 440){ muere('Has caído al vacío: Roblox destruye el personaje y reaparece.'); }
+  actualizaBola(dt);
+  // fase
+  S.fase = S.completado ? 6 : j.x < 150 ? 0 : j.x < 330 ? 1 : j.x < 470 ? 2 : j.x < 585 ? 3 : j.x < 700 ? 4 : j.x < 850 ? 5 : 6;
+}
+
+function touched(o){
+  S.toques++;
+  flash(o);
+  if (o.tipo === 'lava'){
+    marca('lava', ['conn', 'f', 'si', 'mata']);
+    S.jug.vida = 0; log('', `${o.id === 'lava1' ? 'Lava' : o.id === 'lava2' ? 'Lava (ascensor)' : 'Lava final'}.Touched → Humanoid encontrado → Health = 0`);
+    muere('Has tocado la lava: el script ha puesto Health = 0.');
+    return;
+  }
+  // checkpoint
+  marca('etapas', ['touch', 'si', 'sube', 'resp']);
+  const antes = S.etapa;
+  if (B.suma){
+    S.etapaCliente++; if (!B.cliente) S.etapa = S.etapaCliente; else S.etapa = S.etapa;
+    if (!B.cliente) S.resp = o.id;
+    log('warn', `Checkpoints.${o.n}.Touched → Etapa = ${B.cliente ? S.etapaCliente : S.etapa} (suma 1 en cada toque)`);
+    narra(`Touched se ha disparado otra vez y la Etapa sube a ${B.cliente ? S.etapaCliente : S.etapa}: el script suma en cada toque en lugar de usar el número del checkpoint.`);
+  } else if (o.n > (B.cliente ? S.etapaCliente : S.etapa)){
+    if (B.cliente){ S.etapaCliente = o.n; log('warn', `(cliente) Etapa = ${o.n}, RespawnLocation = Checkpoint ${o.n} → el servidor no se entera`); narra(`Tu pantalla dice Etapa ${o.n}, pero el cambio se ha hecho en el cliente: el servidor sigue con la reaparición en el inicio.`); }
+    else { S.etapa = o.n; S.etapaCliente = o.n; S.resp = o.id; log('info', `Checkpoints.${o.n}.Touched → ${o.n} > ${antes} → Etapa = ${o.n}, RespawnLocation = Checkpoint ${o.n}`); narra(o.meta ? '¡Meta! Etapa = 3. Has completado el obby.' : `Checkpoint ${o.n}: Etapa = ${o.n}. Si mueres, reapareces aquí.`); }
+  } else {
+    marca('etapas', ['touch', 'si']);
+  }
+  if (o.meta && !S.completado){ S.completado = true; }
+}
+
+function muere(txt){
+  const j = S.jug; if (!j.vivo) return;
+  j.vivo = false; j.muerte = S.t; j.vida = 0; S.muertes++;
+  narra(txt + ` Reaparecerás en ${RESPAWN[S.resp].nombre}.`);
+}
+function reaparece(){
+  const r = RESPAWN[S.resp], j = S.jug;
+  Object.assign(j, {x:r.x, y:r.y, vx:0, vy:0, suelo:null, vivo:true, vida:100});
+  S.tocando = {}; S.ultimoToque = {};
+  if (B.cliente && S.resp === 'inicio' && S.etapaCliente > 0) narra('Has reaparecido en el inicio aunque tu pantalla dice otra etapa: el checkpoint se guardó solo en el cliente.');
+  log('', `Personaje de ${ALIAS} reaparece en ${r.nombre}`);
+}
+
+/* bola: pieza sin Humanoid */
+function actualizaBola(dt){
+  const b = S.bola; if (!b) return;
+  if (b.fin){ if (S.t > b.fin) S.bola = null; return; }
+  b.vy += G * dt; b.y += b.vy * dt;
+  const l = P_('lava1');
+  if (b.y + 11 >= l.y){ b.y = l.y - 11; b.vy = 0; b.fin = S.t + 2; S.toques++; flash(l);
+    marca('lava', B.humanoid ? ['conn', 'f', 'mata'] : ['conn', 'f', 'si']);
+    if (B.humanoid){ log('err', 'Workspace.Lava.Script:6: attempt to index nil with \'Health\''); narra('La bola no tiene Humanoid: FindFirstChild devuelve nil y el script da un error en la ventana Salida.'); }
+    else { log('', 'Lava.Touched → la bola no tiene Humanoid → no pasa nada'); narra('La bola ha tocado la lava, pero no es un personaje: el «if humanoid then» evita el error y no pasa nada.'); }
+  }
+}
+$('#btnBola').onclick = () => { S.bola = {x:380, y:20, vy:0}; };
+
+/* ------------------------------------------------------------ piloto automático */
+function piloto(){
+  const j = S.jug, e = S.elev, k = {izq:false, der:true, saltar:false};
+  if (S.completado) return {izq:false, der:false, saltar:false};
+  if (j.suelo) S.ultimoSuelo = j.suelo;
+  if (j.suelo === 'inicio' && j.x > 128) k.saltar = true;
+  if (j.suelo === 'platA' && j.x > 310) k.saltar = true;
+  if (j.suelo === 'suelo1' && j.x > 545){
+    const listo = e.y > ELEV_Y0 - 10;          // ascensor abajo
+    if (listo){ if (j.x > 552) k.saltar = true; } else k.der = false;
+  }
+  if (!j.suelo && S.ultimoSuelo === 'suelo1' && j.x > 612) k.der = false;   // frena en el aire sobre el ascensor
+  if (j.suelo === 'elev'){ k.der = j.x < 615 || e.y <= P_('repisa').y - 1; }
+  return k;
+}
+
+/* ------------------------------------------------------------ programa */
+let tab = 'etapas';
+function marca(nombre, ids){ S.ultimaLinea[nombre] = {ids, t:performance.now()}; if (nombre === tab) pintaPrograma(); }
+function pintaPrograma(){
+  const esProps = tab === 'props';
+  $('#codigo').hidden = esProps; $('#props').hidden = !esProps; $('#copiar').hidden = esProps;
+  $('#dondeVa').textContent = {etapas:'Script de servidor en ServerScriptService. Crea el marcador y vigila la lista de checkpoints.', lava:'Script dentro de cada pieza de lava. «script.Parent» es la pieza en la que está.', ascensor:'Script dentro del ascensor. Lo mueve sin parar con TweenService.', props:'Propiedades que se cambian en la ventana Propiedades de Studio, sin código.'}[tab];
+  if (esProps){
+    const filas = [['Plataforma', 'Anchored', 'true', false], ['Plataforma', 'CanCollide', B.colision ? 'false' : 'true', B.colision], ['Ascensor', 'Anchored', B.anclado ? 'false' : 'true', B.anclado], ['Lava', 'Material', 'Neon', false], ['Checkpoints', 'Name', '"1", "2", "3"', false]];
+    $('#propsCuerpo').innerHTML = filas.map(([p, k, v, mal]) => `<tr><td>${p}</td><td>${k}</td><td class="${mal ? 'mal' : ''}">${v}</td></tr>`).join('');
+    return;
+  }
+  const L = tab === 'etapas' ? scriptEtapas() : tab === 'lava' ? scriptLava() : scriptAscensor();
+  const u = S && S.ultimaLinea[tab], vivo = u && performance.now() - u.t < 1200;
+  $('#codigo').innerHTML = L.map(l => `<span class="${l.cambiado ? 'cambiado ' : ''}${vivo && l.id && u.ids.includes(l.id) ? 'on-tu' : ''}">${esc(l.t.replace(/\t/g, '    ')) || ' '}</span>`).join('');
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', x === b)); pintaPrograma(); });
+$('#copiar').onclick = async () => {
+  const t = CORRECTO()[tab];
+  try { await navigator.clipboard.writeText(t); $('#copiado').textContent = 'Copiado. Pégalo en un Script de Roblox Studio.'; }
+  catch(e){ const ta = $('#copiaManual'); ta.hidden = false; ta.value = t; ta.select(); $('#copiado').textContent = 'Selecciona el texto y cópialo (Ctrl + C).'; }
+};
+
+/* ------------------------------------------------------------ paneles */
+function log(tipo, txt){
+  const s = Math.floor(S.t * 10) / 10;
+  S.salida.push({tipo, txt:`${s.toFixed(1).replace('.', ',')} s  ${txt}`}); if (S.salida.length > 60) S.salida.shift();
+  const d = $('#salida'); d.innerHTML = S.salida.map(l => `<div class="${l.tipo}">${esc(l.txt)}</div>`).join(''); d.scrollTop = d.scrollHeight;
+}
+function narra(t){ $('#narracion').textContent = t; }
+let flashT = null;
+function flash(o){
+  if (!ver.toques) return;
+  R.toque.setAttribute('cx', S.jug.x); R.toque.setAttribute('cy', S.jug.y - 4); R.toque.style.opacity = 1;
+  clearTimeout(flashT); flashT = setTimeout(() => R.toque.style.opacity = 0, 160);
+}
+function refresca(){
+  const j = S.jug, et = B.cliente ? S.etapaCliente : S.etapa;
+  $('#monitor').innerHTML = `<tr><td>${ALIAS}</td><td class="num"><b>${et}</b>${B.cliente && S.etapaCliente !== S.etapa ? ' <small>(solo en tu pantalla)</small>' : ''}</td><td>${RESPAWN[S.resp].nombre}</td><td class="num">${j.vivo ? 100 : 0}</td></tr>`;
+  $('#vToques').textContent = S.toques; $('#vMuertes').textContent = S.muertes; $('#vTiempo').textContent = Math.floor(S.t) + ' s';
+  $('#mToques').classList.toggle('mal', B.suma && et > 3);
+  document.querySelectorAll('#fases li').forEach((li, i) => { li.classList.toggle('activa', i === S.fase); li.classList.toggle('hecha', i < S.fase); });
+}
+function explica(){
+  const t = [];
+  if (B.suma) t.push('<p><b>Suma en cada toque:</b> Touched se dispara muchas veces mientras andas encima. La etapa se dispara y ya no dice en qué checkpoint estás.</p>');
+  if (B.cliente) t.push('<p><b>LocalScript:</b> el cambio solo existe en tu ordenador. El servidor, que es quien te hace reaparecer, no lo ve: vuelves al inicio.</p>');
+  if (B.humanoid) t.push('<p><b>Sin comprobar Humanoid:</b> con personajes funciona, pero cualquier otra pieza que toque la lava (suelta la bola) provoca un error en Salida.</p>');
+  if (B.repite) t.push('<p><b>repeatCount = 0:</b> el ascensor sube y baja una sola vez al arrancar el servidor (6 s) y se queda abajo. Cuando llegas, ya no sube.</p>');
+  if (B.anclado) t.push('<p><b>Ascensor sin Anchored:</b> la física de Roblox lo deja caer en cuanto arranca el juego. El tween no lo levanta y la repisa queda fuera de tu alcance.</p>');
+  if (B.colision) t.push('<p><b>CanCollide = false:</b> la plataforma se ve, pero no es sólida: la atraviesas y caes al vacío.</p>');
+  $('#explica').innerHTML = t.join('') || '<p>Todo está bien programado. Activa un fallo y juega para ver qué cambia.</p>';
+}
+const ver = {nombres:true, toques:false};
+$('#optNombres').onclick = function(){ ver.nombres = !ver.nombres; this.setAttribute('aria-pressed', ver.nombres); svg.querySelectorAll('.nombre').forEach(n => n.style.display = ver.nombres ? '' : 'none'); };
+$('#optToques').onclick = function(){ ver.toques = !ver.toques; this.setAttribute('aria-pressed', ver.toques); };
+
+const MAPA = {bSuma:'suma', bCliente:'cliente', bHumanoid:'humanoid', bRepite:'repite', bAnclado:'anclado', bColision:'colision'};
+const REINICIA = ['repite', 'anclado'];
+for (const [id, k] of Object.entries(MAPA)){
+  $('#' + id).onchange = e => { B[k] = e.target.checked; if (REINICIA.includes(k)) reiniciar('Los cambios en el ascensor se aplican al arrancar el servidor: se ha reiniciado.'); pintaPrograma(); explica(); };
+}
+$('#normalidad').onclick = () => { for (const [id, k] of Object.entries(MAPA)){ B[k] = false; $('#' + id).checked = false; } reiniciar(); pintaPrograma(); explica(); };
+$('#probarError').onclick = () => {
+  $('#bSuma').checked = true; B.suma = true; reiniciar(); pintaPrograma(); explica();
+  tab = 'etapas'; document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', x.dataset.tab === 'etapas')); pintaPrograma();
+  setAuto(true); document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+function reiniciar(msg){
+  S = nuevoEstado(); P_('elev').y = ELEV_Y0;
+  $('#salida').innerHTML = ''; log('info', `Servidor iniciado · ${ALIAS} se une al juego · leaderstats creado (Etapa = 0)`);
+  marca('etapas', ['add']);
+  narra(msg || 'Servidor reiniciado. Juega tú o pulsa «Que lo juegue solo».'); refresca(); pinta();
+}
+function setAuto(v){ auto = v; $('#btnAuto').setAttribute('aria-pressed', v); $('#btnAuto').textContent = v ? '⏸ Parar el modo automático' : '▶ Que lo juegue solo'; if (v && S.completado) reiniciar(); }
+$('#btnAuto').onclick = () => setAuto(!auto);
+$('#btnReiniciar').onclick = () => reiniciar();
+$('#velocidad').onchange = e => vel = +e.target.value;
+
+/* teclado y botones */
+const escena = $('#escena');
+const TK = {ArrowLeft:'izq', a:'izq', A:'izq', ArrowRight:'der', d:'der', D:'der', ' ':'saltar', ArrowUp:'saltar', w:'saltar', W:'saltar'};
+escena.addEventListener('keydown', e => { const k = TK[e.key]; if (!k) return; e.preventDefault(); teclas[k] = true; if (auto) setAuto(false); });
+escena.addEventListener('keyup', e => { const k = TK[e.key]; if (k) teclas[k] = false; });
+escena.addEventListener('blur', () => Object.keys(teclas).forEach(k => teclas[k] = false));
+document.querySelectorAll('[data-tecla]').forEach(b => {
+  const k = b.dataset.tecla, on = e => { e.preventDefault(); teclas[k] = true; if (auto) setAuto(false); }, off = () => teclas[k] = false;
+  b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
+});
+
+/* bucle */
+let antes = null, acum = 0, ultimoPanel = 0;
+function bucle(ts){
+  if (antes === null) antes = ts;
+  let dt = Math.min(0.05, (ts - antes) / 1000) * vel; antes = ts;
+  acum += dt; while (acum > 1 / 120){ paso(1 / 120); acum -= 1 / 120; }
+  pinta();
+  if (ts - ultimoPanel > 150){ refresca(); ultimoPanel = ts; if (S.ultimaLinea[tab]) pintaPrograma(); }
+  requestAnimationFrame(bucle);
+}
+
+// preguntas
+document.querySelectorAll('.pregunta').forEach(f => f.addEventListener('change', () => {
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+}));
+// comprobación (se guarda en el navegador)
+const CLAVE = 'lab-roblox-obby-sda2';
+let marcas = []; try { marcas = JSON.parse(localStorage.getItem(CLAVE) || '[]'); } catch(e){}
+document.querySelectorAll('#comprobacion input').forEach((c, i) => { c.checked = !!marcas[i]; c.onchange = () => { marcas[i] = c.checked; try { localStorage.setItem(CLAVE, JSON.stringify(marcas)); } catch(e){} }; });
+// tema
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+// arranque
+dibujaMundo(); reiniciar('Juega tú o pulsa «Que lo juegue solo». Mira qué línea de cada script se ejecuta al tocar cada pieza.'); explica();
+requestAnimationFrame(bucle);
+window.__lab = {get S(){ return S; }, B, paso, reiniciar, setAuto, CORRECTO};
+})();
+</script>
+</body>
+</html>
