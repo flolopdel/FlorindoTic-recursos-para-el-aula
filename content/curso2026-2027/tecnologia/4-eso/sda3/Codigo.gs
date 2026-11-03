@@ -8,6 +8,7 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       TEC4_SDA3_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   TEC4_SDA3_crearF1_DiagnosticoInicialQueSe()  →  Diagnóstico inicial: ¿qué sé de electrónica? (sesión 1, anónimo)
+ *        ya creado: https://forms.gle/5gaKKhwNtks3HxTk6
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
@@ -183,6 +184,7 @@ var FORMULARIOS = [
         "obligatoria": false
       }
     ],
+    "enlace": "https://forms.gle/5gaKKhwNtks3HxTk6",
     "sesiones": "Sesión 1"
   }
 ];
