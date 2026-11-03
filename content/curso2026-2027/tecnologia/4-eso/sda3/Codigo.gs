@@ -8,7 +8,6 @@
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
  *       TEC4_SDA3_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
  *   TEC4_SDA3_crearF1_DiagnosticoInicialQueSe()  →  Diagnóstico inicial: ¿qué sé de electrónica? (sesión 1, anónimo)
- *   TEC4_SDA3_crearF2_CoevaluacionDeLasPresentaciones()  →  Coevaluación de las presentaciones Smart City (sesión 15)
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
  *     Sus enlaces quedan en la hoja «SdA 3 · Enlaces de formularios» de la carpeta de la SdA:
@@ -30,7 +29,6 @@ function crearTodosLosFormularios() {
 }
 
 function crearF1_DiagnosticoInicialQueSe() { return crearFormulario_("F1"); }
-function crearF2_CoevaluacionDeLasPresentaciones() { return crearFormulario_("F2"); }
 
 function crearFormulario_(id) {
   var f = FORMULARIOS.filter(function (x) { return x.id === id; })[0];
@@ -186,70 +184,14 @@ var FORMULARIOS = [
       }
     ],
     "sesiones": "Sesión 1"
-  },
-  {
-    "id": "F2",
-    "titulo": "Coevaluación de las presentaciones Smart City",
-    "anonimo": false,
-    "repetible": true,
-    "obligatorias": true,
-    "descripcion": "Responde una vez por cada pareja que presenta. Sé respetuoso/a y concreto/a.",
-    "confirmacion": "¡Gracias! Pulsa «Enviar otra respuesta» para valorar a la siguiente pareja.",
-    "preguntas": [
-      {
-        "tipo": "desplegable",
-        "titulo": "Pareja que presenta",
-        "ayuda": "El docente cambia estas opciones por los nombres de las Smart City de la clase.",
-        "opciones": [
-          "Pareja 1",
-          "Pareja 2",
-          "Pareja 3",
-          "Pareja 4",
-          "Pareja 5",
-          "Pareja 6",
-          "Pareja 7",
-          "Pareja 8",
-          "Pareja 9",
-          "Trío"
-        ]
-      },
-      {
-        "tipo": "cuadricula",
-        "titulo": "Valora la presentación",
-        "filas": [
-          "Explican el problema real que resuelven",
-          "Se entiende cómo funciona el alumbrado",
-          "La maqueta está cuidada y a escala",
-          "Hablan los dos y respetan el tiempo",
-          "Explican a quién ayuda y cómo ahorra energía"
-        ],
-        "columnas": [
-          "Sí",
-          "En parte",
-          "Todavía no"
-        ]
-      },
-      {
-        "tipo": "texto",
-        "titulo": "Lo que más me ha gustado"
-      },
-      {
-        "tipo": "texto",
-        "titulo": "Una mejora concreta",
-        "obligatoria": false
-      }
-    ],
-    "sesiones": "Sesión 15"
   }
 ];
 
   return {
     crearTodosLosFormularios: crearTodosLosFormularios,
-    crearF1_DiagnosticoInicialQueSe: crearF1_DiagnosticoInicialQueSe,
-    crearF2_CoevaluacionDeLasPresentaciones: crearF2_CoevaluacionDeLasPresentaciones
+    crearF1_DiagnosticoInicialQueSe: crearF1_DiagnosticoInicialQueSe
   };
 })();
 
 function TEC4_SDA3_crearTodosLosFormularios() { return TEC4_SDA3.crearTodosLosFormularios(); }
 function TEC4_SDA3_crearF1_DiagnosticoInicialQueSe() { return TEC4_SDA3.crearF1_DiagnosticoInicialQueSe(); }
-function TEC4_SDA3_crearF2_CoevaluacionDeLasPresentaciones() { return TEC4_SDA3.crearF2_CoevaluacionDeLasPresentaciones(); }
