@@ -41,6 +41,7 @@ const EXACT_LABELS = new Map([
   ['moodle', 'Bloque para Moodle'],
   ['cronometro-debate', 'Cronómetro del debate'],
   ['laboratorio-piedra-papel-tijera', 'Laboratorio: piedra, papel o tijera por radio'],
+  ['laboratorio-scratch', 'Laboratorio: los retos de Scratch'],
   ['laboratorio-roblox', 'Laboratorio: tu obby en Roblox'],
 ]);
 

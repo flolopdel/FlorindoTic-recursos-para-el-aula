@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio de Scratch</title>
+<meta name="description" content="Laboratorio de la SdA 2 de Computación y Robótica 1.º ESO: cinco retos de las prácticas resueltas de Scratch (coordenadas, sensores, lápiz y polígonos, variables y sensores de color) que se ejecutan bloque a bloque, se estropean a propósito y se comprueban.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --stage-line:#cbd5e1; --code-bg:#0f172a; --code-ink:#e2e8f0; --hueco:#f1f5f9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --stage-line:#334155; --code-bg:#020617; --hueco:#0b1220;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --stage-line:#334155; --code-bg:#020617; --hueco:#0b1220;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.retos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:0 0 14px;padding:0;list-style:none}
+.retos button{width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 12px;line-height:1.3}
+.retos button small{display:block;color:var(--muted);font-size:13px;font-weight:600}
+.retos button b{display:block}
+.retos button[aria-selected="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.retos .logro{float:right;font-size:13px;color:var(--ok);font-weight:800}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.banco-grid > *{min-width:0}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;border-radius:12px;overflow:hidden;border:2px solid var(--line);background:#fff}
+.escena:focus-visible{outline:3px solid var(--accent)}
+.escena svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton.bandera{background:#4caf50;color:#fff}
+.boton.parar{background:#ec5959;color:#fff}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:620px;flex:1;background:var(--hueco)}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);padding:6px 10px}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques de Scratch */
+.obj{margin:0 0 14px}
+.obj-cab{font-size:13px;font-weight:800;color:var(--ink2);margin:0 0 6px;display:flex;gap:6px;align-items:center}
+.obj-cab::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--c)}
+.obj-cab.cambiado{color:var(--ko)}
+.pila{margin:0 0 10px;font:600 13px/1.4 system-ui,sans-serif;display:inline-block;min-width:min(100%,230px);max-width:100%}
+.blk{--c:#4C97FF;background:var(--c);color:#fff;border-radius:5px;padding:5px 9px;margin:0 0 2px;position:relative;text-shadow:0 1px 0 rgba(0,0,0,.18);transition:box-shadow .12s}
+.blk.hat{border-radius:16px 16px 5px 5px;padding-top:9px}
+.blk.c{padding-bottom:7px}
+.blk .lin{display:block}
+.blk .cuerpo{margin:4px 0 4px 0;padding:4px 0 2px 14px;background:var(--hueco);border-radius:0 5px 5px 0;min-height:14px;text-shadow:none}
+.blk .cuerpo > .blk{margin-right:0}
+.pz{display:inline-block;border-radius:999px;padding:0 7px;margin:1px 2px;font-weight:700;vertical-align:middle;line-height:1.5}
+.pz.n{background:#fff;color:#575e75;text-shadow:none}
+.pz.d{background:rgba(0,0,0,.16)}
+.pz.rep{background:var(--c);color:#fff;border:1px solid rgba(0,0,0,.15)}
+.pz.bool{background:var(--c);color:#fff;border-radius:4px;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%);padding:0 12px;border:0}
+.sw{display:inline-block;width:18px;height:14px;border-radius:999px;border:2px solid #fff;vertical-align:middle}
+.hl{box-shadow:0 0 0 3px var(--hlc),0 0 12px var(--hlc)}
+.lin.hl{box-shadow:none;outline:3px solid var(--hlc);outline-offset:1px;border-radius:4px}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+.nuevo{outline:2px dashed var(--ok);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.hl{box-shadow:inset 4px 0 0 var(--hlc);background:rgba(255,255,255,.1)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.18)}
+pre.codigo span.obj-l{color:#94a3b8}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo,input.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 9px}
+input.campo.corto{width:5.2em}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr 1fr;margin-top:14px}
+@media(max-width:1100px){.paneles{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.vars{font-size:14px;margin:8px 0 0;color:var(--ink2)}
+.vars b{background:#FF8C1A;color:#fff;border-radius:6px;padding:0 6px;margin-right:4px}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:17px}
+.medida-item.mal .v{color:var(--ko)}.medida-item.bien .v{color:var(--ok)}
+.rompelo{margin-bottom:10px}
+.interruptor{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.interruptor input{margin-top:5px}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.ctl label{font-size:14px;font-weight:600}
+.objetivos{list-style:none;padding:0;margin:10px 0 0}
+.objetivos li{display:flex;gap:8px;align-items:flex-start;margin:6px 0;padding:7px 10px;border-radius:10px;background:var(--bg);font-size:15px}
+.objetivos li.hecho{background:var(--ok-bg)}
+.objetivos li .marca{font-weight:800;min-width:1.4em}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+.dos > *{min-width:0}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px;min-width:0}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px;min-width:0}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+code{background:var(--bg);border-radius:5px;padding:0 4px}
+@media print{.cab,.banco,.botonera{display:none}}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Laboratorio de Scratch <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 2 · Computación y Robótica 1.º ESO</span></div>
+    <a class="tb" id="enlaceClase" href="clase.html#s6">📽 Clase</a>
+    <a class="tb ocultar-movil" href="https://docs.google.com/document/d/1Bsju9D2ObOFgzrFKqAVxVq9jry2PMESmcCR9lqNSkh0/preview" target="_blank" rel="noopener">📒 Cuaderno A4</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 2 · Código en Acción</a> / <a id="migaSesion" href="clase.html#s6">Sesión 6</a> / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Laboratorio de las sesiones 6 a 12 · SdA 2</p>
+  <h1>Laboratorio de Scratch: los retos de las prácticas</h1>
+  <p class="lab-sub">Cinco prácticas resueltas, por dentro. Cada bloque se ilumina cuando se ejecuta, ves cómo cambian x, y y las variables, estropeas el programa a propósito para entender los bugs y superas el reto antes de montarlo en Scratch.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>1.º ESO, sesiones 6 a 12 (Prácticas 2 a 11)</dd></div>
+    <div><dt>Material</dt><dd>Un ordenador con Scratch y tu cuaderno de prácticas (A4)</dd></div>
+    <div><dt>Programa</dt><dd>Eventos, coordenadas, bucles, condicionales, sensores, lápiz y variables</dd></div>
+    <div><dt>Referencia</dt><dd>Textos oficiales de los bloques de Scratch 3 en español e inglés</dd></div>
+  </dl>
+</header>
+
+<ul class="retos" id="retos" role="tablist" aria-label="Elige un reto"></ul>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong id="tituloEscena">El escenario</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optRejilla" aria-pressed="false">Cuadrícula x-y</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+        </div>
+      </div>
+      <div class="escena" id="escena" tabindex="0" aria-describedby="escenaAyuda">
+        <svg id="svg" viewBox="0 0 480 360" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Escenario de Scratch de 480 por 360 con el centro en (0, 0).</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera" id="botonera" aria-label="Eventos de Scratch"></div>
+      <p class="escena-pie" id="escenaAyuda">Pulsa un objeto del escenario para saber qué hace. Haz clic en el escenario para usar el teclado (flechas y espacio), como en Scratch.</p>
+    </div>
+
+    <aside class="programa" aria-label="El programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Formato del programa">
+          <button type="button" role="tab" id="tabBloques" aria-selected="true">Bloques</button>
+          <button type="button" role="tab" id="tabPseudo" aria-selected="false">Pseudocódigo</button>
+        </div>
+        <div class="seg" id="idioma" aria-label="Idioma de los bloques">
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <div class="leyenda-hl" id="leyenda"></div>
+      <div class="programa-cuerpo">
+        <div id="bloques"></div>
+        <pre class="codigo" id="pseudo" hidden></pre>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiarPseudo">Copiar pseudocódigo</button>
+        <button type="button" class="boton sec peq" id="copiarBloques">Copiar los bloques como texto</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar paso a paso</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="lenta">Cámara lenta</option>
+          <option value="normal">Normal</option>
+          <option value="scratch">Como en Scratch</option>
+        </select>
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases del programa"></ol>
+      <p class="narracion" id="narracion" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Objeto</th><th>x</th><th>y</th><th>dirección</th><th>tamaño</th><th>visible</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <p class="vars" id="vars"></p>
+      <div class="medidas" id="medidas"></div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo" id="fallos"></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+    <section class="panel-lab" aria-labelledby="tReto">
+      <h2 id="tReto">El reto</h2>
+      <div id="controles"></div>
+      <ul class="objetivos" id="objetivos" aria-live="polite"></ul>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea" id="idea"></p>
+  <div class="dos" id="ejemplo"></div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError"></h2>
+  <div class="dos">
+    <div id="errorTexto"></div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p id="errorPista"></p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica en Scratch</p>
+  <h2 id="tPractica"></h2>
+  <div class="dos">
+    <ol class="pasos" id="pasos"></ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar la práctica por hecha</h3>
+      <ul class="comprobacion" id="comprobacion"></ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px" id="entrega"></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false"></form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de Scratch y de su código</h3><ul>
+      <li>Los textos de los bloques en español e inglés son los de la traducción oficial del editor. Ojo: en español, los bloques de variables se llaman <b>«dar a Puntos el valor 0»</b> y <b>«sumar a Puntos 1»</b>, y los de posición <b>«sumar a x 10»</b>.</li>
+      <li>El escenario mide 480 × 360: x va de −240 a 240, y de −180 a 180, y el centro es (0, 0).</li>
+      <li>Dirección 90 es a la derecha, 0 arriba, −90 a la izquierda y 180 abajo; «girar ↻» gira en el sentido de las agujas del reloj.</li>
+      <li>Un objeto «toca el borde» en cuanto una parte suya sale del escenario, y Scratch no le deja salir del todo.</li>
+      <li>Un objeto escondido no cuenta para «¿tocando…?» de los demás.</li>
+      <li>Por defecto Scratch avanza sus programas unas 30 veces por segundo; cada vuelta de un bucle espera al siguiente fotograma.</li>
+      <li>«/» divide tal cual: 360 / 0 da infinito, pero «repetir 0» no hace nada.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>Los personajes son dibujos propios, no los de la biblioteca de Scratch, y en el laboratorio no giran con la dirección: una flecha la indica.</li>
+      <li>Los choques se calculan con círculos y rectángulos; Scratch mira los píxeles de cada disfraz.</li>
+      <li>«¿tocando el color…?» compara con el color de las puertas; no se ha comprobado si un objeto escondido puede detectar colores.</li>
+      <li>En «Paso a paso», cada programa avanza un bloque por clic; en Scratch, varios programas se reparten el fotograma de otra forma.</li>
+      <li>Los tiempos de «Cámara lenta» y «Normal», el grosor del lápiz y el rastro de puntos de «Coordenadas» (que en Scratch no existe).</li>
+      <li>Los sonidos no se simulan.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-l10n" target="_blank" rel="noopener">scratch-l10n</a> (editor/blocks/es.json y en.json, editor/extensions/es.json): textos de los bloques y del lápiz.</li>
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/sprites/rendered-target.js" target="_blank" rel="noopener">scratch-vm, src/sprites/rendered-target.js</a>: «tocando el borde» y la valla que no deja salir a los objetos.</li>
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js" target="_blank" rel="noopener">scratch-render, src/RenderWebGL.js</a>: los objetos escondidos no cuentan al comprobar si se tocan.</li>
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js" target="_blank" rel="noopener">scratch-vm, src/engine/runtime.js</a>: 30 pasos por segundo en el modo normal.</li>
+    <li>Prácticas resueltas de Scratch del docente («Primeros pasos con Scratch»): enunciados, pseudocódigo y retos extra.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s5"><small>Anterior</small>Sesión 5. Primeros pasos en Scratch</a>
+  <a id="navSesion" href="clase.html#s6"><small>Web de clase</small>Sesión 6</a>
+  <a href="https://docs.google.com/document/d/1Bsju9D2ObOFgzrFKqAVxVq9jry2PMESmcCR9lqNSkh0/preview" target="_blank" rel="noopener"><small>Anexo A4</small>Mi cuaderno de prácticas de Scratch</a>
+  <a href="clase.html#s13"><small>Siguiente</small>Sesión 13. Videojuego ODS</a>
+</nav>
+<p class="pie">Laboratorio de la SdA 2 «Código en Acción: Videojuegos e Historias Interactivas Sostenibles» de Computación y Robótica 1.º ESO. La simulación es un modelo simplificado y marca lo que no se ha podido comprobar. Scratch es un proyecto de la Scratch Foundation (scratch.mit.edu); este laboratorio no está hecho ni respaldado por ella.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const CAT = {movimiento:'#4C97FF', apariencia:'#9966FF', control:'#FFAB19', eventos:'#FFBF00', sensores:'#5CB1D6', operadores:'#59C059', variables:'#FF8C1A', lapiz:'#0FBD8C'};
+
+/* ============================================================ plantillas de bloques
+   {n:5} hueco de número · {t:texto} hueco de texto · {d:menú} desplegable · {v:var} variable
+   {o:…} operador · {b:…} condición verde · {s:…} sensor (condición) · {r:…} sensor (valor)
+   {m:…} valor de movimiento · {c:#hex|nombre} color */
+function parse(txt){
+  let i = 0;
+  function seq(stop){
+    const out = []; let buf = '';
+    while (i < txt.length){
+      const ch = txt[i];
+      if (ch === '{'){ const m = /^\{([a-z]):/.exec(txt.slice(i)); if (m){ if (buf){ out.push(buf); buf = ''; } i += m[0].length; out.push({t:m[1], kids:seq(true)}); continue; } }
+      if (ch === '}' && stop){ i++; if (buf) out.push(buf); return out; }
+      buf += ch; i++;
+    }
+    if (buf) out.push(buf); return out;
+  }
+  return seq(false);
+}
+function html(nodes){
+  return nodes.map(n => {
+    if (typeof n === 'string') return esc(n);
+    const inner = html(n.kids);
+    switch (n.t){
+      case 'n': case 't': return `<span class="pz n">${inner}</span>`;
+      case 'd': return `<span class="pz d">${inner} ▾</span>`;
+      case 'v': return `<span class="pz rep" style="--c:${CAT.variables}">${inner}</span>`;
+      case 'o': return `<span class="pz rep" style="--c:${CAT.operadores}">${inner}</span>`;
+      case 'b': return `<span class="pz bool" style="--c:${CAT.operadores}">${inner}</span>`;
+      case 's': return `<span class="pz bool" style="--c:${CAT.sensores}">${inner}</span>`;
+      case 'r': return `<span class="pz rep" style="--c:${CAT.sensores}">${inner}</span>`;
+      case 'm': return `<span class="pz rep" style="--c:${CAT.movimiento}">${inner}</span>`;
+      case 'c': { const [hex, nom] = plano(n.kids).split('|'); return `<span class="sw" style="background:${esc(hex)}" title="${esc(nom || hex)}"></span><span class="sr">${esc(nom || hex)}</span>`; }
+    }
+    return inner;
+  }).join('');
+}
+function plano(nodes){
+  if (typeof nodes === 'string') nodes = parse(nodes);
+  return nodes.map(n => {
+    if (typeof n === 'string') return n;
+    const inner = plano(n.kids);
+    if (n.t === 'c') return '[' + (inner.split('|')[1] || inner) + ']';
+    if (n.t === 'n' || n.t === 't' || n.t === 'v' || n.t === 'o' || n.t === 'r' || n.t === 'm') return '(' + inner + ')';
+    if (n.t === 'd') return '[' + inner + ' ▾]';
+    return '<' + inner + '>';
+  }).join('');
+}
+const htmlT = t => html(parse(t));
+
+/* ============================================================ valores, condiciones y bloques */
+const num = n => ({es:`{n:${n}}`, en:`{n:${n}}`, ps:String(n), val:() => n});
+const aleat = (a, b) => ({es:`{o:número aleatorio entre {n:${a}} y {n:${b}}}`, en:`{o:pick random {n:${a}} to {n:${b}}}`, ps:`un número al azar entre ${a} y ${b}`, val:() => a + Math.floor(Math.random() * (b - a + 1))});
+const vr = nombre => ({es:`{v:${nombre}}`, en:`{v:${nombre}}`, ps:nombre, val:() => V[nombre]});
+const resp = () => ({es:'{r:respuesta}', en:'{r:answer}', ps:'respuesta', val:() => Number(V.respuesta) || 0});
+const posY = () => ({es:'{m:posición en y}', en:'{m:y position}', ps:'posición en y', val:s => s.y});
+const op2 = (a, sim, b, f) => ({es:`{o:${a.es} ${sim} ${b.es}}`, en:`{o:${a.en} ${sim} ${b.en}}`, ps:`${a.ps} ${sim} ${b.ps}`, val:s => f(a.val(s), b.val(s))});
+const cmp = (a, sim, b) => ({es:`{b:${a.es} ${sim} ${b.es}}`, en:`{b:${a.en} ${sim} ${b.en}}`, ps:`${a.ps} ${sim} ${b.ps}`,
+  val:s => { const x = Number(a.val(s)), y = Number(b.val(s)); return sim === '<' ? x < y : sim === '>' ? x > y : x === y; }});
+const oB = (c1, c2) => ({es:`{b:${c1.es} o ${c2.es}}`, en:`{b:${c1.en} or ${c2.en}}`, ps:`${c1.ps} o ${c2.ps}`, val:s => c1.val(s) || c2.val(s)});
+const tocando = (k, es_, en_) => ({es:`{s:¿tocando {d:${es_}}?}`, en:`{s:touching {d:${en_}}?}`, ps:`toca ${k === 'borde' ? 'el borde' : 'a ' + es_}`, val:s => toca(s, k)});
+const tocaColor = (hex, nombre) => ({es:`{s:¿tocando el color {c:${hex}|${nombre}}?}`, en:`{s:touching color {c:${hex}|${nombre}}?}`, ps:`toca el color ${nombre}`, val:s => tocaColorF(s, hex)});
+
+const B = (id, cat, es, en, ps, run, ex = {}) => Object.assign({id, cat, es, en, ps, run}, ex);
+const bIrA = (id, x, y, ex) => B(id, 'movimiento', `ir a x: ${x.es} y: ${y.es}`, `go to x: ${x.en} y: ${y.en}`, `Ir a (${x.ps}, ${y.ps})`, s => { mueveA(s, Number(x.val(s)), Number(y.val(s)), 'salto'); }, ex);
+const bDesl = (id, t, x, y, ex) => B(id, 'movimiento', `deslizar en {n:${t}} segs a x: ${x.es} y: ${y.es}`, `glide {n:${t}} secs to x: ${x.en} y: ${y.en}`, `Deslizar en ${t} s hasta (${x.ps}, ${y.ps})`, (s, h) => desliza(s, h, t, Number(x.val(s)), Number(y.val(s))), ex);
+const DIR_TXT = {0:'hacia arriba', 90:'a la derecha', '-90':'a la izquierda', 180:'hacia abajo'};
+const bDir = (id, d, ex) => B(id, 'movimiento', `apuntar en dirección {n:${d}}`, `point in direction {n:${d}}`, `Apuntar ${DIR_TXT[d] || 'en dirección ' + d}`, s => { s.dir = normDir(d); }, ex);
+const bApPuntero = (id, ex) => B(id, 'movimiento', 'apuntar hacia {d:puntero del ratón}', 'point towards {d:mouse-pointer}', 'Apuntar hacia el puntero del ratón', s => { const dx = ESC.puntero.x - s.x, dy = ESC.puntero.y - s.y; if (dx || dy) s.dir = normDir(Math.atan2(dx, dy) * 180 / Math.PI); }, ex);
+const bMover = (id, v, ex) => B(id, 'movimiento', `mover ${v.es} pasos`, `move ${v.en} steps`, `Mover ${v.ps} pasos`, s => { const n = Number(v.val(s)); const r = s.dir * Math.PI / 180; mueveA(s, s.x + n * Math.sin(r), s.y + n * Math.cos(r), 'paso'); }, ex);
+const bGirar = (id, v, ex) => B(id, 'movimiento', `girar ↻ ${v.es} grados`, `turn ↻ ${v.en} degrees`, `Girar ${v.ps}° a la derecha`, s => { const g = Number(v.val(s)); s.giroTotal = (s.giroTotal || 0) + g; s.dir = normDir(s.dir + g); }, ex);
+const bSumX = (id, n, ex) => B(id, 'movimiento', `sumar a x {n:${n}}`, `change x by {n:${n}}`, `Sumar ${n} a x`, s => { mueveA(s, s.x + n, s.y, 'paso'); }, ex);
+const bSumY = (id, v, ex) => B(id, 'movimiento', `sumar a y ${v.es}`, `change y by ${v.en}`, `Sumar ${v.ps} a y`, s => { mueveA(s, s.x, s.y + Number(v.val(s)), 'paso'); }, ex);
+const bSigD = (id, ex) => B(id, 'apariencia', 'siguiente disfraz', 'next costume', 'Cambiar al siguiente disfraz', s => { s.disfraz = (s.disfraz + 1) % 4; }, ex);
+const bDecir = (id, txt, t, ex) => B(id, 'apariencia', `decir {t:${txt}} durante {n:${t}} segundos`, `say {t:${txt}} for {n:${t}} seconds`, `Decir «${txt}» durante ${t} s`, async (s, h) => { s.dice = txt; pide(); await esperaSeg(t); s.dice = null; pide(); }, ex);
+const bTam = (id, p, ex) => B(id, 'apariencia', `fijar tamaño al {n:${p}} %`, `set size to {n:${p}} %`, `Poner el tamaño al ${p} %`, s => { s.tam = p; }, ex);
+const bEsconder = (id, ex) => B(id, 'apariencia', 'esconder', 'hide', 'Esconderse', s => { s.vis = false; }, ex);
+const bMostrar = (id, ex) => B(id, 'apariencia', 'mostrar', 'show', 'Mostrarse', s => { s.vis = true; }, ex);
+const bFondo = (id, f, ex) => B(id, 'apariencia', `cambiar fondo a {d:${f}}`, `switch backdrop to {d:${f}}`, `Cambiar el fondo a «${f}»`, () => { ESC.fondo = f; dibujaFondo(); }, ex);
+const bEsperar = (id, t, ex) => B(id, 'control', `esperar {n:${t}} segundos`, `wait {n:${t}} seconds`, `Esperar ${t} s`, () => esperaSeg(t), ex);
+const bDar = (id, nombre, v, ex) => B(id, 'variables', `dar a {d:${nombre}} el valor {n:${v}}`, `set {d:${nombre}} to {n:${v}}`, `${nombre} = ${v}`, () => { V[nombre] = v; }, ex);
+const bSumVar = (id, nombre, n, ex) => B(id, 'variables', `sumar a {d:${nombre}} {n:${n}}`, `change {d:${nombre}} by {n:${n}}`, `Sumar ${n} a ${nombre}`, () => { V[nombre] = (Number(V[nombre]) || 0) + n; }, ex);
+const bDetener = (id, ex) => B(id, 'control', 'detener {d:todos}', 'stop {d:all}', 'Detener todo', () => { detenerTodo(narrFija && performance.now() - narrFijaT < 1500 ? null : 'El programa ha llegado a «detener todos».'); }, ex);
+const bBorrar = (id, ex) => B(id, 'lapiz', 'borrar todo', 'erase all', 'Borrar la pantalla', () => { ESC.lapiz = []; }, ex);
+const bBajar = (id, ex) => B(id, 'lapiz', 'bajar lápiz', 'pen down', 'Bajar el lápiz', s => { s.lapiz = true; s.ini = {x:s.x, y:s.y}; s.giroTotal = 0; s.trazos = 0; }, ex);
+const bSubir = (id, ex) => B(id, 'lapiz', 'subir lápiz', 'pen up', 'Subir el lápiz', s => { s.lapiz = false; }, ex);
+const bPreg = (id, txt, valor, ex) => B(id, 'sensores', `preguntar {t:${txt}} y esperar`, `ask {t:${txt}} and wait`, `Preguntar «${txt}» y guardar la respuesta`, async s => {
+  s.dice = txt; ESC.pregunta = ''; pide(); await esperaSeg(0.6); ESC.pregunta = String(valor()); pide(); await esperaSeg(0.8); V.respuesta = ESC.pregunta; ESC.pregunta = null; s.dice = null; pide(); }, ex);
+const C = (k, id, es, en, ps, ex) => Object.assign({k, id, cat:'control', es, en, ps}, ex);
+const SI = (id, c, cuerpo, ex = {}) => C('si', id, `si ${c.es} entonces`, `if ${c.en} then`, `Si ${c.ps} entonces:`, Object.assign({c, cuerpo}, ex));
+const REP = (id, v, cuerpo, ex = {}) => C('repetir', id, `repetir ${v.es}`, `repeat ${v.en}`, `Repetir ${v.ps} veces:`, Object.assign({v, cuerpo}, ex));
+const SIEMPRE = (id, cuerpo, ex = {}) => C('siempre', id, 'por siempre', 'forever', 'Repetir para siempre:', Object.assign({cuerpo}, ex));
+const HASTA = (id, c, cuerpo, ex = {}) => C('hasta', id, `repetir hasta que ${c.es}`, `repeat until ${c.en}`, `Repetir hasta que ${c.ps}:`, Object.assign({c, cuerpo}, ex));
+const TECLA = {espacio:['espacio', 'space'], derecha:['flecha derecha', 'right arrow'], izquierda:['flecha izquierda', 'left arrow'], arriba:['flecha arriba', 'up arrow'], abajo:['flecha abajo', 'down arrow']};
+function HAT(ev, spr, id, cuerpo, ex = {}){
+  const es_ = ev === 'bandera' ? 'al hacer clic en 🏁' : `al presionar tecla {d:${TECLA[ev][0]}}`;
+  const en_ = ev === 'bandera' ? 'when 🏁 clicked' : `when {d:${TECLA[ev][1]}} key pressed`;
+  const ps = ev === 'bandera' ? 'Al hacer clic en la bandera:' : `Al pulsar la tecla ${TECLA[ev][0]}:`;
+  return Object.assign({hat:true, ev, spr, id, cat:'eventos', es:es_, en:en_, ps, cuerpo}, ex);
+}
+
+/* ============================================================ estado */
+let S = {}, V = {}, ESC = {fondo:'Blanco', lapiz:[], rastro:[], puntero:{x:150, y:40}, pregunta:null};
+let R = null, PROG = [], idioma = 'es', modo = 'libre', epoca = 0, velSel = 'normal';
+const VELS = {lenta:{tick:650, dur:1.6}, normal:{tick:130, dur:1}, scratch:{tick:0, dur:1}};
+const VEL = () => VELS[velSel];
+const sleep = ms => { const e = epoca; return new Promise(r => setTimeout(() => { if (e === epoca) r(); }, ms)); };
+const nunca = () => new Promise(() => {});
+const esperaSeg = t => sleep(t * 1000 * VEL().dur);
+const normDir = d => { let x = ((Number(d) + 180) % 360 + 360) % 360 - 180; if (x === -180) x = 180; return Math.round(x * 1000) / 1000; };
+const rad = s => s.r * s.tam / 100;
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+function nuevoObjeto(key, o){ return Object.assign({key, x:0, y:0, dir:90, tam:100, r:20, vis:true, disfraz:0, dice:null, lapiz:false, flecha:false, hl:'#ca8a04'}, o); }
+
+function mueveA(s, x, y, tipo){
+  const R_ = rad(s), mx = 240 + R_ - 15, my = 180 + R_ - 15;
+  if (!isFinite(x)) x = s.x; if (!isFinite(y)) y = s.y;
+  x = Math.max(-mx, Math.min(mx, x)); y = Math.max(-my, Math.min(my, y));
+  if (s.lapiz && (x !== s.x || y !== s.y)){ ESC.lapiz.push([s.x, s.y, x, y]); s.trazos = (s.trazos || 0) + 1; }
+  if (R && R.rastro && s.key === R.rastro && tipo !== 'anim') ESC.rastro.push({x1:s.x, y1:s.y, x2:x, y2:y, salto:tipo === 'salto'});
+  s.x = x; s.y = y; pide();
+}
+async function desliza(s, h, t, x, y){
+  const x0 = s.x, y0 = s.y, dur = t * 1000 * VEL().dur, e = epoca, t0 = performance.now();
+  const pen0 = s.lapiz; s.lapiz = false;
+  await new Promise(res => {
+    const paso = now => {
+      if (e !== epoca) return;
+      const k = Math.min(1, (now - t0) / dur);
+      s.x = x0 + (x - x0) * k; s.y = y0 + (y - y0) * k; pide();
+      if (k < 1) requestAnimationFrame(paso); else res();
+    };
+    requestAnimationFrame(paso);
+  });
+  s.x = x0; s.y = y0; s.lapiz = pen0;
+  mueveA(s, x, y, 'desliza');
+}
+function toca(s, k){
+  if (k === 'borde'){ const r = rad(s); return s.x - r < -240 || s.x + r > 240 || s.y + r > 180 || s.y - r < -180; }
+  const o = S[k]; if (!o || o === s || !o.vis) return false;
+  return dist(s, o) < rad(s) + rad(o) * 0.85;
+}
+function tocaColorF(s, hex){
+  if (ESC.fondo !== 'Puertas') return false;
+  return PUERTAS.some(p => p.c.toLowerCase() === hex.toLowerCase() && solapaPuerta(s, p));
+}
+function solapaPuerta(s, p){
+  const r = rad(s), cx = Math.max(p.x - 28, Math.min(s.x, p.x + 28)), cy = Math.max(80, Math.min(s.y, 170));
+  return Math.hypot(s.x - cx, s.y - cy) < r;
+}
+
+/* ============================================================ el motor: ejecuta los bloques del programa mostrado */
+let gate = null;
+function nuevaGate(){ let r; const p = new Promise(res => { r = res; }); gate = {p, r}; }
+nuevaGate();
+function abrirPaso(){ const g = gate; nuevaGate(); narrSpr = {}; g.r(); }
+const hilos = new Set();
+const resalte = {};
+let narrSpr = {}, narrFija = '', narrFijaT = 0, faseAct = -1;
+async function tick(b, h){
+  if (h.e !== epoca) await nunca();
+  const s = S[h.spr];
+  resalte[h.spr] = b.id;
+  if (b.f != null) faseAct = b.f;
+  let extra = '';
+  if (b.k === 'si') extra = b.c.val(s) ? ' → sí, entra' : ' → no, se lo salta';
+  else if (b.k === 'hasta') extra = b.c.val(s) ? ' → se cumple: sale del bucle' : ' → todavía no: repite';
+  else if (b.k === 'repetir') extra = ` → ${Math.max(0, Math.round(Number(b.v.val(s))) || 0)} veces`;
+  if (b.nar) extra += ' ' + b.nar(s, h);
+  narrSpr[h.spr] = `<b style="color:${s.hl}">${esc(s.nombre)}</b>: «${esc(plano(b[idioma]))}»${esc(extra)}`;
+  if (narrFija && (modo === 'paso' || performance.now() - narrFijaT > 3000)) narrFija = '';
+  pide();
+  if (modo === 'paso') await gate.p;
+  else { const t = VEL().tick; if (t) await sleep(t); }
+  if (h.e !== epoca) await nunca();
+}
+async function finVuelta(h){
+  if (modo !== 'paso' && VEL().tick === 0) await sleep(33);
+  if (h.e !== epoca) await nunca();
+}
+async function ejecuta(lista, h){
+  for (const b of lista){
+    await tick(b, h);
+    const s = S[h.spr];
+    if (b.k === 'si'){ if (b.c.val(s)) await ejecuta(b.cuerpo, h); else if (b.sino) await ejecuta(b.sino, h); }
+    else if (b.k === 'repetir'){ let n = Math.round(Number(b.v.val(s))); if (!isFinite(n) || n < 0) n = 0; for (let i = 0; i < n; i++){ await ejecuta(b.cuerpo, h); await finVuelta(h); } }
+    else if (b.k === 'siempre'){ for (;;){ await ejecuta(b.cuerpo, h); await finVuelta(h); } }
+    else if (b.k === 'hasta'){ while (!b.c.val(s)){ await ejecuta(b.cuerpo, h); await finVuelta(h); } }
+    else await b.run(s, h);
+    if (h.e !== epoca) await nunca();
+    if (b.tras) b.tras(s, h);
+  }
+}
+function lanza(script){
+  const h = {spr:script.spr, id:script.id, e:epoca};
+  hilos.add(h); pide();
+  (async () => {
+    await tick(script, h);
+    await ejecuta(script.cuerpo, h);
+    if (h.e !== epoca) return;
+    hilos.delete(h); delete resalte[h.spr];
+    if (R.alTerminar) R.alTerminar(script, h);
+    pide();
+  })();
+  return h;
+}
+function corriendo(id){ for (const h of hilos) if (h.id === id && h.e === epoca) return true; return false; }
+const activos = () => [...hilos].filter(h => h.e === epoca).length;
+function disparar(ev){
+  if (ev === 'bandera'){
+    epoca++; hilos.clear(); for (const k in resalte) delete resalte[k];
+    Object.values(S).forEach(s => { s.dice = null; }); ESC.pregunta = null;
+    if (R.alBandera) R.alBandera();
+  }
+  let n = 0;
+  PROG.forEach(sc => { if (sc.ev === ev && !corriendo(sc.id)){ lanza(sc); n++; } });
+  if (ev === 'bandera') R._empezado = true;
+  pide();
+  return n;
+}
+function detenerTodo(msg){
+  epoca++; hilos.clear(); for (const k in resalte) delete resalte[k];
+  Object.values(S).forEach(s => { s.dice = null; }); ESC.pregunta = null;
+  nuevaGate(); if (msg) narraFija(msg); pide();
+}
+function narraFija(h){ narrFija = h; narrFijaT = performance.now(); narrSpr = {}; pide(); }
+
+/* ============================================================ datos de las puertas */
+const PUERTAS = [
+  {c:'#E5484D', nom:'rojo', fondo:'WWW', titulo:'WWW', def:'Millones de páginas web enlazadas que se abren con un navegador.'},
+  {c:'#F2994A', nom:'naranja', fondo:'Correo', titulo:'Correo electrónico', def:'Mensajes que viajan de un buzón a otro con una dirección @.'},
+  {c:'#E8C33A', nom:'amarillo', fondo:'Web social', titulo:'Web social', def:'Redes para compartir y comentar lo que crea cada persona.'},
+  {c:'#27AE60', nom:'verde', fondo:'Noticias', titulo:'Grupos de noticias', def:'Foros donde se debate por temas.'},
+  {c:'#2F80ED', nom:'azul', fondo:'Streaming', titulo:'Plataformas de streaming', def:'Vídeo y música que se ven o se oyen al momento, sin descargarlos.'},
+  {c:'#9B51E0', nom:'morado', fondo:'Comercio', titulo:'Comercio electrónico', def:'Comprar y vender en línea.'}
+].map((p, i) => Object.assign(p, {x:-200 + i * 80}));
+const COLOR_OJO = '#FF3B30';
+
+/* ============================================================ los cinco retos */
+const RETOS = {};
+
+/* ---------- 1. El gato en coordenadas (sesión 6, Práctica 2) */
+RETOS.coordenadas = {
+  titulo:'El gato en coordenadas', corto:'1 · Coordenadas', sesion:6, practicaN:'Práctica 2', vel:'normal', rejilla:true, rastro:'gato',
+  escena:'El escenario con el fondo Xy-grid',
+  fases:['1. Se coloca en (0, 0)', '2. Hacia arriba', '3. Hacia la izquierda', '4. Hacia abajo', '5. Hacia la derecha', '6. ¿Ha vuelto al punto de salida?'],
+  eventos:['bandera'],
+  P:[[0, 100], [-100, 100], [-100, 0], [0, 0]],
+  init(){ S = {gato:nuevoObjeto('gato', {nombre:'Personaje', forma:'robot', r:20, flecha:true, hl:'#ca8a04'})}; V = {}; ESC.fondo = 'Xy-grid'; },
+  fallos:[
+    {id:'ir', txt:'Usar «ir a» en lugar de «deslizar»', exp:'<b>Salta en vez de deslizar.</b> «ir a x: y:» lleva al personaje a la esquina de golpe: llega al mismo sitio, pero no se ve el camino (el rastro sale a saltos). Para ver el recorrido hace falta «deslizar».'},
+    {id:'signo', txt:'Confundir izquierda y derecha (x = 100 en vez de −100)', exp:'<b>El signo de x.</b> La segunda esquina es (100, 100): x positiva está a la derecha. El personaje apunta a la izquierda, pero se desliza a la derecha y la figura deja de ser un cuadrado.'},
+    {id:'sinFinal', txt:'Olvidar el último tramo', exp:'<b>No vuelve.</b> Falta «apuntar en dirección 90» y el último «deslizar»: el personaje se queda en la esquina de abajo a la izquierda y la figura no se cierra.'}
+  ],
+  normal:'Todo normal: el personaje desliza por las cuatro esquinas y vuelve a (0, 0). Prueba a estropear algo o cambia las coordenadas en «El reto».',
+  programa(F){
+    const P = this.P.map(p => p.slice());
+    if (F.signo) P[1][0] = -P[1][0];
+    const dz = (id, p, f, extra = {}) => F.ir ? bIrA(id, num(p[0]), num(p[1]), Object.assign({f, cambiado:true}, extra)) : bDesl(id, 1, num(p[0]), num(p[1]), Object.assign({f}, extra));
+    const cuerpo = [
+      bIrA('c_ini', num(0), num(0), {f:0, nar:() => 'Empieza en el centro del escenario.'}),
+      bDir('c_d1', 0, {f:1}), dz('c_m1', P[0], 1),
+      bDir('c_d2', -90, {f:2}), dz('c_m2', P[1], 2, F.signo ? {cambiado:true} : {}),
+      bDir('c_d3', 180, {f:3}), dz('c_m3', P[2], 3)
+    ];
+    if (!F.sinFinal) cuerpo.push(bDir('c_d4', 90, {f:4}), dz('c_m4', P[3], 4));
+    return [HAT('bandera', 'gato', 'c_h', cuerpo)];
+  },
+  alBandera(){ ESC.rastro = []; },
+  analiza(){
+    const r = ESC.rastro.filter(t => Math.hypot(t.x2 - t.x1, t.y2 - t.y1) > 0.5);
+    if (!r.length) return null;
+    const ini = {x:r[0].x1, y:r[0].y1}, fin = {x:r[r.length - 1].x2, y:r[r.length - 1].y2};
+    const cerrado = r.length >= 3 && Math.hypot(fin.x - ini.x, fin.y - ini.y) < 1;
+    const ejes = r.every(t => Math.abs(t.x2 - t.x1) < 0.5 || Math.abs(t.y2 - t.y1) < 0.5);
+    const xs = r.flatMap(t => [t.x1, t.x2]), ys = r.flatMap(t => [t.y1, t.y2]);
+    const ancho = Math.round(Math.max(...xs) - Math.min(...xs)), alto = Math.round(Math.max(...ys) - Math.min(...ys));
+    const rect = cerrado && ejes && r.length === 4 && ancho > 0 && alto > 0;
+    return {cerrado, rect, ancho, alto, tramos:r.length, fin};
+  },
+  alTerminar(){
+    faseAct = 5;
+    const a = this.analiza(); if (!a) return;
+    let t;
+    const ve = !F_().ir;
+    if (a.rect && a.ancho === a.alto){ t = `Ha vuelto a (0, 0) y la figura es un <b>cuadrado de ${a.ancho} × ${a.alto}</b>.`; if (ve) logro('cuadrado'); }
+    else if (a.rect){ t = `Ha vuelto a (0, 0) y la figura es un <b>rectángulo de ${a.ancho} de ancho y ${a.alto} de alto</b>.`; if (ve && a.ancho === 2 * a.alto) logro('doble'); }
+    else if (a.cerrado) t = 'Ha vuelto a (0, 0), pero la figura no es un rectángulo.';
+    else t = `<b>No ha vuelto al punto de salida</b>: se ha quedado en (${Math.round(a.fin.x)}, ${Math.round(a.fin.y)}).`;
+    if (F_().ir) t += ' Además, como ha saltado, no se ha visto el camino.';
+    narraFija(t);
+  },
+  medidas(){
+    const s = S.gato, a = this.analiza();
+    return [
+      {et:'Posición ahora', v:`(${Math.round(s.x)}, ${Math.round(s.y)})`},
+      {et:'Dirección', v:`${Math.round(s.dir)}° ${DIR_TXT[Math.round(s.dir)] ? '(' + DIR_TXT[Math.round(s.dir)] + ')' : ''}`},
+      {et:'¿Vuelve a (0, 0)?', v:a ? (a.cerrado ? '✔ sí' : '✖ todavía no') : '—', cls:a ? (a.cerrado ? 'bien' : 'mal') : ''},
+      {et:'Figura (ancho × alto)', v:a ? `${a.ancho} × ${a.alto}` : '—'}
+    ];
+  },
+  controles(){
+    return `<p style="margin:0 0 6px;font-size:15px">Cambia las coordenadas de las cuatro esquinas (los «deslizar») y pulsa la bandera.</p>` +
+      this.P.map((p, i) => `<div class="ctl"><label for="px${i}">Esquina ${i + 1}</label> x <input class="campo corto" type="number" id="px${i}" value="${p[0]}" step="10" min="-240" max="240" aria-label="x de la esquina ${i + 1}"> y <input class="campo corto" type="number" id="py${i}" value="${p[1]}" step="10" min="-180" max="180" aria-label="y de la esquina ${i + 1}"></div>`).join('') +
+      `<p class="ctl"><button type="button" class="boton sec peq" id="pCuadrado">Volver al cuadrado del ejemplo</button></p>`;
+  },
+  enlaza(){
+    this.P.forEach((p, i) => ['x', 'y'].forEach((e, j) => { $(`#p${e}${i}`).onchange = ev => { this.P[i][j] = Math.round(Number(ev.target.value) || 0); cambiaPrograma(); }; }));
+    $('#pCuadrado').onclick = () => { this.P = [[0, 100], [-100, 100], [-100, 0], [0, 0]]; pintaControles(); cambiaPrograma(); };
+  },
+  objetivos:[
+    {id:'cuadrado', txt:'Reto 1 · El personaje recorre un cuadrado y vuelve exactamente a (0, 0).'},
+    {id:'doble', txt:'Reto 2 · Cambia las esquinas para que dibuje un rectángulo el doble de ancho que de alto y vuelva a (0, 0).'}
+  ],
+  piezas:{gato:['El personaje', 'En la práctica es el gato de Scratch; aquí, un dibujo propio. La flecha marca su dirección.', 'Recorre el cuadrado deslizándose de esquina en esquina.'],
+    escenario:['El escenario (fondo Xy-grid)', 'Mide 480 × 360. El centro es (0, 0); x crece hacia la derecha e y hacia arriba.', 'Con la cuadrícula se leen las coordenadas de cada esquina.']},
+  idea:'Cada punto del escenario tiene su dirección (x, y). Si escribes las esquinas en orden y la última es la de salida, la figura se cierra: primero el pseudocódigo, después los bloques.',
+  ejemplo:`<div><h3 style="margin:6px 0">Las esquinas del cuadrado</h3><table class="reglas"><thead><tr><th>Tramo</th><th>Apuntar</th><th>Deslizar a</th></tr></thead><tbody>
+    <tr><td>1</td><td>0 (arriba)</td><td>(0, 100)</td></tr><tr><td>2</td><td>−90 (izquierda)</td><td>(−100, 100)</td></tr><tr><td>3</td><td>180 (abajo)</td><td>(−100, 0)</td></tr><tr><td>4</td><td>90 (derecha)</td><td>(0, 0)</td></tr></tbody></table></div>
+    <div><h3 style="margin:6px 0">Para el reto 2</h3><p style="margin:4px 0">Un rectángulo el doble de ancho: el alto sigue siendo 100, así que ¿cuánto tiene que valer x en las esquinas de la izquierda?</p><p style="margin:4px 0;color:var(--ink2)">Pista: solo cambian dos números.</p></div>`,
+  error:{titulo:'Confundir el signo de x', fallo:'signo', texto:'<p>A la izquierda del centro, x es <b>negativa</b>; a la derecha, positiva. Si escribes 100 en lugar de −100, el personaje apunta a la izquierda pero se desliza a la derecha.</p><p>Mueve el ratón por el escenario de Scratch y mira x e y abajo a la derecha: así compruebas cada esquina antes de programarla.</p>', pista:'Activa el error y pulsa la bandera: mira el rastro de la segunda esquina.'},
+  practica:{titulo:'Práctica 2 · El gato en coordenadas', pasos:[
+    'Escribe el pseudocódigo en tu cuaderno de prácticas (A4): colocar, apuntar arriba, deslizar, apuntar a la izquierda…',
+    'En Scratch, elige el fondo «Xy-grid» (Elige un fondo → busca «xy»).',
+    'Programa «al hacer clic en 🏁», «ir a x: 0 y: 0» y los cuatro pares «apuntar en dirección» + «deslizar en 1 segs a x: y:».',
+    'Pulsa la bandera: ¿vuelve exactamente a (0, 0)? Mueve el ratón para comprobar cada esquina.',
+    'Reto extra: haz el rectángulo el doble de ancho o un rombo.',
+    'Guárdalo como «Práctica 2», compártelo y copia el enlace en el cuaderno.'],
+    checklist:['El pseudocódigo está en el cuaderno.', 'El personaje vuelve a (0, 0).', 'He explicado la diferencia entre «ir a» y «deslizar».', 'He hecho el rectángulo o el rombo (reto extra).'],
+    entrega:'Va en la <b>Tarea 2.4</b>, dentro del cuaderno de prácticas en PDF, con el enlace del proyecto.'},
+  preguntas:[
+    {q:'¿Qué diferencia hay entre «ir a x: y:» y «deslizar en 1 segs a x: y:»?', ops:['Ninguna: los dos hacen lo mismo.', '«ir a» aparece de golpe; «deslizar» se ve el camino.', '«deslizar» solo funciona con el fondo Xy-grid.'], ok:1, expl:'Los dos llegan al mismo punto, pero «ir a» salta y «deslizar» tarda el tiempo indicado y se ve el recorrido.'},
+    {q:'El personaje está en (0, 100) y tiene que ir a la esquina de arriba a la izquierda de un cuadrado de lado 100. ¿Qué coordenadas pones?', ops:['(100, 100)', '(−100, 100)', '(−100, 0)'], ok:1, expl:'A la izquierda, x es negativa; arriba se mantiene y = 100.'},
+    {q:'¿Dónde está el punto (0, 0) en Scratch?', ops:['En la esquina de abajo a la izquierda.', 'En el centro del escenario.', 'En la esquina de arriba a la izquierda.'], ok:1, expl:'El escenario va de −240 a 240 en x y de −180 a 180 en y: el centro es (0, 0).'}
+  ]
+};
+
+/* ---------- 2. La bailarina (sesión 6, Práctica 3) */
+RETOS.bailarina = {
+  titulo:'La bailarina que reacciona', corto:'2 · Sensores', sesion:6, practicaN:'Práctica 3', vel:'normal',
+  escena:'El escenario: pulsa en él para mover el puntero del ratón',
+  fases:['1. Bandera: la princesa encoge', '2. Espacio: apunta al ratón', '3. Mueve 20 pasos', '4. ¿Toca el borde?', '5. ¿Toca a la princesa?'],
+  eventos:['bandera', 'espacio'],
+  tercero:false,
+  init(){
+    S = {
+      bailarina:nuevoObjeto('bailarina', {nombre:'Bailarina', forma:'bailarina', x:-150, y:0, r:26, flecha:true, hl:'#ca8a04'}),
+      princesa:nuevoObjeto('princesa', {nombre:'Princesa', forma:'princesa', x:120, y:-10, r:60, hl:'#0891b2'}),
+      murcielago:nuevoObjeto('murcielago', {nombre:'Murciélago', forma:'murcielago', x:20, y:120, r:24, vis:this.tercero, hl:'#9333ea'})
+    };
+    V = {}; ESC.fondo = 'Teatro'; ESC.puntero = {x:150, y:30}; this._empezado = false; this.reac = {};
+  },
+  fallos:[
+    {id:'objeto', txt:'Poner el programa de la bailarina en la princesa', exp:'<b>Programa en el objeto equivocado.</b> Ahora quien apunta al ratón y se mueve es la princesa. Además, «¿tocando Princesa?» lo pregunta la propia princesa, y un objeto nunca se toca a sí mismo: ese «si» no se cumple nunca.'},
+    {id:'tamano', txt:'Olvidar «fijar tamaño al 50 %» de la princesa', exp:'<b>La princesa es enorme.</b> Sin reducirla ocupa medio escenario, la bailarina la toca casi siempre y no se distingue un choque de otro.'},
+    {id:'pasos', txt:'Mover 200 pasos en vez de 20', exp:'<b>Atraviesa a la princesa.</b> El sensor solo mira dónde está la bailarina <i>al acabar</i> de moverse. Con pasos tan grandes salta por encima de la princesa sin tocarla y llega al borde de una vez.'}
+  ],
+  normal:'Todo normal: el programa está en la bailarina, la princesa encoge al 50 % y la bailarina avanza de 20 en 20. Pulsa el escenario para mover el ratón y después «Pulsar espacio».',
+  programa(F){
+    const quien = F.objeto ? 'princesa' : 'bailarina';
+    const reac = [
+      SI('b_si1', tocando('borde', 'borde', 'edge'), [bSigD('b_d1'), bDecir('b_c1', '¡Cuidado!', 1, {tras:s => this.reaccion(s, 'borde')})], {f:3}),
+      SI('b_si2', tocando('princesa', 'Princesa', 'Princesa'), [bSigD('b_d2'), bDecir('b_c2', '¡Hola, princesa!', 2, {tras:s => this.reaccion(s, 'princesa')})], {f:4, cambiado:F.objeto})
+    ];
+    if (this.tercero) reac.push(SI('b_si3', tocando('murcielago', 'Murciélago', 'Murciélago'), [bDecir('b_c3', '¡Uy, un murciélago!', 1, {tras:s => this.reaccion(s, 'murcielago')}), bSigD('b_d3')], {f:4, nuevo:true}));
+    return [
+      HAT('bandera', 'bailarina', 'b_h0', [bIrA('b_ini', num(-150), num(0), {f:0, nar:() => 'Siempre empieza en el mismo sitio.'})]),
+      HAT('espacio', quien, 'b_h', [bApPuntero('b_ap', {f:1}), bMover('b_mv', num(F.pasos ? 200 : 20), {f:2, cambiado:F.pasos}), ...reac], {cambiado:F.objeto}),
+      HAT('bandera', 'princesa', 'p_h', F.tamano ? [] : [bTam('p_tam', 50, {f:0})], {cambiado:F.tamano})
+    ];
+  },
+  reaccion(s, que){
+    if (s.key !== 'bailarina') return;
+    this.reac[que] = true;
+    if (this.reac.borde && this.reac.princesa) logro('dos');
+    if (this.reac.murcielago && this.tercero) logro('tercero');
+  },
+  siguiente(){ return this._empezado ? 'espacio' : 'bandera'; },
+  objetivosAuto:0,
+  auto(){
+    if (!this._empezado){ disparar('bandera'); return; }
+    if (corriendo('b_h') || corriendo('b_h0') || corriendo('p_h')) return;
+    const quien = F_().objeto ? S.princesa : S.bailarina;
+    const dianas = [{x:S.princesa.x, y:S.princesa.y, que:'princesa'}, {x:235, y:170, que:'borde'}];
+    if (this.tercero) dianas.push({x:S.murcielago.x, y:S.murcielago.y, que:'murcielago'});
+    dianas.push({x:-235, y:-170, que:'borde2'});
+    this._d = this._d || 0; this._n = (this._n || 0) + 1;
+    let d = dianas[this._d % dianas.length];
+    if (this._n > 22 || (d.que === 'princesa' && toca(quien, 'princesa')) || (d.que.startsWith('borde') && toca(quien, 'borde')) || (d.que === 'murcielago' && toca(quien, 'murcielago'))){ this._d++; this._n = 0; d = dianas[this._d % dianas.length]; }
+    ESC.puntero = {x:d.x, y:d.y};
+    disparar('espacio');
+  },
+  medidas(){
+    const b = S.bailarina, p = S.princesa;
+    return [
+      {et:'Distancia bailarina-princesa', v:Math.round(dist(b, p)) + ' px'},
+      {et:'¿Bailarina tocando el borde?', v:toca(b, 'borde') ? 'sí' : 'no'},
+      {et:'¿Bailarina tocando a la princesa?', v:toca(b, 'princesa') ? 'sí' : 'no'},
+      {et:'Tamaño de la princesa', v:p.tam + ' %', cls:p.tam > 60 ? 'mal' : ''}
+    ];
+  },
+  controles(){
+    return `<p style="margin:0 0 6px;font-size:15px">Haz que la bailarina reaccione a todo lo que toca. Pulsa en el escenario para colocar el ratón y después «Pulsar espacio» (o la barra espaciadora).</p>
+      <label class="interruptor" for="cTercero"><input type="checkbox" id="cTercero" ${this.tercero ? 'checked' : ''}> Añadir un tercer personaje, el murciélago, con su propia reacción</label>`;
+  },
+  enlaza(){ $('#cTercero').onchange = e => { this.tercero = e.target.checked; S.murcielago.vis = this.tercero; cambiaPrograma(); }; },
+  objetivos:[
+    {id:'dos', txt:'Reto 1 · La bailarina reacciona al tocar el borde y al tocar a la princesa.'},
+    {id:'tercero', txt:'Reto 2 · Añade un tercer personaje con otra reacción y haz que la bailarina lo toque.'}
+  ],
+  piezas:{bailarina:['Bailarina', 'Objeto con 4 disfraces. Su programa empieza «al presionar tecla espacio».', 'Apunta al ratón, avanza 20 pasos y pregunta si toca algo.'],
+    princesa:['Princesa', 'Otro objeto. En la biblioteca de Scratch es muy grande: por eso se reduce al 50 %.', 'Es lo que la bailarina tiene que tocar para saludar.'],
+    murcielago:['Murciélago', 'El tercer personaje del reto extra.', 'Cuando la bailarina lo toca, dice «¡Uy, un murciélago!».'],
+    puntero:['Puntero del ratón', 'Donde haces clic en el escenario.', '«apuntar hacia puntero del ratón» gira a la bailarina hacia aquí.'],
+    escenario:['El escenario', 'Haz clic en cualquier sitio para mover el puntero del ratón.', 'Si la bailarina llega al borde, «¿tocando borde?» se cumple.']},
+  idea:'Un sensor («¿tocando…?») hace una pregunta de sí o no, y el «si… entonces» decide qué hacer con la respuesta. Cada programa vive en su objeto: el sensor pregunta por el objeto que lo ejecuta.',
+  ejemplo:`<div><h3 style="margin:6px 0">Qué pregunta cada «si»</h3><table class="reglas"><thead><tr><th>Sensor</th><th>Se cumple cuando…</th><th>Reacción</th></tr></thead><tbody>
+    <tr><td>¿tocando borde?</td><td>una parte sale del escenario</td><td>disfraz + «¡Cuidado!»</td></tr>
+    <tr><td>¿tocando Princesa?</td><td>las dos figuras se solapan</td><td>disfraz + saludo</td></tr></tbody></table></div>
+    <div><h3 style="margin:6px 0">¿Por qué de 20 en 20?</h3><p style="margin:4px 0">Los dos «si» se comprueban después de mover. Con pasos cortos la bailarina pasa por encima de la princesa en algún momento; con pasos muy largos puede saltársela.</p></div>`,
+  error:{titulo:'El programa en el objeto equivocado', fallo:'objeto', texto:'<p>En Scratch, cada objeto tiene su área de programas. Si copias los bloques de la bailarina estando seleccionada la princesa, quien se mueve es la princesa.</p><p>Y «¿tocando Princesa?» nunca se cumple, porque ningún objeto se toca a sí mismo. Antes de programar, mira qué objeto está seleccionado abajo a la derecha.</p>', pista:'Activa el error, pulsa la bandera y después espacio varias veces: mira quién se mueve.'},
+  practica:{titulo:'Práctica 3 · La bailarina', pasos:[
+    'Añade los objetos «Ballerina» y una princesa de la biblioteca (o los que quieras).',
+    'Selecciona la <b>princesa</b> y ponle «al hacer clic en 🏁» + «fijar tamaño al 50 %».',
+    'Selecciona la <b>bailarina</b> y programa «al presionar tecla espacio», «apuntar hacia puntero del ratón» y «mover 20 pasos».',
+    'Debajo, los dos «si ¿tocando…? entonces» con «siguiente disfraz» y «decir… durante… segundos».',
+    'Pruébalo: lleva el ratón hacia la princesa y pulsa espacio varias veces; después hacia el borde.',
+    'Reto extra: un tercer personaje con otra reacción. Guárdalo como «Práctica 3» y copia el enlace en el cuaderno.'],
+    checklist:['Cada programa está en su objeto.', 'La princesa encoge al pulsar la bandera.', 'Reacciona al borde y a la princesa.', 'He añadido un tercer personaje (reto extra).'],
+    entrega:'Va en la <b>Tarea 2.4</b>, con el gato en coordenadas, en el cuaderno de prácticas en PDF.'},
+  preguntas:[
+    {q:'La bailarina avanza de 200 en 200 pasos y a veces pasa por la princesa sin saludarla. ¿Por qué?', ops:['La princesa está escondida.', 'El sensor solo mira dónde acaba cada movimiento, y la salta.', 'El bloque «decir» va demasiado rápido.'], ok:1, expl:'«¿tocando Princesa?» se comprueba después de mover. Si en ese momento ya no se tocan, el «si» no se cumple.'},
+    {q:'Has puesto el programa de la bailarina en la princesa. ¿Qué pasa al pulsar espacio?', ops:['Se mueve la princesa y nunca saluda.', 'Se mueven las dos.', 'No pasa nada porque da error.'], ok:0, expl:'El programa mueve al objeto que lo tiene, y ese objeto no puede tocarse a sí mismo.'},
+    {q:'¿Qué bloque hace la pregunta de sí o no?', ops:['«siguiente disfraz»', '«¿tocando borde?»', '«mover 20 pasos»'], ok:1, expl:'Los sensores con forma de hexágono responden sí o no; el «si… entonces» usa esa respuesta.'}
+  ]
+};
+
+/* ---------- 3. El lápiz: cuadrado, triángulo y polígonos (sesiones 7 y 8, Prácticas 5 y 7) */
+RETOS.lapiz = {
+  titulo:'El lápiz y los polígonos', corto:'3 · Lápiz y polígonos', sesion:7, practicaN:'Prácticas 5 y 7', vel:'normal',
+  escena:'El escenario con el lápiz',
+  fases:['1. Borrar todo', '2. Colocarse', '3. Preguntar los lados', '4. Bajar el lápiz', '5. Repetir: mover y girar', '6. Subir el lápiz'],
+  eventos:['bandera'],
+  lados:4, giro:90, formula:false, guardia:false,
+  init(){ S = {lapiz:nuevoObjeto('lapiz', {nombre:'Lápiz', forma:'lapiz', x:-30, y:60, r:14, hl:'#16a34a'})}; V = {respuesta:''}; ESC.fondo = 'Blanco'; ESC.lapiz = []; this.cerrados = new Set(); },
+  fallos:[
+    {id:'sinBorrar', txt:'Olvidar «borrar todo»', exp:'<b>Se acumulan los dibujos.</b> Sin «borrar todo», cada vez que pulsas la bandera el polígono nuevo se dibuja encima de los anteriores. Cambia los lados y repite para verlo.'},
+    {id:'sinBajar', txt:'Olvidar «bajar lápiz»', exp:'<b>No dibuja nada.</b> El lápiz se mueve y gira, pero con el lápiz subido no deja rastro. El programa «funciona» y no se ve.'},
+    {id:'pasos100', txt:'Mover 100 pasos en vez de 60 − respuesta', exp:'<b>No cabe.</b> Con muchos lados y 100 pasos, la figura es más grande que el escenario: Scratch no deja salir al lápiz y la figura se deforma. Por eso los pasos bajan cuando sube el número de lados.'}
+  ],
+  normal:'Todo normal: borra, se coloca, pregunta los lados, baja el lápiz, repite «mover» y «girar» y sube el lápiz. Cambia los lados y el giro en «El reto».',
+  giroV(){ return this.formula ? op2(num(360), '/', resp(), (a, b) => a / b) : num(this.giro); },
+  programa(F){
+    const pasos = F.pasos100 ? num(100) : op2(num(60), '-', resp(), (a, b) => a - b);
+    const dibujo = [
+      ...(F.sinBajar ? [] : [bBajar('l_bj', {f:3})]),
+      REP('l_rep', resp(), [bMover('l_mv', pasos, {f:4, cambiado:F.pasos100}), bGirar('l_gi', this.giroV(), {f:4, nuevo:this.formula})], {f:4}),
+      bSubir('l_sb', {f:5})
+    ];
+    const guardia = SI('l_g', oB(cmp(resp(), '<', num(3)), cmp(resp(), '>', num(12))), [bDecir('l_no', 'No puedo dibujar ese polígono', 2, {tras:() => { this._rechazo = true; }})], {f:2, nuevo:true});
+    guardia.sino = dibujo;
+    return [HAT('bandera', 'lapiz', 'l_h', [
+      ...(F.sinBorrar ? [] : [bBorrar('l_b', {f:0})]),
+      bIrA('l_ir', num(-30), num(60), {f:1}), bDir('l_dir', 90, {f:1}),
+      bPreg('l_p', '¿Cuántos lados?', () => this.lados, {f:2, nar:() => `→ escribirá ${this.lados}`}),
+      ...(this.guardia ? [guardia] : dibujo)
+    ])];
+  },
+  alBandera(){ this._rechazo = false; const s = S.lapiz; s.trazos = 0; s.giroTotal = 0; s.ini = null; },
+  alTerminar(){
+    faseAct = 5;
+    const s = S.lapiz, n = Number(V.respuesta) || 0;
+    if (this._rechazo){ narraFija(`Ha escrito ${n}: el «si» lo detecta y no dibuja. <b>Se ha evitado un polígono imposible.</b>`); if (n < 3 || n > 12) logro('guardia'); return; }
+    if (!s.ini){ narraFija('No ha bajado el lápiz: se ha movido sin dibujar.'); return; }
+    if (n === 0){ narraFija('Con 0 lados, «repetir 0» no hace nada: no hay figura (y 360 / 0 sería infinito).'); return; }
+    const resto = (((s.giroTotal || 0) % 360) + 360) % 360;
+    const cerrado = s.trazos > 0 && Math.hypot(s.x - s.ini.x, s.y - s.ini.y) < 1.5 && (resto < 0.01 || resto > 359.99);
+    const giro = Math.round(s.giroTotal / Math.max(1, n) * 100) / 100;
+    if (cerrado && n >= 3){
+      narraFija(`<b>Figura cerrada</b>: ${n} lados, ${giro}° en cada esquina, ${Math.round(s.giroTotal)}° en total.`);
+      if (n === 3) logro('triangulo');
+      if (this.formula){ this.cerrados.add(n); if (this.cerrados.size >= 3) logro('general'); }
+    } else narraFija(`<b>La figura no se cierra</b>: ha girado ${Math.round(s.giroTotal)}° en total (${giro}° en cada esquina). Para cerrarse tiene que dar una vuelta completa: 360°.`);
+  },
+  medidas(){
+    const s = S.lapiz, n = Number(V.respuesta) || 0;
+    return [
+      {et:'Respuesta (lados)', v:V.respuesta === '' ? '—' : V.respuesta},
+      {et:'Giro en cada esquina', v:this.formula ? (n ? Math.round(360 / n * 100) / 100 + '°' : '360 / 0 = ∞') : this.giro + '°'},
+      {et:'Giro acumulado', v:Math.round(s.giroTotal || 0) + '°'},
+      {et:'Lápiz', v:s.lapiz ? 'bajado ✏️' : 'subido'}
+    ];
+  },
+  controles(){
+    return `<div class="ctl"><label for="cLados">Lo que escribirás al preguntar (lados)</label><input class="campo corto" type="number" id="cLados" min="0" max="20" value="${this.lados}"></div>
+      <div class="ctl"><label for="cGiro">Giro fijo</label><input type="range" id="cGiro" min="0" max="180" step="1" value="${this.giro}" ${this.formula ? 'disabled' : ''}><span class="num" id="cGiroTxt">${this.giro}°</span></div>
+      <label class="interruptor" for="cFormula"><input type="checkbox" id="cFormula" ${this.formula ? 'checked' : ''}> Girar «360 / respuesta» en lugar de un número fijo</label>
+      <label class="interruptor" for="cGuardia"><input type="checkbox" id="cGuardia" ${this.guardia ? 'checked' : ''}> Añadir el «si»: si lados &lt; 3 o &gt; 12, decir «No puedo dibujar ese polígono»</label>`;
+  },
+  enlaza(){
+    $('#cLados').onchange = e => { this.lados = Math.max(0, Math.min(20, Math.round(Number(e.target.value) || 0))); e.target.value = this.lados; cambiaPrograma(false); };
+    $('#cGiro').oninput = e => { this.giro = +e.target.value; $('#cGiroTxt').textContent = this.giro + '°'; cambiaPrograma(); };
+    $('#cFormula').onchange = e => { this.formula = e.target.checked; $('#cGiro').disabled = this.formula; cambiaPrograma(); };
+    $('#cGuardia').onchange = e => { this.guardia = e.target.checked; cambiaPrograma(); };
+  },
+  objetivos:[
+    {id:'triangulo', txt:'Reto 1 · Dibuja un triángulo equilátero que se cierre (busca el giro de cada esquina).'},
+    {id:'general', txt:'Reto 2 · Con «360 / respuesta», el mismo programa cierra tres polígonos distintos.'},
+    {id:'guardia', txt:'Reto 3 · Con el «si», el programa se niega a dibujar 2 o 15 lados.'}
+  ],
+  piezas:{lapiz:['El objeto que dibuja', 'Con la extensión Lápiz, cualquier objeto deja rastro al moverse si tiene el lápiz bajado.', 'Mueve, gira y vuelve a mover tantas veces como lados.'],
+    escenario:['El escenario', 'Lo que dibuja el lápiz se queda pintado hasta «borrar todo».', 'Al empezar se borra para no dibujar encima.']},
+  idea:'Para cerrar cualquier polígono, el lápiz da una vuelta completa: 360°. Si la repartes entre los lados, giro = 360 / lados, y un solo programa sirve para todas las figuras.',
+  ejemplo:`<div><h3 style="margin:6px 0">Giro de cada esquina</h3><table class="reglas"><thead><tr><th>Lados</th><th>3</th><th>4</th><th>5</th><th>6</th><th>8</th><th>10</th></tr></thead><tbody><tr><th>Giro</th><td>?</td><td>90°</td><td>72°</td><td>60°</td><td>45°</td><td>36°</td></tr></tbody></table><p style="margin:8px 0 0;color:var(--ink2)">El triángulo es el reto 1: ¿cuánto es 360 / 3?</p></div>
+    <div><h3 style="margin:6px 0">Las normas del lápiz</h3><ol class="pasos"><li>Borrar todo.</li><li>Bajar el lápiz.</li><li>Moverse: va pintando.</li><li>Subir el lápiz al terminar.</li></ol></div>`,
+  error:{titulo:'Olvidar «borrar todo» (o «bajar lápiz»)', fallo:'sinBorrar', texto:'<p>Lo que pinta el lápiz se queda en el escenario aunque vuelvas a pulsar la bandera. Sin «borrar todo», cada prueba se dibuja encima de la anterior y no sabes cuál es la buena.</p><p>Y sin «bajar lápiz» el programa se mueve igual, pero no deja rastro.</p>', pista:'Activa el error, dibuja con 4 lados, cambia a 6 y vuelve a pulsar la bandera.'},
+  practica:{titulo:'Prácticas 5 y 7 · Dibujos con el lápiz y polígono de n lados', pasos:[
+    'Añade la extensión <b>Lápiz</b> (botón azul de abajo a la izquierda).',
+    'Práctica 5: dibuja el cuadrado repitiendo cuatro veces «mover 100» y «girar 90» y después con «repetir 4». Cuenta los bloques de cada versión.',
+    'Dibuja el triángulo con «repetir 3». ¿Cuánto gira?',
+    'Práctica 7: «preguntar ¿Cuántos lados? y esperar», «repetir (respuesta)», «mover (60 − respuesta)» y «girar (360 / respuesta)».',
+    'Prueba con 3, 4, 6 y 10 lados. Reto extra: el «si» que no dibuja menos de 3 ni más de 12 lados.',
+    'Guarda «Práctica 5» y «Práctica 7» y copia los enlaces en el cuaderno.'],
+    checklist:['Borra antes de dibujar y sube el lápiz al terminar.', 'El triángulo se cierra.', 'El polígono funciona con 3, 4, 6 y 10 lados.', 'He explicado por qué el giro es 360 / lados.'],
+    entrega:'Va en la <b>Tarea 2.5</b> (bucles), dentro del cuaderno de prácticas en PDF.'},
+  preguntas:[
+    {q:'¿Cuántos grados gira el lápiz en cada esquina de un hexágono (6 lados)?', ops:['6°', '60°', '90°'], ok:1, expl:'360 / 6 = 60°.'},
+    {q:'Alguien escribe 0 lados. ¿Qué pasa con el programa general?', ops:['Dibuja un círculo.', 'No dibuja nada: «repetir 0» no repite.', 'Scratch se bloquea.'], ok:1, expl:'«repetir 0» se salta el bucle. 360 / 0 sería infinito, pero nunca se llega a girar.'},
+    {q:'¿Por qué los pasos son «60 − respuesta»?', ops:['Para que la figura quepa: con más lados, cada lado es más corto.', 'Porque Scratch no admite más de 60 pasos.', 'Para que el lápiz vaya más rápido.'], ok:0, expl:'Si cada lado midiera siempre 100, un decágono no cabría en el escenario.'}
+  ]
+};
+
+/* ---------- 4. Lluvia de residuos con puntos y tiempo (sesiones 8 y 12, Prácticas 6 y 11) */
+RETOS.lluvia = {
+  titulo:'Lluvia de residuos con puntos y tiempo', corto:'4 · Variables', sesion:12, practicaN:'Prácticas 6 y 11', vel:'scratch',
+  escena:'El juego: mueve la papelera con ← y →',
+  fases:['1. Bandera: Puntos = 0 y Tiempo = 30', '2. El residuo cae', '3. Si llega abajo, vuelve arriba', '4. Si toca la papelera, +1 punto', '5. ¿Tiempo = 0 o Puntos = 10? Fin'],
+  eventos:['bandera', 'izquierda', 'derecha'],
+  vel_:-5, tres:false,
+  init(){
+    S = {
+      residuo:nuevoObjeto('residuo', {nombre:'Botella', forma:'botella', x:0, y:170, r:28, tam:50, hl:'#0891b2'}),
+      lata:nuevoObjeto('lata', {nombre:'Lata', forma:'lata', x:-120, y:170, r:28, tam:50, vis:this.tres, hl:'#9333ea'}),
+      brik:nuevoObjeto('brik', {nombre:'Brik', forma:'brik', x:120, y:170, r:28, tam:50, vis:this.tres, hl:'#db2777'}),
+      papelera:nuevoObjeto('papelera', {nombre:'Papelera', forma:'papelera', x:0, y:-150, r:30, hl:'#16a34a'}),
+      escenario:nuevoObjeto('escenario', {nombre:'Escenario', forma:null, hl:'#ca8a04', vis:false})
+    };
+    V = {Puntos:0, Tiempo:30}; ESC.fondo = 'Parque'; this.partidas = 0; this.autoUsado = false; this._sumas = [];
+  },
+  fallos:[
+    {id:'xFija', txt:'Poner x: 0 en vez de un número aleatorio', exp:'<b>Siempre cae en el mismo sitio.</b> Sin «número aleatorio», el residuo vuelve a salir por x = 0 cada vez: basta con dejar la papelera quieta en el centro.'},
+    {id:'golpe', txt:'Olvidar mover el residuo arriba al sumar el punto', exp:'<b>Puntos de golpe.</b> El residuo sigue tocando la papelera varios fotogramas seguidos y el «si» suma un punto en cada uno. Y como se pasa de 9 a 15 de golpe, «Puntos = 10» puede no cumplirse nunca.'},
+    {id:'sinEsperar', txt:'Quitar «esperar 1 segundos» de la cuenta atrás', exp:'<b>Tiempo loco.</b> Sin la espera, el bucle resta 1 en cada fotograma, unas 30 veces por segundo: la partida termina en un segundo.'},
+    {id:'sinReinicio', txt:'Quitar «dar a Puntos el valor 0»', exp:'<b>No vuelve a 0.</b> Al pulsar otra vez la bandera, Puntos sigue con lo de la partida anterior. Juega dos partidas seguidas para verlo.'}
+  ],
+  normal:'Todo normal: las variables empiezan en 0 y 30, el residuo sale en una x al azar, suma un punto y vuelve arriba, y el tiempo baja uno por segundo.',
+  programa(F){
+    const xA = F.xFija ? num(0) : aleat(-220, 220);
+    const res = (key, p, v, esp) => HAT('bandera', key, p + '_h', [
+      bTam(p + '_t', 50), bIrA(p + '_i', xA, num(170), {f:0, cambiado:F.xFija}),
+      ...(esp ? [bEsperar(p + '_w', esp)] : []),
+      SIEMPRE(p + '_s', [
+        bSumY(p + '_y', num(v), {f:1}),
+        SI(p + '_si1', cmp(posY(), '<', num(-170)), [bIrA(p + '_i2', xA, num(170), {f:2})], {f:2}),
+        SI(p + '_si2', tocando('papelera', 'Papelera', 'Papelera'), [bSumVar(p + '_pt', 'Puntos', 1, {f:3, tras:() => this.suma()}), ...(F.golpe ? [] : [bIrA(p + '_i3', xA, num(170), {f:3})])], {f:3, cambiado:F.golpe})
+      ])
+    ]);
+    const prog = [
+      HAT('bandera', 'escenario', 'e_h', [
+        ...(F.sinReinicio ? [] : [bDar('e_p', 'Puntos', 0, {f:0})]), bDar('e_t', 'Tiempo', 30, {f:0}), bFondo('e_f0', 'Parque'),
+        HASTA('e_hasta', oB(cmp(vr('Tiempo'), '=', num(0)), cmp(vr('Puntos'), '=', num(10))), [...(F.sinEsperar ? [] : [bEsperar('e_w', 1)]), bSumVar('e_m', 'Tiempo', -1)], {f:4, cambiado:F.sinEsperar}),
+        bFondo('e_fin', 'Fin', {f:4, tras:() => this.fin()}), bDetener('e_stop', {f:4})
+      ], {cambiado:F.sinReinicio}),
+      res('residuo', 'r1', this.vel_, 0)
+    ];
+    if (this.tres) prog.push(res('lata', 'r2', this.vel_ - 2, 3), res('brik', 'r3', Math.min(-2, this.vel_ + 2), 6));
+    prog.push(
+      HAT('bandera', 'papelera', 'pa_h', [bIrA('pa_i', num(0), num(-150))]),
+      HAT('derecha', 'papelera', 'pa_d', [bSumX('pa_dx', 20)]),
+      HAT('izquierda', 'papelera', 'pa_z', [bSumX('pa_zx', -20)])
+    );
+    return prog;
+  },
+  alBandera(){ this.autoUsado = modo === 'auto'; this.partidas++; this._sumas = []; this._jugando = true; S.lata.vis = this.tres; S.brik.vis = this.tres; },
+  suma(){
+    const t = performance.now(); this._sumas.push(t); this._sumas = this._sumas.filter(x => t - x < 700);
+    if (F_().golpe && this._sumas.length >= 3){ logro('bug'); narraFija(`<b>¡Bug cazado!</b> ${this._sumas.length} puntos en menos de un segundo con un solo residuo: sigue tocando la papelera y el «si» se cumple en cada fotograma.`); }
+  },
+  fin(){
+    this._jugando = false; this._finT = performance.now();
+    const gana = V.Puntos >= 10;
+    let t = gana ? `<b>¡Partida ganada!</b> ${V.Puntos} puntos con ${V.Tiempo} s de sobra.` : `<b>Fin de la partida</b>: se ha acabado el tiempo con ${V.Puntos} puntos.`;
+    if (gana && !this.autoUsado && modo !== 'auto'){ logro('gana'); if (this.tres) logro('gana3'); }
+    else if (gana) t += ' (Con «Automático» no cuenta para el reto: juega tú.)';
+    if (F_().sinReinicio && this.partidas > 1) t += ' Fíjate: esta partida no ha empezado en 0 puntos.';
+    narraFija(t);
+  },
+  siguiente(){ return 'bandera'; },
+  auto(){
+    if (!activos()){ if (!this._finT || performance.now() - this._finT > 3500) disparar('bandera'); return; }
+    this.autoUsado = true;
+    const pa = S.papelera;
+    const cand = ['residuo', 'lata', 'brik'].map(k => S[k]).filter(s => s.vis && s.y > -140).sort((a, b) => a.y - b.y)[0];
+    if (!cand) return;
+    if (cand.x > pa.x + 12) disparar('derecha'); else if (cand.x < pa.x - 12) disparar('izquierda');
+  },
+  medidas(){
+    return [
+      {et:'Puntos', v:V.Puntos, cls:V.Puntos >= 10 ? 'bien' : ''},
+      {et:'Tiempo', v:V.Tiempo + ' s', cls:V.Tiempo <= 5 ? 'mal' : ''},
+      {et:'Partidas jugadas', v:this.partidas},
+      {et:'Velocidad de caída', v:this.vel_ + ' por fotograma'}
+    ];
+  },
+  controles(){
+    return `<p style="margin:0 0 6px;font-size:15px">Pulsa la bandera y mueve la papelera con ← y → (botones o teclado, con el escenario seleccionado). Gana si llegas a 10 puntos antes de que acabe el tiempo.</p>
+      <div class="ctl"><label for="cVel">Velocidad («sumar a y»)</label><input type="range" id="cVel" min="-15" max="-3" step="1" value="${this.vel_}"><span class="num" id="cVelTxt">${this.vel_}</span></div>
+      <label class="interruptor" for="cTres"><input type="checkbox" id="cTres" ${this.tres ? 'checked' : ''}> Añadir una lata y un brik con velocidades distintas que salen cada 3 segundos</label>`;
+  },
+  enlaza(){
+    $('#cVel').oninput = e => { this.vel_ = +e.target.value; $('#cVelTxt').textContent = this.vel_; cambiaPrograma(); };
+    $('#cTres').onchange = e => { this.tres = e.target.checked; S.lata.vis = S.brik.vis = this.tres; cambiaPrograma(); };
+  },
+  objetivos:[
+    {id:'gana', txt:'Reto 1 · Gana una partida tú (sin «Automático»): 10 puntos antes de que el tiempo llegue a 0.'},
+    {id:'gana3', txt:'Reto 2 · Gana con los tres residuos cayendo a velocidades distintas.'},
+    {id:'bug', txt:'Reto 3 · Caza el bug de los «puntos de golpe» provocándolo en «Estropéalo».'}
+  ],
+  piezas:{residuo:['Botella', 'Residuo que cae. Tamaño 50 %.', 'Cae con «por siempre» + «sumar a y −5» y vuelve arriba en una x al azar.'],
+    lata:['Lata', 'Segundo residuo del reto, más rápido.', 'Usa el mismo programa con otra velocidad.'], brik:['Brik', 'Tercer residuo del reto, más lento.', 'Sale 6 segundos después.'],
+    papelera:['Papelera', 'La controla quien juega con las flechas.', 'Si un residuo la toca, suma un punto.'],
+    escenario:['El escenario', 'También tiene programas: aquí vive la cuenta atrás.', 'Pone Puntos a 0 y Tiempo a 30 y termina la partida.']},
+  idea:'Una variable es una caja con nombre: se pone a su valor inicial al pulsar la bandera, cambia durante el juego y un «repetir hasta que» la vigila para terminar la partida.',
+  ejemplo:`<div><h3 style="margin:6px 0">Las dos variables</h3><table class="reglas"><thead><tr><th></th><th>Puntos</th><th>Tiempo</th></tr></thead><tbody>
+    <tr><th>Al empezar</th><td>dar el valor 0</td><td>dar el valor 30</td></tr><tr><th>Cambia</th><td>+1 al recoger</td><td>−1 cada segundo</td></tr><tr><th>Termina</th><td>al llegar a 10</td><td>al llegar a 0</td></tr></tbody></table></div>
+    <div><h3 style="margin:6px 0">Nombres de los bloques en español</h3><p style="margin:4px 0">En el editor no se llaman «fijar»: busca <b>«dar a Puntos el valor 0»</b> y <b>«sumar a Puntos 1»</b> en la categoría naranja Variables.</p></div>`,
+  error:{titulo:'Puntos de golpe', fallo:'golpe', texto:'<p>Si al sumar el punto el residuo no vuelve arriba (o no se esconde), en el fotograma siguiente sigue tocando la papelera y vuelve a sumar. Un residuo puede dar 5 o 6 puntos.</p><p>La solución es mover el residuo justo después de sumar: «ir a x: (número aleatorio) y: 170».</p>', pista:'Activa el error, pulsa la bandera y recoge un residuo: mira cómo salta el marcador.'},
+  practica:{titulo:'Prácticas 6 y 11 · Lluvia de residuos con puntos y tiempo', pasos:[
+    'Práctica 6: un residuo a tamaño 50 % que sale arriba en una x aleatoria entre −220 y 220 y cae con «por siempre» + «sumar a y −5».',
+    'Si «posición en y» &lt; −170, vuelve arriba en otra x aleatoria. Reto extra: cinco residuos a velocidades distintas.',
+    'Práctica 11: crea las variables Puntos y Tiempo (Variables → Crear una variable).',
+    'En el escenario: «dar a Puntos el valor 0», «dar a Tiempo el valor 30» y «repetir hasta que» con «esperar 1» y «sumar a Tiempo −1».',
+    'En el residuo: «si ¿tocando Papelera? entonces» → «sumar a Puntos 1» y volver arriba.',
+    'Juega tres partidas seguidas, caza un bug y cuéntalo en el foro «Bugs y soluciones».'],
+    checklist:['El residuo sale cada vez por un sitio distinto.', 'Puntos y Tiempo vuelven a 0 y 30 al pulsar la bandera.', 'Cada residuo suma un solo punto.', 'La partida termina con Tiempo = 0 o Puntos = 10.', 'He contado un bug en el foro.'],
+    entrega:'La lluvia va en la <b>Tarea 2.5</b>; los puntos, el tiempo y el bug cazado, en la <b>Tarea 2.8</b> y en el foro «Bugs y soluciones».'},
+  preguntas:[
+    {q:'La cuenta atrás llega a 0 en un segundo. ¿Qué falta?', ops:['«esperar 1 segundos» dentro del bucle.', 'Una variable más.', 'Cambiar el fondo.'], ok:0, expl:'Sin la espera, el bucle resta 1 en cada fotograma, unas 30 veces por segundo.'},
+    {q:'Un residuo da 5 puntos de golpe al tocar la papelera. ¿Cuál es la solución?', ops:['Borrar la variable Puntos.', 'Mover o esconder el residuo justo después de sumar.', 'Quitar el «por siempre».'], ok:1, expl:'Mientras sigue tocando, el «si» se cumple una y otra vez.'},
+    {q:'La segunda partida empieza con 7 puntos. ¿Qué bloque falta?', ops:['«sumar a Puntos 1»', '«dar a Puntos el valor 0» al pulsar la bandera', '«detener todos»'], ok:1, expl:'Las variables guardan su valor hasta que algo las cambia: hay que reiniciarlas al empezar.'}
+  ]
+};
+
+/* ---------- 5. Las puertas: sensores de color (sesiones 9, 10 y 11, Prácticas 8, 9 y 10) */
+RETOS.puertas = {
+  titulo:'Las seis puertas de internet', corto:'5 · Sensores de color', sesion:10, practicaN:'Prácticas 8, 9 y 10', vel:'scratch',
+  escena:'Las puertas: muévete con las flechas',
+  fases:['1. Bandera: fondo de las puertas', '2. Por siempre: ¿toca un color?', '3. Sí: fondo del servicio y se esconde', '4. Espera 3 s, vuelve y se muestra'],
+  eventos:['bandera', 'izquierda', 'arriba', 'abajo', 'derecha'],
+  n:3,
+  init(){ S = {robot:nuevoObjeto('robot', {nombre:'Personaje', forma:'robot', x:0, y:-140, r:18, hl:'#ca8a04'})}; V = {}; ESC.fondo = 'Puertas'; this.visitadas = new Set(); this._diana = 0; this._ojoT = 0; this._empezado = false; },
+  fallos:[
+    {id:'fuera', txt:'Poner los «si» fuera del «por siempre»', exp:'<b>Solo mira una vez.</b> Los «si» se comprueban justo al pulsar la bandera, cuando el personaje todavía está abajo, y ya no se vuelven a mirar. Por mucho que llegues a una puerta, no pasa nada.'},
+    {id:'colorOjo', txt:'Elegir el rojo «a ojo» en vez de con el cuentagotas', exp:'<b>Un rojo parecido no vale.</b> El sensor busca exactamente el rojo #FF3B30 y la puerta es #E5484D. A la vista son casi iguales, pero el sensor no la ve. El cuentagotas copia el color exacto.'},
+    {id:'sinVolver', txt:'Olvidar «ir a x: 0 y: −140» antes de mostrarse', exp:'<b>Vuelve a entrar sin parar.</b> Al regresar a las puertas, el personaje sigue encima de la puerta: el «por siempre» la detecta otra vez y vuelve a entrar, una y otra vez.'},
+    {id:'sinMostrar', txt:'Olvidar «mostrar»', exp:'<b>Desaparece para siempre.</b> Entra en la puerta y se esconde, pero nada lo vuelve a mostrar: se mueve sin que lo veas.'}
+  ],
+  normal:'Todo normal: los «si» están dentro del «por siempre», los colores se han elegido con el cuentagotas y el personaje vuelve abajo y se muestra.',
+  programa(F){
+    const ifs = PUERTAS.slice(0, this.n).map((p, i) => {
+      const hex = i === 0 && F.colorOjo ? COLOR_OJO : p.c;
+      return SI(`d_si${i}`, tocaColor(hex, i === 0 && F.colorOjo ? 'rojo a ojo' : p.nom), [
+        bFondo(`d_fd${i}`, p.fondo, {f:2, tras:() => this.entra(i)}), bEsconder(`d_e${i}`, {f:2}), bEsperar(`d_w${i}`, 3, {f:3}), bFondo(`d_fp${i}`, 'Puertas', {f:3}),
+        ...(F.sinVolver ? [] : [bIrA(`d_v${i}`, num(0), num(-140), {f:3})]),
+        ...(F.sinMostrar ? [] : [bMostrar(`d_mo${i}`, {f:3, tras:() => this.vuelve(i)})])
+      ], {f:1, cambiado:(i === 0 && F.colorOjo) || F.sinVolver || F.sinMostrar});
+    });
+    return [
+      HAT('bandera', 'robot', 'd_h', [bFondo('d_f', 'Puertas', {f:0}), bIrA('d_i', num(0), num(-140), {f:0}), bMostrar('d_m0', {f:0}),
+        ...(F.fuera ? ifs.map(b => Object.assign(b, {cambiado:true})) : [SIEMPRE('d_s', ifs, {f:1})])]),
+      HAT('derecha', 'robot', 'k_d', [bSumX('k_dx', 10)]), HAT('izquierda', 'robot', 'k_i', [bSumX('k_ix', -10)]),
+      HAT('arriba', 'robot', 'k_a', [bSumY('k_ay', num(10))]), HAT('abajo', 'robot', 'k_b', [bSumY('k_by', num(-10))])
+    ];
+  },
+  alBandera(){ this._empezado = true; },
+  entra(i){ this.visitadas.add(i); this._diana = i + 1; if (this.visitadas.size >= 6 && this.n === 6) logro('seis'); },
+  vuelve(i){ if (!F_().sinVolver) logro('una'); },
+  siguiente(){ return 'bandera'; },
+  auto(){
+    if (!this._empezado){ disparar('bandera'); return; }
+    const s = S.robot; if (!s.vis || ESC.fondo !== 'Puertas') return;
+    const p = PUERTAS[this._diana % this.n];
+    if (solapaPuerta(s, p) && !F_().sinVolver){ if (!F_().fuera && !(this._diana % this.n === 0 && F_().colorOjo)) return; this._diana++; return; }
+    if (Math.abs(s.x - p.x) > 6) disparar(s.x < p.x ? 'derecha' : 'izquierda');
+    else disparar(s.y < 95 ? 'arriba' : 'abajo');
+  },
+  vigila(){
+    const s = S.robot;
+    if (F_().colorOjo && ESC.fondo === 'Puertas' && s.vis && solapaPuerta(s, PUERTAS[0])){ this._ojoT = this._ojoT || performance.now(); if (performance.now() - this._ojoT > 1200) logro('ojo'); }
+    else this._ojoT = 0;
+  },
+  medidas(){
+    const s = S.robot, toc = PUERTAS.findIndex(p => solapaPuerta(s, p));
+    return [
+      {et:'Fondo actual', v:ESC.fondo},
+      {et:'Puerta que pisa', v:toc >= 0 && ESC.fondo === 'Puertas' ? PUERTAS[toc].nom : '—'},
+      {et:'Puertas programadas', v:this.n + ' de 6'},
+      {et:'Puertas visitadas', v:this.visitadas.size}
+    ];
+  },
+  controles(){
+    return `<p style="margin:0 0 6px;font-size:15px">Haz una puerta, pruébala y copia el patrón para las demás. Muévete con las flechas.</p>
+      <div class="ctl"><span style="font-size:14px;font-weight:600">Puertas programadas</span><div class="seg" id="cN">${[1, 3, 6].map(k => `<button type="button" data-v="${k}" aria-pressed="${k === this.n}">${k}</button>`).join('')}</div></div>`;
+  },
+  enlaza(){ $('#cN').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; this.n = +b.dataset.v; $('#cN').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); cambiaPrograma(); }; },
+  objetivos:[
+    {id:'una', txt:'Reto 1 · Entra en una puerta, lee el servicio y vuelve a las puertas.'},
+    {id:'seis', txt:'Reto 2 · Programa las 6 puertas copiando el patrón y visítalas todas.'},
+    {id:'ojo', txt:'Reto 3 · Comprueba en «Estropéalo» que un rojo elegido «a ojo» no abre la puerta.'}
+  ],
+  piezas:{robot:['El personaje', 'Se mueve 10 pasos con cada flecha.', 'Pregunta todo el rato si toca el color de alguna puerta.'],
+    escenario:['El fondo «Puertas»', 'Seis puertas, cada una de un color.', 'Cada color lleva a un fondo con la explicación de un servicio de internet.']},
+  idea:'«¿tocando el color…?» solo ve el color exacto y solo cuando se pregunta: por eso va dentro de un «por siempre», y el color se coge con el cuentagotas.',
+  ejemplo:`<div><h3 style="margin:6px 0">El patrón de cada puerta</h3><table class="reglas"><thead><tr><th>Color</th><th>Fondo</th></tr></thead><tbody>${PUERTAS.map(p => `<tr><td><span class="sw" style="background:${p.c};border-color:var(--line)"></span> ${p.nom}</td><td>${p.titulo}</td></tr>`).join('')}</tbody></table></div>
+    <div><h3 style="margin:6px 0">Lo mismo con objetos</h3><p style="margin:4px 0">El juego del hardware (Práctica 8) usa el mismo patrón con «¿tocando [Placa base]?» en lugar de un color, y las tres puertas de las licencias (Práctica 10) son este juego con tres puertas.</p></div>`,
+  error:{titulo:'No volver a la posición de salida', fallo:'sinVolver', texto:'<p>Después de esperar, el personaje vuelve a las puertas. Si no lo llevas abajo con «ir a x: 0 y: −140» antes de mostrarlo, sigue encima de la puerta.</p><p>El «por siempre» vuelve a preguntar, se cumple otra vez y entra de nuevo: un bucle sin salida.</p>', pista:'Activa el error, pulsa la bandera y entra en la primera puerta.'},
+  practica:{titulo:'Prácticas 8, 9 y 10 · Hardware, las seis puertas y las licencias', pasos:[
+    'Dibuja un fondo con seis puertas de colores distintos y un fondo blanco con texto para cada servicio.',
+    'Personaje: «al hacer clic en 🏁», «cambiar fondo a Puertas», «ir a x: 0 y: −140» y «por siempre».',
+    'Dentro, «si ¿tocando el color…? entonces». Pulsa el color del bloque y usa el <b>cuentagotas</b> sobre la puerta.',
+    'Dentro del «si»: cambiar fondo, esconder, esperar 3, cambiar fondo a Puertas, ir a x: 0 y: −140 y mostrar.',
+    'Prueba una puerta y después duplica el «si» (clic derecho → Duplicar) para las demás.',
+    'Guarda «Práctica 9». Con «¿tocando [objeto]?» haces la 8 (hardware) y con tres puertas la 10 (licencias).'],
+    checklist:['Los «si» están dentro del «por siempre».', 'Cada color se ha elegido con el cuentagotas.', 'Al volver, el personaje no entra otra vez solo.', 'Funcionan las seis puertas.'],
+    entrega:'Las prácticas 8 y 9 van en la <b>Tarea 2.6</b>; la 10, con su ficha de créditos, en la <b>Tarea 2.7</b>.'},
+  preguntas:[
+    {q:'Los «si» están fuera del «por siempre». ¿Qué pasa al llegar a una puerta?', ops:['Entra igual, pero más despacio.', 'Nada: los «si» solo se comprobaron al empezar.', 'Entra en todas a la vez.'], ok:1, expl:'Sin bucle, cada «si» se pregunta una sola vez, justo al pulsar la bandera.'},
+    {q:'Has elegido el rojo de la paleta y la puerta roja no funciona. ¿Por qué?', ops:['El sensor necesita el color exacto: hay que usar el cuentagotas.', 'El rojo no se puede detectar.', 'Las puertas tienen que ser cuadradas.'], ok:0, expl:'Dos rojos parecidos son colores distintos para el sensor.'},
+    {q:'Al volver de una puerta, el personaje entra otra vez sin parar. ¿Qué falta?', ops:['«esperar 3 segundos»', '«ir a x: 0 y: −140» antes de mostrarse', '«cambiar fondo a Puertas»'], ok:1, expl:'Si se muestra encima de la puerta, el sensor la vuelve a detectar enseguida.'}
+  ]
+};
+
+/* ============================================================ fallos activos */
+const FALLOS = {};
+const F_ = () => FALLOS[R.key] || (FALLOS[R.key] = {});
+
+/* ============================================================ logros (se guardan en el navegador) */
+const CLAVE_LOGROS = 'lab-scratch-sda2-logros';
+let LOGROS = {}; try { LOGROS = JSON.parse(localStorage.getItem(CLAVE_LOGROS) || '{}') || {}; } catch(e){ LOGROS = {}; }
+function logro(id){
+  const k = R.key; LOGROS[k] = LOGROS[k] || {};
+  if (LOGROS[k][id]) return;
+  LOGROS[k][id] = true;
+  try { localStorage.setItem(CLAVE_LOGROS, JSON.stringify(LOGROS)); } catch(e){}
+  pintaObjetivos(); pintaPestanas();
+}
+
+/* ============================================================ escena SVG */
+const svg = $('#svg');
+const el = (tag, at = {}, padre = svg) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); padre.appendChild(e); return e; };
+const gFondo = el('g'), gRejilla = el('g', {opacity:0}), gLapiz = el('g'), gRastro = el('g'), gObjetos = el('g'), gBocadillos = el('g'), gUI = el('g');
+const px = x => x + 240, py = y => 180 - y;
+(function rejilla(){
+  let h = '';
+  for (let x = -200; x <= 200; x += 50) h += `<line x1="${px(x)}" y1="0" x2="${px(x)}" y2="360" stroke="${x === 0 ? '#64748b' : '#cbd5e1'}" stroke-width="${x === 0 ? 1.5 : 1}"/>`;
+  for (let y = -150; y <= 150; y += 50) h += `<line x1="0" y1="${py(y)}" x2="480" y2="${py(y)}" stroke="${y === 0 ? '#64748b' : '#cbd5e1'}" stroke-width="${y === 0 ? 1.5 : 1}"/>`;
+  for (let x = -200; x <= 200; x += 100) if (x) h += `<text x="${px(x)}" y="${py(0) + 13}" text-anchor="middle" font-size="10" fill="#475569">${x}</text>`;
+  for (let y = -100; y <= 150; y += 100) if (y) h += `<text x="${px(0) + 4}" y="${py(y) + 3}" font-size="10" fill="#475569">${y}</text>`;
+  h += `<text x="${px(0) + 4}" y="${py(0) + 13}" font-size="10" fill="#475569">(0, 0)</text>`;
+  gRejilla.innerHTML = h;
+})();
+let verNombres = true, verRejilla = false;
+function dibujaFondo(){
+  const f = ESC.fondo; let h = '';
+  if (f === 'Teatro') h = `<rect width="480" height="360" fill="#fdf2f8"/><rect y="250" width="480" height="110" fill="#e9d5ff"/><path d="M0 0 h70 q-10 120 0 250 h-70 z M480 0 h-70 q10 120 0 250 h70 z" fill="#be185d" opacity=".75"/>`;
+  else if (f === 'Parque' || f === 'Fin') h = `<rect width="480" height="360" fill="#e0f2fe"/><rect y="300" width="480" height="60" fill="#86efac"/><circle cx="420" cy="50" r="26" fill="#fde68a"/>` + (f === 'Fin' ? `<rect x="110" y="140" width="260" height="70" rx="14" fill="#0f172a" opacity=".85"/><text x="240" y="184" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">¡Fin de la partida!</text>` : '');
+  else if (f === 'Puertas'){
+    h = `<rect width="480" height="360" fill="#f8fafc"/><rect y="190" width="480" height="170" fill="#e2e8f0"/>`;
+    PUERTAS.forEach((p, i) => { h += `<g class="svg-pieza" data-pieza="puerta${i}" tabindex="0" role="button" aria-label="Puerta ${i + 1}, color ${p.nom}"><rect x="${px(p.x - 28)}" y="${py(170)}" width="56" height="90" rx="6" fill="${p.c}"/><circle cx="${px(p.x + 18)}" cy="${py(125)}" r="3" fill="#fff"/><text x="${px(p.x)}" y="${py(80) + 15}" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">${i + 1}</text></g>`; });
+  } else {
+    const p = PUERTAS.find(q => q.fondo === f);
+    if (p) h = `<rect width="480" height="360" fill="#fff"/><rect x="0" y="0" width="480" height="14" fill="${p.c}"/><text x="240" y="130" text-anchor="middle" font-size="30" font-weight="800" fill="#0f172a">${esc(p.titulo)}</text><foreignObject x="50" y="150" width="380" height="120"><div xmlns="http://www.w3.org/1999/xhtml" style="font:20px/1.35 system-ui,sans-serif;color:#334155;text-align:center">${esc(p.def)}</div></foreignObject>`;
+    else h = `<rect width="480" height="360" fill="#fff"/>`;
+  }
+  gFondo.innerHTML = h;
+  gRejilla.setAttribute('opacity', verRejilla || f === 'Xy-grid' ? 1 : 0);
+}
+function forma(s){
+  const c = s.disfraz, k = s.tam / 100;
+  switch (s.forma){
+    case 'robot': { const col = ['#4C97FF', '#FF8C1A', '#9966FF', '#0FBD8C'][c]; return `<g transform="scale(${k})"><line x1="0" y1="-18" x2="0" y2="-26" stroke="#334155" stroke-width="2"/><circle cx="0" cy="-27" r="3" fill="#ef4444"/><rect x="-16" y="-18" width="32" height="30" rx="8" fill="${col}" stroke="#1e293b" stroke-width="2"/><circle cx="-6" cy="-6" r="4" fill="#fff"/><circle cx="6" cy="-6" r="4" fill="#fff"/><circle cx="-6" cy="-6" r="2" fill="#0f172a"/><circle cx="6" cy="-6" r="2" fill="#0f172a"/><rect x="-7" y="3" width="14" height="3" rx="1.5" fill="#1e293b"/><rect x="-12" y="12" width="8" height="8" rx="2" fill="#475569"/><rect x="4" y="12" width="8" height="8" rx="2" fill="#475569"/></g>`; }
+    case 'bailarina': { const col = ['#c026d3', '#7c3aed', '#db2777', '#0ea5e9'][c]; const brazo = c % 2 ? 'M-16 -12 L-6 -2 M16 -12 L6 -2' : 'M-16 4 L-6 -2 M16 4 L6 -2'; return `<g transform="scale(${k})"><circle cx="0" cy="-16" r="8" fill="#fcd9b6" stroke="#1e293b" stroke-width="1.5"/><path d="M-6 -24 q6 -6 12 0" fill="#7c2d12"/><path d="${brazo}" stroke="#fcd9b6" stroke-width="4" stroke-linecap="round"/><path d="M-6 -6 L6 -6 L18 14 L-18 14 Z" fill="${col}" stroke="#1e293b" stroke-width="1.5"/><path d="M-4 14 L-6 26 M4 14 L6 26" stroke="#fcd9b6" stroke-width="3" stroke-linecap="round"/></g>`; }
+    case 'princesa': { const col = ['#f472b6', '#a78bfa', '#fb7185', '#38bdf8'][c]; return `<g transform="scale(${k})"><path d="M-12 -44 l4 -10 l4 6 l4 -8 l4 8 l4 -6 l4 10 z" fill="#facc15" stroke="#a16207" stroke-width="1.5"/><circle cx="0" cy="-34" r="11" fill="#fcd9b6" stroke="#1e293b" stroke-width="1.5"/><path d="M-12 -38 q-6 14 -2 22 M12 -38 q6 14 2 22" stroke="#92400e" stroke-width="5" fill="none"/><path d="M-10 -22 L10 -22 L34 48 L-34 48 Z" fill="${col}" stroke="#1e293b" stroke-width="1.5"/></g>`; }
+    case 'murcielago': return `<g transform="scale(${k})"><path d="M0 -4 C-8 -18 -20 -14 -26 -4 C-20 -6 -16 0 -14 6 C-10 0 -6 2 0 6 C6 2 10 0 14 6 C16 0 20 -6 26 -4 C20 -14 8 -18 0 -4 Z" fill="#334155" stroke="#0f172a" stroke-width="1.5"/><circle cx="-3" cy="-2" r="1.6" fill="#facc15"/><circle cx="3" cy="-2" r="1.6" fill="#facc15"/></g>`;
+    case 'lapiz': return `<g transform="rotate(${s.dir - 90})"><path d="M0 0 L-8 -5 L-30 -5 L-30 5 L-8 5 Z" fill="#facc15" stroke="#854d0e" stroke-width="1.5"/><path d="M0 0 L-8 -5 L-8 5 Z" fill="#fcd9b6"/><circle cx="0" cy="0" r="2" fill="#1d4ed8"/><rect x="-36" y="-5" width="6" height="10" fill="#f472b6"/></g>`;
+    case 'botella': return `<g transform="scale(${k})"><rect x="-10" y="-22" width="20" height="44" rx="8" fill="#7dd3fc" stroke="#0369a1" stroke-width="2.5" opacity=".9"/><rect x="-5" y="-30" width="10" height="9" rx="2" fill="#0369a1"/><rect x="-10" y="-4" width="20" height="10" fill="#38bdf8"/></g>`;
+    case 'lata': return `<g transform="scale(${k})"><rect x="-13" y="-20" width="26" height="40" rx="4" fill="#cbd5e1" stroke="#475569" stroke-width="2.5"/><rect x="-13" y="-8" width="26" height="16" fill="#ef4444"/></g>`;
+    case 'brik': return `<g transform="scale(${k})"><path d="M-14 -16 L0 -26 L14 -16 L14 24 L-14 24 Z" fill="#fef3c7" stroke="#92400e" stroke-width="2.5"/><rect x="-14" y="0" width="28" height="12" fill="#60a5fa"/></g>`;
+    case 'papelera': return `<g transform="scale(${k})"><path d="M-26 -18 L26 -18 L20 22 L-20 22 Z" fill="#facc15" stroke="#854d0e" stroke-width="2"/><rect x="-30" y="-24" width="60" height="8" rx="3" fill="#ca8a04"/><text x="0" y="8" text-anchor="middle" font-size="16">♻️</text></g>`;
+  }
+  return '';
+}
+let pedido = false;
+function pide(){ if (!pedido){ pedido = true; requestAnimationFrame(render); } }
+function render(){
+  pedido = false;
+  // lápiz
+  gLapiz.innerHTML = ESC.lapiz.map(l => `<line x1="${px(l[0])}" y1="${py(l[1])}" x2="${px(l[2])}" y2="${py(l[3])}" stroke="#4C97FF" stroke-width="2.5" stroke-linecap="round"/>`).join('');
+  // rastro de coordenadas
+  gRastro.innerHTML = ESC.rastro.map(t => `<line x1="${px(t.x1)}" y1="${py(t.y1)}" x2="${px(t.x2)}" y2="${py(t.y2)}" stroke="${t.salto ? '#ef4444' : '#ca8a04'}" stroke-width="2" stroke-dasharray="${t.salto ? '2 6' : '6 4'}"/>` + (verNombres ? `<circle cx="${px(t.x2)}" cy="${py(t.y2)}" r="3" fill="#ca8a04"/><text x="${px(t.x2) + 5}" y="${py(t.y2) - 5}" font-size="11" font-weight="700" fill="#92400e" stroke="#fff" stroke-width="3" paint-order="stroke">(${Math.round(t.x2)}, ${Math.round(t.y2)})</text>` : '')).join('');
+  // objetos
+  let h = '', b = '';
+  Object.values(S).forEach(s => {
+    if (!s.forma || !s.vis) return;
+    const resal = resalte[s.key] ? ` <circle r="${rad(s) + 6}" fill="none" stroke="${s.hl}" stroke-width="2" stroke-dasharray="4 3"/>` : '';
+    const flecha = s.flecha ? `<g transform="rotate(${s.dir})"><line x1="0" y1="0" x2="0" y2="${-(rad(s) + 14)}" stroke="#0f172a" stroke-width="2"/><path d="M-5 ${-(rad(s) + 10)} L0 ${-(rad(s) + 18)} L5 ${-(rad(s) + 10)} Z" fill="#0f172a"/></g>` : '';
+    h += `<g class="svg-pieza" data-pieza="${s.key}" transform="translate(${px(s.x)} ${py(s.y)})">${resal}${forma(s)}${flecha}` +
+      (verNombres ? `<text y="${rad(s) + 16}" text-anchor="middle" font-size="11" font-weight="700" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(s.nombre)}</text>` : '') + `</g>`;
+    if (s.dice){
+      const w = Math.min(220, 14 + s.dice.length * 7.2), bx = Math.max(4, Math.min(476 - w, px(s.x) + rad(s) * .5)), by = Math.max(4, py(s.y) - rad(s) - 40);
+      b += `<g><rect x="${bx}" y="${by}" width="${w}" height="28" rx="12" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="${bx + w / 2}" y="${by + 19}" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a">${esc(s.dice)}</text></g>`;
+    }
+  });
+  gObjetos.innerHTML = h; gBocadillos.innerHTML = b;
+  // interfaz: monitores, puntero y pregunta
+  let u = '';
+  if (R.key === 'lluvia') [['Puntos', V.Puntos], ['Tiempo', V.Tiempo]].forEach(([n, v], i) => { u += `<g transform="translate(6 ${6 + i * 26})"><rect width="104" height="22" rx="4" fill="#e9eef2" stroke="#c4ccd4"/><text x="6" y="15" font-size="12" font-weight="700" fill="#575e75">${n}</text><rect x="58" y="3" width="42" height="16" rx="4" fill="#FF8C1A"/><text x="79" y="15" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${v}</text></g>`; });
+  if (R.key === 'bailarina') u += `<g transform="translate(${px(ESC.puntero.x)} ${py(ESC.puntero.y)})" class="svg-pieza" data-pieza="puntero"><circle r="9" fill="none" stroke="#0f172a" stroke-width="2"/><path d="M-14 0 H-4 M4 0 H14 M0 -14 V-4 M0 4 V14" stroke="#0f172a" stroke-width="2"/>${verNombres ? '<text x="12" y="-10" font-size="11" font-weight="700" fill="#0f172a" stroke="#fff" stroke-width="3" paint-order="stroke">ratón</text>' : ''}</g>`;
+  if (ESC.pregunta !== null) u += `<g><rect x="10" y="318" width="460" height="34" rx="8" fill="#fff" stroke="#5CB1D6" stroke-width="2"/><text x="22" y="340" font-size="15" fill="#0f172a">${esc(ESC.pregunta || '…')}</text><circle cx="452" cy="335" r="11" fill="#5CB1D6"/><text x="452" y="340" text-anchor="middle" font-size="13" fill="#fff">✔</text></g>`;
+  gUI.innerHTML = u;
+  if (R.vigila) R.vigila();
+  marcaResaltado(); pintaFases(); refresca();
+  const partes = Object.values(narrSpr);
+  if (narrFija) $('#narracion').innerHTML = narrFija;
+  else if (partes.length) $('#narracion').innerHTML = partes.join(' · ');
+  $('#btnPaso').textContent = modo === 'paso' ? (activos() ? 'Siguiente paso' : 'Empezar paso a paso') : 'Empezar paso a paso';
+}
+
+/* ============================================================ programa: bloques y pseudocódigo */
+function pintaBloque(b){
+  const clase = (b.cambiado ? ' cambiado' : '') + (b.nuevo ? ' nuevo' : '');
+  if (b.k){
+    let h = `<div class="blk c${clase}" style="--c:${CAT.control}" data-b="${b.id}"><span class="lin">${htmlT(b[idioma])}</span><div class="cuerpo">${b.cuerpo.map(pintaBloque).join('')}</div>`;
+    if (b.sino) h += `<span class="lin">${idioma === 'es' ? 'si no' : 'else'}</span><div class="cuerpo">${b.sino.map(pintaBloque).join('')}</div>`;
+    return h + '</div>';
+  }
+  return `<div class="blk${clase}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${htmlT(b[idioma])}</div>`;
+}
+function porObjeto(prog){
+  const orden = [];
+  prog.forEach(sc => { let g = orden.find(o => o.spr === sc.spr); if (!g){ g = {spr:sc.spr, scripts:[]}; orden.push(g); } g.scripts.push(sc); });
+  return orden;
+}
+function pintaPrograma(){
+  PROG = R.programa(F_());
+  // el «si no» del polígono se ejecuta también
+  const grupos = porObjeto(PROG);
+  $('#bloques').innerHTML = grupos.map(g => {
+    const s = S[g.spr], cambiado = g.scripts.some(sc => sc.cambiado && sc.ev !== 'bandera') && g.spr !== 'bailarina' && R.key === 'bailarina';
+    return `<div class="obj"><div class="obj-cab${cambiado ? ' cambiado' : ''}" style="--c:${s.hl}">${idioma === 'es' ? 'Objeto' : 'Sprite'}: ${esc(s.nombre)}${cambiado ? ' ⚠ (aquí no va el programa de la bailarina)' : ''}</div>` +
+      g.scripts.map(sc => `<div class="pila"><div class="blk hat${sc.cambiado ? ' cambiado' : ''}" style="--c:${CAT.eventos}" data-b="${sc.id}">${htmlT(sc[idioma])}</div>${sc.cuerpo.length ? sc.cuerpo.map(pintaBloque).join('') : `<div class="blk cambiado" style="--c:#94a3b8">${idioma === 'es' ? '(falta un bloque)' : '(a block is missing)'}</div>`}</div>`).join('') + '</div>';
+  }).join('');
+  const L = textoPseudo();
+  $('#pseudo').innerHTML = L.map(l => `<span data-b="${l.id}" class="${l.cls || ''}">${esc(l.txt) || ' '}</span>`).join('');
+  $('#leyenda').innerHTML = grupos.map(g => `<span style="--c:${S[g.spr].hl}">${esc(S[g.spr].nombre)}</span>`).join('') + '<span style="--c:var(--ko)">Cambiado al estropearlo</span>';
+  marcaResaltado();
+}
+function textoPseudo(){
+  const L = [];
+  const add = (id, txt, n, cls) => L.push({id, txt:'    '.repeat(n) + txt, cls});
+  const cuerpo = (lista, n) => lista.forEach(b => {
+    add(b.id, b.ps, n, b.cambiado ? 'cambiado' : '');
+    if (b.k){ cuerpo(b.cuerpo, n + 1); if (b.sino){ add(b.id, 'Si no:', n); cuerpo(b.sino, n + 1); } }
+  });
+  porObjeto(PROG).forEach(g => {
+    add('', `# Objeto: ${S[g.spr].nombre}`, 0, 'obj-l');
+    g.scripts.forEach(sc => { add(sc.id, sc.ps, 0); if (!sc.cuerpo.length) add('', '(no hace nada)', 1); cuerpo(sc.cuerpo, 1); });
+    add('', '', 0);
+  });
+  return L;
+}
+function textoBloques(){
+  const L = [];
+  const cuerpo = (lista, n) => lista.forEach(b => {
+    L.push('    '.repeat(n) + plano(b[idioma]));
+    if (b.k){ cuerpo(b.cuerpo, n + 1); if (b.sino){ L.push('    '.repeat(n) + (idioma === 'es' ? 'si no' : 'else')); cuerpo(b.sino, n + 1); } L.push('    '.repeat(n) + (idioma === 'es' ? 'fin' : 'end')); }
+  });
+  porObjeto(PROG).forEach(g => { L.push(`// ${idioma === 'es' ? 'Objeto' : 'Sprite'}: ${S[g.spr].nombre}`); g.scripts.forEach(sc => { L.push(plano(sc[idioma])); cuerpo(sc.cuerpo, 1); L.push(''); }); });
+  return L.join('\n').trim() + '\n';
+}
+function marcaResaltado(){
+  document.querySelectorAll('#bloques .hl, #pseudo .hl').forEach(e => e.classList.remove('hl'));
+  for (const k in resalte){
+    const id = resalte[k]; if (!id || !S[k]) continue;
+    document.querySelectorAll(`#bloques [data-b="${id}"], #pseudo [data-b="${id}"]`).forEach(e => {
+      const t = e.classList.contains('c') ? e.querySelector('.lin') : e;
+      t.classList.add('hl'); t.style.setProperty('--hlc', S[k].hl);
+    });
+  }
+}
+function cambiaPrograma(parar = true){
+  if (parar && activos()) detenerTodo('Has cambiado el programa: pulsa otra vez la bandera para probarlo.');
+  pintaPrograma(); explica(); pide();
+}
+
+/* ============================================================ paneles */
+let filasMonitor = '';
+function refresca(){
+  const objs = Object.values(S).filter(s => s.forma && (s.vis || PROG.some(sc => sc.spr === s.key))), claves = objs.map(s => s.key).join(',');
+  if (claves !== filasMonitor){
+    filasMonitor = claves;
+    $('#monitor').innerHTML = objs.map(s => `<tr data-k="${s.key}"><th scope="row"><button type="button" class="tb" data-pz="${s.key}" style="color:${s.hl}" aria-label="Qué hace: ${esc(s.nombre)}">${esc(s.nombre)}</button></th><td class="num"></td><td class="num"></td><td class="num"></td><td class="num"></td><td></td></tr>`).join('');
+  }
+  objs.forEach(s => {
+    const tds = $('#monitor').querySelector(`tr[data-k="${s.key}"]`).children;
+    const vals = [Math.round(s.x), Math.round(s.y), Math.round(s.dir), s.tam + ' %', s.vis ? 'sí' : 'no'];
+    vals.forEach((v, i) => { if (tds[i + 1].textContent !== String(v)) tds[i + 1].textContent = v; });
+  });
+  const vs = Object.entries(V);
+  $('#vars').innerHTML = vs.length ? 'Variables: ' + vs.map(([k, v]) => `<b>${esc(k)}</b>${esc(v === '' ? '—' : v)}`).join(' · ') : '';
+  $('#medidas').innerHTML = R.medidas().map(m => `<div class="medida-item ${m.cls || ''}"><span class="et">${esc(m.et)}</span><span class="v num">${esc(m.v)}</span></div>`).join('');
+}
+function explica(){
+  const F = F_(), t = R.fallos.filter(f => F[f.id]).map(f => `<p>${f.exp}</p>`);
+  $('#explica').innerHTML = t.join('') || `<p>${esc(R.normal)}</p>`;
+}
+function pintaFases(){
+  document.querySelectorAll('#fases li').forEach((li, i) => { li.classList.toggle('activa', i === faseAct); li.classList.toggle('hecha', faseAct >= 0 && i < faseAct); });
+}
+function pintaObjetivos(){
+  const L = LOGROS[R.key] || {};
+  $('#objetivos').innerHTML = R.objetivos.map(o => `<li class="${L[o.id] ? 'hecho' : ''}"><span class="marca">${L[o.id] ? '✔' : '○'}</span><span>${esc(o.txt)}${L[o.id] ? ' <b>¡Conseguido!</b>' : ''}</span></li>`).join('');
+}
+function pintaControles(){ $('#controles').innerHTML = R.controles(); R.enlaza(); }
+function pintaPestanas(){
+  $('#retos').innerHTML = Object.entries(RETOS).map(([k, r]) => {
+    const n = Object.keys(LOGROS[k] || {}).length;
+    return `<li role="presentation"><button type="button" role="tab" data-reto="${k}" aria-selected="${R && R.key === k}"><span class="logro">${n ? n + '/' + r.objetivos.length + ' ✔' : ''}</span><b>${esc(r.corto)}</b><small>Sesión ${r.sesion} · ${esc(r.practicaN)}</small></button></li>`;
+  }).join('');
+}
+const BOTONES = {bandera:['🏁 Bandera', 'boton bandera peq'], espacio:['␣ Pulsar espacio', 'boton sec peq'], izquierda:['←', 'boton sec peq'], derecha:['→', 'boton sec peq'], arriba:['↑', 'boton sec peq'], abajo:['↓', 'boton sec peq']};
+function pintaReto(){
+  $('#botonera').innerHTML = R.eventos.map(ev => `<button type="button" class="${BOTONES[ev][1]}" data-ev="${ev}" aria-label="${ev === 'bandera' ? 'Pulsar la bandera verde' : 'Tecla ' + TECLA[ev][0]}">${BOTONES[ev][0]}</button>`).join('') + '<button type="button" class="boton parar peq" data-ev="parar" aria-label="Detener todo">⏹ Parar</button>';
+  $('#fases').innerHTML = R.fases.map(f => `<li>${esc(f)}</li>`).join('');
+  $('#tituloEscena').textContent = R.escena;
+  $('#fallos').innerHTML = R.fallos.map(f => `<label class="interruptor" for="f_${f.id}"><input type="checkbox" id="f_${f.id}" data-fallo="${f.id}" ${F_()[f.id] ? 'checked' : ''}> ${esc(f.txt)}</label>`).join('');
+  pintaControles(); pintaObjetivos();
+  $('#idea').textContent = R.idea; $('#ejemplo').innerHTML = R.ejemplo;
+  $('#tError').textContent = R.error.titulo; $('#errorTexto').innerHTML = R.error.texto; $('#errorPista').textContent = R.error.pista;
+  $('#tPractica').textContent = R.practica.titulo;
+  $('#pasos').innerHTML = R.practica.pasos.map(p => `<li>${p}</li>`).join('');
+  $('#entrega').innerHTML = R.practica.entrega;
+  const clave = 'lab-scratch-sda2-' + R.key;
+  let marcas = []; try { marcas = JSON.parse(localStorage.getItem(clave) || '[]') || []; } catch(e){ marcas = []; }
+  $('#comprobacion').innerHTML = R.practica.checklist.map((c, i) => `<li><label><input type="checkbox" data-i="${i}" ${marcas[i] ? 'checked' : ''}> ${esc(c)}</label></li>`).join('');
+  $('#comprobacion').querySelectorAll('input').forEach(c => c.onchange = () => { marcas[+c.dataset.i] = c.checked; try { localStorage.setItem(clave, JSON.stringify(marcas)); } catch(e){} });
+  $('#preguntas').innerHTML = R.preguntas.map((p, i) => `<fieldset class="pregunta" data-correcta="${p.ok}" data-expl="${esc(p.expl)}"><legend>${i + 1}. ${esc(p.q)}</legend>${p.ops.map((o, j) => `<label class="opcion"><input type="radio" name="q${i}" value="${j}"><span>${esc(o)}</span></label>`).join('')}<p class="respuesta" hidden></p></fieldset>`).join('');
+  const url = 'clase.html#s' + R.sesion;
+  $('#enlaceClase').href = url; $('#migaSesion').href = url; $('#migaSesion').textContent = 'Sesión ' + R.sesion; $('#navSesion').href = url; $('#navSesion').innerHTML = `<small>Web de clase</small>Sesión ${R.sesion}`;
+  $('#svgDesc').textContent = `${R.titulo}. Escenario de Scratch de 480 por 360 con el centro en (0, 0).`;
+}
+
+/* ============================================================ elegir reto y reiniciar */
+let autoTimer = null;
+function reiniciar(){
+  epoca++; hilos.clear(); for (const k in resalte) delete resalte[k];
+  nuevaGate(); narrSpr = {}; faseAct = -1;
+  ESC.lapiz = []; ESC.rastro = []; ESC.pregunta = null;
+  R._empezado = false; R._d = 0; R._n = 0; filasMonitor = '';
+  R.init(); dibujaFondo(); pintaPrograma(); explica(); pide();
+}
+function eligeReto(key, desdeHash){
+  pararAuto();
+  R = RETOS[key]; R.key = key;
+  modo = 'libre'; velSel = R.vel; $('#velocidad').value = velSel;
+  verRejilla = !!R.rejilla; $('#optRejilla').setAttribute('aria-pressed', String(verRejilla));
+  $('#pieza').hidden = true;
+  pintaPestanas(); pintaReto(); reiniciar();
+  narraFija(`<b>${esc(R.titulo)}.</b> Pulsa «Empezar paso a paso» para ver cada bloque, la bandera 🏁 para ejecutarlo o «Automático» para que se juegue solo.`);
+  if (!desdeHash){ try { history.replaceState(null, '', '#' + key); } catch(e){} }
+}
+function pararAuto(){ if (autoTimer){ clearInterval(autoTimer); autoTimer = null; } $('#btnAuto').setAttribute('aria-pressed', 'false'); if (modo === 'auto') modo = 'libre'; }
+
+/* ============================================================ controles */
+$('#retos').onclick = e => { const b = e.target.closest('[data-reto]'); if (b) eligeReto(b.dataset.reto); };
+$('#btnPaso').onclick = () => {
+  if (modo === 'auto') pararAuto();
+  if (modo !== 'paso'){ modo = 'paso'; }
+  if (!activos()){ const ev = R.siguiente ? R.siguiente() : 'bandera'; disparar(ev); abrirPaso(); }
+  else abrirPaso();
+  pide();
+};
+$('#btnAuto').onclick = () => {
+  if (modo === 'auto'){ pararAuto(); narraFija('Automático desactivado: el programa sigue con los botones de debajo del escenario.'); return; }
+  const g = gate; modo = 'auto'; nuevaGate(); g.r();
+  $('#btnAuto').setAttribute('aria-pressed', 'true');
+  if (!activos()) disparar(R.siguiente ? R.siguiente() : 'bandera');
+  autoTimer = setInterval(() => { if (R.auto) R.auto(); else if (!activos()) disparar('bandera'); }, R.key === 'lluvia' || R.key === 'puertas' ? 90 : 700);
+};
+$('#btnReiniciar').onclick = () => { pararAuto(); modo = 'libre'; reiniciar(); narraFija('Todo a cero: posiciones, dibujos y variables. Los retos conseguidos se mantienen.'); };
+$('#velocidad').onchange = e => { velSel = e.target.value; };
+$('#botonera').onclick = e => {
+  const b = e.target.closest('[data-ev]'); if (!b) return;
+  const ev = b.dataset.ev;
+  if (ev === 'parar'){ pararAuto(); detenerTodo('Detenido, como con el botón rojo de Scratch.'); return; }
+  if (modo === 'paso' && ev === 'bandera'){ disparar(ev); abrirPaso(); return; }
+  if (modo === 'paso'){ disparar(ev); narraFija('Modo paso a paso: pulsa «Siguiente paso» para que avance el programa de la tecla.'); return; }
+  disparar(ev);
+};
+const TECLAS = {ArrowLeft:'izquierda', ArrowRight:'derecha', ArrowUp:'arriba', ArrowDown:'abajo', ' ':'espacio'};
+$('#escena').addEventListener('keydown', e => {
+  const ev = TECLAS[e.key];
+  if (ev && R.eventos.includes(ev)){ e.preventDefault(); disparar(ev); if (modo === 'paso') abrirPaso(); }
+  else if ((e.key === 'Enter') && e.target.dataset && e.target.dataset.pieza){ e.preventDefault(); abrePieza(e.target.dataset.pieza); }
+});
+function aEscena(ev){
+  const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const m = svg.getScreenCTM(); if (!m) return null;
+  const q = pt.matrixTransform(m.inverse()); return {x:Math.round(q.x - 240), y:Math.round(180 - q.y)};
+}
+svg.addEventListener('click', ev => {
+  $('#escena').focus({preventScroll:true});
+  const pz = ev.target.closest('[data-pieza]');
+  if (R.key === 'bailarina'){ const p = aEscena(ev); if (p){ ESC.puntero = {x:Math.max(-240, Math.min(240, p.x)), y:Math.max(-180, Math.min(180, p.y))}; pide(); } }
+  if (pz) abrePieza(pz.dataset.pieza); else if (R.key !== 'bailarina') abrePieza('escenario');
+});
+function abrePieza(id){
+  let info = R.piezas[id];
+  if (!info && id.startsWith('puerta')){ const p = PUERTAS[+id.slice(6)]; info = [`Puerta ${+id.slice(6) + 1} (${p.nom})`, `Color ${p.c}. Lleva al fondo «${p.titulo}».`, +id.slice(6) < R.n ? 'Esta puerta está programada.' : 'Esta puerta todavía no tiene su «si» en el programa.']; }
+  if (!info) return;
+  $('#piezaTitulo').textContent = info[0]; $('#piezaTexto').textContent = info[1]; $('#piezaUso').textContent = info[2]; $('#pieza').hidden = false;
+}
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+$('#monitor').onclick = e => { const b = e.target.closest('[data-pz]'); if (b) abrePieza(b.dataset.pz); };
+$('#optRejilla').onclick = e => { verRejilla = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(verRejilla)); dibujaFondo(); };
+$('#optNombres').onclick = e => { verNombres = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(verNombres)); pide(); };
+$('#tabBloques').onclick = () => { $('#tabBloques').setAttribute('aria-selected', 'true'); $('#tabPseudo').setAttribute('aria-selected', 'false'); $('#bloques').hidden = false; $('#pseudo').hidden = true; $('#idioma').hidden = false; };
+$('#tabPseudo').onclick = () => { $('#tabPseudo').setAttribute('aria-selected', 'true'); $('#tabBloques').setAttribute('aria-selected', 'false'); $('#bloques').hidden = true; $('#pseudo').hidden = false; $('#idioma').hidden = true; };
+$('#idioma').onclick = e => { const b = e.target.closest('[data-lang]'); if (!b) return; idioma = b.dataset.lang; $('#idioma').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintaPrograma(); };
+function copiar(texto){
+  const ok = () => { $('#copiado').textContent = 'Copiado ✓'; setTimeout(() => $('#copiado').textContent = '', 1800); };
+  const manual = () => { const t = $('#copiaManual'); t.hidden = false; t.value = texto; t.select(); $('#copiado').textContent = 'Selecciona y copia (Ctrl+C)'; };
+  try { navigator.clipboard.writeText(texto).then(ok, manual); } catch(e){ manual(); }
+}
+$('#copiarPseudo').onclick = () => copiar(textoPseudo().map(l => l.txt).join('\n').trim() + '\n');
+$('#copiarBloques').onclick = () => copiar(textoBloques());
+$('#fallos').onchange = e => { const c = e.target.closest('[data-fallo]'); if (!c) return; F_()[c.dataset.fallo] = c.checked; cambiaPrograma(); };
+$('#normalidad').onclick = () => {
+  FALLOS[R.key] = {}; $('#fallos').querySelectorAll('input').forEach(c => { c.checked = false; });
+  pararAuto(); modo = 'libre'; reiniciar(); narraFija('Todo vuelve a la normalidad.');
+};
+$('#probarError').onclick = () => {
+  const f = R.error.fallo; F_()[f] = true; const c = $(`#f_${f}`); if (c) c.checked = true;
+  pararAuto(); modo = 'libre'; reiniciar(); disparar('bandera');
+  narraFija(`<b>Error activado:</b> ${esc(R.fallos.find(x => x.id === f).txt)}. ${esc(R.error.pista)}`);
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+};
+$('#preguntas').addEventListener('change', e => {
+  const f = e.target.closest('.pregunta'); if (!f) return;
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+});
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (RETOS[k] && (!R || R.key !== k)) eligeReto(k, true); });
+
+/* ============================================================ arranque */
+const inicial = RETOS[location.hash.slice(1)] ? location.hash.slice(1) : 'coordenadas';
+eligeReto(inicial, true);
+window.__lab = {
+  RETOS, get R(){ return R; }, get S(){ return S; }, get V(){ return V; }, get ESC(){ return ESC; }, get PROG(){ return PROG; }, get modo(){ return modo; }, get LOGROS(){ return LOGROS; },
+  eligeReto, disparar, abrirPaso, activos, reiniciar, textoPseudo, textoBloques, fallos:F_, set vel(v){ velSel = v; }
+};
+})();
+</script>
+</body>
+</html>
