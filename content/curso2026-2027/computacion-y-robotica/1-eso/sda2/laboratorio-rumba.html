@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Laboratorio: rumba en Scratch</title>
-<meta name="description" content="Laboratorio de la sesión bonus track de la SdA 2 de Computación y Robótica 1.º ESO para el Día del Flamenco: una rumba con la extensión Música de Scratch (cajón, bajo, guitarra, bailaora y palmas) que se ejecuta tiempo a tiempo, se estropea a propósito y con la que el alumnado compone su propia falseta.">
+<meta name="description" content="Laboratorio de la sesión bonus track de la SdA 2 de Computación y Robótica 1.º ESO para el Día del Flamenco: una rumba con la extensión Música de Scratch (piano, guitarra y, opcionalmente, palmero o palmera) que se ejecuta tiempo a tiempo, se estropea a propósito y con la que el alumnado compone su propia falseta.">
 <style>
 :root{
   --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
@@ -226,8 +226,8 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
 
 <header class="lab-cab">
   <p class="lab-num">Sesión bonus track · laboratorio de ampliación de la SdA 2 · 16 de noviembre, Día del Flamenco</p>
-  <h1>Rumba en Scratch: todos a compás</h1>
-  <p class="lab-sub">Un cajón, un bajo, una guitarra, una bailaora y tú a las palmas. Cada instrumento es un objeto de Scratch con su propio programa de la extensión <b>Música</b>. Mira cómo se ponen de acuerdo para sonar a la vez, estropéalo a propósito para oír qué falla, compón tu propia falseta y móntalo después en Scratch.</p>
+  <h1>Rumba en Scratch: piano y guitarra a compás</h1>
+  <p class="lab-sub">Un piano que lleva los acordes, una guitarra que toca la falseta y, si quieres, un palmero o palmera. Cada uno es un objeto de Scratch con su propio programa de la extensión <b>Música</b>. Mira cómo se ponen de acuerdo para sonar a la vez, estropéalo a propósito para oír qué falla, compón tu propia falseta y móntalo después en Scratch.</p>
   <dl class="ficha">
     <div><dt>Para</dt><dd>1.º ESO · sesión bonus track (después de la sesión 18)</dd></div>
     <div><dt>Material</dt><dd>Un ordenador con Scratch y auriculares (o el altavoz del aula)</dd></div>
@@ -240,8 +240,8 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
   <div>
     <h2>💃 16 de noviembre, Día del Flamenco</h2>
     <p>El 16 de noviembre de 2010 la UNESCO declaró el flamenco <b>Patrimonio Cultural Inmaterial de la Humanidad</b>, y desde el año siguiente Andalucía celebra ese día como el <b>Día del Flamenco</b>.</p>
-    <p>Paco de Lucía (Algeciras, 1947-2014) llevó la guitarra flamenca a todo el mundo. Su rumba <b>«Entre dos aguas»</b> (disco <i>Fuente y caudal</i>, 1973) es una de las piezas flamencas más conocidas. Escuchadla en clase antes de empezar: ¿qué instrumentos oís? ¿Dónde caen las palmas?</p>
-    <p><a class="boton sec peq" style="display:inline-block;text-decoration:none" href="https://www.youtube.com/results?search_query=Paco+de+Luc%C3%ADa+Entre+dos+aguas+Fuente+y+caudal" target="_blank" rel="noopener">🔎 Buscar «Entre dos aguas» en YouTube</a></p>
+    <p>Paco de Lucía (Algeciras, 1947-2014) llevó la guitarra flamenca a todo el mundo. Su rumba <b>«Entre dos aguas»</b> (disco <i>Fuente y caudal</i>, 1973) es una de las piezas flamencas más conocidas. Escuchadla antes de empezar: ¿qué instrumentos oís? ¿Dónde caen las palmas?</p>
+    <p><a class="boton sec peq" style="display:inline-block;text-decoration:none" href="https://www.youtube.com/watch?v=U9cIIysvmss" target="_blank" rel="noopener">▶️ Escuchar «Entre dos aguas» en YouTube</a></p>
   </div>
   <div class="aviso">
     <h2>©️ ¿Por qué no programamos su melodía?</h2>
@@ -256,12 +256,13 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
       <div class="escena-barra">
         <strong>El tablao (escenario de Scratch)</strong>
         <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optPalmero" aria-pressed="true">👏 Con palmero/a</button>
           <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
           <button type="button" id="optSonido" aria-pressed="true">🔊 Sonido</button>
         </div>
       </div>
       <div class="escena" id="escena" tabindex="0" aria-describedby="escenaAyuda">
-        <svg id="svg" viewBox="0 0 480 360" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Tablao flamenco con cinco objetos de Scratch: el cajón, el bajo, la guitarra, la bailaora y el palmero o palmera. Arriba, los cuatro tiempos del compás y el acorde que suena.</desc></svg>
+        <svg id="svg" viewBox="0 0 480 360" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Tablao flamenco con los objetos de Scratch: el piano, la guitarra y, si está activado, el palmero o palmera. Arriba, el tempo, los cuatro tiempos del compás y el acorde que suena.</desc></svg>
         <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
           <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
           <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
@@ -270,10 +271,10 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
       <div class="botonera" aria-label="Eventos de Scratch">
         <button type="button" class="boton bandera" id="btnBandera">🏁 Bandera verde</button>
         <button type="button" class="boton parar" id="btnParar">⏹ Detener</button>
-        <button type="button" class="boton palmas-btn" id="btnPalmas">👏 Palmas (espacio)</button>
+        <button type="button" class="boton palmas-btn" id="btnPalmas">👏 Tus palmas (espacio)</button>
         <button type="button" class="boton sec" id="btnG" hidden>Tecla g</button>
       </div>
-      <p class="escena-pie" id="escenaAyuda">Pulsa un objeto para saber qué hace. Haz clic en el tablao y usa la barra espaciadora para dar palmas, como en Scratch. Las palmas puntúan en los tiempos 2 y 4.</p>
+      <p class="escena-pie" id="escenaAyuda">Pulsa un objeto para saber qué hace. Con el palmero o palmera activado, haz clic en el tablao y usa la barra espaciadora para dar tus palmas: puntúan en los tiempos 2 y 4.</p>
       <div class="compas" aria-label="Compás">
         <span style="font-size:14px;font-weight:700">Compás</span>
         <span class="tiempo fuerte" data-t="1">1</span><span class="tiempo palma" data-t="2">2</span><span class="tiempo" data-t="3">3</span><span class="tiempo palma" data-t="4">4</span>
@@ -340,7 +341,7 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
     </section>
     <section class="panel-lab" aria-labelledby="tReto">
       <h2 id="tReto">El reto</h2>
-      <p style="margin:0 0 4px;font-size:15px"><b>Compón tu falseta.</b> Elige una nota (o silencio) para cada tiempo. Las notas en <b style="color:var(--ok)">verde</b> son del acorde que suena.</p>
+      <p style="margin:0 0 4px;font-size:15px"><b>Compón tu falseta.</b> Elige una nota (o silencio) para cada tiempo. Las notas en <b style="color:var(--ok)">verde</b> son del acorde que toca el piano.</p>
       <div class="editor" id="editor"></div>
       <button type="button" class="boton sec peq" id="falsetaOriginal">Volver a la falseta del ejemplo</button>
       <ul class="objetivos" id="objetivos" aria-live="polite"></ul>
@@ -351,26 +352,26 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
 <section class="bloque" aria-labelledby="tIdea">
   <p class="etq">La idea clave</p>
   <h2 id="tIdea" class="sr">La idea clave</h2>
-  <p class="idea">Los bloques de Música cuentan en <b>tiempos</b> y el tempo es <b>uno solo para todo el proyecto</b>: si todos los instrumentos empiezan con el mismo mensaje y cada vuelta de su bucle dura lo mismo, suenan a compás aunque cambies el tempo.</p>
+  <p class="idea">Los bloques de Música cuentan en <b>tiempos</b> y el tempo es <b>uno solo para todo el proyecto</b>: si el piano y la guitarra empiezan con el mismo mensaje y cada vuelta de su bucle dura lo mismo, suenan a compás aunque cambies el tempo.</p>
   <div class="dos">
     <div>
-      <h3 style="margin:0 0 6px">La cadencia andaluza en 16 tiempos</h3>
+      <h3 style="margin:0 0 6px">El piano: la cadencia andaluza en 16 tiempos</h3>
       <div class="tabla-envoltura"><table class="reglas">
-        <thead><tr><th>Compás</th><th>Acorde</th><th>Bajo</th><th>Notas del acorde</th><th>Tiempos</th></tr></thead>
+        <thead><tr><th>Compás</th><th>Acorde</th><th>Arpegio del piano</th><th>Notas del acorde</th><th>Tiempos</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>La menor</td><td>La (45)</td><td>La · Do · Mi</td><td>4</td></tr>
-          <tr><td>2</td><td>Sol</td><td>Sol (43)</td><td>Sol · Si · Re</td><td>4</td></tr>
-          <tr><td>3</td><td>Fa</td><td>Fa (41)</td><td>Fa · La · Do</td><td>4</td></tr>
-          <tr><td>4</td><td>Mi</td><td>Mi (40)</td><td>Mi · Sol# · Si</td><td>4</td></tr>
+          <tr><td>1</td><td>La menor</td><td>57 · 60 · 64 · 60</td><td>La · Do · Mi</td><td>4</td></tr>
+          <tr><td>2</td><td>Sol</td><td>55 · 59 · 62 · 59</td><td>Sol · Si · Re</td><td>4</td></tr>
+          <tr><td>3</td><td>Fa</td><td>53 · 57 · 60 · 57</td><td>Fa · La · Do</td><td>4</td></tr>
+          <tr><td>4</td><td>Mi</td><td>52 · 56 · 59 · 56</td><td>Mi · Sol# · Si</td><td>4</td></tr>
           <tr><th colspan="4">Una vuelta</th><th>16</th></tr>
         </tbody>
       </table></div>
     </div>
     <div>
       <h3 style="margin:0 0 6px">Cuenta los tiempos de cada bucle</h3>
-      <p>Cajón: 1 + 1 + 1 + 1 = <b>4</b> (un compás). Bajo: 4 + 4 + 4 + 4 = <b>16</b>. Guitarra: 16 casillas de 1 tiempo = <b>16</b>. Bailaora: <b>1</b> por vuelta.</p>
-      <p>Como 16 es múltiplo de 4 y de 1, al acabar cada vuelta del bajo y de la guitarra el cajón vuelve a estar en el tiempo 1. Si un bucle suma un tiempo de más o de menos, se va separando del resto en cada vuelta.</p>
-      <p>Las notas son números MIDI: <b>60</b> es el Do central y cada número es un semitono. El Sol# (68) del acorde de Mi es lo que le da el «sabor» andaluz.</p>
+      <p>Piano: 16 notas de 1 tiempo = <b>16</b>. Guitarra: 16 casillas de 1 tiempo = <b>16</b>. Palmero/a: 1 + 1 + 1 + 1 = <b>4</b> (un compás).</p>
+      <p>Como 16 es múltiplo de 4, cuando el piano y la guitarra empiezan una vuelta, el palmero o palmera vuelve a estar en el tiempo 1. Si un bucle suma un tiempo de más o de menos, se va separando del resto en cada vuelta.</p>
+      <p>Las notas son números MIDI: <b>60</b> es el Do central y cada número es un semitono. El Sol# (56 o 68) del acorde de Mi es lo que le da el «sabor» andaluz.</p>
     </div>
   </div>
 </section>
@@ -380,12 +381,12 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
   <h2 id="tError">Contar mal los tiempos de una vuelta</h2>
   <div class="dos">
     <div>
-      <p>Al copiar los bloques del bajo es fácil dejar el Sol <b>durante 3 tiempos</b> en vez de 4. Cada bloque funciona bien por separado, pero la vuelta del bajo dura 15 tiempos y no 16.</p>
-      <p>En la primera vuelta casi no se nota; en la segunda, el bajo cambia de acorde <b>un tiempo antes</b> que la guitarra; en la cuarta ya va cuatro tiempos por delante y suena «a otra canción». El programa no da ningún error: hay que <b>escuchar</b> y <b>contar</b>.</p>
+      <p>Al copiar los bloques del piano es fácil dejar una nota <b>durante 2 tiempos</b> en vez de 1. Cada bloque funciona bien por separado, pero la vuelta del piano dura 17 tiempos y no 16.</p>
+      <p>En la primera vuelta casi no se nota; en la segunda, el piano cambia de acorde <b>un tiempo después</b> que la guitarra; en la cuarta ya va cuatro tiempos por detrás y suena «a otra canción». El programa no da ningún error: hay que <b>escuchar</b> y <b>contar</b>.</p>
     </div>
     <div class="nota">
       <h3>Pruébalo</h3>
-      <p>Activa el fallo, deja sonar dos o tres vueltas en automático y mira en la pianola cómo la fila del bajo se adelanta. En «Lo que pasa dentro» verás el desfase en tiempos.</p>
+      <p>Activa el fallo, deja sonar dos o tres vueltas en automático y mira en la pianola cómo la fila del piano se retrasa. En «Lo que pasa dentro» verás el desfase en tiempos.</p>
       <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
     </div>
   </div>
@@ -397,12 +398,11 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
   <div class="dos">
     <ol class="pasos">
       <li>Crea un proyecto nuevo y añade la extensión <b>Música</b> (botón azul «Añadir extensión», abajo a la izquierda).</li>
-      <li>Dibuja en el editor de disfraces cinco objetos: <b>Cajón, Bajo, Guitarra, Bailaora</b> (con 2-4 disfraces) y <b>Palmero/a</b>. Nada de fotos de personas.</li>
-      <li>Crea las variables <b>pulso</b> y <b>Puntos</b> «para todos los objetos».</li>
-      <li>En el <b>escenario</b>: al hacer clic en la bandera, «dar al tempo el valor 110», Puntos a 0 y «enviar ¡a compás!».</li>
-      <li>Cajón, bajo, guitarra y bailaora empiezan con <b>«al recibir ¡a compás!»</b> y un <b>«por siempre»</b>. Copia los bloques del laboratorio (botón «Copiar los bloques como texto»).</li>
+      <li>Dibuja en el editor de disfraces dos objetos: <b>Piano</b> y <b>Guitarra</b>. Si quieres palmas, añade un tercero: <b>Palmero/a</b>. Nada de fotos de personas.</li>
+      <li>En el <b>escenario</b>: al hacer clic en la bandera, «dar al tempo el valor 110» y «enviar ¡a compás!» (con palmero/a, también Puntos a 0).</li>
+      <li>El piano y la guitarra empiezan con <b>«al recibir ¡a compás!»</b>, fijan su instrumento y repiten su parte con <b>«por siempre»</b>. Copia los bloques del laboratorio (botón «Copiar los bloques como texto»).</li>
       <li>Compón tu <b>falseta</b> para la guitarra: 16 tiempos con notas del modo (Mi, Fa, Sol, Sol#, La, Si, Do, Re). Pruébala antes aquí, en el reto.</li>
-      <li>Programa las palmas con la barra espaciadora: puntúan en los tiempos 2 y 4.</li>
+      <li>Opcional: el palmero o palmera da palmas en los tiempos 2 y 4 y lleva la cuenta en la variable <b>pulso</b>; tus palmas con la barra espaciadora suman <b>Puntos</b> si caen en 2 o 4.</li>
       <li>Provoca dos fallos del laboratorio en tu proyecto, anota qué pasa y arréglalos.</li>
       <li>En «Notas y créditos» escribe: «Música original de [vuestros nombres de usuario], inspirada en la rumba flamenca». Comparte el proyecto en el estudio de la clase.</li>
     </ol>
@@ -426,19 +426,19 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
   <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
   <div class="real">
     <div><h3>Sale de Scratch y de su código</h3><ul>
-      <li>Los textos de los bloques en español e inglés son los de la traducción oficial: «tocar tambor (2) Bombo durante 1 tiempos», «tocar nota 60 durante 0.5 tiempos», «silencio de 1 tiempos», «fijar instrumento a (4) Guitarra», «dar al tempo el valor 60».</li>
+      <li>Los textos de los bloques en español e inglés son los de la traducción oficial: «tocar nota 60 durante 0.5 tiempos», «tocar tambor (8) Palmada durante 1 tiempos», «silencio de 1 tiempos», «fijar instrumento a (4) Guitarra», «dar al tempo el valor 60».</li>
       <li>La duración de los bloques de Música se mide en tiempos: un tiempo dura 60 / tempo segundos.</li>
       <li>El tempo se guarda en el <b>escenario</b>, así que es el mismo para todos los objetos; el instrumento, en cambio, es propio de cada objeto.</li>
       <li>Scratch limita el tempo entre <b>20 y 500</b>: si escribes 800, toca a 500. Las duraciones se limitan entre 0 y 100 tiempos y las notas entre 0 y 130.</li>
-      <li>Si no fijas un instrumento, el objeto toca con el <b>(1) Piano</b>.</li>
-      <li>Los números de tambores e instrumentos (2 Bombo, 3 Golpe lateral, 8 Palmada, 4 Guitarra, 6 Bajo) son los de la extensión.</li>
+      <li>Si un objeto no fija su instrumento, toca con el <b>(1) Piano</b>.</li>
+      <li>Los números del tambor y de los instrumentos (8 Palmada, 1 Piano, 4 Guitarra) son los de la extensión.</li>
     </ul></div>
     <div><h3>Aproximado en la simulación</h3><ul>
-      <li>Los sonidos se sintetizan en el navegador: no son las muestras de Scratch y la «Guitarra» de Scratch no suena como una guitarra flamenca.</li>
+      <li>Los sonidos se sintetizan en el navegador: no son las muestras de Scratch, y la «Guitarra» de Scratch no suena como una guitarra flamenca.</li>
       <li>Scratch revisa sus programas unas 30 veces por segundo, así que cada nota puede terminar unos milisegundos tarde; aquí el tiempo es exacto.</li>
-      <li>«pulso» cambia al principio de cada tiempo: una palmada cuenta como «a compás» si cae en cualquier momento de los tiempos 2 o 4. En el baile real hay que ser mucho más preciso.</li>
-      <li>Los dibujos y la bailaora son propios, no de la biblioteca de Scratch. En «Paso a paso», cada clic avanza un tiempo para todos los objetos a la vez.</li>
-      <li>No se ha comprobado cuántas notas exactas admite Scratch a la vez en un ordenador del aula; el código fija un máximo de 30 sonidos simultáneos.</li>
+      <li>«pulso» cambia al principio de cada tiempo: una palmada tuya cuenta como «a compás» si cae en cualquier momento de los tiempos 2 o 4. En el baile real hay que ser mucho más preciso.</li>
+      <li>Los dibujos son propios, no de la biblioteca de Scratch. En «Paso a paso», cada clic avanza un tiempo para todos los objetos a la vez.</li>
+      <li>No se ha comprobado cuántas notas a la vez admite Scratch en un ordenador del aula; el código fija un máximo de 30 sonidos simultáneos.</li>
     </ul></div>
   </div>
 </section>
@@ -460,7 +460,7 @@ code{background:var(--bg);border-radius:5px;padding:0 4px}
   <a href="clase.html#s19"><small>Web de clase</small>Sesión 19 · Bonus track: rumba en Scratch</a>
   <a href="laboratorio-scratch.html"><small>Otro laboratorio</small>Los retos de las prácticas de Scratch</a>
 </nav>
-<p class="pie">Laboratorio de la SdA 2 «Código en Acción: Videojuegos e Historias Interactivas Sostenibles» de Computación y Robótica 1.º ESO, para celebrar el Día del Flamenco. La falseta del ejemplo es original y la cadencia andaluza es de uso común; el laboratorio no contiene ninguna melodía de «Entre dos aguas». Scratch es un proyecto de la Scratch Foundation (scratch.mit.edu); este laboratorio no está hecho ni respaldado por ella.</p>
+<p class="pie">Laboratorio de la SdA 2 «Código en Acción: Videojuegos e Historias Interactivas Sostenibles» de Computación y Robótica 1.º ESO, para celebrar el Día del Flamenco. La falseta y el arpegio del ejemplo son originales y la cadencia andaluza es de uso común; el laboratorio no contiene ninguna melodía de «Entre dos aguas». Scratch es un proyecto de la Scratch Foundation (scratch.mit.edu); este laboratorio no está hecho ni respaldado por ella.</p>
 </main>
 
 <script>
@@ -471,20 +471,23 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const CAT = {control:'#FFAB19', eventos:'#FFBF00', operadores:'#59C059', variables:'#FF8C1A', apariencia:'#9966FF', musica:'#0FBD8C'};
 const NOMBRE = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
 const nota = m => NOMBRE[m % 12] + (Math.floor(m / 12) - 1);
-const TAMBOR = {2:['(2) Bombo', '(2) Bass Drum', 'PUM'], 3:['(3) Golpe lateral', '(3) Side Stick', 'TA'], 8:['(8) Palmada', '(8) Hand Clap', '👏']};
-const INSTR = {1:['(1) Piano', '(1) Piano'], 4:['(4) Guitarra', '(4) Guitar'], 6:['(6) Bajo', '(6) Bass']};
+const nombreNota = m => NOMBRE[m % 12];
+const TAMBOR = {8:['(8) Palmada', '(8) Hand Clap', '👏']};
+const INSTR = {1:['(1) Piano', '(1) Piano'], 4:['(4) Guitarra', '(4) Guitar']};
 const ACORDES = [{n:'La menor', tonos:[9, 0, 4]}, {n:'Sol', tonos:[7, 11, 2]}, {n:'Fa', tonos:[5, 9, 0]}, {n:'Mi', tonos:[4, 8, 11]}];
+const ARPEGIO = [57, 60, 64, 60,  55, 59, 62, 59,  53, 57, 60, 57,  52, 56, 59, 56];
 const MODO = [64, 65, 67, 68, 69, 71, 72, 74, 76];
 const FALSETA0 = [76, 74, 72, 69,  74, 71, 67, 71,  72, 69, 65, 69,  71, 68, 64, 0];
-let falseta = FALSETA0.slice();
+let falseta = FALSETA0.slice(), conPalmero = true;
 try { const g = JSON.parse(localStorage.getItem('lab-rumba-falseta') || 'null'); if (Array.isArray(g) && g.length === 16 && g.every(x => x === 0 || MODO.includes(x))) falseta = g; } catch(e){}
+try { if (localStorage.getItem('lab-rumba-palmero') === 'no') conPalmero = false; } catch(e){}
 
 /* ============================================================ fallos */
 const FALLOS = [
-  {id:'sinBucle', txt:'Quitar el «por siempre» del cajón', exp:'<b>El cajón toca un compás y se calla.</b> Sin bucle, sus cuatro golpes suenan una sola vez y «pulso» se queda en 4: tus palmas ya no saben en qué tiempo están. El bajo y la guitarra siguen, pero sin percusión no hay rumba.'},
-  {id:'cuentaMal', txt:'Bajo: el Sol dura 3 tiempos en vez de 4', exp:'<b>El bajo se adelanta un tiempo en cada vuelta.</b> Su bucle dura 15 tiempos y el de la guitarra 16: cada vuelta cambian de acorde en momentos distintos y suena desafinado aunque todas las notas sean correctas.'},
-  {id:'sinMensaje', txt:'Guitarra: empieza «al presionar tecla g»', exp:'<b>La guitarra no empieza con los demás.</b> Arranca cuando pulsas g, casi nunca justo al principio de un tiempo: queda desplazada para siempre. Por eso todos los instrumentos empiezan con el mismo mensaje.'},
-  {id:'sinInstrumento', txt:'Guitarra: quitar «fijar instrumento a (4) Guitarra»', exp:'<b>La falseta suena con piano.</b> El instrumento es propio de cada objeto y, si no se fija, Scratch usa el (1) Piano. El ritmo no cambia: solo el timbre.'},
+  {id:'sinBucle', txt:'Quitar el «por siempre» del piano', exp:'<b>El piano toca una vuelta y se calla.</b> Sin bucle, sus 16 notas suenan una sola vez: la guitarra sigue sola y su falseta pierde los acordes que la sostienen.'},
+  {id:'cuentaMal', txt:'Piano: la última nota del Sol dura 2 tiempos', exp:'<b>El piano se retrasa un tiempo en cada vuelta.</b> Su bucle dura 17 tiempos y el de la guitarra 16: cada vuelta cambian de acorde en momentos distintos y suena desafinado aunque todas las notas sean correctas.'},
+  {id:'sinMensaje', txt:'Guitarra: empieza «al presionar tecla g»', exp:'<b>La guitarra no empieza con el piano.</b> Arranca cuando pulsas g, casi nunca justo al principio de un tiempo: queda desplazada para siempre. Por eso todos los instrumentos empiezan con el mismo mensaje.'},
+  {id:'sinInstrumento', txt:'Guitarra: quitar «fijar instrumento a (4) Guitarra»', exp:'<b>La falseta también suena con piano.</b> El instrumento es propio de cada objeto y, si no se fija, Scratch usa el (1) Piano: ahora no distingues la guitarra del acompañamiento. El ritmo no cambia, solo el timbre.'},
   {id:'tempoLoco', txt:'Escenario: «dar al tempo el valor 800»', exp:'<b>Scratch no llega a 800.</b> Limita el tempo a 500: un tiempo dura 60 / 500 = 0,12 segundos y todo va a toda velocidad, pero sigue a compás porque todos usan el mismo tempo.'}
 ];
 const F = {};
@@ -503,45 +506,44 @@ function tok(t){
 const limpio = t => String(t).replace(/\{n:([^{}]*)\}/g, '($1)').replace(/\{v:([^{}]*)\}/g, '($1)').replace(/\{d:([^{}]*)\}/g, '[$1 v]').replace(/\{b:([^{}]*)\}/g, '<$1>');
 let uid = 0;
 const B = (cat, es, en, ps, extra = {}) => Object.assign({id:'b' + (++uid), cat, es, en, ps, beats:0}, extra);
-const tambor = (n, t) => B('musica', `tocar tambor {d:${TAMBOR[n][0]}} durante {n:${String(t).replace('.', ',')}} tiempos`, `play drum {d:${TAMBOR[n][1]}} for {n:${t}} beats`, `tocar ${TAMBOR[n][0].replace(/\(\d+\) /, '').toLowerCase()} durante ${t} tiempo${t === 1 ? '' : 's'}`, {beats:t, drum:n});
+const tambor = (n, t) => B('musica', `tocar tambor {d:${TAMBOR[n][0]}} durante {n:${String(t).replace('.', ',')}} tiempos`, `play drum {d:${TAMBOR[n][1]}} for {n:${t}} beats`, `tocar palmada durante ${t} tiempo${t === 1 ? '' : 's'}`, {beats:t, drum:n});
 const tocaNota = (m, t, extra = {}) => B('musica', `tocar nota {n:${m}} durante {n:${t}} tiempos`, `play note {n:${m}} for {n:${t}} beats`, `tocar ${nota(m)} (${m}) durante ${t} tiempo${t === 1 ? '' : 's'}`, Object.assign({beats:t, note:m}, extra));
-const silencio = t => B('musica', `silencio de {n:${t}} tiempos`, `rest for {n:${t}} beats`, `silencio durante ${t} tiempo${t === 1 ? '' : 's'}`, {beats:t, rest:true});
+const silencio = (t, extra = {}) => B('musica', `silencio de {n:${t}} tiempos`, `rest for {n:${t}} beats`, `silencio durante ${t} tiempo${t === 1 ? '' : 's'}`, Object.assign({beats:t, rest:true}, extra));
 const pulso = k => B('variables', `dar a {d:pulso} el valor {n:${k}}`, `set {d:pulso} to {n:${k}}`, `pulso = ${k}`, {pulso:k});
 const instr = k => B('musica', `fijar instrumento a {d:${INSTR[k][0]}}`, `set instrument to {d:${INSTR[k][1]}}`, `instrumento = ${INSTR[k][0].replace(/\(\d+\) /, '')}`, {instr:k});
 const siempre = cuerpo => B('control', 'por siempre', 'forever', 'por siempre:', {k:'siempre', cuerpo});
 const recibir = () => B('eventos', 'al recibir {d:¡a compás!}', 'when I receive {d:¡a compás!}', 'al recibir «¡a compás!»:', {hat:true});
 
-const SPR = [
+const SPR_TODOS = [
   {key:'escenario', nombre:'Escenario', hl:'#FFBF00'},
-  {key:'cajon', nombre:'Cajón', hl:'#c2410c'},
-  {key:'bajo', nombre:'Bajo', hl:'#2563eb'},
+  {key:'piano', nombre:'Piano', hl:'#2563eb'},
   {key:'guitarra', nombre:'Guitarra', hl:'#15803d'},
-  {key:'bailaora', nombre:'Bailaora', hl:'#be185d'},
   {key:'palmero', nombre:'Palmero/a', hl:'#7c3aed'}
 ];
+const SPR = () => SPR_TODOS.filter(s => conPalmero || s.key !== 'palmero');
 let PROG = null;
 function programa(){
   uid = 0;
   const tempo = F.tempoLoco ? 800 : tempoPedido;
   const e = [B('eventos', 'al hacer clic en 🏁', 'when 🏁 clicked', 'al pulsar la bandera:', {hat:true}),
     B('musica', `dar al tempo el valor {n:${tempo}}`, `set tempo to {n:${tempo}}`, `tempo = ${tempo}`, {tempo, cambiado:F.tempoLoco}),
-    B('variables', 'dar a {d:Puntos} el valor {n:0}', 'set {d:Puntos} to {n:0}', 'Puntos = 0', {puntos0:true}),
+    ...(conPalmero ? [B('variables', 'dar a {d:Puntos} el valor {n:0}', 'set {d:Puntos} to {n:0}', 'Puntos = 0', {puntos0:true})] : []),
     B('eventos', 'enviar {d:¡a compás!}', 'broadcast {d:¡a compás!}', 'enviar «¡a compás!» a todos', {envia:true})];
-  const golpes = [pulso(1), tambor(2, 1), pulso(2), tambor(3, 1), pulso(3), tambor(2, 1), pulso(4), tambor(3, 1)];
-  const caj = F.sinBucle ? [recibir(), ...golpes.map(b => Object.assign(b, {cambiado:true}))] : [recibir(), siempre(golpes)];
-  const notasBajo = [tocaNota(45, 4, {acorde:0}), tocaNota(43, F.cuentaMal ? 3 : 4, {acorde:1, cambiado:F.cuentaMal}), tocaNota(41, 4, {acorde:2}), tocaNota(40, 4, {acorde:3})];
-  const baj = [recibir(), instr(6), siempre(notasBajo)];
-  const fal = falseta.map((m, i) => (m ? tocaNota(m, 1, {slot:i}) : Object.assign(silencio(1), {slot:i})));
+  const arp = ARPEGIO.map((m, i) => tocaNota(m, F.cuentaMal && i === 7 ? 2 : 1, {acorde:Math.floor(i / 4), slot:i, cambiado:F.cuentaMal && i === 7}));
+  const pia = F.sinBucle ? [recibir(), instr(1), ...arp.map(b => Object.assign(b, {cambiado:true}))] : [recibir(), instr(1), siempre(arp)];
+  const fal = falseta.map((m, i) => (m ? tocaNota(m, 1, {slot:i}) : silencio(1, {slot:i})));
   const gHat = F.sinMensaje ? B('eventos', 'al presionar tecla {d:g}', 'when {d:g} key pressed', 'al pulsar la tecla g:', {hat:true, cambiado:true}) : recibir();
   const gui = [gHat, ...(F.sinInstrumento ? [] : [instr(4)]), siempre(fal)];
-  if (F.sinInstrumento) gui[0].quitado = true;
-  const bai = [recibir(), siempre([B('apariencia', 'siguiente disfraz', 'next costume', 'cambiar al siguiente disfraz', {disfraz:true}), silencio(1)])];
-  const pal = [B('eventos', 'al presionar tecla {d:espacio}', 'when {d:space} key pressed', 'al pulsar espacio:', {hat:true}),
-    tambor(8, 0.25),
-    B('control', 'si {b:{v:pulso} = {n:2}} o {b:{v:pulso} = {n:4}} entonces', 'if {b:{v:pulso} = {n:2}} or {b:{v:pulso} = {n:4}} then', 'si pulso es 2 o 4:', {k:'si',
-      cuerpo:[B('variables', 'sumar a {d:Puntos} {n:1}', 'change {d:Puntos} by {n:1}', 'Puntos = Puntos + 1', {suma:true}), B('apariencia', 'decir {n:¡Olé!} durante {n:0,5} segundos', 'say {n:¡Olé!} for {n:0.5} seconds', 'decir «¡Olé!»', {ole:true})],
-      sino:[B('apariencia', 'decir {n:¡A destiempo!} durante {n:0,5} segundos', 'say {n:¡A destiempo!} for {n:0.5} seconds', 'decir «¡A destiempo!»', {destiempo:true})]})];
-  return {escenario:e, cajon:caj, bajo:baj, guitarra:gui, bailaora:bai, palmero:pal};
+  const prog = {escenario:e, piano:pia, guitarra:gui};
+  if (conPalmero){
+    prog.palmero = [recibir(), siempre([pulso(1), silencio(1), pulso(2), tambor(8, 1), pulso(3), silencio(1), pulso(4), tambor(8, 1)])];
+    prog.espacio = [B('eventos', 'al presionar tecla {d:espacio}', 'when {d:space} key pressed', 'al pulsar espacio:', {hat:true}),
+      tambor(8, 0.25),
+      B('control', 'si {b:{v:pulso} = {n:2}} o {b:{v:pulso} = {n:4}} entonces', 'if {b:{v:pulso} = {n:2}} or {b:{v:pulso} = {n:4}} then', 'si pulso es 2 o 4:', {k:'si',
+        cuerpo:[B('variables', 'sumar a {d:Puntos} {n:1}', 'change {d:Puntos} by {n:1}', 'Puntos = Puntos + 1', {suma:true}), B('apariencia', 'decir {n:¡Olé!} durante {n:0,5} segundos', 'say {n:¡Olé!} for {n:0.5} seconds', 'decir «¡Olé!»', {ole:true})],
+        sino:[B('apariencia', 'decir {n:¡A destiempo!} durante {n:0,5} segundos', 'say {n:¡A destiempo!} for {n:0.5} seconds', 'decir «¡A destiempo!»', {destiempo:true})]})];
+  }
+  return prog;
 }
 
 /* ============================================================ sonido (Web Audio) */
@@ -578,14 +580,6 @@ function cuerda(m, t, dur, piano){
   g.gain.setValueAtTime(0.55, t); g.gain.setTargetAtTime(0.0001, t + Math.min(dur, 1.5), 0.08);
   s.connect(lp).connect(g).connect(master); s.start(t); s.stop(t + Math.min(dur, 1.5) + 0.4);
 }
-function bajoSon(m, t, dur){
-  if (!ctx || !sonidoOn || !limiteSon(dur)) return;
-  const f = 440 * Math.pow(2, (m - 69) / 12), o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
-  o.type = 'triangle'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2; lp.type = 'lowpass'; lp.frequency.value = 700;
-  const fin = t + Math.min(dur, 6) * 0.95;
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.015); g.gain.exponentialRampToValueAtTime(0.18, t + 0.4); g.gain.setTargetAtTime(0.0001, fin, 0.05);
-  o.connect(lp); o2.connect(lp); lp.connect(g).connect(master); o.start(t); o2.start(t); o.stop(fin + 0.3); o2.stop(fin + 0.3);
-}
 function tamborSon(n, t){
   if (!ctx || !sonidoOn || !limiteSon(0.4)) return;
   if (n === 2){
@@ -604,6 +598,7 @@ function tamborSon(n, t){
   });
 }
 
+
 /* ============================================================ el motor: tiempos, tempo y programas */
 let tempoPedido = 110, velocidad = 1;
 const clampTempo = v => Math.min(500, Math.max(20, +v || 60));
@@ -615,44 +610,32 @@ const tEn = b => T.anclaT + (b - T.anclaB) * 60 / bpm();
 let hilos = [], cola = [], modo = 'libre';
 const V = {pulso:0, Puntos:0};
 const EST = {};
+let arranques = {}, notas = [], malla = {}, palmasBien = 0, palmasMal = 0, cicloMalla = 0;
 function estadoInicial(){
-  SPR.forEach(s => EST[s.key] = {bloque:null, instr:1, suena:'—', dice:null, diceHasta:0, disfraz:0, golpe:0, ultimo:null});
-  V.pulso = 0; V.Puntos = 0; arranques = {cajon:[], bajo:[], guitarra:[]}; notas = []; malla = {}; palmasBien = 0; palmasMal = 0; cicloMalla = 0;
+  SPR_TODOS.forEach(s => EST[s.key] = {bloque:null, suena:'—', dice:null, diceHasta:0, golpe:0, acorde:undefined});
+  V.pulso = 0; V.Puntos = 0; arranques = {piano:[], guitarra:[], palmero:[]}; notas = []; malla = {}; palmasBien = 0; palmasMal = 0; cicloMalla = 0;
 }
-let arranques = {}, notas = [], malla = {}, palmasBien = 0, palmasMal = 0;
-
 function* recorre(lista){ for (const b of lista){ if (b.k === 'siempre'){ while (true) yield* recorre(b.cuerpo); } else if (!b.hat) yield b; } }
-function nuevoHilo(spr, beat){
-  const lista = PROG[spr]; const g = recorre(lista); const h = {spr, g, sig:g.next().value, at:beat};
-  hilos.push(h); return h;
-}
+function nuevoHilo(spr, beat){ const g = recorre(PROG[spr]); const h = {spr, g, sig:g.next().value, at:beat}; hilos.push(h); return h; }
 function bandera(){
   audio(); reiniciaTransporte();
   T.iniciado = true; T.corriendo = true; T.anclaT = ahora() + 0.08; T.anclaB = 0;
-  // el escenario: tempo, Puntos y mensaje (bloques de duración cero en el tiempo 0)
   PROG.escenario.filter(b => !b.hat).forEach(b => encola(tEn(0), 'escenario', b, 0));
-  ['cajon', 'bajo', 'bailaora'].forEach(k => nuevoHilo(k, 0));
+  nuevoHilo('piano', 0);
+  if (conPalmero) nuevoHilo('palmero', 0);
   if (!F.sinMensaje) nuevoHilo('guitarra', 0);
   pintaBotones();
 }
 function teclaG(){
   if (!F.sinMensaje || !T.corriendo || hilos.some(h => h.spr === 'guitarra')) return;
-  const b = Math.max(0, beatEn(ahora()));
-  nuevoHilo('guitarra', b);
+  nuevoHilo('guitarra', Math.max(0, beatEn(ahora())));
 }
-function reiniciaTransporte(){
-  T.epoca++; T.iniciado = false; T.corriendo = false; T.beat = 0; T.limite = null; hilos = []; cola = []; estadoInicial(); pide();
-}
+function reiniciaTransporte(){ T.epoca++; T.iniciado = false; T.corriendo = false; T.beat = 0; T.limite = null; hilos = []; cola = []; estadoInicial(); pide(); }
 function encola(t, spr, b, beat){
-  const ep = T.epoca;
-  // sonido: se programa ya en el reloj de audio
-  const e = EST[spr];
-  if (b.instr) e._instr = b.instr;
-  const inst = spr === 'guitarra' ? (F.sinInstrumento ? 1 : 4) : spr === 'bajo' ? 6 : 1;
   const dur = b.beats * 60 / bpm();
   if (b.drum) tamborSon(b.drum, t);
-  if (b.note){ if (spr === 'bajo') bajoSon(b.note, t, dur); else cuerda(b.note, t, dur, inst === 1); }
-  cola.push({t, ep, spr, b, beat, dur, inst});
+  if (b.note) cuerda(b.note, t, dur, spr === 'piano' || (spr === 'guitarra' && F.sinInstrumento));
+  cola.push({t, ep:T.epoca, spr, b, beat, dur});
 }
 function avanza(){
   if (!T.corriendo) return;
@@ -662,9 +645,8 @@ function avanza(){
     let guard = 0;
     while (h.sig && h.at < lim - 1e-9 && guard++ < 200){
       const b = h.sig;
-      if (h.spr === 'cajon' && b.pulso === 1) arranques.cajon.push(h.at);
-      if (h.spr === 'bajo' && b.acorde === 0) arranques.bajo.push(h.at);
-      if (h.spr === 'guitarra' && b.slot === 0) arranques.guitarra.push(h.at);
+      if (b.slot === 0 && arranques[h.spr]) arranques[h.spr].push(h.at);
+      if (h.spr === 'palmero' && b.pulso === 1) arranques.palmero.push(h.at);
       encola(tEn(h.at), h.spr, b, h.at);
       h.at += b.beats; h.sig = h.g.next().value;
     }
@@ -675,19 +657,19 @@ function avanza(){
 }
 setInterval(avanza, 25);
 
-/* palmas: el programa del palmero se ejecuta al momento, con el «pulso» que haya en ese instante */
+/* tus palmas: el programa «al presionar tecla espacio» se ejecuta al momento, con el «pulso» que haya en ese instante */
 function palmas(){
+  if (!conPalmero){ narra('Activa <b>«Con palmero/a»</b>: sin él no hay variable «pulso» para saber en qué tiempo estás.'); return; }
   if (!T.iniciado){ narra('Primero pulsa la <b>bandera verde</b>: sin ella no suena el compás y «pulso» vale 0.'); return; }
   audio();
   const t = ahora(), b = T.corriendo ? beatEn(t) : T.beat - 0.001;
   tamborSon(8, t + 0.005);
-  const bien = V.pulso === 2 || V.pulso === 4;
-  const e = EST.palmero;
+  const bien = V.pulso === 2 || V.pulso === 4, e = EST.palmero;
   if (bien){ V.Puntos++; palmasBien++; e.dice = '¡Olé!'; } else { palmasMal++; e.dice = '¡A destiempo!'; }
   e.diceHasta = performance.now() + 500; e.golpe = performance.now();
-  const blks = PROG.palmero, si = blks[2];
-  e.bloque = bien ? si.cuerpo[0].id : si.sino[0].id; e.suena = '👏 palmada';
-  vuelta(Math.max(0, b)); const col = Math.floor(Math.max(0, b)) % 16; (malla.palmero = malla.palmero || {})[col] = bien ? '✔' : '✘';
+  const si = PROG.espacio[2];
+  e.bloque = bien ? si.cuerpo[0].id : si.sino[0].id; e.suena = '👏 tu palmada';
+  vuelta(Math.max(0, b)); (malla.tu = malla.tu || {})[Math.floor(Math.max(0, b)) % 16] = bien ? '✔' : '✘';
   if (V.Puntos >= 8) logro('palmas');
   pide();
 }
@@ -700,93 +682,75 @@ svg.insertAdjacentHTML('beforeend', `
 <rect y="250" width="480" height="110" fill="url(#tablas)"/>
 <g id="cabecera"></g><g id="gObjetos"></g><g id="gNotas"></g><g id="gBoc"></g>`);
 let verNombres = true;
-const POS = {cajon:[78, 268], bajo:[160, 222], guitarra:[336, 226], bailaora:[244, 196], palmero:[420, 250]};
+const POS = () => conPalmero ? {piano:[130, 236], guitarra:[290, 226], palmero:[410, 250]} : {piano:[160, 236], guitarra:[340, 226]};
 function dibujaObjeto(k){
-  const e = EST[k], [x, y] = POS[k], hl = SPR.find(s => s.key === k).hl;
-  const activo = e.bloque && T.iniciado ? `<circle r="44" fill="none" stroke="${hl}" stroke-width="2" stroke-dasharray="5 4"/>` : '';
-  const pulsoG = Math.max(0, 1 - (performance.now() - e.golpe) / 180);
+  const e = EST[k], [x, y] = POS()[k], s = SPR_TODOS.find(q => q.key === k);
+  const activo = e.bloque && T.iniciado ? `<circle r="48" fill="none" stroke="${s.hl}" stroke-width="2" stroke-dasharray="5 4"/>` : '';
+  const g = Math.max(0, 1 - (performance.now() - e.golpe) / 180);
   let f = '';
-  if (k === 'cajon') f = `<g transform="scale(${1 + 0.08 * pulsoG})"><rect x="-26" y="-36" width="52" height="70" rx="4" fill="#7c4a1e" stroke="#3f2410" stroke-width="2.5"/><rect x="-22" y="-32" width="44" height="62" rx="2" fill="#a0632c"/><circle cx="0" cy="6" r="9" fill="#2a1608"/></g>` + (pulsoG > 0.2 && e.ultimo ? `<text x="0" y="-46" text-anchor="middle" font-size="16" font-weight="900" fill="#c2410c" opacity="${pulsoG}">${esc(e.ultimo)}</text>` : '');
-  else if (k === 'bajo') f = `<g transform="rotate(-25)"><rect x="-4" y="-64" width="8" height="60" fill="#334155"/><rect x="-6" y="-72" width="12" height="12" rx="2" fill="#1e293b"/><path d="M-20 -4 Q-30 20 -14 34 Q0 42 14 34 Q30 20 20 -4 Q10 -12 0 -6 Q-10 -12 -20 -4 Z" fill="#1d4ed8" stroke="#0f172a" stroke-width="2"/><rect x="-8" y="14" width="16" height="4" fill="#cbd5e1"/></g>`;
-  else if (k === 'guitarra') f = `<g transform="rotate(20)"><rect x="-4" y="-70" width="8" height="58" fill="#7c2d12"/><rect x="-7" y="-80" width="14" height="12" rx="2" fill="#451a03"/><circle cx="0" cy="-4" r="17" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="22" r="22" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="4" r="7" fill="#3b1d0a"/><rect x="-9" y="28" width="18" height="4" fill="#7c2d12"/></g>`;
-  else if (k === 'bailaora'){
-    const d = e.disfraz % 4, br = [['M-6 -38 L-26 -60', 'M6 -38 L26 -60'], ['M-6 -38 L-28 -30', 'M6 -38 L22 -64'], ['M-6 -38 L-24 -62', 'M6 -38 L28 -32'], ['M-6 -38 L-20 -50', 'M6 -38 L20 -50']][d];
-    const vuelo = d % 2 ? 'M-14 -10 L14 -10 L38 46 Q0 56 -34 46 Z' : 'M-14 -10 L14 -10 L34 46 Q0 54 -38 46 Z';
-    f = `<circle cx="0" cy="-58" r="10" fill="#f2c9a0" stroke="#1e293b" stroke-width="1.5"/><path d="M-10 -62 Q0 -76 10 -62 Q6 -70 0 -70 Q-6 -70 -10 -62" fill="#1f2937"/><circle cx="9" cy="-64" r="3" fill="#dc2626"/>` +
-      `<path d="${br[0]} ${br[1]}" stroke="#f2c9a0" stroke-width="5" stroke-linecap="round"/><path d="M-9 -48 L9 -48 L14 -10 L-14 -10 Z" fill="#dc2626" stroke="#1e293b" stroke-width="1.5"/>` +
-      `<path d="${vuelo}" fill="#dc2626" stroke="#1e293b" stroke-width="1.5"/><path d="M-32 40 Q0 50 32 40" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="4 4"/><circle cx="-6" cy="8" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="-4" cy="30" r="2.5" fill="#fff"/>`;
-  } else if (k === 'palmero'){
-    const g = pulsoG; f = `<circle cx="0" cy="-30" r="11" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/><path d="M-12 -18 L12 -18 L16 30 L-16 30 Z" fill="#0f172a"/>` +
+  if (k === 'piano'){
+    const tecla = e.tecla ?? -1;
+    f = `<rect x="-58" y="-48" width="116" height="62" rx="6" fill="#1f2937" stroke="#0f172a" stroke-width="2"/><rect x="-52" y="-42" width="104" height="22" rx="3" fill="#374151"/>` +
+      `<rect x="-58" y="14" width="116" height="26" fill="#111827"/>` +
+      Array.from({length:14}, (_, i) => `<rect x="${-56 + i * 8}" y="16" width="7.4" height="22" rx="1" fill="${i === tecla && g > 0 ? '#93c5fd' : '#fff'}" stroke="#94a3b8" stroke-width=".6"/>`).join('') +
+      [0, 1, 3, 4, 5, 7, 8, 10, 11, 12].map(i => `<rect x="${-51 + i * 8}" y="16" width="4.6" height="13" fill="#0f172a"/>`).join('') +
+      `<rect x="-52" y="40" width="6" height="18" fill="#1f2937"/><rect x="46" y="40" width="6" height="18" fill="#1f2937"/>`;
+  } else if (k === 'guitarra') f = `<g transform="rotate(20) scale(${1 + 0.05 * g})"><rect x="-4" y="-70" width="8" height="58" fill="#7c2d12"/><rect x="-7" y="-80" width="14" height="12" rx="2" fill="#451a03"/><circle cx="0" cy="-4" r="17" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="22" r="22" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="4" r="7" fill="#3b1d0a"/><rect x="-9" y="28" width="18" height="4" fill="#7c2d12"/></g>`;
+  else if (k === 'palmero') f = `<circle cx="0" cy="-30" r="11" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/><path d="M-12 -18 L12 -18 L16 30 L-16 30 Z" fill="#0f172a"/>` +
       `<g transform="translate(0 -6)"><ellipse cx="${-9 + 6 * g}" cy="0" rx="7" ry="10" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/><ellipse cx="${9 - 6 * g}" cy="0" rx="7" ry="10" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/></g>` +
       (g > 0.3 ? `<path d="M-22 -16 l-6 -6 M22 -16 l6 -6 M0 -22 v-8" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="${g}"/>` : '');
-  }
-  const nombre = verNombres ? `<text y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(SPR.find(s => s.key === k).nombre)}</text>` : '';
-  return `<g class="svg-pieza" data-pieza="${k}" tabindex="0" role="button" aria-label="${esc(SPR.find(s => s.key === k).nombre)}: ver qué hace" transform="translate(${x} ${y})">${activo}${f}${nombre}</g>`;
+  const nombre = verNombres ? `<text y="${k === 'piano' ? 74 : 58}" text-anchor="middle" font-size="12" font-weight="800" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(s.nombre)}</text>` : '';
+  return `<g class="svg-pieza" data-pieza="${k}" tabindex="0" role="button" aria-label="${esc(s.nombre)}: ver qué hace" transform="translate(${x} ${y})">${activo}${f}${nombre}</g>`;
 }
 let pedido = false;
 function pide(){ if (!pedido){ pedido = true; requestAnimationFrame(render); } }
-let ultimoBeatNarrado = -1, ultimoCompas = -1;
+let ultimoCompas = -1;
 function render(){
   pedido = false;
   const t = ahora();
-  // ejecuta en pantalla lo que ya ha sonado
   cola.sort((a, b) => a.t - b.t);
-  while (cola.length && cola[0].t <= t){
-    const ev = cola.shift(); if (ev.ep !== T.epoca) continue;
-    aplica(ev);
-  }
+  while (cola.length && cola[0].t <= t){ const ev = cola.shift(); if (ev.ep === T.epoca) aplica(ev); }
   const b = T.corriendo ? Math.max(0, beatEn(t)) : T.beat;
-  // cabecera: tempo, compás y acorde
-  const acorde = acordeAhora();
-  const tb = T.iniciado ? Math.floor(b) % 4 + 1 : 0;
+  const acorde = acordeAhora(), tb = T.iniciado ? Math.floor(b) % 4 + 1 : 0;
   $('#cabecera').innerHTML = `<rect x="10" y="10" width="118" height="30" rx="8" fill="#fff" stroke="#e0b98f"/><text x="20" y="30" font-size="14" font-weight="800" fill="#0f766e">Tempo ${tempoEfectivo()}</text>` +
     [1, 2, 3, 4].map(i => `<circle cx="${178 + (i - 1) * 32}" cy="25" r="12" fill="${tb === i ? '#c2410c' : '#fff'}" stroke="#c2410c" stroke-width="2"/><text x="${178 + (i - 1) * 32}" y="30" text-anchor="middle" font-size="13" font-weight="800" fill="${tb === i ? '#fff' : '#c2410c'}">${i}</text>`).join('') +
     `<rect x="320" y="10" width="150" height="30" rx="8" fill="#fff" stroke="#e0b98f"/><text x="395" y="30" text-anchor="middle" font-size="14" font-weight="800" fill="#7c3aed">${T.iniciado && acorde ? esc(acorde) : 'Pulsa la bandera'}</text>`;
-  $('#gObjetos').innerHTML = ['cajon', 'bajo', 'bailaora', 'guitarra', 'palmero'].map(dibujaObjeto).join('');
-  // notas que flotan
+  $('#gObjetos').innerHTML = Object.keys(POS()).map(dibujaObjeto).join('');
   notas = notas.filter(n => t - n.t < 1.4);
   $('#gNotas').innerHTML = notas.map(n => { const p = (t - n.t) / 1.4; return `<text x="${n.x + 14 * Math.sin(p * 5)}" y="${n.y - 60 * p}" font-size="15" font-weight="800" fill="${n.c}" opacity="${1 - p}" text-anchor="middle">♪ ${esc(n.txt)}</text>`; }).join('');
-  // bocadillo del palmero
   const ep = EST.palmero;
-  $('#gBoc').innerHTML = ep.dice && performance.now() < ep.diceHasta ? `<g><rect x="356" y="168" width="${ep.dice.length * 8 + 22}" height="28" rx="12" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="${367 + ep.dice.length * 4}" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="${ep.dice === '¡Olé!' ? '#15803d' : '#b91c1c'}">${esc(ep.dice)}</text></g>` : '';
-  // compás bajo el escenario
+  $('#gBoc').innerHTML = conPalmero && ep.dice && performance.now() < ep.diceHasta ? `<g><rect x="${448 - ep.dice.length * 8 - 22}" y="166" width="${ep.dice.length * 8 + 22}" height="28" rx="12" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="${448 - ep.dice.length * 4 - 11}" y="185" text-anchor="middle" font-size="14" font-weight="700" fill="${ep.dice === '¡Olé!' ? '#15803d' : '#b91c1c'}">${esc(ep.dice)}</text></g>` : '';
   document.querySelectorAll('.compas .tiempo').forEach(s => s.classList.toggle('activo', +s.dataset.t === tb));
   $('#acordeTxt').textContent = T.iniciado ? `Compás ${Math.floor(b / 4) + 1} · tiempo ${tb} · ${acorde || '—'}` : '';
   if (T.corriendo && modo === 'auto'){ const c = Math.floor(b / 4); if (c !== ultimoCompas){ ultimoCompas = c; narraCompas(c); } }
   pintaPianola(b); marcaResaltado(); refresca(); vigila(b);
-  if (T.corriendo || notas.length || cola.length || performance.now() < ep.diceHasta + 200 || SPR.some(s => performance.now() - EST[s.key].golpe < 250)) pide();
+  if (T.corriendo || notas.length || cola.length || performance.now() < ep.diceHasta + 200 || SPR_TODOS.some(s => performance.now() - EST[s.key].golpe < 250)) pide();
 }
-let cicloMalla = 0;
 function vuelta(beat){ const c = Math.floor(beat / 16 + 1e-6); if (c > cicloMalla){ cicloMalla = c; malla = {}; } }
 function aplica(ev){
   const e = EST[ev.spr], b = ev.b;
   vuelta(ev.beat);
   e.bloque = b.id;
-  if (b.tempo !== undefined){ e.suena = `tempo ${clampTempo(b.tempo)}${b.tempo > 500 ? ' (pedido ' + b.tempo + ')' : ''}`; }
+  if (b.tempo !== undefined) e.suena = `tempo ${clampTempo(b.tempo)}${b.tempo > 500 ? ' (pedido ' + b.tempo + ')' : ''}`;
   if (b.puntos0) V.Puntos = 0;
   if (b.pulso) V.pulso = b.pulso;
-  if (b.instr) e.instr = b.instr;
-  if (b.disfraz){ e.disfraz++; e.golpe = performance.now(); }
-  const col = Math.floor(ev.beat + 1e-6) % 16;
-  if (b.drum){ e.golpe = performance.now(); e.ultimo = TAMBOR[b.drum][2]; e.suena = TAMBOR[b.drum][0]; (malla[ev.spr] = malla[ev.spr] || {})[col] = b.drum === 2 ? 'PUM' : 'ta'; }
+  const col = Math.floor(ev.beat + 1e-6) % 16, m = (malla[ev.spr] = malla[ev.spr] || {});
+  if (b.drum){ e.golpe = performance.now(); e.suena = TAMBOR[b.drum][0]; m[col] = '👏'; }
   if (b.note){
-    e.suena = `${nota(b.note)} (${b.note})`;
-    const [x, y] = POS[ev.spr]; notas.push({t:ev.t, x, y:y - 60, txt:nota(b.note).replace(/\d+$/, ''), c:ev.spr === 'bajo' ? '#1d4ed8' : '#15803d'});
-    const m = (malla[ev.spr] = malla[ev.spr] || {});
-    for (let k = 0; k < Math.round(b.beats); k++) m[(col + k) % 16] = k ? '·' : nota(b.note).replace(/\d+$/, '');
-    if (ev.spr === 'bajo') e.acorde = b.acorde;
+    e.suena = `${nota(b.note)} (${b.note})`; e.golpe = performance.now();
+    if (ev.spr === 'piano'){ e.acorde = b.acorde; e.tecla = ((b.note - 52) % 14 + 14) % 14; }
+    const [x, y] = POS()[ev.spr] || [0, 0]; notas.push({t:ev.t, x, y:y - 60, txt:nombreNota(b.note), c:ev.spr === 'piano' ? '#1d4ed8' : '#15803d'});
+    for (let k = 0; k < Math.round(b.beats); k++) m[(col + k) % 16] = k ? '·' : nombreNota(b.note);
   }
-  if (b.rest){ if (ev.spr === 'guitarra'){ e.suena = 'silencio'; (malla.guitarra = malla.guitarra || {})[col] = '—'; } }
-  if (b.disfraz){ (malla.bailaora = malla.bailaora || {})[col] = '💃'; e.suena = `disfraz ${e.disfraz % 4 + 1}`; }
+  if (b.rest && ev.spr === 'guitarra'){ e.suena = 'silencio'; m[col] = '—'; }
+  if (b.rest && ev.spr === 'palmero'){ e.suena = 'silencio'; }
 }
-function acordeAhora(){ const a = EST.bajo && EST.bajo.acorde; return a === undefined || !T.iniciado ? null : ACORDES[a].n; }
-
-/* pianola de 16 tiempos */
+function acordeAhora(){ const a = EST.piano && EST.piano.acorde; return a === undefined || !T.iniciado ? null : ACORDES[a].n; }
 function pintaPianola(b){
   const col = T.iniciado ? Math.floor(b) % 16 : -1;
-  if (!$('#pianolaCab').innerHTML) $('#pianolaCab').innerHTML = `<tr><th class="fila">Tiempo</th>${Array.from({length:16}, (_, i) => `<td class="cab${i % 4 === 0 ? ' uno' : ''}">${i % 4 + 1}</td>`).join('')}</tr>` +
+  $('#pianolaCab').innerHTML = `<tr><th class="fila">Tiempo</th>${Array.from({length:16}, (_, i) => `<td class="cab${i % 4 === 0 ? ' uno' : ''}">${i % 4 + 1}</td>`).join('')}</tr>` +
     `<tr><th class="fila">Acorde</th>${ACORDES.map(a => `<td class="acorde" colspan="4">${a.n}</td>`).join('')}</tr>`;
-  const filas = [['cajon', 'Cajón'], ['bajo', 'Bajo'], ['guitarra', 'Guitarra'], ['bailaora', 'Bailaora'], ['palmero', 'Tus palmas']];
+  const filas = [['piano', 'Piano'], ['guitarra', 'Guitarra'], ...(conPalmero ? [['palmero', 'Palmero/a'], ['tu', 'Tus palmas']] : [])];
   $('#pianola').innerHTML = filas.map(([k, n]) => `<tr><th class="fila">${n}</th>${Array.from({length:16}, (_, i) => { const v = (malla[k] || {})[i] || ''; const cls = [i === col ? 'ahora' : '', v ? 'on' : '', v === '✔' ? 'ok' : v === '✘' ? 'ko' : ''].join(' '); return `<td class="${cls}">${esc(v)}</td>`; }).join('')}</tr>`).join('');
 }
 
@@ -802,14 +766,15 @@ function pintaBloque(b){
   }
   return `<div class="blk${cls}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${txt}</div>`;
 }
+const pilas = k => k === 'palmero' ? [PROG.palmero, PROG.espacio] : [PROG[k]];
 function pintaPrograma(){
   PROG = programa();
-  $('#bloques').innerHTML = SPR.map(s => {
-    const cambiado = PROG[s.key].some(b => b.cambiado || (b.cuerpo || []).some(c => c.cambiado)) || (s.key === 'guitarra' && F.sinInstrumento);
+  $('#bloques').innerHTML = SPR().map(s => {
+    const cambiado = pilas(s.key).some(p => p.some(b => b.cambiado || (b.cuerpo || []).some(c => c.cambiado))) || (s.key === 'guitarra' && F.sinInstrumento);
     const aviso = s.key === 'guitarra' && F.sinInstrumento ? `<p style="font-size:13px;color:var(--ko);margin:0 0 4px">Falta «fijar instrumento a (4) Guitarra».</p>` : '';
-    return `<div class="obj"><div class="obj-cab${cambiado ? ' cambiado' : ''}" style="--c:${s.hl}">${idioma === 'es' ? (s.key === 'escenario' ? 'Escenario' : 'Objeto') : (s.key === 'escenario' ? 'Stage' : 'Sprite')}: ${esc(s.nombre)}</div>${aviso}<div class="pila">${PROG[s.key].map(pintaBloque).join('')}</div></div>`;
+    return `<div class="obj"><div class="obj-cab${cambiado ? ' cambiado' : ''}" style="--c:${s.hl}">${idioma === 'es' ? (s.key === 'escenario' ? 'Escenario' : 'Objeto') : (s.key === 'escenario' ? 'Stage' : 'Sprite')}: ${esc(s.nombre)}</div>${aviso}${pilas(s.key).map(p => `<div class="pila">${p.map(pintaBloque).join('')}</div>`).join('')}</div>`;
   }).join('');
-  $('#leyenda').innerHTML = SPR.map(s => `<span style="--c:${s.hl}">${esc(s.nombre)}</span>`).join('');
+  $('#leyenda').innerHTML = SPR().map(s => `<span style="--c:${s.hl}">${esc(s.nombre)}</span>`).join('');
   $('#pseudo').innerHTML = textoPseudo().map(l => `<span data-b="${l.id || ''}" class="${l.obj ? 'obj-l' : ''}${l.cambiado ? ' cambiado' : ''}">${esc(l.txt)}</span>`).join('');
   pide();
 }
@@ -820,7 +785,7 @@ function textoPseudo(){
     if (b.cuerpo) rec(b.cuerpo, n + 1);
     if (b.sino){ out.push({txt:'    '.repeat(n) + 'si no:'}); rec(b.sino, n + 1); }
   });
-  SPR.forEach(s => { out.push({txt:`# ${s.nombre}`, obj:true}); rec(PROG[s.key], 0); out.push({txt:''}); });
+  SPR().forEach(s => { out.push({txt:`# ${s.nombre}`, obj:true}); pilas(s.key).forEach(p => rec(p, 0)); out.push({txt:''}); });
   return out;
 }
 function textoBloques(){
@@ -829,57 +794,54 @@ function textoBloques(){
     out.push('  '.repeat(n) + limpio(b[idioma]));
     if (b.cuerpo){ rec(b.cuerpo, n + 1); if (b.sino){ out.push('  '.repeat(n) + (idioma === 'es' ? 'si no' : 'else')); rec(b.sino, n + 1); } out.push('  '.repeat(n) + (idioma === 'es' ? 'fin' : 'end')); }
   });
-  SPR.forEach(s => { out.push(`// ${s.key === 'escenario' ? 'Escenario' : 'Objeto'}: ${s.nombre}`); rec(PROG[s.key], 0); out.push(''); });
+  SPR().forEach(s => { out.push(`// ${s.key === 'escenario' ? 'Escenario' : 'Objeto'}: ${s.nombre}`); pilas(s.key).forEach((p, i) => { if (i) out.push(''); rec(p, 0); }); out.push(''); });
   return out.join('\n');
 }
 function marcaResaltado(){
   document.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
-  if (!T.iniciado && !EST.palmero.bloque) return;
-  SPR.forEach(s => { const id = EST[s.key].bloque; if (!id) return;
+  SPR().forEach(s => { const id = EST[s.key].bloque; if (!id) return;
     document.querySelectorAll(`[data-b="${id}"]`).forEach(el => { el.style.setProperty('--hlc', s.hl); (el.classList.contains('c') ? el.querySelector('.lin') : el).classList.add('hl'); }); });
 }
 
 /* ============================================================ paneles */
 function desfase(){
-  const c = arranques.cajon, ba = arranques.bajo, g = arranques.guitarra;
   const con = x => { const r = ((x % 16) + 16) % 16; return r > 8 ? r - 16 : r; };
-  const bj = ba.length ? con(ba[ba.length - 1]) : 0, gt = g.length ? con(g[g.length - 1]) : 0;
-  return {bajo:bj, guitarra:gt, hayB:ba.length > 0, hayG:g.length > 0, cajonVivo:hilos.some(h => h.spr === 'cajon' && h.sig)};
+  const ult = a => a.length ? a[a.length - 1] : null;
+  const p = ult(arranques.piano), g = ult(arranques.guitarra);
+  return {piano:p == null ? null : con(p), guitarra:g == null ? null : con(g), pianoVivo:hilos.some(h => h.spr === 'piano' && h.sig)};
 }
+const dice = (v, m, f) => v == null ? '—' : Math.abs(v) < 1e-6 ? 'a compás' : `${Math.abs(v).toFixed(Number.isInteger(v) ? 0 : 2).replace('.', ',')} tiempo${Math.abs(v) === 1 ? '' : 's'} ${v < 0 ? (f ? 'adelantada' : 'adelantado') : (f ? 'retrasada' : 'retrasado')}`;
 function refresca(){
-  $('#monitor').innerHTML = SPR.map(s => { const e = EST[s.key]; const b = e.bloque ? buscaBloque(e.bloque) : null;
-    const ins = s.key === 'guitarra' ? INSTR[F.sinInstrumento ? 1 : 4][0] : s.key === 'bajo' ? INSTR[6][0] : s.key === 'cajon' || s.key === 'palmero' ? 'tambores' : '—';
+  $('#monitor').innerHTML = SPR().map(s => { const e = EST[s.key]; const b = e.bloque ? buscaBloque(e.bloque) : null;
+    const ins = s.key === 'guitarra' ? INSTR[F.sinInstrumento ? 1 : 4][0] : s.key === 'piano' ? INSTR[1][0] : s.key === 'palmero' ? '(8) Palmada' : '—';
     return `<tr><td><b style="color:${s.hl}">${esc(s.nombre)}</b></td><td>${b ? esc(limpio(b.es)) : '—'}</td><td>${esc(ins)}</td><td class="num">${esc(e.suena)}</td></tr>`; }).join('');
-  $('#vars').innerHTML = `<b>tempo</b>${tempoEfectivo()} <b>pulso</b>${V.pulso} <b>Puntos</b>${V.Puntos}`;
-  const d = desfase(), seg = 60 / tempoEfectivo();
+  $('#vars').innerHTML = `<b>tempo</b>${tempoEfectivo()}` + (conPalmero ? ` <b>pulso</b>${V.pulso} <b>Puntos</b>${V.Puntos}` : '');
+  const d = desfase(), seg = 60 / tempoEfectivo(), ped = F.tempoLoco ? 800 : tempoPedido;
   const items = [
-    {et:'Tempo pedido → real', v:`${F.tempoLoco ? 800 : tempoPedido} → ${tempoEfectivo()}`, mal:(F.tempoLoco ? 800 : tempoPedido) !== tempoEfectivo()},
+    {et:'Tempo pedido → real', v:`${ped} → ${tempoEfectivo()}`, mal:ped !== tempoEfectivo()},
     {et:'Un tiempo dura', v:`${seg.toFixed(2).replace('.', ',')} s`},
-    {et:'Bajo frente al cajón', v:!d.hayB ? '—' : d.bajo === 0 ? 'a compás' : `${Math.abs(d.bajo)} tiempo${Math.abs(d.bajo) === 1 ? '' : 's'} ${d.bajo < 0 ? 'adelantado' : 'retrasado'}`, mal:d.hayB && d.bajo !== 0, bien:d.hayB && d.bajo === 0},
-    {et:'Guitarra frente al cajón', v:!d.hayG ? (F.sinMensaje && T.iniciado ? 'esperando la g' : '—') : Math.abs(d.guitarra) < 1e-6 ? 'a compás' : `${Math.abs(d.guitarra).toFixed(2).replace('.', ',')} tiempos ${d.guitarra < 0 ? 'adelantada' : 'retrasada'}`, mal:d.hayG && Math.abs(d.guitarra) > 1e-6, bien:d.hayG && Math.abs(d.guitarra) < 1e-6},
-    {et:'Cajón', v:!T.iniciado ? '—' : d.cajonVivo ? 'en bucle' : 'parado', mal:T.iniciado && !d.cajonVivo},
-    {et:'Palmas', v:`${palmasBien} ✔ · ${palmasMal} ✘`}
+    {et:'Piano (acordes)', v:!T.iniciado ? '—' : !d.pianoVivo ? 'parado' : d.piano == null ? '—' : dice(d.piano, false, false), mal:T.iniciado && (!d.pianoVivo || (d.piano != null && d.piano !== 0)), bien:T.iniciado && d.pianoVivo && d.piano === 0},
+    {et:'Guitarra frente al piano', v:d.guitarra == null ? (F.sinMensaje && T.iniciado ? 'esperando la g' : '—') : dice(d.guitarra, false, true), mal:d.guitarra != null && Math.abs(d.guitarra) > 1e-6, bien:d.guitarra != null && Math.abs(d.guitarra) < 1e-6}
   ];
+  if (conPalmero) items.push({et:'Tus palmas', v:`${palmasBien} ✔ · ${palmasMal} ✘`});
   $('#medidas').innerHTML = items.map(m => `<div class="medida-item${m.mal ? ' mal' : m.bien ? ' bien' : ''}"><span class="et">${esc(m.et)}</span><span class="v">${esc(m.v)}</span></div>`).join('');
 }
 function buscaBloque(id){ let r = null; const rec = l => l.forEach(b => { if (b.id === id) r = b; if (b.cuerpo) rec(b.cuerpo); if (b.sino) rec(b.sino); }); Object.values(PROG).forEach(rec); return r; }
-const FASES = ['Bandera: tempo, Puntos y mensaje', 'Todos «al recibir ¡a compás!»', 'Cada bucle cuenta sus tiempos', 'Tus palmas en 2 y 4', 'Una vuelta: 16 tiempos'];
 function pintaFases(b){
+  const FASES = ['Bandera: tempo y mensaje', 'Todos «al recibir ¡a compás!»', 'Cada bucle cuenta sus tiempos', conPalmero ? 'Palmas en 2 y 4' : 'Cada acorde, 4 tiempos', 'Una vuelta: 16 tiempos'];
   const f = !T.iniciado ? -1 : b < 0.5 ? 1 : b < 4 ? 2 : b < 16 ? 3 : 4;
   $('#fases').innerHTML = FASES.map((x, i) => `<li class="${i === f ? 'activa' : i < f ? 'hecha' : ''}">${i + 1}. ${esc(x)}</li>`).join('');
 }
 function narra(h){ $('#narracion').innerHTML = h; }
 function resumenTiempo(beat){
-  const ac = ACORDES[Math.floor((beat % 16) / 4)].n, tb = beat % 4 + 1;
-  const g = falseta[beat % 16];
-  const partes = [`<b>Compás ${Math.floor(beat / 4) + 1}, tiempo ${tb}</b> (${ac}).`, `El cajón da ${tb % 2 ? 'un <b>bombo</b>' : 'un <b>golpe lateral</b>'} y pone pulso a ${tb}.`];
-  if (beat % 4 === 0) partes.push(`El bajo cambia a <b>${ac}</b>.`);
+  const i = beat % 16, ac = ACORDES[Math.floor(i / 4)].n, tb = beat % 4 + 1, g = falseta[i];
+  const partes = [`<b>Compás ${Math.floor(beat / 4) + 1}, tiempo ${tb}</b> (${ac}).`, `El piano toca <b>${nota(ARPEGIO[i])}</b> (${ARPEGIO[i]}) del acorde.`];
   partes.push(g ? `La guitarra toca <b>${nota(g)}</b> (${g}).` : 'La guitarra hace un silencio.');
-  partes.push(tb === 2 || tb === 4 ? '👏 Ahora es buen momento para tus palmas.' : 'Aquí no van palmas.');
+  if (conPalmero) partes.push(tb === 2 || tb === 4 ? '👏 El palmero da palmada: buen momento para las tuyas.' : `El palmero pone pulso a ${tb} y espera.`);
   return partes.join(' ');
 }
 function narraPaso(beat){ if (beat < 0) return; narra(resumenTiempo(beat) + (Object.values(F).some(x => x) ? ' <i>Hay fallos activos: lo que suena puede no coincidir con este resumen.</i>' : '')); }
-function narraCompas(c){ if (Object.values(F).some(x => x)) return; narra(`<b>Compás ${c + 1}</b> · ${ACORDES[c % 4].n}. Tempo ${tempoEfectivo()}: cada tiempo dura ${(60 / tempoEfectivo()).toFixed(2).replace('.', ',')} s. Da palmas en los tiempos 2 y 4.`); }
+function narraCompas(c){ if (Object.values(F).some(x => x)) return; narra(`<b>Compás ${c + 1}</b> · ${ACORDES[c % 4].n}. Tempo ${tempoEfectivo()}: cada tiempo dura ${(60 / tempoEfectivo()).toFixed(2).replace('.', ',')} s.` + (conPalmero ? ' Da tus palmas en los tiempos 2 y 4.' : '')); }
 
 /* ============================================================ fallos, reto y objetivos */
 function pintaFallos(){
@@ -888,30 +850,31 @@ function pintaFallos(){
 }
 function explica(){
   const act = FALLOS.filter(f => F[f.id]);
-  $('#explica').innerHTML = act.length ? act.map(f => `<p>${f.exp}</p>`).join('') : '<p>Todo normal: cinco objetos, un tempo y un mismo mensaje para empezar. Activa un fallo, pulsa la bandera y escucha.</p>';
+  $('#explica').innerHTML = act.length ? act.map(f => `<p>${f.exp}</p>`).join('') : '<p>Todo normal: un tempo y un mismo mensaje para empezar. Activa un fallo, pulsa la bandera y escucha.</p>';
   $('#btnG').hidden = !F.sinMensaje;
+  $('#btnPalmas').hidden = !conPalmero;
 }
-const OBJ = [
+const OBJ = () => [
   {id:'vuelta', txt:'Escucha una vuelta completa (16 tiempos) sin fallos activos.'},
-  {id:'palmas', txt:'Consigue 8 puntos dando palmas en los tiempos 2 y 4.'},
   {id:'falseta', txt:'Compón tu falseta: cambia al menos 4 casillas y escúchala entera.'},
   {id:'tempo', txt:'Sube el tempo a 140 o más y escucha una vuelta a compás.'},
-  {id:'fallos', txt:'Provoca los cinco fallos (uno a uno) y lee qué pasa.'}
+  {id:'fallos', txt:'Provoca los cinco fallos (uno a uno) y lee qué pasa.'},
+  ...(conPalmero ? [{id:'palmas', txt:'Opcional: consigue 8 puntos con tus palmas en los tiempos 2 y 4.'}] : [])
 ];
 const LOGROS = {};
 try { Object.assign(LOGROS, JSON.parse(localStorage.getItem('lab-rumba-logros') || '{}')); } catch(e){}
 const fallosVistos = new Set();
 function logro(id){ if (LOGROS[id]) return; LOGROS[id] = true; try { localStorage.setItem('lab-rumba-logros', JSON.stringify(LOGROS)); } catch(e){} pintaObjetivos(); }
-function pintaObjetivos(){ $('#objetivos').innerHTML = OBJ.map(o => `<li class="${LOGROS[o.id] ? 'hecho' : ''}"><span class="marca">${LOGROS[o.id] ? '✔' : '○'}</span><span>${esc(o.txt)}</span></li>`).join(''); }
+function pintaObjetivos(){ $('#objetivos').innerHTML = OBJ().map(o => `<li class="${LOGROS[o.id] ? 'hecho' : ''}"><span class="marca">${LOGROS[o.id] ? '✔' : '○'}</span><span>${esc(o.txt)}</span></li>`).join(''); }
+const cambiadas = () => falseta.filter((m, i) => m !== FALSETA0[i]).length;
 function vigila(b){
   pintaFases(b);
   if (!T.iniciado || b < 16) return;
-  const limpio = !Object.values(F).some(x => x);
-  if (limpio) logro('vuelta');
-  if (limpio && cambiadas() >= 4) logro('falseta');
-  if (limpio && tempoEfectivo() >= 140) logro('tempo');
+  const sinFallos = !Object.values(F).some(x => x);
+  if (sinFallos) logro('vuelta');
+  if (sinFallos && cambiadas() >= 4) logro('falseta');
+  if (sinFallos && tempoEfectivo() >= 140) logro('tempo');
 }
-const cambiadas = () => falseta.filter((m, i) => m !== FALSETA0[i]).length;
 function pintaEditor(){
   $('#editor').innerHTML = [0, 1, 2, 3].map(c => `<fieldset><legend>${c + 1} · ${ACORDES[c].n}</legend>${[0, 1, 2, 3].map(k => { const i = c * 4 + k, v = falseta[i];
     const tono = v && ACORDES[c].tonos.includes(v % 12);
@@ -929,7 +892,7 @@ function cambiaPrograma(){
   if (estaba) narra('Has cambiado el programa: pulsa otra vez la bandera para probarlo.');
 }
 function pararAuto(){ if (T.corriendo && modo === 'auto'){ T.beat = beatEn(ahora()); T.corriendo = false; } if (modo === 'auto') modo = 'libre'; pintaBotones(); }
-$('#btnBandera').onclick = () => { modo = 'libre'; bandera(); narra('🏁 Bandera: el escenario fija el tempo, pone Puntos a 0 y <b>envía «¡a compás!»</b>. Todos los que lo reciben empiezan a la vez.'); };
+$('#btnBandera').onclick = () => { modo = 'libre'; bandera(); narra('🏁 Bandera: el escenario fija el tempo y <b>envía «¡a compás!»</b>. Todos los que lo reciben empiezan a la vez.'); };
 $('#btnParar').onclick = () => { modo = 'libre'; reiniciaTransporte(); pintaBotones(); narra('⏹ Detenido. Pulsa la bandera para volver a empezar.'); };
 $('#btnPalmas').onclick = palmas;
 $('#btnG').onclick = () => { teclaG(); narra('Has pulsado la <b>g</b>: la guitarra empieza ahora, sin esperar al principio del compás.'); };
@@ -954,12 +917,14 @@ $('#normalidad').onclick = () => { FALLOS.forEach(f => F[f.id] = false); pintaFa
 $('#probarError').onclick = () => {
   FALLOS.forEach(f => F[f.id] = false); F.cuentaMal = true; fallosVistos.add('cuentaMal'); pintaFallos(); cambiaPrograma();
   modo = 'auto'; bandera(); ultimoCompas = -1; pintaBotones();
-  narra('<b>Error activado:</b> el Sol del bajo dura 3 tiempos. Mira la fila del bajo en la pianola y el desfase en «Lo que pasa dentro».');
+  narra('<b>Error activado:</b> una nota del piano dura 2 tiempos. Mira la fila del piano en la pianola y el desfase en «Lo que pasa dentro».');
   document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
 };
 $('#editor').onchange = e => { const s = e.target.closest('select'); if (!s) return; falseta[+s.dataset.i] = +s.value;
   try { localStorage.setItem('lab-rumba-falseta', JSON.stringify(falseta)); } catch(x){} pintaEditor(); cambiaPrograma(); narra(`Tu falseta tiene ${cambiadas()} casilla${cambiadas() === 1 ? '' : 's'} cambiada${cambiadas() === 1 ? '' : 's'}. Pulsa la bandera para escucharla: sigue sumando 16 tiempos.`); };
 $('#falsetaOriginal').onclick = () => { falseta = FALSETA0.slice(); try { localStorage.removeItem('lab-rumba-falseta'); } catch(e){} pintaEditor(); cambiaPrograma(); };
+function ponPalmero(v){ conPalmero = v; $('#optPalmero').setAttribute('aria-pressed', String(v)); try { localStorage.setItem('lab-rumba-palmero', v ? 'si' : 'no'); } catch(e){} pintaObjetivos(); cambiaPrograma(); }
+$('#optPalmero').onclick = () => { ponPalmero(!conPalmero); narra(conPalmero ? 'Con palmero/a: da palmas en los tiempos 2 y 4 y lleva la cuenta en «pulso». Con la barra espaciadora, tú también.' : 'Sin palmero/a: solo piano y guitarra.'); };
 $('#optNombres').onclick = e => { verNombres = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(verNombres)); pide(); };
 $('#optSonido').onclick = e => { sonidoOn = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(sonidoOn)); e.currentTarget.textContent = sonidoOn ? '🔊 Sonido' : '🔇 Sin sonido'; };
 $('#tabBloques').onclick = () => { $('#tabBloques').setAttribute('aria-selected', 'true'); $('#tabPseudo').setAttribute('aria-selected', 'false'); $('#bloques').hidden = false; $('#pseudo').hidden = true; $('#idioma').hidden = false; };
@@ -978,25 +943,23 @@ $('#escena').addEventListener('keydown', e => {
   else if (e.key === 'Enter'){ const p = e.target.closest('[data-pieza]'); if (p) abrePieza(p.dataset.pieza); }
 });
 const PIEZAS = {
-  cajon:['Cajón', 'Objeto con tambores: bombo (2) en los tiempos 1 y 3, golpe lateral (3) en 2 y 4. En cada tiempo pone «pulso» al número del tiempo.', 'Es el metrónomo de la rumba: su bucle dura 4 tiempos, un compás.'],
-  bajo:['Bajo', 'Objeto con el instrumento (6) Bajo. Toca la cadencia andaluza: La, Sol, Fa y Mi, 4 tiempos cada una.', 'Marca los acordes: su bucle dura 16 tiempos.'],
-  guitarra:['Guitarra', 'Objeto con el instrumento (4) Guitarra. Toca la falseta: 16 casillas de 1 tiempo, que puedes cambiar en el reto.', 'Debe empezar con el mismo mensaje que los demás.'],
-  bailaora:['Bailaora', 'Objeto con cuatro disfraces: cambia de disfraz en cada tiempo con «silencio de 1 tiempos».', 'Un silencio también cuenta tiempos: así baila al tempo de la música.'],
-  palmero:['Palmero/a', 'Eres tú. Con la barra espaciadora toca una palmada (8) y comprueba «pulso».', 'Si pulso es 2 o 4, suma un punto y dice «¡Olé!».']
+  piano:['Piano', 'Objeto con el instrumento (1) Piano. Toca la cadencia andaluza en arpegio: La menor, Sol, Fa y Mi, cuatro notas de 1 tiempo por acorde.', 'Lleva los acordes: su bucle dura 16 tiempos.'],
+  guitarra:['Guitarra', 'Objeto con el instrumento (4) Guitarra. Toca la falseta: 16 casillas de 1 tiempo, que puedes cambiar en el reto.', 'Debe empezar con el mismo mensaje que el piano.'],
+  palmero:['Palmero/a (opcional)', 'Da una palmada (8) en los tiempos 2 y 4 y pone «pulso» al número de cada tiempo. Con la barra espaciadora das tus propias palmas.', 'Si tu palmada cae cuando pulso es 2 o 4, suma un punto y dice «¡Olé!».']
 };
 function abrePieza(k){ const p = PIEZAS[k]; if (!p) return; $('#piezaTitulo').textContent = p[0]; $('#piezaTexto').textContent = p[1]; $('#piezaUso').textContent = p[2]; $('#pieza').hidden = false; }
 svg.addEventListener('click', e => { const p = e.target.closest('[data-pieza]'); if (p) abrePieza(p.dataset.pieza); $('#escena').focus({preventScroll:true}); });
 $('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
 
 /* comprobación de la práctica, preguntas y tema */
-const CHECK = ['Todos los instrumentos empiezan «al recibir ¡a compás!».', 'Cada bucle suma 4 o 16 tiempos (lo he contado).', 'La guitarra tiene «fijar instrumento a (4) Guitarra».', 'La falseta es mía: no copia ninguna canción con derechos.', 'Las palmas suman puntos solo en los tiempos 2 y 4.', 'He provocado dos fallos y he anotado cómo los arreglé.', 'Notas y créditos completos y proyecto compartido en el estudio.'];
+const CHECK = ['El piano y la guitarra empiezan «al recibir ¡a compás!».', 'Cada bucle suma 16 tiempos (lo he contado).', 'La guitarra tiene «fijar instrumento a (4) Guitarra» y el piano «(1) Piano».', 'La falseta es mía: no copia ninguna canción con derechos.', 'Opcional: el palmero/a da palmas en 2 y 4 y mis palmas suman Puntos.', 'He provocado dos fallos y he anotado cómo los arreglé.', 'Notas y créditos completos y proyecto compartido en el estudio.'];
 let marcadas = {}; try { marcadas = JSON.parse(localStorage.getItem('lab-rumba-check') || '{}'); } catch(e){}
 $('#comprobacion').innerHTML = CHECK.map((c, i) => `<li><label><input type="checkbox" data-c="${i}"${marcadas[i] ? ' checked' : ''}><span>${esc(c)}</span></label></li>`).join('');
 $('#comprobacion').onchange = e => { const c = e.target.closest('[data-c]'); if (!c) return; marcadas[c.dataset.c] = c.checked; try { localStorage.setItem('lab-rumba-check', JSON.stringify(marcadas)); } catch(x){} };
 const PREG = [
-  {q:'Subes el tempo de 110 a 140 mientras suena. ¿Qué pasa?', ops:['El cajón va más rápido y la guitarra se queda atrás.', 'Todo va más rápido y sigue a compás.', 'Solo cambia el bajo, porque es el más grave.'], ok:1, expl:'El tempo vive en el escenario y es el mismo para todos: cada «tiempo» se acorta igual en todos los objetos.'},
-  {q:'En el bajo, el Sol dura 3 tiempos en vez de 4. ¿Qué oyes?', ops:['Un error rojo de Scratch y el programa se para.', 'Nada: Scratch lo corrige solo.', 'El bajo se adelanta un tiempo en cada vuelta y cambia de acorde antes que la guitarra.'], ok:2, expl:'Su vuelta dura 15 tiempos y la de la guitarra 16: cada vuelta se separan un tiempo más. Scratch no avisa; hay que contar.'},
-  {q:'¿Por qué todos los instrumentos empiezan con «al recibir ¡a compás!» y no cada uno con su tecla?', ops:['Para que arranquen en el mismo instante y no se desplacen.', 'Porque las teclas no funcionan con la extensión Música.', 'Para que suenen más fuerte.'], ok:0, expl:'Un mensaje pone en marcha a todos a la vez. Si la guitarra empieza al pulsar una tecla, casi nunca cae justo al principio de un tiempo y queda desplazada para siempre.'}
+  {q:'Subes el tempo de 110 a 140 mientras suena. ¿Qué pasa?', ops:['El piano va más rápido y la guitarra se queda atrás.', 'Todo va más rápido y sigue a compás.', 'Solo cambia la guitarra, porque es la que hace la melodía.'], ok:1, expl:'El tempo vive en el escenario y es el mismo para todos: cada «tiempo» se acorta igual en todos los objetos.'},
+  {q:'En el piano, una nota dura 2 tiempos en vez de 1. ¿Qué oyes?', ops:['Un error rojo de Scratch y el programa se para.', 'Nada: Scratch lo corrige solo.', 'El piano se retrasa un tiempo en cada vuelta y cambia de acorde después que la guitarra.'], ok:2, expl:'Su vuelta dura 17 tiempos y la de la guitarra 16: cada vuelta se separan un tiempo más. Scratch no avisa; hay que contar.'},
+  {q:'¿Por qué el piano y la guitarra empiezan con «al recibir ¡a compás!» y no cada uno con su tecla?', ops:['Para que arranquen en el mismo instante y no se desplacen.', 'Porque las teclas no funcionan con la extensión Música.', 'Para que suenen más fuerte.'], ok:0, expl:'Un mensaje pone en marcha a todos a la vez. Si la guitarra empieza al pulsar una tecla, casi nunca cae justo al principio de un tiempo y queda desplazada para siempre.'}
 ];
 $('#preguntas').innerHTML = PREG.map((p, i) => `<fieldset class="pregunta" data-correcta="${p.ok}" data-expl="${esc(p.expl)}"><legend>${i + 1}. ${esc(p.q)}</legend>${p.ops.map((o, k) => `<label class="opcion"><input type="radio" name="p${i}" value="${k}"><span>${esc(o)}</span></label>`).join('')}<p class="respuesta" hidden></p></fieldset>`).join('');
 $('#preguntas').addEventListener('change', e => {
@@ -1010,11 +973,13 @@ $('#tema').onclick = () => { const r = document.documentElement, oscuro = r.data
 try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
 
 /* ============================================================ arranque */
+$('#optPalmero').setAttribute('aria-pressed', String(conPalmero));
 estadoInicial(); pintaFallos(); pintaEditor(); pintaObjetivos(); pintaPrograma(); pintaBotones();
 narra('Pulsa la <b>bandera verde</b> (o «Automático») para escuchar la rumba, o «Empezar paso a paso» para ir tiempo a tiempo.');
 window.__lab = {
   get T(){ return T; }, get V(){ return V; }, get EST(){ return EST; }, get PROG(){ return PROG; }, get F(){ return F; }, get LOGROS(){ return LOGROS; },
-  get falseta(){ return falseta.slice(); }, get malla(){ return malla; }, get modo(){ return modo; }, desfase, programa:() => PROG, textoBloques, textoPseudo, palmas, bandera, teclaG,
+  get falseta(){ return falseta.slice(); }, get malla(){ return malla; }, get modo(){ return modo; }, get conPalmero(){ return conPalmero; }, ponPalmero,
+  desfase, programa:() => PROG, textoBloques, textoPseudo, palmas, bandera, teclaG,
   get ronda(){ return T.iniciado ? Math.floor((T.corriendo ? beatEn(ahora()) : T.beat) / 16) : -1; }, beat:() => (T.corriendo ? beatEn(ahora()) : T.beat)
 };
 })();
