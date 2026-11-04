@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-"""Copia de seguridad de Moodle (.mbz) con el bloque HTML y las Tareas de una SdA.
+"""Copia de seguridad de Moodle (.mbz) con la sección de una SdA: su bloque HTML y sus Tareas.
 
 Genera, sin necesidad de un Moodle, una copia de curso en formato Moodle 4.1 (se restaura en Moodle 4.1 o
-posterior) que contiene solo:
-  - un «Área de texto y medios» con el bloque HTML de la SdA (moodle.html), visible, al principio del tema 1;
+posterior) que contiene solo una sección (tema), visible, con:
+  - el nombre de la SdA («SdA 2: Código en Acción…», de meta.titulo) y, como descripción de la sección,
+    el bloque HTML de la SdA (moodle.html);
   - todas las Tareas de la SdA (X.1, X.2…), ocultas, con su descripción, tipo de entrega y calificación:
     escala «Apto / No apto» (No apto, Apto) o rúbrica 1-3-5-7-10 (0,75-7,5 en las líneas de presentación pública
     cuando la rúbrica lleva pesos 66/33), sin fechas de apertura, entrega ni límite (no generan avisos).
 No lleva foro de avisos, usuarios, grupos, bloques ni filtros. Se restaura con «Restaurar → Fusionar la copia de
 seguridad con este curso» y «Sobrescribir configuración del curso: No».
 
-Uso:  python scripts/sda-mbz.py sda<N>.json moodle.html sda<N>-moodle.mbz
+Moodle coloca la sección por su número: por defecto es el tema N (N = número de la SdA). Si ese tema no existe en
+el curso, se crea; si existe y está vacío (sin nombre ni descripción), toma el nombre y el bloque de la SdA; si ya
+tiene nombre o descripción, los conserva y solo se añaden las Tareas al final. Para ponerla en otro tema (p. ej. el
+siguiente libre del curso), usa --tema.
+
+Uso:  python scripts/sda-mbz.py sda<N>.json moodle.html sda<N>-moodle.mbz [--tema T]
 """
 import html, io, json, re, sys, tarfile, time, hashlib
 
@@ -65,9 +71,10 @@ def xml(body):
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + body
 
 
-def main(src, snippet, out):
+def main(src, snippet, out, NSEC=None):
     d = json.load(open(src, encoding='utf-8'))
     meta = d['meta']; num = meta.get('numero', '')
+    NSEC = int(NSEC or num or 1)
     bloque = open(snippet, encoding='utf-8').read().strip()
     tareas = tareas_de(d)
     ahora = int(time.time())
@@ -75,25 +82,16 @@ def main(src, snippet, out):
 
     COURSE, CTX = 1, 100
     S0, S1, CAT, SCALE = 1, 2, 1, 1
-    mods = []  # (moduleid, modulename, title)
+    mods = []  # (moduleid, modulename, title, visible)
+    tit = str(meta.get('titulo', '')).strip()
+    nombre_sec = tit if re.match(r'(?i)sda\s*\d', tit) else f'SdA {num}: {tit}'
     gi_id = 2   # grade_item 1 = total del curso
     crit_id = lvl_id = 0
     rubtotal = 0
 
-    # ---------- Área de texto y medios
-    mid = 1
-    nombre_label = f"SdA {num} · Presentación"
-    F[f'activities/label_{mid}/label.xml'] = xml(
-        f'<activity id="1" moduleid="{mid}" modulename="label" contextid="{CTX + mid}">\n  <label id="1">\n'
-        f'    <name>{X(nombre_label)}</name>\n    <intro>{X(bloque)}</intro>\n    <introformat>1</introformat>\n'
-        f'    <timemodified>{ahora}</timemodified>\n  </label>\n</activity>')
-    F[f'activities/label_{mid}/grades.xml'] = xml('<activity_gradebook>\n  <grade_items>\n  </grade_items>\n  <grade_letters>\n  </grade_letters>\n</activity_gradebook>')
-    F[f'activities/label_{mid}/inforef.xml'] = xml('<inforef>\n</inforef>')
-    mods.append((mid, 'label', nombre_label, 1))
-
     # ---------- Tareas
     for i, t in enumerate(tareas):
-        mid = i + 2; aid = i + 1; gid = gi_id; gi_id += 1
+        mid = i + 1; aid = i + 1; gid = gi_id; gi_id += 1
         grade = -SCALE if t['apto'] else 10
         cfgs = [('onlinetext', 'assignsubmission', 'enabled', int(t['texto'])), ('onlinetext', 'assignsubmission', 'wordlimit', 0),
                 ('onlinetext', 'assignsubmission', 'wordlimitenabled', 0), ('file', 'assignsubmission', 'enabled', int(t['archivo'])),
@@ -160,7 +158,7 @@ def main(src, snippet, out):
     for mid, mod, _, vis in mods:
         base = f'activities/{mod}_{mid}/'
         F[base + 'module.xml'] = xml(
-            f'<module id="{mid}" version="2022112801">\n  <modulename>{mod}</modulename>\n  <sectionid>{S1}</sectionid>\n  <sectionnumber>1</sectionnumber>\n'
+            f'<module id="{mid}" version="2022112801">\n  <modulename>{mod}</modulename>\n  <sectionid>{S1}</sectionid>\n  <sectionnumber>{NSEC}</sectionnumber>\n'
             f'  <idnumber></idnumber>\n  <added>{ahora}</added>\n  <score>0</score>\n  <indent>0</indent>\n  <visible>{vis}</visible>\n'
             f'  <visibleoncoursepage>1</visibleoncoursepage>\n  <visibleold>{vis}</visibleold>\n  <groupmode>0</groupmode>\n  <groupingid>0</groupingid>\n'
             f'  <completion>0</completion>\n  <completiongradeitemnumber>{NULL}</completiongradeitemnumber>\n  <completionpassgrade>0</completionpassgrade>\n'
@@ -170,11 +168,11 @@ def main(src, snippet, out):
         F[base + 'grade_history.xml'] = xml('<grade_history>\n  <grade_grades>\n  </grade_grades>\n</grade_history>')
 
     # ---------- secciones
-    def seccion(sid, numero, secuencia):
-        return xml(f'<section id="{sid}">\n  <number>{numero}</number>\n  <name>{NULL}</name>\n  <summary></summary>\n  <summaryformat>1</summaryformat>\n'
+    def seccion(sid, numero, secuencia, nombre=NULL, resumen=''):
+        return xml(f'<section id="{sid}">\n  <number>{numero}</number>\n  <name>{nombre}</name>\n  <summary>{resumen}</summary>\n  <summaryformat>1</summaryformat>\n'
                    f'  <sequence>{secuencia}</sequence>\n  <visible>1</visible>\n  <availabilityjson>{NULL}</availabilityjson>\n  <timemodified>{ahora}</timemodified>\n</section>')
     F[f'sections/section_{S0}/section.xml'] = seccion(S0, 0, '')
-    F[f'sections/section_{S1}/section.xml'] = seccion(S1, 1, ','.join(str(m[0]) for m in mods))
+    F[f'sections/section_{S1}/section.xml'] = seccion(S1, NSEC, ','.join(str(m[0]) for m in mods), X(nombre_sec), X(bloque))
     for s in (S0, S1):
         F[f'sections/section_{s}/inforef.xml'] = xml('<inforef>\n</inforef>')
 
@@ -225,7 +223,7 @@ def main(src, snippet, out):
     acts = ''.join(f'\n        <activity>\n          <moduleid>{mid}</moduleid>\n          <sectionid>{S1}</sectionid>\n          <modulename>{mod}</modulename>\n'
                    f'          <title>{X(tit)}</title>\n          <directory>activities/{mod}_{mid}</directory>\n        </activity>' for mid, mod, tit, _ in mods)
     secs = ''.join(f'\n        <section>\n          <sectionid>{s}</sectionid>\n          <title>{n}</title>\n          <directory>sections/section_{s}</directory>\n        </section>'
-                   for s, n in ((S0, 0), (S1, 1)))
+                   for s, n in ((S0, 0), (S1, NSEC)))
     raiz = [('filename', 'backup.mbz'), ('imscc11', 0), ('users', 0), ('anonymize', 0), ('role_assignments', 0), ('activities', 1), ('blocks', 0),
             ('files', 1), ('filters', 0), ('comments', 0), ('badges', 0), ('calendarevents', 0), ('userscompletion', 0), ('logs', 0),
             ('grade_histories', 0), ('questionbank', 0), ('groups', 0), ('competencies', 0), ('customfield', 0), ('contentbankcontent', 0), ('legacyfiles', 0)]
@@ -264,10 +262,14 @@ def main(src, snippet, out):
         add('.ARCHIVE_INDEX', indice)
         for k, v in sorted(datos.items()):
             add(k, v)
-    print(f'MBZ: {out} · 1 área de texto y medios · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)')
+    print(f'MBZ: {out} · tema {NSEC} «{nombre_sec}» con el bloque HTML · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)')
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
+    args = sys.argv[1:]
+    tema = None
+    if '--tema' in args:
+        i = args.index('--tema'); tema = args[i + 1]; del args[i:i + 2]
+    if len(args) != 3 or (tema is not None and not tema.isdigit()):
         sys.exit(__doc__)
-    main(*sys.argv[1:])
+    main(*args, tema)
