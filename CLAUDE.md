@@ -82,6 +82,8 @@ content/
   instalarla); su URL `/exec` va en `ENDPOINT`.
 - `scripts/build-site.mjs` añade el script a cada `guia-profesorado.html` al publicar: no se escribe en las guías.
 - Las marcas se leen sin clave: solo deben llevar el grupo, nunca datos personales del alumnado.
+- Las claves para editar (`CLAVE` y `CLAVE_FACIL`) están en las propiedades del script de Apps Script. El
+  repositorio es público: nunca se escriben en él.
 
 ## Material para imprimir
 

@@ -73,13 +73,17 @@
     pintar();
   }
 
+  const textoError = (err) => (err.message === 'bloqueado'
+    ? 'Demasiados intentos con una clave incorrecta. Espera 15 minutos.'
+    : 'No se ha podido guardar. Inténtalo de nuevo.');
+
   // Sin clave guardada (o si ya no vale) se abre el formulario para pedirla.
   async function cambiar(accion, sesion, nota) {
     try {
       await enviar(accion, sesion, nota, leerClave());
     } catch (err) {
       if (err.message === 'clave') guardarClave('');
-      aviso = err.message === 'clave' ? 'Escribe la clave para cambiar las marcas.' : 'No se ha podido guardar. Inténtalo de nuevo.';
+      aviso = err.message === 'clave' ? 'Escribe la clave para cambiar las marcas.' : textoError(err);
       panelAbierto = true;
       pintar();
     }
@@ -116,7 +120,7 @@
           if (!clave.isConnected) form.insertBefore(clave, ok);
           error.textContent = 'La clave no es correcta.';
         } else {
-          error.textContent = 'No se ha podido guardar. Inténtalo de nuevo.';
+          error.textContent = textoError(err);
         }
         error.hidden = false;
       }
