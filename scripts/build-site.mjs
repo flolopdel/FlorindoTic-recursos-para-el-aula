@@ -146,6 +146,15 @@ async function main() {
       published.push(rel);
     }
   }
+  // Las marcas de sesión van en todas las guías, también en las que se regeneren con la skill.
+  for (const rel of published.filter((p) => p.endsWith('/guia-profesorado.html'))) {
+    const dest = path.join(OUT, rel);
+    const html = await fs.readFile(dest, 'utf-8');
+    const src = path.posix.relative(path.posix.dirname(rel), 'js/marcas-sesion.js');
+    const tag = `<script src="${src}" defer></script>\n`;
+    const pos = html.lastIndexOf('</body>');
+    await fs.writeFile(dest, pos < 0 ? html + tag : html.slice(0, pos) + tag + html.slice(pos));
+  }
   await fs.writeFile(path.join(OUT, '.nojekyll'), '');
   await fs.writeFile(path.join(OUT, '404.html'), page404());
   published.push('404.html');

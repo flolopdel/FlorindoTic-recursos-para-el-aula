@@ -75,6 +75,20 @@ content/
   en `sda<N>.json` se muestra como dos botones, **Ver anexo** y **Copiar a mi Drive**.
 - Los documentos se comparten con el alumnado como **Lector**.
 
+## Marcas de sesión (por dónde va cada grupo)
+
+- `js/marcas-sesion.js` muestra en las guías del profesorado qué grupo va por cada sesión. Los datos están en
+  una hoja de Google, a través de la aplicación web de `scripts/marcas-sesion.gs` (allí están los pasos para
+  instalarla); su URL `/exec` va en `ENDPOINT`.
+- `scripts/build-site.mjs` añade el script a cada `guia-profesorado.html` al publicar: no se escribe en las guías.
+- Las marcas se leen sin clave: solo deben llevar el grupo, nunca datos personales del alumnado.
+
+## Material para imprimir
+
+Los campos `imprimir` e `imprimir_nota` de `sda<N>.json` generan en la guía el recordatorio «prepara estas
+copias» y el aviso «Imprimir para esta sesión». La plantilla de la skill aún no los incluye: al regenerar una
+guía que los use, hay que volver a añadir `impRow`, `impTable` y las dos líneas que los pintan.
+
 ## Comprobar antes de abrir una PR
 
 ```bash
