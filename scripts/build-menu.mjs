@@ -44,6 +44,7 @@ const EXACT_LABELS = new Map([
   ['laboratorio-rumba', 'Laboratorio: rumba en Scratch (Día del Flamenco)'],
   ['laboratorio-scratch', 'Laboratorio: los retos de Scratch'],
   ['laboratorio-roblox', 'Laboratorio: tu obby en Roblox'],
+  ['laboratorio-smart-city', 'Laboratorio: Smart City, diseño y alumbrado'],
 ]);
 
 function prettify(name) {

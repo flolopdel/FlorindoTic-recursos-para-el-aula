@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart City: diseño y alumbrado</title>
+<meta name="description" content="Laboratorio de la SdA 3 de Tecnología 4.º ESO: calcula la escala con un coche de juguete, dibuja la ciudad en un panel de 30 × 40 cm, monta las farolas con su resistencia y en paralelo, y comprueba cómo una LDR y un transistor las encienden al anochecer.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --hl:#f59e0b;
+  --mesa:#d9dee3; --panel:#f3efe6; --asfalto:#5b6470; --asfalto2:#78818c; --acera:#c9c3b6; --verde:#9ccf8a; --arbol:#4d9a45;
+  --edificio:#b9c4d6; --tejado:#8796ad; --coche:#dc2626; --marca:#ffffff; --farola:#334155; --luz:#fde047;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --hl:#fbbf24; --mesa:#162033; --farola:#94a3b8; --code-bg:#020617;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --hl:#fbbf24; --mesa:#162033; --farola:#94a3b8; --code-bg:#020617;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-in a.tb,.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.cab-in .ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.banco-grid > *{min-width:0}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;background:var(--mesa);border-radius:12px;overflow:hidden}
+.escena svg{display:block;width:100%;height:auto}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.deslizadores{display:grid;gap:8px 16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:10px}
+.deslizadores label{font-size:14px;font-weight:600;color:var(--ink2)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:640px;flex:1}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.prog-nota{font-size:13px;color:var(--muted);padding:6px 10px 0;margin:0}
+.leyenda-hl{display:flex;gap:12px;font-size:13px;color:var(--muted);padding:6px 10px 0}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--hl)}
+/* bloques */
+.pila{margin:0 0 12px;font:600 13px/1.35 system-ui,sans-serif}
+.blk{--c:#1e90ff;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;margin:2px 0;position:relative;transition:box-shadow .15s}
+.blk.hat{border-radius:14px 14px 6px 6px;padding-top:7px}
+.blk .cuerpo{margin:4px 0 2px 10px;padding:3px 0 3px 8px;border-left:3px solid rgba(255,255,255,.55);background:var(--bg);border-radius:0 6px 6px 0}
+.blk .cuerpo .blk{margin:3px 6px 3px 0}
+.rama{display:block}
+.pill{display:inline-block;background:rgba(255,255,255,.92);color:#111827;border-radius:999px;padding:0 7px;margin:0 2px;font-weight:700}
+.pill.var{background:#e8553a;color:#fff;border:1px solid rgba(255,255,255,.6)}
+.pill.mat{background:#3aa655;color:#fff}
+.pill.ent{background:#9b4dca;color:#fff}
+.pill.log{background:#3aa655;color:#fff}
+.on-hl{box-shadow:0 0 0 3px var(--hl)}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.on-hl{box-shadow:inset 4px 0 0 var(--hl);background:rgba(245,158,11,.22)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.18)}
+/* esquema */
+.esq-marco{background:var(--bg);border-radius:10px;padding:6px}
+.esq-marco svg{display:block;width:100%;height:auto}
+.esq line,.esq polyline,.esq rect,.esq circle,.esq polygon,.esq path{stroke:var(--ink2);stroke-width:2;fill:none}
+.esq .relleno{fill:var(--ink2)}
+.esq text{fill:var(--ink);font:600 13px system-ui,sans-serif;stroke:none}
+.esq text.peq{font-size:12px;font-weight:500;fill:var(--muted)}
+.esq text.val{fill:var(--brand);font-weight:800}
+.esq .on-hl{box-shadow:none}
+.esq .on-hl line,.esq .on-hl polyline,.esq .on-hl rect,.esq .on-hl circle,.esq .on-hl polygon,.esq .on-hl path{stroke:var(--hl);stroke-width:3.2}
+.esq .led-on{fill:var(--luz) !important}
+.serie-monitor{font:12px ui-monospace,Menlo,Consolas,monospace;background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:6px 10px;margin:8px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px}
+.paneles > *{min-width:0}
+@media(max-width:980px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:17px;overflow-wrap:anywhere}
+.medida-item.mal .v{color:var(--ko)}
+.rompelo{margin-bottom:12px}.rompelo h3{margin:0 0 6px;font-size:15px}
+.rompelo .solo{font-weight:500;color:var(--muted);font-size:13px}
+.interruptor{display:flex;gap:8px;align-items:center}
+.rango{display:flex;gap:10px;align-items:center}.rango input{flex:1;min-width:0}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+.dos > *{min-width:0}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px;width:100%}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+.reglas td.n{text-align:right}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px;min-width:0}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px;min-width:0}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0;overflow-wrap:anywhere}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+/* escena */
+.svg-pieza{cursor:pointer}
+.svg-pieza:focus{outline:none}.svg-pieza:focus-visible > *{stroke:var(--brand);stroke-width:3}
+.nombre{font:700 13px system-ui,sans-serif;fill:#0f172a;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.cota{stroke:#7c3aed;stroke-width:1.6;fill:none}
+.cota-t{font:700 13px system-ui,sans-serif;fill:#5b21b6;paint-order:stroke;stroke:#fff;stroke-width:3px;pointer-events:none}
+.cable{stroke:#ef4444;stroke-width:2.2;fill:none;stroke-dasharray:5 5;opacity:.9}
+.cable.gnd{stroke:#1f2937}
+.cable.fluye{animation:flujo .7s linear infinite}
+@keyframes flujo{to{stroke-dashoffset:-20}}
+.pulso{animation:pulso .55s ease-in-out 4}
+@keyframes pulso{50%{opacity:.25}}
+@media (prefers-reduced-motion: reduce){.cable.fluye,.pulso{animation:none}}
+@media print{.cab,.banco,.botonera{display:none}}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Smart City: diseño y alumbrado <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 3 · Tecnología 4.º ESO</span></div>
+    <a class="tb" href="clase.html#s3">📽 Clase</a>
+    <a class="tb ocultar-movil" href="../teoria/electronica-analogica.html#circuitos">📗 Teoría</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 3 · Electrónica analógica</a> / <a href="clase.html#s3">Sesión 3. Reto Smart City</a> / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Laboratorio del reto Smart City (parte 1) · sesiones 3, 6, 9, 12 y 13</p>
+  <h1>Smart City: diseño y alumbrado</h1>
+  <p class="lab-sub">Una ciudad en un panel de 30 × 40 cm. Primero la escala: todo se dimensiona a partir de un coche de juguete. Después, las farolas: cada LED con su resistencia, todas en paralelo, y una LDR con un transistor que las enciende solas al anochecer. Los semáforos y la barrera del parking quedan listos para programarlos en la parte 2.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>4.º ESO · parejas del reto Smart City</dd></div>
+    <div><dt>Material</dt><dd>Panel de 30 × 40 cm, coche de juguete, LED, resistencias de 390 Ω, pila de 9 V; LDR y BC547 (ampliación)</dd></div>
+    <div><dt>Programa</dt><dd>Parte 1: ninguno, el circuito decide. Avance de la parte 2: Arduino en Tinkercad</dd></div>
+    <div><dt>Referencia</dt><dd>Ficha del reto, web de teoría y hojas de datos de la LDR y el BC547</dd></div>
+  </dl>
+</header>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong>El panel visto desde arriba</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optTransp" aria-pressed="false">Transparente</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+          <button type="button" id="optCotas" aria-pressed="false">Medidas</button>
+        </div>
+      </div>
+      <div class="escena" id="escena">
+        <svg id="svg" viewBox="0 0 880 660" role="img" aria-labelledby="svgDesc">
+          <desc id="svgDesc">Panel de 40 × 30 cm visto desde arriba con un cruce de dos calles, aceras, un edificio con una LDR en el tejado, un parking de tres plazas con barrera, dos semáforos y cinco farolas. En la primera plaza está el coche de juguete que marca la escala. Con «Transparente» se ven, bajo la base, la pila, la placa de prototipos y los cables de las farolas.</desc>
+          <defs>
+            <clipPath id="recorte"><rect x="40" y="30" width="800" height="600" rx="4"/></clipPath>
+            <radialGradient id="halo"><stop offset="0" stop-color="#fef08a" stop-opacity=".95"/><stop offset=".45" stop-color="#fde047" stop-opacity=".55"/><stop offset="1" stop-color="#fde047" stop-opacity="0"/></radialGradient>
+          </defs>
+          <g clip-path="url(#recorte)">
+            <rect x="40" y="30" width="800" height="600" style="fill:var(--panel)"/>
+            <g id="gCiudad"></g>
+            <rect id="noche" x="40" y="30" width="800" height="600" fill="#0a1128" opacity="0" pointer-events="none"/>
+            <g id="gDebajo" opacity="0" pointer-events="none"></g>
+            <g id="gFarolas"></g>
+            <g id="gCoche"></g>
+            <g id="gCotas" display="none"></g>
+            <g id="gNombres"></g>
+          </g>
+          <rect x="40" y="30" width="800" height="600" rx="4" fill="none" stroke="#475569" stroke-width="3"/>
+          <g id="gBorde"></g>
+          <rect id="aviso" x="40" y="30" width="800" height="600" rx="4" fill="none" stroke="#dc2626" stroke-width="5" stroke-dasharray="14 8" opacity="0"/>
+        </svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera" aria-label="Luz del día">
+        <button type="button" class="boton peq sec" data-lux="20000">☀️ Mediodía</button>
+        <button type="button" class="boton peq sec" data-lux="1000">⛅ Nublado</button>
+        <button type="button" class="boton peq sec" data-lux="50">🌇 Atardecer</button>
+        <button type="button" class="boton peq sec" data-lux="1">🌙 Noche</button>
+      </div>
+      <div class="deslizadores">
+        <div><label for="ctlLux">Luz ambiente: <span class="num" id="ctlLuxTxt">20 000 lux</span></label>
+          <div class="rango"><input type="range" id="ctlLux" min="0" max="100" step="1" value="96"></div></div>
+        <div><label for="ctlAncho">Ancho del coche de juguete: <span class="num" id="ctlAnchoTxt">3,0 cm</span></label>
+          <div class="rango"><input type="range" id="ctlAncho" min="2" max="5" step="0.1" value="3"></div></div>
+      </div>
+      <p class="escena-pie">Pulsa una pieza del dibujo para saber qué es. «Medidas» enseña las cotas a escala y «Transparente», lo que va debajo de la base: la pila, la placa de prototipos y los cables.</p>
+    </div>
+
+    <aside class="programa" aria-label="El circuito y el programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Qué ver">
+          <button type="button" role="tab" id="tabEsquema" aria-selected="true">Esquema</button>
+          <button type="button" role="tab" id="tabBloques" aria-selected="false">Bloques</button>
+          <button type="button" role="tab" id="tabCpp" aria-selected="false">C++</button>
+        </div>
+        <div class="seg" id="idioma" aria-label="Idioma de los bloques" hidden>
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <p class="prog-nota" id="progNota"></p>
+      <div class="leyenda-hl"><span>Lo que está actuando ahora</span></div>
+      <div class="programa-cuerpo">
+        <div class="esq-marco" id="esquema"></div>
+        <div id="bloques" hidden></div>
+        <pre class="codigo" id="cpp" hidden></pre>
+        <div class="serie-monitor" id="serie" hidden aria-live="off">Monitor serie: —</div>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiarCpp">Copiar para Tinkercad (C++)</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar el recorrido</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.4">Cámara lenta</option>
+          <option value="1" selected>Tiempo real</option>
+          <option value="3">Rápido (×3)</option>
+        </select>
+        <span style="margin-left:auto;font-size:14px;font-weight:600;color:var(--ink2)">¿Quién enciende las farolas?</span>
+        <div class="seg" id="ctlCtrl" aria-label="Quién enciende las farolas">
+          <button type="button" data-v="transistor" aria-pressed="true">LDR y transistor (parte 1)</button>
+          <button type="button" data-v="arduino" aria-pressed="false">Arduino (avance de la parte 2)</button>
+        </div>
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases del recorrido">
+        <li>1. Medimos el coche de juguete y calculamos la escala</li>
+        <li>2. Pasamos las medidas reales a la maqueta</li>
+        <li>3. Colocamos los tres sistemas: parking, semáforos y farolas</li>
+        <li>4. Cada farola lleva su resistencia: ley de Ohm</li>
+        <li>5. Probamos las farolas: van en paralelo bajo la base</li>
+        <li>6. Anochece: la LDR y el transistor las encienden</li>
+      </ol>
+      <p class="narracion" id="narracion" aria-live="polite">Pulsa «Empezar el recorrido» para ver el reto paso a paso, o «Automático» para que avance solo. También puedes mover la luz del día y el tamaño del coche.</p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Farola</th><th>Estado</th><th>Corriente</th><th>Brillo</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <div class="medidas">
+        <div class="medida-item" id="mEsc"><span class="et">Escala</span><span class="v num" id="vEsc">—</span></div>
+        <div class="medida-item" id="mPanel"><span class="et">El panel representa</span><span class="v num" id="vPanel">—</span></div>
+        <div class="medida-item" id="mCabe"><span class="et">¿Cabe la ciudad en el panel?</span><span class="v" id="vCabe">—</span></div>
+        <div class="medida-item" id="mPlaza"><span class="et">Plaza de parking y coche</span><span class="v num" id="vPlaza">—</span></div>
+        <div class="medida-item" id="mLdr"><span class="et">Luz en la LDR · su resistencia</span><span class="v num" id="vLdr">—</span></div>
+        <div class="medida-item" id="mCtrl"><span class="et" id="eCtrl">Tensión en la base</span><span class="v num" id="vCtrl">—</span></div>
+        <div class="medida-item" id="mSal"><span class="et" id="eSal">Transistor</span><span class="v" id="vSal">—</span></div>
+        <div class="medida-item" id="mItot"><span class="et" id="eItot">Corriente de todas las farolas</span><span class="v num" id="vItot">—</span></div>
+      </div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo"><h3>¿Qué medida del coche usáis para la escala?</h3>
+        <div class="seg" id="ctlMedida"><button type="button" data-v="ancho" aria-pressed="true">El ancho (bien)</button><button type="button" data-v="largo" aria-pressed="false">El largo, dividido entre el ancho real</button></div></div>
+      <div class="rompelo"><h3>Cómo se conectan las farolas</h3>
+        <div class="seg" id="ctlConex"><button type="button" data-v="paralelo" aria-pressed="true">En paralelo</button><button type="button" data-v="serie" aria-pressed="false">En serie</button></div></div>
+      <div class="rompelo"><label class="interruptor" for="ctlReves"><input type="checkbox" id="ctlReves"> La farola 2 lleva el LED al revés</label></div>
+      <div class="rompelo"><label class="interruptor" for="ctlSinR"><input type="checkbox" id="ctlSinR"> La farola 4 no lleva resistencia</label></div>
+      <div class="rompelo"><label class="interruptor" for="ctlSombra"><input type="checkbox" id="ctlSombra"> La LDR queda tapada o a la sombra</label></div>
+      <div class="rompelo"><h3>Resistencia de arriba del divisor <span class="solo">(parte 1)</span></h3>
+        <div class="seg" id="ctlRdiv"><button type="button" data-v="100000" aria-pressed="true">100 kΩ</button><button type="button" data-v="10000" aria-pressed="false">10 kΩ</button></div></div>
+      <div class="rompelo"><h3><label for="ctlPila">Pila <span class="solo">(parte 1)</span></label></h3>
+        <div class="rango"><input type="range" id="ctlPila" min="3" max="9" step="0.5" value="9"><span class="num" id="ctlPilaTxt">9 V</span></div></div>
+      <div class="rompelo"><label class="interruptor" for="ctlProg"><input type="checkbox" id="ctlProg"> Programa con la comparación al revés: luz &gt; 40 <span class="solo">(avance parte 2)</span></label></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">Todo se dibuja a la escala del coche: cada medida real se divide entre N. Y cada farola lleva su propia resistencia y va en paralelo: así recibe toda la tensión de la pila y, si una falla, las demás siguen encendidas.</p>
+  <div class="dos">
+    <div>
+      <h3 style="margin:6px 0">De la calle a la maqueta (escala 1:60)</h3>
+      <p style="margin:4px 0;color:var(--ink2)">Coche de juguete de 3 cm de ancho; uno real mide unos 180 cm. Escala = 3 / 180 = 1/60. Cada medida real se divide entre 60.</p>
+      <table class="reglas" aria-label="Medidas reales y en la maqueta a escala 1:60">
+        <thead><tr><th>Elemento</th><th>Real</th><th>En la maqueta</th></tr></thead>
+        <tbody>
+          <tr><td>Calle de dos carriles</td><td class="n">700 cm</td><td class="n">11,7 cm</td></tr>
+          <tr><td>Acera</td><td class="n">200 cm</td><td class="n">3,3 cm</td></tr>
+          <tr><td>Plaza de parking</td><td class="n">250 × 500 cm</td><td class="n">4,2 × 8,3 cm</td></tr>
+          <tr><td>Farola (altura)</td><td class="n">500 cm</td><td class="n">8,3 cm</td></tr>
+          <tr><td>Edificio de 4 plantas</td><td class="n">1200 cm</td><td class="n">20 cm</td></tr>
+          <tr><td>Todo el panel (40 × 30 cm)</td><td class="n">24 × 18 m</td><td class="n">40 × 30 cm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin:6px 0">La resistencia de cada farola</h3>
+      <p style="margin:4px 0">LED de <b>2 V</b> y <b>20 mA</b> con una pila de <b>9 V</b>:</p>
+      <p style="margin:4px 0">R = (9 − 2) / 0,020 = <b>350 Ω</b> → el valor comercial igual o superior es <b>390 Ω</b>.</p>
+      <p style="margin:4px 0">Con 390 Ω pasan (9 − 2) / 390 ≈ <b>18 mA</b>: el LED luce y no se quema.</p>
+      <p style="margin:4px 0;color:var(--ink2)">En paralelo, cada farola recibe los 9 V y sus 18 mA; la pila da la suma: 5 × 18 ≈ 90 mA. En serie se sumarían las tensiones: 5 × 2 V = 10 V, más que la pila.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Conectar las farolas en serie</h2>
+  <div class="dos">
+    <div>
+      <p>Encadenar las farolas una detrás de otra parece lo más fácil: un solo cable que va de farola en farola. Pero en serie <b>la tensión de la pila se reparte</b> entre todas: cinco LED de 2 V necesitan 10 V y la pila solo tiene 9 V, así que no luce ninguna.</p>
+      <p>Y aunque pusierais menos farolas, en serie <b>si una se funde o está al revés se apagan todas</b>, como en las tiras de luces de Navidad antiguas. Por eso cada farola va en paralelo, con su propia resistencia.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Pon las farolas en serie y haz que anochezca: el transistor conduce, pero no se enciende ninguna.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica con el material real</p>
+  <h2 id="tPractica">Vuestra Smart City, sesión a sesión</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li><b>Sesión 3.</b> Medid el <b>ancho</b> de vuestro coche de juguete y calculad la escala (ancho del juguete / 180 cm). Anotadla en el cuaderno de proyecto A2.</li>
+      <li><b>Sesión 6.</b> Pasad a escala las medidas reales de la tabla (calle, acera, plaza, farola, edificio) y dibujad el croquis con cotas: dónde va cada farola, los semáforos, la barrera y por dónde pasan los cables.</li>
+      <li><b>Sesión 9.</b> Construid calles, parking y edificios. Montad las farolas: cada LED con su resistencia de 390 Ω y la patilla larga hacia el positivo. <b>Probad cada farola con la pila antes de pegarla.</b></li>
+      <li><b>Sesión 12.</b> Conectad todas las farolas en paralelo bajo la base, agrupad y etiquetad los cables y comprobad que se encienden todas. Ampliación: el encendido automático con la LDR en un tejado y el BC547.</li>
+      <li><b>Sesión 13.</b> Simulad el alumbrado en Tinkercad, haced la foto de la maqueta sin personas y completad el cuaderno A2.</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar la maqueta por terminada</h3>
+      <ul class="comprobacion" id="comprobacion">
+        <li><label><input type="checkbox"> La escala sale del ancho del coche y está en el cuaderno.</label></li>
+        <li><label><input type="checkbox"> El coche cabe en las plazas y las calles están a escala.</label></li>
+        <li><label><input type="checkbox"> Cada farola lleva su resistencia y se ha probado antes de pegarla.</label></li>
+        <li><label><input type="checkbox"> Las farolas van en paralelo: si quito una, las demás siguen encendidas.</label></li>
+        <li><label><input type="checkbox"> Los huecos de la barrera y de los semáforos están listos para la parte 2.</label></li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Se entrega en la <b>Tarea 3.5</b>: el cuaderno de proyecto A2 en PDF, con la escala, el croquis, los cálculos de las resistencias, el diario de taller y la foto de la maqueta.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false">
+    <fieldset class="pregunta" data-correcta="a" data-expl="Escala = 2,5 / 180 = 1/72, es decir, 1:72. La calle de 7 m (700 cm) mide en la maqueta 700 / 72 ≈ 9,7 cm.">
+      <legend>1. Vuestro coche de juguete mide 2,5 cm de ancho. ¿Qué escala usáis y cuánto mide en la maqueta una calle de 7 m?</legend>
+      <label class="opcion"><input type="radio" name="q1" value="a"><span>1:72 y unos 9,7 cm.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="b"><span>1:72 y 72 cm.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="c"><span>1:2,5 y 2,8 m.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="b" data-expl="En paralelo cada farola tiene su propio camino hasta la pila: si una se funde, la corriente sigue llegando a las demás. En serie se apagarían todas.">
+      <legend>2. Se funde una farola y las otras cuatro siguen encendidas. ¿Cómo están conectadas?</legend>
+      <label class="opcion"><input type="radio" name="q2" value="a"><span>En serie.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="b"><span>En paralelo.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="c"><span>Sin resistencia.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="c" data-expl="La LDR decide según la luz que le llega a ella, no la que hay en la calle. Si un edificio o un cartel la tapa, «cree» que es de noche y el transistor enciende las farolas.">
+      <legend>3. A mediodía, con el cielo nublado, vuestras farolas automáticas están encendidas. ¿Qué es lo más probable?</legend>
+      <label class="opcion"><input type="radio" name="q3" value="a"><span>Las farolas están en paralelo.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="b"><span>La pila es nueva y tiene mucha tensión.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="c"><span>La LDR está a la sombra de un edificio.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+  </form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de la ficha del reto y de las hojas de datos</h3><ul>
+      <li>Panel de 30 × 40 cm, coche de juguete como patrón, coche real de unos 180 × 420 cm y escala = medida del juguete / medida real (ficha del reto).</li>
+      <li>Ley de Ohm para la resistencia del LED: R = (Vcc − V<sub>D</sub>) / I, con un LED de 2 V y 20 mA, como en las prácticas de clase.</li>
+      <li>LDR tipo GL5528: unos 10 kΩ con 10 lux, al menos 1 MΩ a oscuras y γ = 0,7 (cuánto baja la resistencia al subir la luz).</li>
+      <li>BC547: conduce cuando la base pasa de unos 0,7 V; corriente de colector máxima, 100 mA.</li>
+      <li>Avance de la parte 2 (ficha «Reto Smart City parte 2»): LDR entre 5 V y A0 con una resistencia a GND, todas las farolas en el pin 13 con su resistencia, y encender cuando la luz sea inferior a 40.</li>
+      <li>Arduino UNO: máximo absoluto de 40 mA por pin; lo recomendado son 20 mA o menos.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>La resistencia de la LDR con la luz sigue la fórmula de la hoja de datos, pero cada LDR real es distinta (entre 8 y 20 kΩ con 10 lux): el momento exacto del encendido cambia.</li>
+      <li>El transistor se trata como un interruptor: conduce del todo si el divisor da 0,7 V o más y nada si da menos. No se tiene en cuenta la corriente que toma la base.</li>
+      <li>«Inferior a 40»: la ficha no dice en qué escala. Aquí la lectura de A0 (0-1023) se pasa a 0-100 con map(). Si usáis la lectura directa, ajustad el umbral con vuestras medidas.</li>
+      <li>La resistencia de 10 kΩ entre A0 y GND y la de 100 kΩ del divisor son valores de ejemplo.</li>
+      <li>Los nombres de los bloques de Tinkercad en español no se han podido comprobar en el editor; los de inglés salen de un tutorial oficial de Tinkercad. Los colores de los bloques son aproximados.</li>
+      <li>El plano de la ciudad, la posición de las farolas y la luz de cada momento del día (mediodía 20 000 lux, atardecer 50, noche 1) son orientativos.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Departamento de Tecnología, IES Villa de Mijas. Fichas «Reto Smart City» (parte 1: diseño y construcción; parte 2: farolas y semáforos), curso 2026/2027.</li>
+    <li>Web de teoría de la SdA: <a href="../teoria/electronica-analogica.html#circuitos">Electrónica analógica · Circuito n.º 1, interruptor de luz automático</a>.</li>
+    <li>Seeed Technology. <a href="https://www.digikey.sg/htmldatasheets/production/2014143/0/0/1/gl5528.html" target="_blank" rel="noopener">Hoja de datos de la LDR GL5528</a>: resistencia con 10 lux, resistencia a oscuras y valor γ.</li>
+    <li>Components101. <a href="https://components101.com/transistors/bc547-transistor-pinout-datasheet" target="_blank" rel="noopener">BC547: patillas y datos</a>: corriente de colector de 100 mA y uso como interruptor.</li>
+    <li>Ampheo. <a href="https://hackmd.io/@ampheo/how-much-current-can-arduino-pins-supply" target="_blank" rel="noopener">How much current can Arduino pins supply?</a>: 40 mA de máximo absoluto y 20 mA recomendados por pin.</li>
+    <li>Tinkercad (Instructables). <a href="https://www.instructables.com/Read-a-Photoresistor-With-Analog-Input/" target="_blank" rel="noopener">Photoresistor (Analog Input)</a>: bloques «analog read pin», «map», «print to serial monitor», «set pin» y «wait», y el código C++ que generan.</li>
+    <li>Vídeos de la ficha del reto: <a href="https://www.youtube.com/watch?v=2br8xkxh4e0" target="_blank" rel="noopener">introducción a las Smart City</a> y <a href="https://www.youtube.com/watch?v=xSZf94pLtHc" target="_blank" rel="noopener">un proyecto similar</a>.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s3"><small>Web de clase</small>Sesión 3. Presentamos el reto Smart City</a>
+  <a href="clase.html#s9"><small>Web de clase</small>Sesión 9. Construimos la ciudad y su alumbrado</a>
+  <a href="clase.html#s13"><small>Web de clase</small>Sesión 13. Simulamos el alumbrado y entregamos</a>
+</nav>
+<p class="pie">Laboratorio de la SdA 3 «Electrónica analógica» de Tecnología 4.º ESO, basado en el reto Smart City del departamento de Tecnología del IES Villa de Mijas. La simulación es un modelo simplificado y marca lo que no se ha podido comprobar. Arduino es una marca de Arduino S.r.l. y Tinkercad, de Autodesk.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = (x, d = 1) => Number(x).toLocaleString('es-ES', {minimumFractionDigits:d, maximumFractionDigits:d});
+const fmt0 = x => Math.round(x).toLocaleString('es-ES');
+
+/* ------------------------------------------------------------ datos del modelo */
+const BX = 40, BY = 30, BW = 800, BH = 600, PXCM = 20;            // panel de 40 × 30 cm a 20 px por cm
+const COCHE_REAL = {ancho:180, largo:420};                          // cm, ficha del reto
+const CIUDAD = {w:24, h:18};                                         // metros que ocupa el plano de la ciudad
+const FAROLAS = [{x:2, y:8}, {x:6, y:3.5}, {x:15, y:3.5}, {x:18, y:8}, {x:21, y:17}];
+const VD = 2, ILED = 0.020, RLED = 390, VCESAT = 0.2, VBE = 0.7, RPD = 10000, R_SIN = 2, I_FUNDE = 0.05;
+const LUX_PRESET = {mediodia:20000, nublado:1000, atardecer:50, noche:1};
+
+const st = {
+  ancho:3, medida:'ancho', lux:20000, sombra:false, conexion:'paralelo', reves:false, sinR:false,
+  rdiv:100000, vpila:9, ctrl:'transistor', progMal:false, pin13:0, lectura:0, luzPct:0,
+  fundidas:new Set(), prueba:false, regla:false, cotasTemp:false, debajoTemp:false, serie:[]
+};
+const Nreal = () => COCHE_REAL.ancho / st.ancho;
+const largoJuguete = () => st.ancho * COCHE_REAL.largo / COCHE_REAL.ancho;
+const Nusado = () => st.medida === 'ancho' ? Nreal() : COCHE_REAL.ancho / largoJuguete();
+const ppm = () => 100 * PXCM / Nusado();                             // píxeles por metro real
+
+/* ------------------------------------------------------------ el circuito */
+function rLdr(lux){ const l = st.sombra ? lux * 0.01 : lux; return Math.min(1e6, Math.max(80, 10000 * Math.pow(Math.max(l, 0.001) / 10, -0.7))); }
+function luxLdr(){ return st.sombra ? st.lux * 0.01 : st.lux; }
+function calc(){
+  const R = rLdr(st.lux);
+  const c = {R, luxL:luxLdr()};
+  if (st.ctrl === 'transistor'){
+    c.Vb = st.vpila * R / (R + st.rdiv);
+    c.on = c.Vb >= VBE;
+    c.Vs = st.prueba ? st.vpila : (c.on ? st.vpila - VCESAT : 0);
+  } else {
+    const vA0 = 5 * RPD / (RPD + R);
+    c.lectura = Math.round(vA0 / 5 * 1023);
+    c.luzPct = Math.floor(c.lectura * 100 / 1023);
+    c.on = !!st.pin13;
+    c.Vs = (st.prueba || st.pin13) ? 5 : 0;
+  }
+  c.farolas = FAROLAS.map((f, i) => ({i, I:0, estado:'', quema:false}));
+  const reves = i => st.reves && i === 1, sinR = i => st.sinR && i === 3, fund = i => st.fundidas.has(i);
+  if (st.conexion === 'paralelo'){
+    c.farolas.forEach(f => {
+      const i = f.i;
+      if (fund(i)){ f.estado = 'Fundida: ya no luce'; return; }
+      if (c.Vs <= 0){ f.estado = 'Apagada: no le llega tensión'; return; }
+      if (reves(i)){ f.estado = 'LED al revés: no conduce'; return; }
+      if (c.Vs <= VD){ f.estado = 'Apagada: la tensión no llega a 2 V'; return; }
+      const I = (c.Vs - VD) / (sinR(i) ? R_SIN : RLED);
+      if (I > I_FUNDE){ f.quema = true; f.estado = 'Se funde'; return; }
+      f.I = I; f.estado = 'Encendida';
+    });
+  } else {
+    const algunaMal = c.farolas.some(f => fund(f.i) || reves(f.i));
+    const Rsum = c.farolas.reduce((s, f) => s + (sinR(f.i) ? R_SIN : RLED), 0);
+    const I = Math.max(0, (c.Vs - FAROLAS.length * VD) / Rsum);
+    c.farolas.forEach(f => {
+      if (fund(f.i)) f.estado = 'Fundida: corta la serie';
+      else if (c.Vs <= 0) f.estado = 'Apagada: no le llega tensión';
+      else if (reves(f.i)) f.estado = 'LED al revés: corta la serie';
+      else if (algunaMal) f.estado = 'Apagada: otra farola corta la serie';
+      else if (I <= 0) f.estado = `En serie: hacen falta ${FAROLAS.length * VD} V y hay ${fmt(c.Vs)} V`;
+      else { f.I = I; f.estado = 'Encendida (en serie)'; }
+    });
+  }
+  c.farolas.forEach(f => f.brillo = Math.min(1, f.I / ILED));
+  c.Itot = st.conexion === 'paralelo' ? c.farolas.reduce((s, f) => s + f.I, 0) : (c.farolas[0] ? c.farolas[0].I : 0);
+  return c;
+}
+let ultimo = null;
+function actualiza(){
+  let c = calc();
+  const q = c.farolas.filter(f => f.quema);
+  if (q.length){ q.forEach(f => st.fundidas.add(f.i)); c = calc(); c.recienFundida = q.map(f => f.i); }
+  ultimo = c;
+  pintaLuz(c); refresca(c);
+  if (st.ctrl === 'transistor' && !guiaHL) hl(c.on ? ['e_ldr', 'e_base', 'e_tr', 'e_led'] : ['e_ldr']);
+  return c;
+}
+
+/* ------------------------------------------------------------ escena SVG */
+const svg = $('#svg');
+let mostrarNombres = true, mostrarCotas = false, transparente = false;
+function dibuja(){
+  const p = ppm(), X = m => BX + m * p, Y = m => BY + m * p, S = m => m * p;
+  const r = (x, y, w, h, est, extra = '') => `<rect x="${X(x)}" y="${Y(y)}" width="${S(w)}" height="${S(h)}" style="${est}" ${extra}/>`;
+  const pz = (id, inner) => `<g class="svg-pieza" data-pieza="${id}" tabindex="0" role="button" aria-label="${esc(PIEZAS[id][0])}">${inner}</g>`;
+  let s = '';
+  // aceras
+  s += pz('acera', r(0, 7, 24, 2, 'fill:var(--acera)') + r(0, 16, 24, 2, 'fill:var(--acera)') + r(5, 0, 2, 18, 'fill:var(--acera)') + r(14, 0, 2, 18, 'fill:var(--acera)'));
+  // calles
+  s += pz('calle', r(0, 9, 24, 7, 'fill:var(--asfalto)') + r(7, 0, 7, 18, 'fill:var(--asfalto)') +
+    `<line x1="${X(0)}" y1="${Y(12.5)}" x2="${X(7)}" y2="${Y(12.5)}" stroke="#fff" stroke-width="${Math.max(1, S(0.15))}" stroke-dasharray="${S(1)} ${S(0.8)}"/>` +
+    `<line x1="${X(16)}" y1="${Y(12.5)}" x2="${X(24)}" y2="${Y(12.5)}" stroke="#fff" stroke-width="${Math.max(1, S(0.15))}" stroke-dasharray="${S(1)} ${S(0.8)}"/>` +
+    `<line x1="${X(10.5)}" y1="${Y(0)}" x2="${X(10.5)}" y2="${Y(7)}" stroke="#fff" stroke-width="${Math.max(1, S(0.15))}" stroke-dasharray="${S(1)} ${S(0.8)}"/>`);
+  // paso de peatones
+  let zebra = '';
+  for (let y = 9.3; y < 15.8; y += 0.9) zebra += r(16.3, y, 2.8, 0.45, 'fill:#f8fafc');
+  s += pz('paso', zebra);
+  // edificio y zona verde
+  let ventanas = '';
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 4; j++) ventanas += r(1 + i * 1.2, 2.6 + j * 0.65, 0.6, 0.35, 'fill:#e2e8f0');
+  s += pz('edificio', r(0.5, 0.5, 4, 5, 'fill:var(--edificio);stroke:var(--tejado);stroke-width:2') + r(0.5, 0.5, 4, 1.6, 'fill:var(--tejado)') + ventanas);
+  s += pz('verde', r(0.3, 5.7, 4.4, 1.1, 'fill:var(--verde)') + `<circle cx="${X(1.2)}" cy="${Y(6.25)}" r="${S(0.45)}" style="fill:var(--arbol)"/><circle cx="${X(3.6)}" cy="${Y(6.25)}" r="${S(0.45)}" style="fill:var(--arbol)"/>`);
+  // parking
+  let plazas = '';
+  for (let k = 0; k <= 3; k++) plazas += `<line x1="${X(16.5 + k * 2.5)}" y1="${Y(0.5)}" x2="${X(16.5 + k * 2.5)}" y2="${Y(5.5)}" stroke="#fff" stroke-width="${Math.max(1.2, S(0.12))}"/>`;
+  plazas += `<line x1="${X(16.5)}" y1="${Y(5.5)}" x2="${X(24)}" y2="${Y(5.5)}" stroke="#fff" stroke-width="${Math.max(1.2, S(0.12))}"/>`;
+  s += pz('parking', r(16, 0, 8, 7, 'fill:var(--asfalto2)') + plazas + `<text x="${X(17.2)}" y="${Y(6.6)}" font-size="${Math.max(12, S(1))}" font-weight="800" fill="#fff">P</text>`);
+  s += pz('barrera', `<rect x="${X(20.8)}" y="${Y(6.8)}" width="${S(0.4)}" height="${S(0.4)}" fill="#1f2937"/><line x1="${X(21)}" y1="${Y(7)}" x2="${X(23.8)}" y2="${Y(7)}" stroke="#dc2626" stroke-width="${Math.max(3, S(0.22))}" stroke-dasharray="${S(0.35)} ${S(0.35)}"/><line x1="${X(21)}" y1="${Y(7)}" x2="${X(23.8)}" y2="${Y(7)}" stroke="#fff" stroke-width="${Math.max(3, S(0.22))}" stroke-dasharray="${S(0.35)} ${S(0.35)}" stroke-dashoffset="${S(0.35)}"/>`);
+  // semáforos
+  const sem = (x, y) => `<rect x="${X(x)}" y="${Y(y)}" width="${S(0.5)}" height="${S(1.3)}" rx="${S(0.1)}" fill="#111827"/>` +
+    [0, 1, 2].map(k => `<circle cx="${X(x + 0.25)}" cy="${Y(y + 0.25 + k * 0.4)}" r="${S(0.15)}" fill="#475569"/>`).join('');
+  s += pz('semaforo', sem(6.2, 7.3) + sem(14.3, 16.3));
+  // LDR en el tejado
+  const ldrX = X(2.5), ldrY = Y(1.3);
+  s += pz('ldr', `<circle cx="${ldrX}" cy="${ldrY}" r="${Math.max(6, S(0.35))}" fill="#f59e0b" stroke="#78350f" stroke-width="2"/><path d="M${ldrX - 4} ${ldrY - 2} l3 3 l3 -3 l3 3" stroke="#78350f" stroke-width="1.6" fill="none"/>`);
+  $('#gCiudad').innerHTML = s;
+
+  // farolas (encima de la noche, para que se vea su luz)
+  $('#gFarolas').innerHTML = FAROLAS.map((f, i) => pz('farola',
+    `<circle class="halo" data-f="${i}" cx="${X(f.x)}" cy="${Y(f.y)}" r="${Math.max(18, S(2.2))}" fill="url(#halo)" opacity="0"/>` +
+    `<circle cx="${X(f.x)}" cy="${Y(f.y)}" r="${Math.max(5, S(0.3))}" style="fill:var(--farola)" stroke="#fff" stroke-width="1.5"/>` +
+    `<circle class="bombilla" data-f="${i}" cx="${X(f.x)}" cy="${Y(f.y)}" r="${Math.max(3, S(0.17))}" fill="#64748b"/>` +
+    `<g class="fundida" data-f="${i}" display="none"><line x1="${X(f.x) - 7}" y1="${Y(f.y) - 7}" x2="${X(f.x) + 7}" y2="${Y(f.y) + 7}" stroke="#dc2626" stroke-width="3"/><line x1="${X(f.x) + 7}" y1="${Y(f.y) - 7}" x2="${X(f.x) - 7}" y2="${Y(f.y) + 7}" stroke="#dc2626" stroke-width="3"/></g>`
+  ).replace('data-pieza="farola"', `data-pieza="farola" data-fi="${i}"`)).join('');
+
+  // coche de juguete: siempre con su tamaño real en el panel
+  const cw = st.ancho * PXCM, ch = largoJuguete() * PXCM, ccx = X(17.75), ccy = Y(3);
+  let coche = pz('coche', `<rect x="${ccx - cw / 2}" y="${ccy - ch / 2}" width="${cw}" height="${ch}" rx="${cw * 0.22}" style="fill:var(--coche)" stroke="#7f1d1d" stroke-width="2"/>` +
+    `<rect x="${ccx - cw * 0.36}" y="${ccy - ch * 0.26}" width="${cw * 0.72}" height="${ch * 0.18}" rx="3" fill="#bfdbfe"/>` +
+    `<rect x="${ccx - cw * 0.36}" y="${ccy + ch * 0.12}" width="${cw * 0.72}" height="${ch * 0.14}" rx="3" fill="#bfdbfe"/>`);
+  if (st.regla) coche += `<g pointer-events="none"><line x1="${ccx - cw / 2}" y1="${ccy - ch / 2 - 12}" x2="${ccx + cw / 2}" y2="${ccy - ch / 2 - 12}" stroke="#0f172a" stroke-width="2"/>` +
+    `<line x1="${ccx - cw / 2}" y1="${ccy - ch / 2 - 18}" x2="${ccx - cw / 2}" y2="${ccy - ch / 2 - 6}" stroke="#0f172a" stroke-width="2"/><line x1="${ccx + cw / 2}" y1="${ccy - ch / 2 - 18}" x2="${ccx + cw / 2}" y2="${ccy - ch / 2 - 6}" stroke="#0f172a" stroke-width="2"/>` +
+    `<text class="cota-t" x="${ccx}" y="${ccy - ch / 2 - 20}" text-anchor="middle">${st.medida === 'ancho' ? fmt(st.ancho) + ' cm de ancho' : fmt(largoJuguete()) + ' cm de largo'}</text></g>`;
+  $('#gCoche').innerHTML = coche;
+
+  // bajo la base: pila, placa de prototipos y cables
+  const pilaX = BX + 22, pilaY = BY + BH - 128, pbX = BX + 92, pbY = BY + BH - 98;
+  let d = `<rect x="${pilaX}" y="${pilaY}" width="52" height="96" rx="6" fill="#1f2937" stroke="#0f172a" stroke-width="2" stroke-dasharray="6 4"/><rect x="${pilaX + 14}" y="${pilaY - 8}" width="10" height="8" fill="#9ca3af"/><rect x="${pilaX + 30}" y="${pilaY - 8}" width="10" height="8" fill="#9ca3af"/><text x="${pilaX + 26}" y="${pilaY + 54}" text-anchor="middle" fill="#fff" font-weight="800" font-size="16" id="pilaTxt">9 V</text>`;
+  d += `<rect x="${pbX}" y="${pbY}" width="96" height="70" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>`;
+  for (let i = 0; i < 6; i++) for (let j = 0; j < 4; j++) d += `<circle cx="${pbX + 12 + i * 14}" cy="${pbY + 14 + j * 14}" r="2" fill="#94a3b8"/>`;
+  d += `<rect x="${pbX + 56}" y="${pbY + 22}" width="14" height="18" rx="7" fill="#111827"/><text x="${pbX + 48}" y="${pbY - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a" stroke="#fff" stroke-width="3" paint-order="stroke">BC547 · 100 kΩ</text>`;
+  const cables = FAROLAS.map((f, i) => `<polyline class="cable" data-f="${i}" points="${pbX + 96},${pbY + 20 + i * 8} ${X(f.x)},${pbY + 20 + i * 8} ${X(f.x)},${Y(f.y)}"/>`).join('');
+  d += cables + `<polyline class="cable gnd" points="${pbX + 30},${pbY} ${pbX + 30},${ldrY} ${ldrX},${ldrY}"/>`;
+  d += `<line class="cable" x1="${pilaX + 52}" y1="${pilaY + 30}" x2="${pbX}" y2="${pbY + 20}"/><line class="cable gnd" x1="${pilaX + 52}" y1="${pilaY + 60}" x2="${pbX}" y2="${pbY + 50}"/>`;
+  $('#gDebajo').innerHTML = `<rect x="${pilaX - 6}" y="${pilaY - 14}" width="${96 + 92}" height="122" fill="none"/>` + pz('pila', d.split('<rect x="' + pbX)[0]) + pz('protoboard', '<rect x="' + pbX + d.split('<rect x="' + pbX)[1]);
+
+  // cotas
+  const cm = m => fmt(m * 100 / Nusado());
+  const cota = (x1, y1, x2, y2, txt, tx, ty) => `<line class="cota" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><line class="cota" x1="${x1}" y1="${y1 - 5}" x2="${x1}" y2="${y1 + 5}"/><line class="cota" x1="${x2}" y1="${y2 - 5}" x2="${x2}" y2="${y2 + 5}"/><text class="cota-t" x="${tx}" y="${ty}" text-anchor="middle">${txt}</text>`;
+  let k = cota(X(7), Y(1.6), X(14), Y(1.6), `calle 7 m → ${cm(7)} cm`, (X(7) + X(14)) / 2, Y(1.6) - 6);
+  k += cota(X(16.5), Y(6.2), X(19), Y(6.2), `plaza 2,5 m → ${cm(2.5)} cm`, (X(16.5) + X(19)) / 2 + 30, Y(6.2) + 18);
+  k += cota(X(14), Y(5.6), X(16), Y(5.6), `acera 2 m → ${cm(2)} cm`, X(14) - 66, Y(5.6) + 5);
+  $('#gCotas').innerHTML = k;
+  // nombres
+  const nm = (x, y, t, a = 'middle') => `<text class="nombre" x="${x}" y="${y}" text-anchor="${a}">${t}</text>`;
+  let n = nm(X(2.5), Y(4.6), 'Edificio') + nm(ldrX + 12, ldrY + 4, 'LDR', 'start') + nm(X(20), Y(3.1) - 16, 'Parking') + nm(X(22.4), Y(7) + 16, 'Barrera') +
+    nm(X(10.5), Y(12.7), 'Cruce') + nm(X(6.45), Y(7.3) - 6, 'Semáforo A') + nm(X(14.55), Y(16.3) - 6, 'Semáforo B') + nm(X(17.7), Y(9.1) - 4, 'Paso de peatones');
+  n += FAROLAS.map((f, i) => nm(X(f.x), Y(f.y) + 22, 'F' + (i + 1))).join('');
+  n += nm(ccx, ccy + ch / 2 + 16, 'Coche patrón');
+  $('#gNombres').innerHTML = n;
+  // borde: medidas del panel
+  $('#gBorde').innerHTML = `<text x="${BX + BW / 2}" y="${BY + BH + 22}" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">40 cm = ${fmt(0.4 * Nusado())} m reales</text>` +
+    `<text x="${BX - 14}" y="${BY + BH / 2}" text-anchor="middle" font-size="14" font-weight="700" fill="#334155" transform="rotate(-90 ${BX - 14} ${BY + BH / 2})">30 cm = ${fmt(0.3 * Nusado())} m reales</text>`;
+  aplicaVista();
+  if (ultimo) pintaLuz(ultimo);
+}
+function aplicaVista(){
+  $('#gNombres').setAttribute('display', mostrarNombres ? 'inline' : 'none');
+  $('#gCotas').setAttribute('display', (mostrarCotas || st.cotasTemp) ? 'inline' : 'none');
+  const deb = transparente || st.debajoTemp;
+  $('#gDebajo').setAttribute('opacity', deb ? 1 : 0);
+  $('#gDebajo').setAttribute('pointer-events', deb ? 'auto' : 'none');
+  $('#gCiudad').setAttribute('opacity', deb ? .55 : 1);
+  const cabe = CIUDAD.w * ppm() <= BW + .5 && CIUDAD.h * ppm() <= BH + .5;
+  $('#aviso').setAttribute('opacity', cabe ? 0 : 1);
+}
+function pintaLuz(c){
+  const l = Math.log10(Math.max(st.lux, 0.01));
+  $('#noche').setAttribute('opacity', Math.max(0, Math.min(0.72, (3.3 - l) / 3.6)).toFixed(2));
+  c.farolas.forEach(f => {
+    const h = svg.querySelector(`.halo[data-f="${f.i}"]`), b = svg.querySelector(`.bombilla[data-f="${f.i}"]`), x = svg.querySelector(`.fundida[data-f="${f.i}"]`);
+    if (h) h.setAttribute('opacity', (f.brillo).toFixed(2));
+    if (b) b.setAttribute('fill', f.brillo > 0.02 ? '#fde047' : '#64748b');
+    if (x) x.setAttribute('display', st.fundidas.has(f.i) ? 'inline' : 'none');
+    svg.querySelectorAll(`.cable[data-f="${f.i}"]`).forEach(k => k.classList.toggle('fluye', f.I > 0));
+  });
+  const pt = $('#pilaTxt'); if (pt) pt.textContent = st.ctrl === 'arduino' ? '5 V' : fmt(st.vpila, st.vpila % 1 ? 1 : 0) + ' V';
+}
+
+/* ------------------------------------------------------------ piezas */
+const PIEZAS = {
+  acera:['Aceras', 'Franjas de 2 m reales a cada lado de las calles. Es donde van las farolas y los semáforos.', 'A 1:60, 2 m son 3,3 cm en la maqueta.'],
+  calle:['Calles', 'Dos calles de dos carriles (3,5 m cada carril, 7 m en total) que se cruzan en el centro del panel.', 'A 1:60, 7 m son 11,7 cm: el coche patrón tiene que poder circular.'],
+  paso:['Paso de peatones', 'Rayas blancas sobre la calzada, cerca del cruce y del semáforo.', 'Ayuda a decidir dónde va cada semáforo en el croquis.'],
+  edificio:['Edificio', 'Un edificio de 4 plantas (unos 12 m de alto, 20 cm en la maqueta a 1:60) visto desde arriba.', 'Su tejado es buen sitio para la LDR: le da la luz del cielo y no la de las farolas.'],
+  verde:['Zona verde', 'Un jardín con árboles junto al edificio.', 'Da realismo a la maqueta y no necesita electricidad.'],
+  parking:['Parking', 'Tres plazas de 2,5 × 5 m reales. El coche patrón tiene que caber con holgura.', 'En la parte 2 tendrá una barrera automática en la entrada.'],
+  barrera:['Barrera del parking', 'En esta parte solo se construye: un brazo de palillo o cartulina sobre un poste.', 'Parte 2: se moverá sola cuando llegue un coche.'],
+  semaforo:['Semáforos A y B', 'Dos semáforos en esquinas opuestas del cruce. Ahora están apagados: se dejan colocados y con sus cables preparados.', 'Parte 2: A en verde mientras B está en rojo, con 10 s de verde y 2 s de ámbar.'],
+  ldr:['LDR en el tejado', 'Resistencia que cambia con la luz: unos 10 kΩ con 10 lux y más de 1 MΩ a oscuras.', 'Avisa al circuito de que anochece. Tiene que ver el cielo, no las farolas.'],
+  farola:['Farola', 'Un LED en la punta de una pajita o un palillo, con su resistencia de 390 Ω. Los cables bajan por dentro y pasan bajo la base.', 'Todas en paralelo: si una falla, las demás siguen encendidas.'],
+  coche:['Coche patrón', 'Un coche de juguete de verdad, con su tamaño real. Uno de calle mide unos 180 cm de ancho y 420 cm de largo.', 'Escala = ancho del juguete / 180 cm. Con 3 cm sale 1:60.'],
+  pila:['Pila de 9 V', 'Alimenta las farolas y el circuito automático. Va bajo la base para que no se vea.', 'Cuando se gasta, baja su tensión y las farolas lucen menos.'],
+  protoboard:['Placa de prototipos', 'Mini protoboard bajo la base con el transistor BC547, la resistencia de 100 kΩ y los cables de la LDR.', 'Todas las farolas se unen aquí, en paralelo, a la salida del transistor.']
+};
+
+/* ------------------------------------------------------------ el programa del avance de la parte 2 (una sola definición) */
+const CAT = {control:'#e8a400', salida:'#2f8fd8', entrada:'#9b4dca', mates:'#3aa655', variables:'#e8553a'};
+function programa(){
+  const op = st.progMal ? '>' : '<';
+  return [
+    {hat:true, id:'lp', cat:'control', es:'Tinkercad repite estos bloques sin parar', en:'Tinkercad runs these blocks forever', cuerpo:[
+      {id:'l_set', cat:'variables', es:'establecer {v:luz} en {m:asignar} {e:leer pin analógico A0} {m:al rango 0 a 100}', en:'set {v:luz} to {m:map} {e:analog read pin A0} {m:to range 0 to 100}', cpp:['luz = map(analogRead(A0), 0, 1023, 0, 100);']},
+      {id:'l_print', cat:'salida', es:'imprimir en el monitor serie {v:luz} con nueva línea', en:'print to serial monitor {v:luz} with newline', cpp:['Serial.println(luz);']},
+      {si:true, id:'l_si', ramas:[
+        {id:'l_if', es:`si {v:luz} {l:${op}} {n:40} entonces`, en:`if {v:luz} {l:${op}} {n:40} then`, cpp:`if (luz ${op} 40) {`, cambiado:st.progMal, cuerpo:[
+          {id:'l_on', cat:'salida', es:'definir pin {n:13} en {n:ALTA}', en:'set pin {n:13} to {n:HIGH}', cpp:['digitalWrite(13, HIGH);']}]},
+        {id:'l_else', es:'si no', en:'else', cpp:'} else {', cuerpo:[
+          {id:'l_off', cat:'salida', es:'definir pin {n:13} en {n:BAJA}', en:'set pin {n:13} to {n:LOW}', cpp:['digitalWrite(13, LOW);']}]}
+      ]},
+      {id:'l_wait', cat:'control', es:'esperar {n:0.5} segundos', en:'wait {n:0.5} secs', cpp:['delay(500); // Wait for 500 millisecond(s)']}
+    ]}
+  ];
+}
+let idioma = 'es';
+function piezas(txt){
+  return esc(txt).replace(/\{(\w):([^}]*)\}/g, (m, t, v) => `<span class="pill ${{v:'var', m:'mat', l:'log', e:'ent', n:''}[t] || ''}">${v}</span>`);
+}
+function pintaBloque(b){
+  if (b.si) return `<div class="blk" style="--c:${CAT.control}" data-b="${b.id}">${b.ramas.map(r => `<span class="rama ${r.cambiado ? 'cambiado' : ''}" data-b="${r.id}">${piezas(r[idioma])}</span><div class="cuerpo">${r.cuerpo.map(pintaBloque).join('')}</div>`).join('')}</div>`;
+  return `<div class="blk ${b.hat ? 'hat' : ''}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${piezas(b[idioma])}${b.cuerpo ? `<div class="cuerpo">${b.cuerpo.map(pintaBloque).join('')}</div>` : ''}</div>`;
+}
+function lineasCPP(prog){
+  const L = [], add = (id, t, n) => L.push({id, txt:'  '.repeat(n) + t});
+  const cuerpo = (lista, n) => lista.forEach(b => {
+    if (b.si){ b.ramas.forEach(r => { add(r.id, r.cpp, n); cuerpo(r.cuerpo, n + 1); }); add(b.ramas[b.ramas.length - 1].id, '}', n); }
+    else b.cpp.forEach(t => add(b.id, t, n));
+  });
+  ['int luz = 0;', '', 'void setup()', '{', '  pinMode(A0, INPUT);', '  Serial.begin(9600);', '', '  pinMode(13, OUTPUT);', '}', '', 'void loop()', '{'].forEach(t => L.push({id:'', txt:t}));
+  cuerpo(prog[0].cuerpo, 1);
+  L.push({id:'', txt:'}'});
+  return L;
+}
+const textoCPP = prog => lineasCPP(prog).map(l => l.txt).join('\n') + '\n';
+function pintaPrograma(){
+  const prog = programa();
+  $('#bloques').innerHTML = prog.map(h => `<div class="pila">${pintaBloque(h)}</div>`).join('');
+  $('#cpp').innerHTML = lineasCPP(prog).map(l => `<span data-b="${l.id}" class="${st.progMal && l.id === 'l_if' && l.txt.includes('if') ? 'cambiado' : ''}">${esc(l.txt) || ' '}</span>`).join('');
+  marcaResaltado();
+}
+
+/* ------------------------------------------------------------ esquemas */
+function esquema(){
+  const ramaV = (x, y0, id) => `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + 10}"/><rect x="${x - 6}" y="${y0 + 10}" width="12" height="24"/><line x1="${x}" y1="${y0 + 34}" x2="${x}" y2="${y0 + 40}"/><polygon class="led" data-led="${id}" points="${x - 8},${y0 + 40} ${x + 8},${y0 + 40} ${x},${y0 + 54}"/><line x1="${x - 8}" y1="${y0 + 54}" x2="${x + 8}" y2="${y0 + 54}"/><line x1="${x}" y1="${y0 + 54}" x2="${x}" y2="${y0 + 70}"/>`;
+  if (st.ctrl === 'transistor'){
+    let leds = '';
+    for (let k = 0; k < 5; k++) leds += ramaV(290 + k * 28, 30, k);
+    return `<svg viewBox="0 0 440 300" role="img" aria-label="Esquema: pila de 9 voltios; divisor con una resistencia de 100 kilohmios arriba y la LDR abajo; el punto medio va a la base del transistor BC547; en el colector, cinco ramas en paralelo con una resistencia de 390 ohmios y un LED cada una."><g class="esq">
+      <line x1="20" y1="30" x2="420" y2="30"/><text x="24" y="22">+${fmt(st.vpila, st.vpila % 1 ? 1 : 0)} V</text>
+      <line x1="20" y1="276" x2="420" y2="276"/><text x="24" y="294" class="peq">GND (−)</text>
+      <g data-b="e_pila"><line x1="40" y1="30" x2="40" y2="138"/><line x1="26" y1="138" x2="54" y2="138"/><line x1="33" y1="148" x2="47" y2="148"/><line x1="40" y1="148" x2="40" y2="276"/><text x="50" y="126" class="peq">pila</text></g>
+      <g data-b="e_rdiv"><line x1="110" y1="30" x2="110" y2="52"/><rect x="100" y="52" width="20" height="50"/><line x1="110" y1="102" x2="110" y2="145"/><text x="126" y="82">${st.rdiv >= 100000 ? '100' : '10'} kΩ</text></g>
+      <circle cx="110" cy="145" r="3" class="relleno"/>
+      <g data-b="e_ldr"><line x1="110" y1="145" x2="110" y2="172"/><circle cx="110" cy="198" r="19"/><rect x="102" y="184" width="16" height="28"/><path d="M84 176 l9 9 m-2 -6 l2 6 l-6 -2 M78 186 l9 9 m-2 -6 l2 6 l-6 -2"/><line x1="110" y1="217" x2="110" y2="276"/><text x="136" y="196">LDR</text><text x="136" y="213" class="val" id="eqR">—</text></g>
+      <g data-b="e_base"><line x1="110" y1="145" x2="216" y2="145"/><text x="128" y="138" class="val" id="eqVb">—</text></g>
+      <g data-b="e_tr"><circle cx="236" cy="145" r="24"/><line x1="224" y1="130" x2="224" y2="160"/><line x1="216" y1="145" x2="224" y2="145"/><line x1="224" y1="138" x2="246" y2="120"/><line x1="246" y1="120" x2="246" y2="100"/><line x1="224" y1="152" x2="246" y2="170"/><polygon points="246,170 236,168 242,161" class="relleno"/><line x1="246" y1="170" x2="246" y2="276"/><text x="176" y="196" class="peq">BC547</text><text x="256" y="152" class="val" id="eqTr">—</text></g>
+      <g data-b="e_led"><line x1="246" y1="100" x2="402" y2="100"/>${leds}<text x="290" y="124" class="val" id="eqI">—</text></g>
+    </g></svg>`;
+  }
+  let leds = '';
+  for (let k = 0; k < 5; k++){ const y = 66 + k * 36; leds += `<line x1="240" y1="${y}" x2="268" y2="${y}"/><rect x="268" y="${y - 6}" width="30" height="12"/><line x1="298" y1="${y}" x2="318" y2="${y}"/><polygon class="led" data-led="${k}" points="318,${y - 8} 318,${y + 8} 332,${y}"/><line x1="332" y1="${y - 8}" x2="332" y2="${y + 8}"/><line x1="332" y1="${y}" x2="400" y2="${y}"/>`; }
+  return `<svg viewBox="0 0 440 300" role="img" aria-label="Esquema del avance de la parte 2: la LDR va de 5 voltios a la entrada A0 y una resistencia de 10 kilohmios de A0 a tierra; el pin 13 alimenta cinco ramas con una resistencia de 390 ohmios y un LED cada una."><g class="esq">
+    <rect x="20" y="40" width="100" height="220" rx="8"/><text x="70" y="34" text-anchor="middle">Arduino UNO</text>
+    <text x="114" y="74" text-anchor="end" class="peq">5V</text><text x="114" y="134" text-anchor="end" class="peq">A0</text><text x="114" y="204" text-anchor="end" class="peq">13</text><text x="114" y="254" text-anchor="end" class="peq">GND</text>
+    <g data-b="a_ldr"><line x1="120" y1="70" x2="180" y2="70"/><line x1="180" y1="70" x2="180" y2="88"/><rect x="172" y="88" width="16" height="28"/><circle cx="180" cy="102" r="18"/><line x1="180" y1="116" x2="180" y2="130"/><text x="204" y="104">LDR</text></g>
+    <g data-b="a_a0"><line x1="120" y1="130" x2="180" y2="130"/><circle cx="180" cy="130" r="3" class="relleno"/><text x="20" y="288" class="val" id="eqA0">—</text></g>
+    <g data-b="a_pd"><line x1="180" y1="130" x2="180" y2="164"/><rect x="172" y="164" width="16" height="36"/><line x1="180" y1="200" x2="180" y2="250"/><text x="196" y="188" class="peq">10 kΩ</text></g>
+    <g data-b="a_13"><line x1="120" y1="200" x2="240" y2="200"/><line x1="240" y1="66" x2="240" y2="210"/><text x="250" y="288" class="val" id="eqP13">—</text></g>
+    <g data-b="a_led">${leds}<line x1="400" y1="66" x2="400" y2="250"/><text x="300" y="58" class="val" id="eqI">—</text></g>
+    <line x1="120" y1="250" x2="400" y2="250"/>
+  </g></svg>`;
+}
+function pintaEsquema(){ $('#esquema').innerHTML = esquema(); if (ultimo) refresca(ultimo); marcaResaltado(); }
+
+/* ------------------------------------------------------------ resaltado */
+let resalte = [], guiaHL = false;
+function hl(ids){ resalte = [].concat(ids || []); marcaResaltado(); }
+function marcaResaltado(){
+  document.querySelectorAll('.on-hl').forEach(e => e.classList.remove('on-hl'));
+  resalte.forEach(id => document.querySelectorAll(`[data-b="${id}"]`).forEach(e => e.classList.add('on-hl')));
+}
+
+/* ------------------------------------------------------------ paneles de datos */
+function refresca(c){
+  $('#monitor').innerHTML = c.farolas.map(f => `<tr><th scope="row">F${f.i + 1}</th><td>${esc(f.estado)}</td><td class="num">${f.I > 0 ? fmt(f.I * 1000) + ' mA' : '0 mA'}</td><td class="num">${fmt0(f.brillo * 100)} %</td></tr>`).join('');
+  const N = Nusado(), cabe = CIUDAD.w * ppm() <= BW + .5 && CIUDAD.h * ppm() <= BH + .5;
+  $('#vEsc').textContent = '1:' + fmt(N, N % 1 ? 1 : 0);
+  $('#mEsc').classList.toggle('mal', st.medida !== 'ancho');
+  $('#vPanel').textContent = `${fmt(0.4 * N)} × ${fmt(0.3 * N)} m`;
+  $('#vCabe').textContent = cabe ? (CIUDAD.w * ppm() < BW - 40 ? '✔ sí, y sobra sitio' : '✔ sí') : '✖ no: se sale del panel';
+  $('#mCabe').classList.toggle('mal', !cabe);
+  const plaza = 250 / N, rel = plaza / st.ancho;
+  $('#vPlaza').textContent = `${fmt(plaza)} cm · coche ${fmt(st.ancho)} cm` + (rel > 2 ? ' · el coche se pierde' : ' · cabe');
+  $('#mPlaza').classList.toggle('mal', rel > 2);
+  const kOhm = c.R >= 1e6 ? '≥ 1 MΩ' : (c.R >= 1000 ? fmt(c.R / 1000) + ' kΩ' : fmt0(c.R) + ' Ω');
+  $('#vLdr').textContent = `${fmtLux(c.luxL)} · ${kOhm}`;
+  $('#mLdr').classList.toggle('mal', st.sombra);
+  if (st.ctrl === 'transistor'){
+    $('#eCtrl').textContent = 'Tensión en la base (divisor)'; $('#vCtrl').textContent = fmt(c.Vb, 2) + ' V' + (c.Vb >= VBE ? ' ≥ 0,7 V' : ' < 0,7 V');
+    $('#eSal').textContent = 'Transistor'; $('#vSal').textContent = st.prueba ? 'puenteado (prueba)' : (c.on ? 'conduce' : 'en corte');
+    $('#eItot').textContent = 'Corriente total (máx. del BC547: 100 mA)';
+    $('#vItot').textContent = fmt(c.Itot * 1000) + ' mA'; $('#mItot').classList.toggle('mal', c.Itot > 0.1);
+  } else {
+    $('#eCtrl').textContent = 'Lectura de A0 → luz (0-100)'; $('#vCtrl').textContent = `${fmt0(c.lectura)} → ${c.luzPct}`;
+    $('#eSal').textContent = 'Pin 13'; $('#vSal').textContent = st.prueba ? 'ALTA (prueba)' : (st.pin13 ? 'ALTA (5 V)' : 'BAJA (0 V)');
+    $('#eItot').textContent = 'Corriente por el pin 13 (máx. 40 mA)';
+    $('#vItot').textContent = fmt(c.Itot * 1000) + ' mA'; $('#mItot').classList.toggle('mal', c.Itot > 0.04);
+  }
+  $('#mSal').classList.remove('mal');
+  // valores en el esquema
+  const t = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  t('eqR', kOhm); t('eqVb', 'Vb = ' + fmt(c.Vb || 0, 2) + ' V'); t('eqTr', c.on ? 'conduce' : 'corte');
+  t('eqI', 'I total = ' + fmt(c.Itot * 1000) + ' mA'); t('eqA0', `A0: ${fmt0(c.lectura || 0)} → luz ${c.luzPct ?? 0}`); t('eqP13', st.pin13 ? 'pin 13: ALTA' : 'pin 13: BAJA');
+  document.querySelectorAll('#esquema .led').forEach(p => p.classList.toggle('led-on', (c.farolas[+p.dataset.led] || {}).brillo > 0.02));
+  $('#ctlLuxTxt').textContent = fmtLux(st.lux);
+}
+function fmtLux(l){ return (l >= 10 ? fmt0(l) : fmt(l, l < 1 ? 2 : 1)) + ' lux'; }
+function explica(){
+  const t = [], c = ultimo || calc(), N = Nreal(), Nm = Nusado();
+  if (st.medida !== 'ancho') t.push(`<p><b>Escala mal calculada.</b> Medís el largo del coche (${fmt(largoJuguete())} cm) pero lo dividís entre el ancho real (180 cm): sale 1:${fmt(Nm)} en vez de 1:${fmt0(N)}. Todo se dibuja ${fmt(N / Nm)} veces más grande: la plaza mide ${fmt(250 / Nm)} cm y el coche se pierde dentro, y la ciudad no cabe en el panel. Hay que comparar la misma medida: ancho con ancho (180 cm) o largo con largo (420 cm).</p>`);
+  else if (CIUDAD.w * ppm() > BW + .5) t.push(`<p><b>La ciudad no cabe.</b> Con un coche de ${fmt(st.ancho)} cm la escala es 1:${fmt(N)} y el panel solo representa ${fmt(0.4 * N)} × ${fmt(0.3 * N)} m. Este plano necesita 24 × 18 m: hay que simplificarlo (menos plazas, calles de un carril) o usar un coche más pequeño.</p>`);
+  if (st.conexion === 'serie') t.push(`<p><b>Farolas en serie.</b> La corriente tiene un solo camino y las tensiones se suman: ${FAROLAS.length} × 2 V = ${FAROLAS.length * VD} V, más que los ${fmt(c.Vs || (st.ctrl === 'arduino' ? 5 : st.vpila), 1)} V que llegan. No luce ninguna. Y si una se funde o está al revés, se apagan todas.</p>`);
+  if (st.reves) t.push(`<p><b>Farola 2 con el LED al revés.</b> En polarización inversa el diodo no deja pasar corriente: esa farola no luce. ${st.conexion === 'paralelo' ? 'Como están en paralelo, las demás siguen encendidas.' : 'Como están en serie, corta el paso a todas.'}</p>`);
+  if (st.sinR) t.push(`<p><b>Farola 4 sin resistencia.</b> Nada limita la corriente: I ≈ (${st.ctrl === 'arduino' ? 5 : fmt(st.vpila, 1)} − 2) / ${R_SIN} Ω ≈ ${fmt(((st.ctrl === 'arduino' ? 5 : st.vpila) - VD) / R_SIN)} A, muchísimo más que los 20 mA del LED. ${st.fundidas.has(3) ? 'Se ha fundido.' : 'Se fundirá en cuanto le llegue corriente.'} ${st.ctrl === 'arduino' ? 'Con Arduino, además, se podría estropear el pin 13. ' : ''}«Reiniciar» pone un LED nuevo.</p>`);
+  else if (st.fundidas.size) t.push(`<p>Hay ${st.fundidas.size === 1 ? 'una farola fundida' : st.fundidas.size + ' farolas fundidas'}. «Reiniciar» o «Volver a la normalidad» ponen LED nuevos.</p>`);
+  if (st.sombra) t.push(`<p><b>LDR tapada.</b> Solo le llega el 1 % de la luz (${fmtLux(luxLdr())} de ${fmtLux(st.lux)}): para el circuito ya es de noche y las farolas se encienden de día, con el cielo nublado. La LDR va en un tejado, sin sombras y sin que le dé la luz de las propias farolas.</p>`);
+  if (st.rdiv !== 100000) t.push(`<p><b>Divisor con 10 kΩ</b>${st.ctrl === 'arduino' ? ' (solo cambia el circuito de la parte 1)' : ''}. La base llega a 0,7 V en cuanto la LDR pasa de unos 0,84 kΩ: las farolas se encienden con unos 340 lux, todavía de día. Con 100 kΩ se encienden hacia los 13 lux, al anochecer. Por eso se suele poner un potenciómetro: para elegir el momento.</p>`);
+  if (st.vpila < 9) t.push(`<p><b>Pila gastada (${fmt(st.vpila, 1)} V)</b>${st.ctrl === 'arduino' ? ' (con Arduino las farolas toman los 5 V del pin 13)' : ''}. Cada farola recibe menos corriente (${fmt(Math.max(0, st.vpila - VCESAT - VD) / RLED * 1000)} mA) y luce al ${fmt0(Math.min(1, Math.max(0, st.vpila - VCESAT - VD) / RLED / ILED) * 100)} %. Además el divisor da menos tensión: se encienden más tarde.</p>`);
+  if (st.progMal) t.push(`<p><b>Comparación al revés</b>${st.ctrl === 'transistor' ? ' (solo afecta al avance con Arduino)' : ''}. Con «luz &gt; 40» el pin 13 se pone en ALTA cuando hay mucha luz: farolas encendidas de día y apagadas de noche. Las líneas cambiadas están marcadas en el programa.</p>`);
+  $('#explica').innerHTML = t.join('') || '<p>Todo normal: escala a partir del ancho del coche, cada farola con su resistencia y en paralelo, y la LDR al aire libre. Prueba a estropear algo.</p>';
+}
+
+/* ------------------------------------------------------------ Arduino: el bucle del programa */
+let vel = 1, loopId = 0;
+const espera = ms => new Promise(r => setTimeout(r, ms / vel));
+function serie(v){ st.serie.push(v); if (st.serie.length > 12) st.serie.shift(); $('#serie').textContent = 'Monitor serie: ' + st.serie.join(' · '); }
+function arrancaArduino(){
+  const id = ++loopId;
+  const vivo = () => id === loopId && st.ctrl === 'arduino';
+  const H = x => { if (!guiaHL) hl(x); };
+  (async () => {
+    while (vivo()){
+      H('l_set'); const c = calc(); st.lectura = c.lectura; st.luzPct = c.luzPct; actualiza(); await espera(380); if (!vivo()) return;
+      H('l_print'); serie(st.luzPct); await espera(260); if (!vivo()) return;
+      H('l_if'); await espera(260); if (!vivo()) return;
+      const cond = st.progMal ? st.luzPct > 40 : st.luzPct < 40;
+      H(cond ? 'l_on' : 'l_off'); st.pin13 = cond ? 1 : 0; actualiza(); await espera(260); if (!vivo()) return;
+      H('l_wait'); await espera(500);
+    }
+  })();
+}
+
+/* ------------------------------------------------------------ el recorrido guiado */
+let epoca = 0, modo = 'paso', enRonda = false, abrir = null;
+function sleep(ms){ const e = epoca; return new Promise(r => setTimeout(() => { if (e === epoca) r(); }, ms / vel)); }
+const FASES = [...document.querySelectorAll('#fases li')];
+function fase(k){ FASES.forEach((li, i) => { li.classList.toggle('activa', i === k); li.classList.toggle('hecha', k >= 0 && i < k); }); }
+const narra = h => { $('#narracion').innerHTML = h; };
+function puerta(){
+  if (modo === 'auto') return sleep(2600);
+  $('#btnPaso').textContent = 'Siguiente paso';
+  return new Promise(r => { abrir = r; });
+}
+function pulso(id){ svg.querySelectorAll(`[data-pieza="${id}"]`).forEach(g => { g.classList.remove('pulso'); void g.getBBox(); g.classList.add('pulso'); }); }
+function tab(cual){
+  ['Esquema', 'Bloques', 'Cpp'].forEach(n => $('#tab' + n).setAttribute('aria-selected', String(n.toLowerCase() === cual)));
+  $('#esquema').hidden = cual !== 'esquema'; $('#bloques').hidden = cual !== 'bloques'; $('#cpp').hidden = cual !== 'cpp';
+  $('#idioma').hidden = cual !== 'bloques';
+  $('#serie').hidden = st.ctrl !== 'arduino' || cual === 'esquema';
+}
+function ponLux(l){ st.lux = l; $('#ctlLux').value = Math.round((Math.log10(l) + 0.5) * 20); actualiza(); }
+async function cambiaLux(desde, hasta, pasos, ms, alCruzar){
+  const e = epoca, a = Math.log10(desde), b = Math.log10(hasta);
+  let antes = ultimo ? ultimo.on : false;
+  for (let k = 1; k <= pasos; k++){
+    ponLux(Math.pow(10, a + (b - a) * k / pasos));
+    await sleep(ms); if (e !== epoca) return false;
+    const ahora = st.ctrl === 'arduino' ? !!st.pin13 : ultimo.on;
+    if (ahora !== antes && alCruzar) alCruzar(ahora);
+    antes = ahora;
+  }
+  return true;
+}
+async function recorrido(){
+  enRonda = true; const e = epoca;
+  st.prueba = false; st.regla = false; st.cotasTemp = false; st.debajoTemp = false; guiaHL = false;
+  if (st.lux < 5000) ponLux(LUX_PRESET.mediodia);
+  dibuja();
+  // 1 · escala
+  fase(0); st.regla = true; dibuja(); pulso('coche');
+  const N = Nreal(), Nm = Nusado();
+  if (st.medida === 'ancho') narra(`El coche de juguete mide <b>${fmt(st.ancho)} cm</b> de ancho y uno real, unos 180 cm. Escala = ${fmt(st.ancho)} / 180 = 1/${fmt(N, N % 1 ? 1 : 0)}, es decir, <b>1:${fmt(N, N % 1 ? 1 : 0)}</b>: todo será ${fmt(N, N % 1 ? 1 : 0)} veces más pequeño que en la realidad.`);
+  else narra(`<b>¡Ojo!</b> Habéis medido el <b>largo</b> del coche (${fmt(largoJuguete())} cm) y lo dividís entre el <b>ancho</b> real (180 cm): sale 1:${fmt(Nm)} en lugar de 1:${fmt(N, N % 1 ? 1 : 0)}. Mirad cómo queda la ciudad en el siguiente paso.`);
+  await puerta(); if (e !== epoca) return;
+  // 2 · medidas a escala
+  fase(1); st.regla = false; st.cotasTemp = true; dibuja();
+  const cabe = CIUDAD.w * ppm() <= BW + .5;
+  narra(`Cada medida real se divide entre ${fmt(Nm, Nm % 1 ? 1 : 0)}: la calle de 7 m mide <b>${fmt(700 / Nm)} cm</b>, la plaza de 2,5 m, <b>${fmt(250 / Nm)} cm</b>, y una farola de 5 m, <b>${fmt(500 / Nm)} cm</b>. El panel de 40 × 30 cm representa ${fmt(0.4 * Nm)} × ${fmt(0.3 * Nm)} m de ciudad. ` + (cabe ? 'El plano de 24 × 18 m cabe.' : '<b>El plano de 24 × 18 m no cabe</b>: hay que simplificarlo o cambiar la escala.'));
+  await puerta(); if (e !== epoca) return;
+  // 3 · los tres sistemas
+  fase(2); pulso('parking'); pulso('barrera');
+  narra('El <b>parking</b>, con tres plazas y una barrera en la entrada…');
+  await sleep(1100); if (e !== epoca) return;
+  pulso('semaforo'); narra('El parking y su barrera, los <b>semáforos A y B</b> en esquinas opuestas del cruce…');
+  await sleep(1100); if (e !== epoca) return;
+  pulso('farola'); pulso('ldr');
+  narra('El parking y su barrera, los semáforos A y B y <b>cinco farolas</b> en las aceras, con la <b>LDR</b> en el tejado del edificio. La barrera y los semáforos se construyen ahora y se programan en la parte 2.');
+  await puerta(); if (e !== epoca) return;
+  // 4 · resistencia
+  fase(3); tab('esquema'); guiaHL = true; hl(st.ctrl === 'transistor' ? 'e_led' : 'a_led');
+  const V = st.ctrl === 'arduino' ? 5 : st.vpila;
+  narra(`Cada farola es un LED de 2 V y 20 mA. Con ${fmt(V, V % 1 ? 1 : 0)} V: R = (${fmt(V, V % 1 ? 1 : 0)} − 2) / 0,020 = <b>${fmt0((V - VD) / ILED)} Ω</b>${st.ctrl === 'arduino' ? '. Con los 390 Ω de la parte 1 pasan unos 7,7 mA por farola: 38 mA entre las cinco, justo por debajo de los 40 mA que aguanta un pin.' : ' → se pone la comercial igual o superior, <b>390 Ω</b>, y pasan unos 18 mA.'} Sin resistencia el LED se fundiría.`);
+  await puerta(); if (e !== epoca) return;
+  // 5 · paralelo, prueba
+  fase(4); st.debajoTemp = true; st.prueba = true; aplicaVista(); hl(st.ctrl === 'transistor' ? ['e_pila', 'e_led'] : ['a_13', 'a_led']);
+  const c5 = actualiza();
+  const encendidas = c5.farolas.filter(f => f.I > 0).length;
+  narra(`Bajo la base, cada farola tiene su propio cable hasta la placa: van <b>${st.conexion === 'paralelo' ? 'en paralelo' : 'en serie'}</b>. Las probamos conectándolas directamente ${st.ctrl === 'arduino' ? 'al pin 13 en ALTA' : 'a la pila'}: lucen <b>${encendidas} de 5</b> y entre todas consumen ${fmt(c5.Itot * 1000)} mA.` + (encendidas < 5 ? ' Alguna falla: mira «Lo que pasa dentro».' : ''));
+  await puerta(); if (e !== epoca) return;
+  st.prueba = false; st.debajoTemp = false; aplicaVista(); actualiza();
+  // 6 · anochece
+  fase(5); guiaHL = st.ctrl === 'transistor'; hl(st.ctrl === 'transistor' ? 'e_ldr' : null); if (st.ctrl === 'arduino') tab('bloques');
+  narra(st.ctrl === 'transistor' ? 'Ahora anochece. Mira la LDR: con menos luz su resistencia sube y la tensión en la base del transistor también…' : 'Ahora anochece. Arduino lee A0 cada medio segundo y compara la luz con 40…');
+  let momento = '';
+  const ok = await cambiaLux(st.lux, 1, 30, 200, on => {
+    if (!on || momento) return;
+    const c = ultimo;
+    momento = st.ctrl === 'transistor'
+      ? `Con <b>${fmtLux(st.lux)}</b> la LDR mide ${c.R >= 1000 ? fmt(c.R / 1000) + ' kΩ' : fmt0(c.R) + ' Ω'} y la base llega a ${fmt(c.Vb, 2)} V: <b>el transistor conduce</b> y la corriente llega a las farolas.`
+      : `Con <b>${fmtLux(st.lux)}</b> la luz leída baja a ${st.luzPct}: ${st.progMal ? 'pero con «luz > 40» el pin 13 se pone en BAJA…' : '«luz < 40» se cumple y el pin 13 se pone en <b>ALTA</b>.'}`;
+    if (st.ctrl === 'transistor') hl(['e_ldr', 'e_base', 'e_tr', 'e_led']);
+    narra(momento);
+  });
+  if (!ok || e !== epoca) return;
+  await sleep(700); if (e !== epoca) return;
+  guiaHL = false; const cf = actualiza();
+  const lucen = cf.farolas.filter(f => f.I > 0).length;
+  narra((momento ? momento + ' ' : 'Ha anochecido, pero el circuito no ha encendido nada. ') + `Ahora lucen <b>${lucen} de 5</b> farolas.` + (lucen < 5 ? ' Mira «Estropéalo a propósito» para ver por qué.' : ' Así funciona el alumbrado automático de la Smart City.'));
+  enRonda = false; abrir = null;
+  $('#btnPaso').textContent = 'Repetir el recorrido';
+  if (modo === 'auto'){
+    await sleep(2600); if (e !== epoca || modo !== 'auto') return;
+    narra('Amanece…'); await cambiaLux(st.lux, LUX_PRESET.mediodia, 16, 160); if (e !== epoca || modo !== 'auto') return;
+    recorrido();
+  }
+}
+function reiniciar(){
+  epoca++; enRonda = false; abrir = null; guiaHL = false;
+  st.prueba = false; st.regla = false; st.cotasTemp = false; st.debajoTemp = false; st.fundidas.clear(); st.pin13 = 0; st.serie = [];
+  $('#serie').textContent = 'Monitor serie: —';
+  st.lux = LUX_PRESET.mediodia; $('#ctlLux').value = 96;
+  fase(-1); dibuja(); actualiza(); explica(); hl(null);
+  if (st.ctrl === 'arduino') arrancaArduino();
+  $('#btnPaso').textContent = 'Empezar el recorrido';
+}
+
+/* ------------------------------------------------------------ controles */
+$('#btnPaso').onclick = () => {
+  if (modo === 'auto'){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); }
+  if (enRonda && abrir){ const r = abrir; abrir = null; r(); return; }
+  if (!enRonda){ epoca++; if (st.ctrl === 'arduino') arrancaArduino(); recorrido(); }
+};
+$('#btnAuto').onclick = () => {
+  const on = modo !== 'auto';
+  modo = on ? 'auto' : 'paso';
+  $('#btnAuto').setAttribute('aria-pressed', String(on));
+  if (on){ if (abrir){ const r = abrir; abrir = null; r(); } else if (!enRonda){ epoca++; if (st.ctrl === 'arduino') arrancaArduino(); recorrido(); } }
+};
+$('#btnReiniciar').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); narra('Todo a cero: mediodía, LED nuevos y sin recorrido en marcha.'); };
+$('#velocidad').onchange = e => { vel = +e.target.value; };
+document.querySelectorAll('[data-lux]').forEach(b => b.onclick = () => { ponLux(+b.dataset.lux); explica(); narra(`Luz ambiente: ${fmtLux(st.lux)}. ` + (st.ctrl === 'transistor' ? (ultimo.on ? 'El transistor conduce: farolas encendidas.' : 'El transistor está en corte: farolas apagadas.') : 'Arduino lo leerá en su próxima vuelta del bucle.')); });
+$('#ctlLux').oninput = e => { st.lux = Math.pow(10, -0.5 + (+e.target.value) * 5 / 100); actualiza(); };
+$('#ctlAncho').oninput = e => { st.ancho = +e.target.value; $('#ctlAnchoTxt').textContent = fmt(st.ancho) + ' cm'; dibuja(); actualiza(); explica(); };
+// piezas del dibujo
+function abrePieza(id){ const [t, x, u] = PIEZAS[id]; $('#piezaTitulo').textContent = t; $('#piezaTexto').textContent = x; $('#piezaUso').textContent = u; $('#pieza').hidden = false; }
+svg.addEventListener('click', ev => { const pz = ev.target.closest('[data-pieza]'); if (pz) abrePieza(pz.dataset.pieza); });
+svg.addEventListener('keydown', ev => { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.dataset && ev.target.dataset.pieza){ ev.preventDefault(); abrePieza(ev.target.dataset.pieza); } });
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+// opciones de la vista
+function interruptor(sel, cb){ $(sel).onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); cb(on); }; }
+interruptor('#optTransp', on => { transparente = on; aplicaVista(); });
+interruptor('#optNombres', on => { mostrarNombres = on; aplicaVista(); });
+interruptor('#optCotas', on => { mostrarCotas = on; aplicaVista(); });
+// pestañas del programa
+$('#tabEsquema').onclick = () => tab('esquema');
+$('#tabBloques').onclick = () => tab('bloques');
+$('#tabCpp').onclick = () => tab('cpp');
+$('#idioma').onclick = e => { const b = e.target.closest('[data-lang]'); if (!b) return; idioma = b.dataset.lang; $('#idioma').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintaPrograma(); };
+function copiar(texto){
+  const ok = () => { $('#copiado').textContent = 'Copiado ✓'; setTimeout(() => $('#copiado').textContent = '', 1800); };
+  const manual = () => { const t = $('#copiaManual'); t.hidden = false; t.value = texto; t.select(); $('#copiado').textContent = 'Selecciona y copia (Ctrl+C)'; };
+  try { navigator.clipboard.writeText(texto).then(ok, manual); } catch(e){ manual(); }
+}
+$('#copiarCpp').onclick = () => copiar(textoCPP(programa()));
+// quién enciende las farolas
+function notaPrograma(){
+  $('#progNota').textContent = st.ctrl === 'transistor'
+    ? 'Parte 1: no hay programa. El circuito decide solo: la LDR y la resistencia de 100 kΩ forman un divisor y el transistor hace de interruptor. En «Bloques» y «C++», el avance de la parte 2.'
+    : 'Avance de la parte 2: Arduino en Tinkercad, como en la ficha. LDR entre 5 V y A0, 10 kΩ de A0 a GND y las cinco farolas en el pin 13. La simulación ejecuta este mismo programa.';
+}
+function segmento(sel, cb){ $(sel).onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; $(sel).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); cb(b.dataset.v); }; }
+segmento('#ctlCtrl', v => {
+  st.ctrl = v; st.pin13 = 0; st.serie = []; $('#serie').textContent = 'Monitor serie: —';
+  notaPrograma(); pintaEsquema(); hl(null);
+  if (v === 'arduino'){ tab('bloques'); arrancaArduino(); } else { loopId++; tab('esquema'); }
+  dibuja(); actualiza(); explica();
+});
+segmento('#ctlMedida', v => { st.medida = v; dibuja(); actualiza(); explica(); });
+segmento('#ctlConex', v => { st.conexion = v; actualiza(); explica(); });
+segmento('#ctlRdiv', v => { st.rdiv = +v; pintaEsquema(); actualiza(); explica(); });
+$('#ctlReves').onchange = e => { st.reves = e.target.checked; actualiza(); explica(); };
+$('#ctlSinR').onchange = e => { st.sinR = e.target.checked; actualiza(); explica(); };
+$('#ctlSombra').onchange = e => { st.sombra = e.target.checked; actualiza(); explica(); };
+$('#ctlPila').oninput = e => { st.vpila = +e.target.value; $('#ctlPilaTxt').textContent = fmt(st.vpila, st.vpila % 1 ? 1 : 0) + ' V'; pintaEsquema(); actualiza(); explica(); };
+$('#ctlProg').onchange = e => { st.progMal = e.target.checked; pintaPrograma(); explica(); };
+function normalidad(){
+  st.medida = 'ancho'; st.conexion = 'paralelo'; st.reves = false; st.sinR = false; st.sombra = false; st.rdiv = 100000; st.vpila = 9; st.progMal = false; st.fundidas.clear();
+  [['#ctlMedida', 'ancho'], ['#ctlConex', 'paralelo'], ['#ctlRdiv', '100000']].forEach(([s, v]) => $(s).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === v))));
+  ['#ctlReves', '#ctlSinR', '#ctlSombra', '#ctlProg'].forEach(s => $(s).checked = false);
+  $('#ctlPila').value = 9; $('#ctlPilaTxt').textContent = '9 V';
+  pintaPrograma(); pintaEsquema(); dibuja(); actualiza(); explica();
+}
+$('#normalidad').onclick = () => { normalidad(); narra('Todo vuelve a la normalidad: escala con el ancho, farolas en paralelo con su resistencia, LDR al aire libre y LED nuevos.'); };
+$('#probarError').onclick = () => {
+  normalidad(); st.conexion = 'serie';
+  $('#ctlConex').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === 'serie')));
+  modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); explica();
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+  const e = epoca;
+  narra('Farolas en serie. Ahora anochece…');
+  cambiaLux(st.lux, 1, 24, 160).then(ok => { if (!ok || e !== epoca) return; const c = actualiza(); narra(`Ya es de noche y el ${st.ctrl === 'transistor' ? 'transistor conduce' : 'pin 13 está en ALTA'}, pero no luce ninguna farola: en serie hacen falta ${FAROLAS.length * VD} V y solo hay ${fmt(c.Vs, 1)} V.`); });
+};
+// preguntas
+document.querySelectorAll('.pregunta').forEach(f => f.addEventListener('change', () => {
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+}));
+// comprobación (se guarda en el navegador)
+const CLAVE = 'lab-smartcity-tec4-sda3';
+let marcas = []; try { marcas = JSON.parse(localStorage.getItem(CLAVE) || '[]'); } catch(e){}
+document.querySelectorAll('#comprobacion input').forEach((c, i) => { c.checked = !!marcas[i]; c.onchange = () => { marcas[i] = c.checked; try { localStorage.setItem(CLAVE, JSON.stringify(marcas)); } catch(e){} }; });
+// tema
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+// arranque
+notaPrograma(); pintaPrograma(); pintaEsquema(); dibuja(); actualiza(); explica();
+window.__lab = {st, calc, actualiza, ronda:recorrido, programa, textoCPP:() => textoCPP(programa()), reiniciar, normalidad, ponLux, Nusado,
+  set modo(v){ modo = v; }, get enRonda(){ return enRonda; }, get ultimo(){ return ultimo; }};
+})();
+</script>
+</body>
+</html>
