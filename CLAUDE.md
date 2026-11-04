@@ -91,6 +91,14 @@ Los campos `imprimir` e `imprimir_nota` de `sda<N>.json` generan en la guía el 
 copias» y el aviso «Imprimir para esta sesión». La plantilla de la skill aún no los incluye: al regenerar una
 guía que los use, hay que volver a añadir `impRow`, `impTable` y las dos líneas que los pintan.
 
+## Copia de Moodle de cada SdA (`scripts/sda-mbz.py`)
+
+`python scripts/sda-mbz.py <carpeta>/sda<N>.json <carpeta>/moodle.html sda<N>-moodle.mbz` genera, sin necesidad de un
+Moodle, una copia de curso (formato Moodle 4.1, se restaura en 4.1 o posterior) con el bloque `moodle.html` como «Área
+de texto y medios» y todas las Tareas de la SdA: ocultas, sin fechas, con su descripción, la escala «Apto / No apto» o
+la rúbrica 1-3-5-7-10. No lleva foro de avisos, usuarios ni grupos. Se restaura con «Fusionar la copia de seguridad con
+este curso» y sin sobrescribir la configuración del curso. La copia se entrega en el chat; no se sube a `content/`.
+
 ## Comprobar antes de abrir una PR
 
 ```bash
