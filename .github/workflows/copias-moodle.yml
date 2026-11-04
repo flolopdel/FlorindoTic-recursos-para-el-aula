@@ -1,0 +1,116 @@
+# Copias de Moodle (.mbz) de las SdA, generadas siempre a partir de sda<N>.json y moodle.html.
+#  - En cada PR que toca una SdA: genera la copia de esas SdA, la adjunta a la ejecución y lo dice en un comentario.
+#  - Al fusionar en main: regenera todas y las deja en la publicación «Copias de Moodle» del repositorio
+#    (https://github.com/<repo>/releases/tag/copias-moodle), sustituyendo las anteriores.
+# Las copias no se guardan en el repositorio ni se publican en la web.
+
+name: Copias de Moodle
+
+on:
+  pull_request:
+    paths:
+      - 'content/**/sda*/**'
+      - 'scripts/sda-mbz*.py'
+      - '.github/workflows/copias-moodle.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'content/**/sda*/**'
+      - 'scripts/sda-mbz*.py'
+      - '.github/workflows/copias-moodle.yml'
+  workflow_dispatch:     # botón "Run workflow" para regenerarlas todas a mano
+
+permissions:
+  contents: write        # para actualizar la publicación «Copias de Moodle»
+  pull-requests: write   # para comentar en la PR
+
+concurrency:
+  group: copias-moodle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generar las copias de las SdA cambiadas
+        run: python scripts/sda-mbz-todas.py --out=copias-moodle --base=origin/${{ github.base_ref }} --md=copias.md
+
+      - name: Adjuntar las copias a esta ejecución
+        id: subir
+        if: hashFiles('copias-moodle/*.mbz') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: copias-moodle-pr${{ github.event.pull_request.number }}
+          path: copias-moodle/*.mbz
+          retention-days: 30
+
+      - name: Comentar en la PR
+        if: always() && hashFiles('copias.md') != ''
+        uses: actions/github-script@v7
+        env:
+          URL: ${{ steps.subir.outputs.artifact-url }}
+        with:
+          script: |
+            const tabla = require('fs').readFileSync('copias.md', 'utf8');
+            const url = process.env.URL;
+            const body = [
+              '<!-- copias-moodle -->',
+              '### Copias de Moodle (.mbz)',
+              '',
+              url ? `Generadas a partir de esta PR. **[Descargar las copias](${url})** (un .zip con los .mbz; caduca en 30 días).` : '',
+              '',
+              tabla,
+              '',
+              'Se restauran en el curso con «Restaurar» → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crean el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas ocultas y sin fechas. Al fusionar la PR, quedan también en la publicación [Copias de Moodle](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/releases/tag/copias-moodle).',
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const previo = comments.find((c) => c.body.includes('<!-- copias-moodle -->'));
+            if (previo) await github.rest.issues.updateComment({ owner, repo, comment_id: previo.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number, body });
+
+  main:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generar las copias de todas las SdA
+        run: python scripts/sda-mbz-todas.py --out=copias-moodle --md=copias.md
+
+      - name: Actualizar la publicación «Copias de Moodle»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Copias de Moodle (.mbz) de cada SdA, regeneradas automáticamente desde \`main\` (commit ${GITHUB_SHA::7}, $(date -u '+%d/%m/%Y %H:%M') UTC). No se editan a mano: cambia la SdA y se regeneran solas."
+            echo ""
+            echo "Para importarla: en el curso, «Restaurar» → subir el .mbz → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crea el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas (ocultas y sin fechas)."
+            echo ""
+            cat copias.md
+          } > notas.md
+          if ! gh release view copias-moodle >/dev/null 2>&1; then
+            gh release create copias-moodle --title "Copias de Moodle" --notes-file notas.md --target "$GITHUB_SHA" --latest=false
+          else
+            gh release edit copias-moodle --notes-file notas.md --latest=false
+          fi
+          # quita las copias de SdA que ya no existen y sube las nuevas (sustituyendo las anteriores)
+          for a in $(gh release view copias-moodle --json assets -q '.assets[].name'); do
+            [ -f "copias-moodle/$a" ] || gh release delete-asset copias-moodle "$a" -y
+          done
+          gh release upload copias-moodle copias-moodle/*.mbz --clobber
+          cat notas.md >> "$GITHUB_STEP_SUMMARY"

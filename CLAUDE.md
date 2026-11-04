@@ -102,7 +102,18 @@ este curso» y sin sobrescribir la configuración del curso. La copia se entrega
 
 Moodle coloca la sección por su número, que por defecto es el de la SdA (tema N). Si ese tema no existe, se crea (y los
 que falten antes, vacíos); si existe vacío, toma el nombre y el bloque; si ya tiene nombre o descripción, los conserva y
-solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T`.
+solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T` o se
+pone `"tema": T` en el bloque `moodle` de `sda<N>.json`.
+
+La descripción de cada Tarea lleva al final (antes de «Cómo se entrega», si lo tiene) los **documentos** que usa: las
+plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra la Tarea («las Tareas 2.4, 2.5 y 2.8») o que la
+Tarea cita por su código («plantilla A4»). Los Google Docs se enlazan con «Ver» (`/preview`) y «Copiar a mi Drive»
+(`/copy`), solo «Ver» si la Tarea se entrega en papel; un PDF de Drive, con `/view`.
+
+**Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`): en cada PR
+que toca una SdA se adjuntan las de esas SdA y se enlazan en un comentario; al fusionar en `main` se regeneran todas en
+la publicación **«Copias de Moodle»** (`releases/tag/copias-moodle`), sustituyendo las anteriores. No se guardan en el
+repositorio ni se editan a mano.
 
 ## Comprobar antes de abrir una PR
 
