@@ -107,15 +107,20 @@ def tareas_de(d):
             if m.get('recurso') != 'Tarea':
                 continue
             cfg = ' '.join(arr(m.get('config'))).lower()
-            sin = 'ninguno' in cfg or 'en papel' in cfg and 'tipo de entrega' in cfg and 'texto' not in cfg
+            # el tipo de entrega sale de la línea «Tipo(s) de entrega: …» de config; si no la hay, de todo config
+            tipo = next((str(c).lower() for c in arr(m.get('config')) if re.match(r'\s*tipos? de entrega', str(c), re.I)), None)
+            fuente = tipo if tipo is not None else cfg
+            sin = bool(re.search(r'\bninguno\b|\bsin entrega\b|solo recoge la nota', fuente)) or \
+                  ('en papel' in fuente and 'texto' not in fuente and 'archivo' not in fuente and 'pdf' not in fuente)
+            texto = not sin and bool(re.search(r'texto en l[ií]nea|\benlace\b|\burl\b', fuente))
+            archivo = not sin and bool(re.search(r'\.pdf|\bpdf\b|archivo|fichero|\.sb3|\.hex|\.pkt|foto|imagen|v[ií]deo|captura', fuente))
             t = {'nombre': m['nombre'], 'intro': con_documentos(intro_html(m.get('descripcion') or m.get('uso', '')), docs.get(m['nombre']), sin),
                  'docs': len(docs.get(m['nombre']) or []),
-                 'apto': m.get('correccion') == 'apto',
-                 'texto': not sin and ('texto en línea' in cfg or 'enlace' in cfg),
-                 'archivo': not sin and ('.pdf' in cfg or ' pdf' in cfg or 'archivo' in cfg),
+                 'apto': m.get('correccion') == 'apto', 'texto': texto, 'archivo': archivo, 'sin': sin,
                  'grupos': 'entrega por grupos: sí' in cfg, 'rubrica': []}
-            if not (t['texto'] or t['archivo']) and not sin and not t['apto']:
-                t['texto'] = True
+            if not (t['texto'] or t['archivo']) and not sin:
+                # no dice cómo se entrega: se activan las dos opciones para que el alumnado pueda entregar
+                t['texto'] = t['archivo'] = True
             if m.get('correccion') == 'rubrica':
                 pesos = any(l.get('peso') for l in arr(m.get('rubrica')))
                 for l in arr(m.get('rubrica')):
@@ -325,6 +330,9 @@ def main(src, snippet, out, NSEC=None):
     ndocs = sum(t['docs'] for t in tareas)
     print(f'MBZ: {out} · tema {NSEC} «{nombre_sec}» con el bloque HTML · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)'
           + (f' · {ndocs} enlaces a documentos' if ndocs else ''))
+    for t in tareas:
+        if t['sin']:
+            print(f'  aviso: «{t["nombre"]}» no tiene tipo de entrega (su config dice «ninguno» o en papel): en Moodle no se sube nada')
 
 
 if __name__ == '__main__':
