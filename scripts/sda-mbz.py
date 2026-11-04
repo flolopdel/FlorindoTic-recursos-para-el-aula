@@ -5,7 +5,8 @@ Genera, sin necesidad de un Moodle, una copia de curso en formato Moodle 4.1 (se
 posterior) que contiene solo una sección (tema), visible, con:
   - el nombre de la SdA («SdA 2: Código en Acción…», de meta.titulo) y, como descripción de la sección,
     el bloque HTML de la SdA (moodle.html);
-  - todas las Tareas de la SdA (X.1, X.2…), ocultas, con su descripción, tipo de entrega y calificación:
+  - todas las Tareas de la SdA (X.1, X.2…), ocultas, con su descripción (más los enlaces «Ver» y «Copiar a mi Drive»
+    de las plantillas del anexo que usa cada una), tipo de entrega y calificación:
     escala «Apto / No apto» (No apto, Apto) o rúbrica 1-3-5-7-10 (0,75-7,5 en las líneas de presentación pública
     cuando la rúbrica lleva pesos 66/33), sin fechas de apertura, entrega ni límite (no generan avisos).
 No lleva foro de avisos, usuarios, grupos, bloques ni filtros. Se restaura con «Restaurar → Fusionar la copia de
@@ -14,7 +15,7 @@ seguridad con este curso» y «Sobrescribir configuración del curso: No».
 Moodle coloca la sección por su número: por defecto es el tema N (N = número de la SdA). Si ese tema no existe en
 el curso, se crea; si existe y está vacío (sin nombre ni descripción), toma el nombre y el bloque de la SdA; si ya
 tiene nombre o descripción, los conserva y solo se añaden las Tareas al final. Para ponerla en otro tema (p. ej. el
-siguiente libre del curso), usa --tema.
+siguiente libre del curso), usa --tema o pon "tema": T en el bloque "moodle" del JSON.
 
 Uso:  python scripts/sda-mbz.py sda<N>.json moodle.html sda<N>-moodle.mbz [--tema T]
 """
@@ -41,15 +42,74 @@ def intro_html(txt):
     return '\n'.join(out)
 
 
+def enlaces_doc(url):
+    """Enlaces para el alumnado: los Docs/Hojas/Presentaciones de Google con /preview (ver) y /copy (copia en su
+    Drive), nunca /edit; un archivo de Drive (p. ej. un PDF) con /view; cualquier otro enlace, tal cual."""
+    url = str(url or '').strip()
+    m = re.match(r'(https://docs\.google\.com/(?:document|spreadsheets|presentation|drawings)/d/[\w-]+)', url)
+    if m:
+        return [('Ver', m.group(1) + '/preview'), ('Copiar a mi Drive', m.group(1) + '/copy')]
+    m = re.match(r'(https://drive\.google\.com/file/d/[\w-]+)', url)
+    if m:
+        return [('Ver', m.group(1) + '/view')]
+    return [('Abrir', url)] if url.startswith('http') else []
+
+
+def documentos_por_tarea(d):
+    """Plantillas del anexo (con enlace) que usa cada Tarea: las que nombran la Tarea en su «entrega»
+    («las Tareas 2.4, 2.5 y 2.8») y las que la Tarea cita en su texto («plantilla A4», «anexo A4»)."""
+    an = d.get('anexos') or {}
+    plantillas = [a for a in (an.get('plantillas', []) if isinstance(an, dict) else arr(an)) if isinstance(a, dict) and a.get('enlace')]
+    por = {}
+    for s in arr(d.get('sesiones')):
+        for m in arr(s.get('moodle')):
+            if m.get('recurso') != 'Tarea':
+                continue
+            cod = re.match(r'\s*(\d+\.\d+)', m['nombre'])
+            cod = cod.group(1) if cod else None
+            texto = json.dumps({k: m.get(k) for k in ('descripcion', 'uso', 'config', 'cotejo')}, ensure_ascii=False)
+            docs = []
+            for a in plantillas:
+                ent = str(a.get('entrega') or '')
+                nombrada = cod and re.search(r'\bTareas?\b', ent) and cod in re.findall(r'\b\d+\.\d+\b', ent.split('Entrega')[0])
+                citada = re.search(r'\b' + re.escape(str(a.get('id'))) + r'\b', texto)
+                if nombrada or citada:
+                    docs.append(a)
+            por[m['nombre']] = docs
+    return por
+
+
+def bloque_documentos(docs, papel=False):
+    if not docs:
+        return ''
+    li = []
+    for a in docs:
+        enl = ' · '.join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener">{X(t)}</a>' for t, u in enlaces_doc(a['enlace']) if not (papel and t == 'Copiar a mi Drive'))
+        li.append(f'<li>{X(a.get("id", ""))} · {X(a.get("titulo", ""))}: {enl}</li>')
+    return '<p><strong>Documentos para esta Tarea:</strong></p>\n<ul>' + ''.join(li) + '</ul>'
+
+
+def con_documentos(intro, docs, papel=False):
+    """Pone los documentos antes de «Cómo se entrega» (o al final si la descripción no lo tiene).
+    En las Tareas que se entregan en papel solo se enlaza «Ver»: la ficha se da impresa."""
+    b = bloque_documentos(docs, papel)
+    if not b:
+        return intro
+    m = re.search(r'<p>(?:<strong>)?C[oó]mo se entrega', intro)
+    return intro[:m.start()] + b + '\n' + intro[m.start():] if m else intro + '\n' + b
+
+
 def tareas_de(d):
     res = []
+    docs = documentos_por_tarea(d)
     for s in arr(d.get('sesiones')):
         for m in arr(s.get('moodle')):
             if m.get('recurso') != 'Tarea':
                 continue
             cfg = ' '.join(arr(m.get('config'))).lower()
             sin = 'ninguno' in cfg or 'en papel' in cfg and 'tipo de entrega' in cfg and 'texto' not in cfg
-            t = {'nombre': m['nombre'], 'intro': intro_html(m.get('descripcion') or m.get('uso', '')),
+            t = {'nombre': m['nombre'], 'intro': con_documentos(intro_html(m.get('descripcion') or m.get('uso', '')), docs.get(m['nombre']), sin),
+                 'docs': len(docs.get(m['nombre']) or []),
                  'apto': m.get('correccion') == 'apto',
                  'texto': not sin and ('texto en línea' in cfg or 'enlace' in cfg),
                  'archivo': not sin and ('.pdf' in cfg or ' pdf' in cfg or 'archivo' in cfg),
@@ -74,7 +134,7 @@ def xml(body):
 def main(src, snippet, out, NSEC=None):
     d = json.load(open(src, encoding='utf-8'))
     meta = d['meta']; num = meta.get('numero', '')
-    NSEC = int(NSEC or num or 1)
+    NSEC = int(NSEC or (d.get('moodle') or {}).get('tema') or num or 1)
     bloque = open(snippet, encoding='utf-8').read().strip()
     tareas = tareas_de(d)
     ahora = int(time.time())
@@ -262,7 +322,9 @@ def main(src, snippet, out, NSEC=None):
         add('.ARCHIVE_INDEX', indice)
         for k, v in sorted(datos.items()):
             add(k, v)
-    print(f'MBZ: {out} · tema {NSEC} «{nombre_sec}» con el bloque HTML · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)')
+    ndocs = sum(t['docs'] for t in tareas)
+    print(f'MBZ: {out} · tema {NSEC} «{nombre_sec}» con el bloque HTML · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)'
+          + (f' · {ndocs} enlaces a documentos' if ndocs else ''))
 
 
 if __name__ == '__main__':
