@@ -93,11 +93,16 @@ guía que los use, hay que volver a añadir `impRow`, `impTable` y las dos líne
 
 ## Copia de Moodle de cada SdA (`scripts/sda-mbz.py`)
 
-`python scripts/sda-mbz.py <carpeta>/sda<N>.json <carpeta>/moodle.html sda<N>-moodle.mbz` genera, sin necesidad de un
-Moodle, una copia de curso (formato Moodle 4.1, se restaura en 4.1 o posterior) con el bloque `moodle.html` como «Área
-de texto y medios» y todas las Tareas de la SdA: ocultas, sin fechas, con su descripción, la escala «Apto / No apto» o
+`python scripts/sda-mbz.py <carpeta>/sda<N>.json <carpeta>/moodle.html sda<N>-moodle.mbz [--tema T]` genera, sin necesidad
+de un Moodle, una copia de curso (formato Moodle 4.1, se restaura en 4.1 o posterior) con **una sección propia de la SdA**:
+se llama como la SdA (`meta.titulo`, p. ej. «SdA 2: Código en Acción…»), lleva el bloque `moodle.html` como descripción
+de la sección y dentro todas las Tareas de la SdA: ocultas, sin fechas, con su descripción, la escala «Apto / No apto» o
 la rúbrica 1-3-5-7-10. No lleva foro de avisos, usuarios ni grupos. Se restaura con «Fusionar la copia de seguridad con
 este curso» y sin sobrescribir la configuración del curso. La copia se entrega en el chat; no se sube a `content/`.
+
+Moodle coloca la sección por su número, que por defecto es el de la SdA (tema N). Si ese tema no existe, se crea (y los
+que falten antes, vacíos); si existe vacío, toma el nombre y el bloque; si ya tiene nombre o descripción, los conserva y
+solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T`.
 
 ## Comprobar antes de abrir una PR
 
