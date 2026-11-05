@@ -2,8 +2,7 @@
 #  - En cada PR que toca una SdA: comprueba que se pueden generar y dice en un comentario cuáles se crearán al
 #    fusionar. No conserva ninguna copia.
 #  - Al fusionar en main: regenera todas y las deja en la publicación «Copias de Moodle» del repositorio
-#    (https://github.com/<repo>/releases/tag/copias-moodle), sustituyendo las anteriores, y sube a la carpeta de
-#    Google Drive las que han cambiado (scripts/copias-drive.gs explica cómo activarlo).
+#    (https://github.com/<repo>/releases/tag/copias-moodle), sustituyendo las anteriores.
 # Las copias no se guardan en el repositorio ni se publican en la web.
 
 name: Copias de Moodle
@@ -21,7 +20,6 @@ on:
       - 'content/**/sda*/**'
       - 'content/**/recuperacion/**'
       - 'scripts/sda-mbz*.py'
-      - 'scripts/subir-copias-drive.py'
       - '.github/workflows/copias-moodle.yml'
   workflow_dispatch:     # botón "Run workflow" para regenerarlas todas a mano
 
@@ -64,7 +62,7 @@ jobs:
               '',
               tabla,
               '',
-              'Al fusionar, quedarán en la publicación [Copias de Moodle](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/releases/tag/copias-moodle) y en la carpeta de Google Drive. Se restauran en el curso con «Restaurar» → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crean el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas ocultas y sin fechas.',
+              'Al fusionar, quedarán en la publicación [Copias de Moodle](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/releases/tag/copias-moodle). Se restauran en el curso con «Restaurar» → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crean el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas ocultas y sin fechas.',
             ].join('\n');
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
@@ -84,8 +82,7 @@ jobs:
           python-version: '3.12'
 
       - name: Generar las copias de todas las SdA
-        id: generar
-        run: python scripts/sda-mbz-todas.py --out=copias-moodle --md=copias.md --huellas=huellas.json
+        run: python scripts/sda-mbz-todas.py --out=copias-moodle --md=copias.md
 
       - name: Actualizar la publicación «Copias de Moodle»
         env:
@@ -123,11 +120,3 @@ jobs:
           done
           cat notas.md >> "$GITHUB_STEP_SUMMARY"
           [ "$errores" = 0 ]
-
-      # Independiente de la publicación: si falla una, la otra se intenta igual y la ejecución sale en rojo.
-      - name: Subir a Google Drive las copias que han cambiado
-        if: ${{ !cancelled() && steps.generar.outcome == 'success' }}
-        env:
-          COPIAS_DRIVE_URL: ${{ secrets.COPIAS_DRIVE_URL }}
-          COPIAS_DRIVE_CLAVE: ${{ secrets.COPIAS_DRIVE_CLAVE }}
-        run: python scripts/subir-copias-drive.py copias-moodle huellas.json
