@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diseña el Aula del Futuro</title>
+<meta name="description" content="Laboratorio de ampliación de la SdA 3 de Tecnología y Digitalización 3.º ESO: el Aula del Futuro se diseña paso a paso en un editor que imita a Floorplanner (paredes, puertas y ventanas, zonas, mobiliario y vista 3D) y se comprueba como un equipo de consultoría.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --tu:#ca8a04;
+  --mesa:#e7ecef; --placa:#1f2937; --placa-borde:#111827; --led-off:#3b1d1d; --led-on:#ff3b30; --oro:#c8a23a;
+  --suelo:#eadfcb; --muro:#64748b; --vent:#0ea5e9; --puerta:#b45309; --piz:#15803d; --cinta:#eab308;
+  --papel:#fffdf6; --papel-borde:#cbd5e1; --tinta:#1f2937; --cuad:#bfdbfe;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --tu:#facc15; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+    --suelo:#3b3427; --muro:#94a3b8; --papel:#ece7da; --papel-borde:#475569;
+    --code-bg:#020617;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --tu:#facc15; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+  --suelo:#3b3427; --muro:#94a3b8; --papel:#ece7da; --papel-borde:#475569;
+  --code-bg:#020617;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-in a.tb,.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.cab-in .ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.banco-grid > *{min-width:0}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;background:var(--mesa);border-radius:12px;overflow:hidden}
+.escena svg{display:block;width:100%;height:auto}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px;padding-right:18px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:640px;flex:1}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);padding:6px 10px 0}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques */
+.pila{margin:0 0 12px;font:600 13px/1.35 system-ui,sans-serif}
+.blk{--c:#1e90ff;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;margin:2px 0;position:relative;transition:box-shadow .15s}
+.blk.hat{border-radius:14px 14px 6px 6px;padding-top:7px}
+.blk .cuerpo{margin:4px 0 2px 10px;padding:3px 0 3px 8px;border-left:3px solid rgba(255,255,255,.55);background:var(--bg);border-radius:0 6px 6px 0}
+.blk .cuerpo .blk{margin:3px 6px 3px 0}
+.rama{display:block}
+.pill{display:inline-block;background:rgba(255,255,255,.92);color:#111827;border-radius:999px;padding:0 7px;margin:0 2px;font-weight:700}
+.pill.var{background:#dc143c;color:#fff;border:1px solid rgba(255,255,255,.6)}
+.pill.mat{background:#9400d3;color:#fff}
+.pill.log{background:#00a4a6;color:#fff}
+.pill.arr{background:#a94400;color:#fff}
+.pill.ico{background:#1e90ff;color:#fff;padding:1px 6px}
+.mini{display:inline-grid;grid-template-columns:repeat(5,4px);gap:1px;vertical-align:middle;background:#0b1220;padding:2px;border-radius:3px}
+.mini i{width:4px;height:4px;background:#3b1d1d;display:block}.mini i.on{background:#ff3b30}
+.on-tu{box-shadow:0 0 0 3px var(--tu)}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.on-tu{background:rgba(250,204,21,.22);box-shadow:inset 4px 0 0 var(--tu)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.22)}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px}
+.paneles > *{min-width:0}
+@media(max-width:980px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla td.mal{color:var(--ko);font-weight:700}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:18px}
+.medida-item.mal .v{color:var(--ko)}
+.rompelo{margin-bottom:12px}.rompelo h3{margin:0 0 6px;font-size:15px}
+.interruptor{display:flex;gap:8px;align-items:flex-start}
+.rango{display:flex;gap:10px;align-items:center}.rango input{flex:1;min-width:0}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+@media(max-width:640px){.bloque{padding:14px 16px}}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+.dos > *{min-width:0}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.reglas td.g{background:var(--ok-bg)}.reglas td.p{background:var(--ko-bg)}.reglas td.e{background:var(--bg)}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px;min-width:0}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+.real > *{min-width:0}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+.svg-pieza:focus{outline:none}.svg-pieza:focus-visible > *{stroke:var(--brand);stroke-width:3}
+@media print{.cab,.banco,.botonera{display:none}}
+.chequeos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.chequeos li{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;transition:box-shadow .15s}
+.chequeos li b{display:block;font-size:14px;line-height:1.35}
+.chequeos li small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.chequeos li.falla{border-color:var(--ko);background:var(--ko-bg)}
+.chequeos .est{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--bg);color:var(--muted)}
+.chequeos .est.ok{background:var(--ok-bg);color:var(--ok)}.chequeos .est.ko{background:var(--ko-bg);color:var(--ko)}
+.programa-pie{color:var(--muted)}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Diseña el Aula del Futuro <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 3 · Tecnología y Digitalización 3.º ESO</span></div>
+    <a class="tb" href="clase.html#s18">📽 Clase</a>
+    <a class="tb ocultar-movil" href="clase.html#s13">🏠 Floorplanner I</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 3 · Un Aula del Futuro</a> / <a href="clase.html#s18">18. Bonus track</a> / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Sesión bonus track · laboratorio de ampliación de la SdA 3</p>
+  <h1>Diseña el Aula del Futuro</h1>
+  <p class="lab-sub">Un aula de 27 estudiantes se convierte en un Aula del Futuro dentro de un editor que funciona como Floorplanner: paredes con su medida exacta, puertas y ventanas de la biblioteca, zonas de aprendizaje, mobiliario y vista 3D. Un equipo de consultoría lo comprueba todo, y tú puedes estropearlo a propósito para ver qué falla y por qué.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>Equipos que han presentado su propuesta (Tarea 3.8) y quieren auditarla y mejorarla</dd></div>
+    <div><dt>Material</dt><dd>Ordenador y vuestro proyecto «SdA3_EquipoN_AulaFuturo» de Floorplanner</dd></div>
+    <div><dt>Herramienta</dt><dd>Floorplanner: Construir, Amueblar, cinta de medir y vista 3D</dd></div>
+    <div><dt>Referencia</dt><dd>Manual del editor de Floorplanner, zonas del Future Classroom Lab y normas de accesibilidad de Andalucía</dd></div>
+  </dl>
+</header>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <div class="seg" aria-label="Vista del editor">
+          <button type="button" id="vista2D" aria-pressed="true">2D</button>
+          <button type="button" id="vista3D" aria-pressed="false">3D</button>
+        </div>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optTransp" aria-pressed="false">Transparente</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+        </div>
+      </div>
+      <div class="escena" id="escena">
+        <svg id="svg" viewBox="0 0 960 560" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Editor de planos con el aula vista desde arriba, de 9 por 7 metros: ventanas en la pared de arriba, pizarra y pantalla en la de la izquierda y la puerta abajo a la derecha. Se colocan las zonas del Aula del Futuro, los grupos de mesas y el mobiliario. A la derecha, la barra lateral del editor muestra la herramienta y las medidas del elemento seleccionado. En la vista 3D, el aula se ve en perspectiva.</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera">
+        <button type="button" class="boton peq sec" id="btnGolpe">Diseñar el aula de golpe</button>
+      </div>
+      <p class="escena-pie">Pulsa una pieza del plano para saber qué es y qué medidas tiene. Con «Transparente» se ven las comprobaciones: cada pasillo medido con la cinta, el barrido de la puerta y el círculo de giro de una silla de ruedas delante de ella.</p>
+    </div>
+
+    <aside class="programa" aria-label="Las comprobaciones del equipo de consultoría">
+      <div class="programa-cab"><strong>Lo que comprueba la consultoría</strong></div>
+      <div class="leyenda-hl"><span style="--c:var(--tu)">Comprobación que se hace ahora</span><span style="--c:var(--ko)">No se cumple</span></div>
+      <div class="programa-cuerpo">
+        <ol class="chequeos" id="chequeos"></ol>
+      </div>
+      <div class="programa-pie">Cada comprobación sale del encargo del equipo directivo y de la rúbrica de la Tarea 3.8. En Floorplanner se hacen con la cinta de medir y mirando el plano en 2D y en 3D.</div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar el diseño</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.4">Cámara lenta</option>
+          <option value="1" selected>Tiempo real</option>
+          <option value="3">Rápido (×3)</option>
+        </select>
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases del diseño">
+        <li>1. Construir: las paredes con la medida exacta del plano</li>
+        <li>2. Puertas y ventanas de la biblioteca, con su ancho y su giro</li>
+        <li>3. Las zonas del Aula del Futuro, con suelos de colores</li>
+        <li>4. Amueblar: mesas y sillas para 27 y los elementos adicionales</li>
+        <li>5. Comprobar con la cinta: pasillos, salida y luz</li>
+        <li>6. Vista 3D, paseo y copia del proyecto al docente</li>
+      </ol>
+      <p class="narracion" id="narracion" aria-live="polite">Pulsa «Empezar el diseño» para verlo paso a paso, o «Automático» para que se haga solo. Con «2D» y «3D», encima del plano, cambias la vista como en Floorplanner.</p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Elemento</th><th>Medidas (cm)</th><th>Cantidad</th><th>Zona</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <div class="medidas">
+        <div class="medida-item" id="mSup"><span class="et">Superficie del aula</span><span class="v num" id="vSup">—</span></div>
+        <div class="medida-item" id="mPorEst"><span class="et">Por estudiante (27)</span><span class="v num" id="vPorEst">—</span></div>
+        <div class="medida-item" id="mPuestos"><span class="et">Puestos con mesa y silla</span><span class="v num" id="vPuestos">—</span></div>
+        <div class="medida-item" id="mPaso"><span class="et">Paso más estrecho</span><span class="v num" id="vPaso">—</span></div>
+      </div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo"><label class="interruptor" for="ctlOjo"><input type="checkbox" id="ctlOjo"> Dibujar las paredes a ojo, sin escribir la medida (el error común)</label></div>
+      <div class="rompelo"><label class="interruptor" for="ctlBib"><input type="checkbox" id="ctlBib"> Dejar las mesas con la medida que traen de la biblioteca (160 × 80 cm)</label></div>
+      <div class="rompelo"><h3><label for="ctlSep">Separación entre los grupos de mesas</label></h3>
+        <div class="rango"><input type="range" id="ctlSep" min="40" max="140" step="10" value="100"><span class="num" id="ctlSepTxt">100 cm</span></div></div>
+      <div class="rompelo"><label class="interruptor" for="ctlEst"><input type="checkbox" id="ctlEst"> Poner la estantería junto a la puerta</label></div>
+      <div class="rompelo"><label class="interruptor" for="ctlPant"><input type="checkbox" id="ctlPant"> Colgar la pantalla interactiva enfrente de las ventanas</label></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">Un diseño en Floorplanner solo sirve si es el aula de verdad: cada pared y cada mueble con su medida real, y cada decisión comprobada con la cinta. Si en el plano no cabe una silla de ruedas, en el aula tampoco.</p>
+  <div class="dos">
+    <div>
+      <h3 style="margin:6px 0">Las cinco zonas del encargo</h3>
+      <div class="tabla-envoltura"><table class="tabla" aria-label="Zonas del Aula del Futuro en el laboratorio">
+        <thead><tr><th>Zona</th><th>Para qué</th><th>Dónde está aquí</th></tr></thead>
+        <tbody>
+          <tr><th>Presentar</th><td>Explicar y exponer ante el grupo</td><td>Pizarra y pantalla, en la pared de la izquierda</td></tr>
+          <tr><th>Investigar</th><td>Buscar información y analizar datos</td><td>Grupos junto a las ventanas, con buena luz</td></tr>
+          <tr><th>Interactuar</th><td>Trabajar en equipo, debatir, coevaluar</td><td>Grupos del centro, con mesas móviles</td></tr>
+          <tr><th>Crear</th><td>Grabar audio y vídeo</td><td>Rincón de pódcast, en la esquina más tranquila</td></tr>
+          <tr><th>Desarrollar</th><td>Diseñar y probar prototipos</td><td>Mesa de taller con la impresora 3D</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3 style="margin:6px 0">Las medidas que hay que comprobar</h3>
+      <ul style="margin:4px 0;padding-left:1.2em">
+        <li><b>Paredes:</b> la misma medida que el plano a 1:50, con ±10 cm como mucho.</li>
+        <li><b>Mobiliario:</b> la medida real. Un pupitre escolar mide unos 70 × 50 cm, no lo que traiga la biblioteca.</li>
+        <li><b>Pasillos:</b> al menos 90 cm, lo que pide el encargo para una silla de ruedas. La norma andaluza pide 1,20 m en los pasillos de un itinerario accesible.</li>
+        <li><b>Puerta:</b> su barrido libre y, delante, un círculo de 1,20 m sin muebles para girar con la silla.</li>
+        <li><b>Luz:</b> las ventanas a un lado de quien mira la pantalla, nunca de frente ni a la espalda.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Dibujar las paredes a ojo</h2>
+  <div class="dos">
+    <div>
+      <p>En Floorplanner es muy fácil arrastrar el ratón hasta que la pared «parece» bien. Así sale una pared de 8,62 m donde el aula mide 9,00 m. Casi no se nota en la pantalla, pero son 38 cm: más que un pasillo pequeño. A partir de ahí, todo lo que se coloque encima mentirá un poco.</p>
+      <p>El manual de Floorplanner lo resuelve así: mientras dibujas, escribe la longitud y pulsa Intro. Y si la habitación ya está hecha, pulsa en la medida interior y escribe la exacta.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Activa el error y diseña el aula de golpe: la comprobación de las medidas falla y la cota del largo dice 8,62 m.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica en Floorplanner</p>
+  <h2 id="tPractica">Auditad vuestra Aula del Futuro</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li>Abrid vuestro proyecto «SdA3_EquipoN_AulaFuturo» y duplicadlo como «SdA3_EquipoN_Auditoria». Así queda el original tal como lo presentasteis.</li>
+      <li>Haced una captura 2D y otra 3D del diseño antes de tocar nada.</li>
+      <li>Paredes: pulsad cada medida interior y comprobad que coincide con vuestro plano a 1:50 (±10 cm). Si no, escribid la exacta.</li>
+      <li>Mobiliario: pulsad cada tipo de mueble y comprobad su ancho, su fondo y su alto en la barra lateral. Cambiad los que tengan la medida de la biblioteca y no la real.</li>
+      <li>Con la cinta de medir, medid los tres pasillos más estrechos y la distancia de la puerta al mueble más cercano. Apuntad cada medida.</li>
+      <li>Contad los puestos con mesa y silla (tienen que ser los del grupo) y mirad dónde quedan las pantallas respecto a las ventanas.</li>
+      <li>Corregid lo que no cumpla, haced las capturas de después y enviad una copia del proyecto al docente (Proyectos &gt; Compartir &gt; Copiar al usuario &gt; Enviar una copia).</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar la auditoría por hecha</h3>
+      <ul class="comprobacion" id="comprobacion">
+        <li><label><input type="checkbox"> Las paredes coinciden con el plano a 1:50 (±10 cm).</label></li>
+        <li><label><input type="checkbox"> Todos los muebles tienen su medida real.</label></li>
+        <li><label><input type="checkbox"> Ningún pasillo mide menos de 90 cm y la puerta abre sin chocar.</label></li>
+        <li><label><input type="checkbox"> Hay mesa y silla para todo el grupo, pizarra y proyector.</label></li>
+        <li><label><input type="checkbox"> Las pantallas reciben la luz de lado.</label></li>
+        <li><label><input type="checkbox"> Tenemos las capturas de antes y después y hemos explicado dos fallos del laboratorio.</label></li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Entregadlo en la <b>Tarea 3.9</b>: un PDF con las capturas 2D y 3D de antes y después, la tabla de la auditoría (cada comprobación con su medida antes y después) y la explicación de dos fallos provocados en el laboratorio. Además, enviad la copia del proyecto al docente desde Floorplanner.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false">
+    <fieldset class="pregunta" data-correcta="c" data-expl="38 cm de diferencia son demasiados: el plano ya no es el aula. En Floorplanner se escribe la longitud mientras se dibuja, o se pulsa la medida interior de la habitación y se escribe la exacta.">
+      <legend>1. Has dibujado la pared moviendo el ratón y Floorplanner marca 8,62 m, pero el aula mide 9,00 m. ¿Qué haces?</legend>
+      <label class="opcion"><input type="radio" name="q1" value="a"><span>Nada: en la pantalla casi no se nota.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="b"><span>Hago los muebles un poco más pequeños para que quepan igual.</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="c"><span>Pulso la medida y escribo 9 m exactos.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="b" data-expl="El encargo pide pasillos de al menos 90 cm para que pase una silla de ruedas. Con 70 cm no cabe: hay que separar los grupos o quitar algún mueble.">
+      <legend>2. Con la cinta mides el pasillo entre dos grupos de mesas: 70 cm. ¿Cumple el encargo?</legend>
+      <label class="opcion"><input type="radio" name="q2" value="a"><span>Sí, una persona pasa de sobra.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="b"><span>No: tiene que medir al menos 90 cm.</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="c"><span>Solo si las sillas están metidas debajo de las mesas.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="a" data-expl="Con la pantalla en una pared perpendicular a las ventanas, la luz llega de lado: no deslumbra a quien mira ni se refleja en la pantalla.">
+      <legend>3. Las ventanas están en la pared de arriba del plano. ¿Dónde cuelgas la pantalla interactiva?</legend>
+      <label class="opcion"><input type="radio" name="q3" value="a"><span>En la pared de la izquierda o la de la derecha.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="b"><span>En la pared de abajo, enfrente de las ventanas.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="c"><span>Entre dos ventanas, para aprovechar la luz.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+  </form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de las fuentes</h3><ul>
+      <li>El flujo de trabajo de Floorplanner: pestañas Construir, Decorar y Amueblar; escribir la longitud de la pared y pulsar Intro; arrastrar puertas y ventanas a la pared y ajustar su ancho y su giro; cambiar las medidas de cada mueble; la cinta de medir; el botón 2D/3D; exportar y compartir.</li>
+      <li>Las zonas del Future Classroom Lab: Presentar, Investigar, Interactuar, Crear, Desarrollar e Intercambiar (el encargo pide las cinco primeras).</li>
+      <li>Accesibilidad en Andalucía: pasillos de 1,20 m en los itinerarios accesibles, puertas de 0,80 m de paso libre y un círculo de 1,20 m libre a cada lado de la puerta. El encargo de la SdA pide pasillos de al menos 90 cm.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>El editor no es Floorplanner: imita sus pasos. Los nombres de los botones en español pueden cambiar según la versión.</li>
+      <li>El aula de 9,00 × 7,00 m, la posición de puertas y ventanas y las medidas de los muebles son un ejemplo. Los 160 × 80 cm de la mesa «de biblioteca» son un ejemplo de medida que no es la de un pupitre: comprobad la que trae cada mueble en vuestro proyecto.</li>
+      <li>Los pasillos se miden entre bloques (grupos de mesas, estantería y rincón de taller), no entre cada silla. La vista 3D es una perspectiva sencilla, sin texturas ni sombras.</li>
+      <li>La comprobación de la luz solo mira en qué pared está la pantalla.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Floorplanner. <a href="https://cdn.floorplanner.com/static/brochures/Floorplanner+editor+manual+version+050718.pdf" target="_blank" rel="noopener">Floorplanner editor manual</a>: pestañas Build, Decorate y Furnish, medidas exactas con el teclado, puertas y ventanas, mobiliario, cinta de medir, 2D/3D y compartir.</li>
+    <li>Floorplanner. <a href="https://floorplanner.com/blog/28-06-2017-keyboard-input" target="_blank" rel="noopener">Keyboard input</a>: escribir la medida mientras se dibuja y pulsar Intro.</li>
+    <li>European Schoolnet. <a href="https://fcl.eun.org/learning-zones" target="_blank" rel="noopener">Future Classroom Lab: Learning Zones</a>: las seis zonas de aprendizaje.</li>
+    <li>Gómez-García, M. y otros (2022). <a href="https://redined.educacion.gob.es/xmlui/bitstream/handle/11162/230746/Aula.pdf?sequence=3" target="_blank" rel="noopener">El Aula del Futuro: un proyecto para la redefinición pedagógica de los centros educativos</a>. Revista Interuniversitaria de Formación del Profesorado, 98: qué se hace en cada zona.</li>
+    <li>Normatia. <a href="https://normatia.com/es/normativa/accesibilidad-andalucia/2017/titulo-ii-accesibilidad-en-los-edificios-establecimientos-e-instalaciones/" target="_blank" rel="noopener">Reglamento de accesibilidad de Andalucía, título II</a>: pasillos, puertas y espacios de giro.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s17"><small>Anterior</small>Sesión 17. Pitch de startup</a>
+  <a href="clase.html#s18"><small>Web de clase</small>Sesión 18. Bonus track</a>
+  <a href="clase.html#s14"><small>Repasa</small>Sesión 14. Idear y zonificar el Aula del Futuro</a>
+</nav>
+<p class="pie">Laboratorio de ampliación de la SdA 3 «Un Aula del Futuro» de Tecnología y Digitalización 3.º ESO. La simulación es un modelo simplificado y marca lo que no se ha podido comprobar. Floorplanner es una marca de su propietario; este laboratorio no está asociado a él.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const m2 = n => (Math.round(n * 100) / 100).toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+/* ------------------------------------------------------------ el aula y los fallos */
+const REAL = {L:900, A:700};
+const C = {ojo:false, bib:false, sep:100, est:false, pant:false};
+const ZONAS = {
+  presentar:{n:'Presentar', c:'#2563eb'}, investigar:{n:'Investigar', c:'#0891b2'}, interactuar:{n:'Interactuar', c:'#16a34a'},
+  crear:{n:'Crear', c:'#db2777'}, desarrollar:{n:'Desarrollar', c:'#d97706'}
+};
+const PUERTA = {x:760, w:90}, VENTANAS = [100, 360, 620], VW = 180, GIRO = {r:60};
+
+// El diseño se calcula a partir de las decisiones (y los fallos), como en el editor
+function diseno(){
+  const L = C.ojo ? 862 : REAL.L, A = REAL.A;
+  const dw = C.bib ? 160 : 70, dd = C.bib ? 80 : 50, silla = 35;
+  const GW = 2 * dw, GH = 2 * dd + 2 * silla, s = C.sep;
+  const E = [];
+  const add = (o) => { E.push(o); return o; };
+  // pizarra y pantalla (pared izquierda, o pantalla en la de abajo)
+  add({id:'pizarra', tipo:'pizarra', n:'Pizarra', x:0, y:130, w:8, d:200, h:120, z0:90, zona:'presentar', fase:4, ruta:false, indis:true});
+  if (C.pant) add({id:'pantalla', tipo:'pantalla', n:'Pantalla interactiva', x:520, y:A - 10, w:160, d:10, h:100, z0:90, zona:'presentar', fase:4, ruta:false, extra:true});
+  else add({id:'pantalla', tipo:'pantalla', n:'Pantalla interactiva', x:0, y:380, w:10, d:160, h:100, z0:90, zona:'presentar', fase:4, ruta:false, extra:true});
+  add({id:'proyector', tipo:'proyector', n:'Proyector (en el techo)', x:360, y:330, w:40, d:30, h:20, z0:260, zona:'presentar', fase:4, ruta:false, indis:true, techo:true});
+  // seis grupos de cuatro (Investigar junto a las ventanas, Interactuar en el centro)
+  let g = 0;
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++){
+    g++;
+    const gx = 200 + c * (GW + s), gy = 50 + r * (GH + s), zona = r === 0 ? 'investigar' : 'interactuar';
+    add({id:'grupo' + g, tipo:'grupo', n:'Grupo ' + g, x:gx, y:gy, w:GW, d:GH, zona, fase:4, ruta:true, bloque:true, puestos:4, dw, dd});
+  }
+  // rincón Desarrollar: mesa de taller con 3 puestos e impresora 3D
+  add({id:'taller', tipo:'taller', n:'Mesa de taller (3 puestos)', x:20, y:582, w:160, d:108, zona:'desarrollar', fase:4, ruta:true, bloque:true, puestos:3});
+  add({id:'impresora', tipo:'impresora', n:'Impresora 3D', x:125, y:632, w:45, d:45, h:45, z0:75, zona:'desarrollar', fase:4, ruta:false, extra:true});
+  // rincón Crear: mesa de pódcast
+  add({id:'podcast', tipo:'podcast', n:'Mesa de pódcast', x:40, y:15, w:90, d:90, h:75, zona:'crear', fase:4, ruta:false, extra:true});
+  // adicionales
+  add({id:'pufs', tipo:'puf', n:'Pufs (2)', x:30, y:320, w:40, d:110, h:40, zona:'presentar', fase:4, ruta:false, extra:true, par:true});
+  if (C.est) add({id:'estanteria', tipo:'estanteria', n:'Estantería', x:730, y:A - 40, w:120, d:40, h:180, zona:null, fase:4, ruta:true, bloque:true, extra:true});
+  else add({id:'estanteria', tipo:'estanteria', n:'Estantería', x:300, y:A - 40, w:200, d:40, h:180, zona:null, fase:4, ruta:true, bloque:true, extra:true});
+  add({id:'planta1', tipo:'planta', n:'Planta', x:Math.min(860, L - 38), y:300, w:35, d:35, h:110, zona:null, fase:4, ruta:false, extra:true});
+  add({id:'planta2', tipo:'planta', n:'Planta', x:560, y:A - 40, w:35, d:35, h:110, zona:null, fase:4, ruta:false, extra:true});
+  return {L, A, E, dw, dd, GW, GH, s};
+}
+
+/* ------------------------------------------------------------ comprobaciones */
+const CHEQUEOS = [
+  {id:'medidas', t:'Las paredes miden lo que dice el plano (±10 cm)'},
+  {id:'dentro', t:'Todo el mobiliario cabe dentro del aula y no se solapa'},
+  {id:'puestos', t:'Mesa y silla para los 27, pizarra, proyector y 3 adicionales'},
+  {id:'pasillos', t:'Ningún pasillo mide menos de 90 cm'},
+  {id:'salida', t:'La puerta abre libre y delante hay un círculo de giro de 1,20 m'},
+  {id:'luz', t:'La pantalla recibe la luz de lado, no de frente ni a la espalda'}
+];
+const solapa = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.d && b.y < a.y + a.d;
+function hueco(a, b){
+  // separación entre dos bloques que se miran de frente (si no se miran, null)
+  const sx = Math.max(b.x - (a.x + a.w), a.x - (b.x + b.w)), sy = Math.max(b.y - (a.y + a.d), a.y - (b.y + b.d));
+  if (sx < 0 && sy < 0) return {v:Math.max(sx, sy), eje:'solapa'};
+  if (sy < 0) return {v:sx, eje:'x'};
+  if (sx < 0) return {v:sy, eje:'y'};
+  return null;
+}
+function distRect(cx, cy, r){ const dx = Math.max(r.x - cx, 0, cx - (r.x + r.w)), dy = Math.max(r.y - cy, 0, cy - (r.y + r.d)); return Math.hypot(dx, dy); }
+function evalua(D){
+  const R = {};
+  R.medidas = {ok:Math.abs(D.L - REAL.L) <= 10 && Math.abs(D.A - REAL.A) <= 10, v:`${m2(D.L / 100)} × ${m2(D.A / 100)} m (plano: 9,00 × 7,00)`};
+  const fuera = D.E.filter(e => !e.techo && (e.x < 0 || e.y < 0 || e.x + e.w > D.L + .5 || e.y + e.d > D.A + .5));
+  const bloques = D.E.filter(e => e.bloque);
+  const solapes = [];
+  for (let i = 0; i < bloques.length; i++) for (let j = i + 1; j < bloques.length; j++) if (solapa(bloques[i], bloques[j])) solapes.push([bloques[i].n, bloques[j].n]);
+  R.dentro = {ok:!fuera.length && !solapes.length, v:fuera.length ? `${fuera.length} fuera del aula` : solapes.length ? `${solapes.length} solapes` : 'todo dentro'};
+  const puestos = D.E.reduce((s, e) => s + (e.puestos || 0), 0) - (fuera.filter(e => e.puestos).reduce((s, e) => s + e.puestos, 0));
+  const extras = D.E.filter(e => e.extra).length;
+  R.puestos = {ok:puestos >= 27 && extras >= 3, v:`${puestos} puestos · ${extras} adicionales`, puestos};
+  let min = Infinity, par = null;
+  const pasos = [];
+  for (let i = 0; i < bloques.length; i++) for (let j = i + 1; j < bloques.length; j++){
+    const h = hueco(bloques[i], bloques[j]); if (!h || h.v > 250) continue;
+    pasos.push({a:bloques[i], b:bloques[j], h});
+    if (h.v < min){ min = h.v; par = [bloques[i], bloques[j]]; }
+  }
+  R.pasillos = {ok:min >= 90, v:min === Infinity ? '—' : (min < 0 ? 'se solapan' : `${Math.round(min)} cm`), min, par, pasos};
+  const barrido = {x:PUERTA.x, y:D.A - PUERTA.w, w:PUERTA.w, d:PUERTA.w};
+  const cx = PUERTA.x + PUERTA.w / 2, cy = D.A - PUERTA.w - GIRO.r;
+  const choques = D.E.filter(e => !e.techo && (solapa(e, barrido) || distRect(cx, cy, e) < GIRO.r - .5));
+  R.salida = {ok:!choques.length, v:choques.length ? 'choca: ' + choques.map(e => e.n.toLowerCase()).join(', ') : 'libre', barrido, giro:{cx, cy}};
+  const p = D.E.find(e => e.id === 'pantalla');
+  R.luz = {ok:p.x === 0, v:p.x === 0 ? 'pared izquierda: luz lateral' : 'enfrente de las ventanas'};
+  return R;
+}
+
+/* ------------------------------------------------------------ escena SVG */
+const svg = $('#svg');
+const el = (tag, at = {}, padre = svg) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); padre.appendChild(e); return e; };
+const txt = (padre, x, y, t, at = {}) => { const e = el('text', Object.assign({x, y, 'font-size':13, fill:'var(--ink2)', 'font-weight':700}, at), padre); e.textContent = t; return e; };
+const PIEZAS = {
+  muro: ['Paredes', 'En Floorplanner se dibujan con «Dibujar habitación» o pared a pared. Mientras arrastras, escribes la longitud y pulsas Intro.', 'Aquí miden 9,00 × 7,00 m por dentro, como el plano a 1:50.'],
+  ventana: ['Ventanas', 'Se arrastran desde la lista de ventanas hasta la pared, y en la barra lateral se ajusta el ancho, el alto y la altura del alféizar.', 'Tres ventanas de 180 cm en la pared de arriba: de aquí viene la luz natural.'],
+  puerta: ['Puerta', 'Se arrastra hasta la pared; al pulsarla se cambia hacia dónde abre y en qué lado tiene las bisagras.', 'Mide 90 cm. El arco es su barrido: ahí no puede haber muebles.'],
+  pizarra: ['Pizarra', 'Elemento indispensable del encargo, en la zona Presentar.', 'Mide 200 cm y está en la pared de la izquierda, perpendicular a las ventanas.'],
+  pantalla: ['Pantalla interactiva', 'Elemento adicional de la zona Presentar.', 'Con la luz de lado no deslumbra ni hace reflejos.'],
+  proyector: ['Proyector', 'Va colgado del techo: en el plano se dibuja con línea discontinua.', 'Proyecta sobre la pizarra o la pantalla.'],
+  grupo: ['Grupo de cuatro mesas', 'Cuatro pupitres de 70 × 50 cm juntos y cuatro sillas. Se colocan con «Amueblar» y se agrupan para moverlos a la vez.', 'Junto a las ventanas son la zona Investigar; en el centro, la zona Interactuar.'],
+  taller: ['Mesa de taller', 'Una mesa de 160 × 70 cm con tres puestos, en la zona Desarrollar.', 'Con los seis grupos de cuatro, suma los 27 puestos del grupo.'],
+  impresora: ['Impresora 3D', 'Elemento adicional de la zona Desarrollar, sobre la mesa de taller.', 'Va cerca de la pared, donde suele haber enchufes, y lejos del paso.'],
+  podcast: ['Mesa de pódcast', 'La zona Crear: una mesa con micrófonos para grabar audio y vídeo.', 'Está en la esquina más alejada de la puerta, la más tranquila.'],
+  puf: ['Pufs', 'Asientos móviles para la zona Presentar.', 'Se cuentan como elemento adicional, no como puestos.'],
+  estanteria: ['Estantería', 'Un mueble alto, de 180 cm, para guardar material.', 'Contra la pared y lejos de la puerta, para que no estorbe la salida.'],
+  planta: ['Planta', 'Elemento adicional que mejora el ambiente.', 'Pequeña y en un rincón: no ocupa pasillos.'],
+  zona: ['Zona del Aula del Futuro', 'En Floorplanner se marca con un suelo de otro color o con una etiqueta de tipo de habitación.', 'Cada zona tiene su función, su sitio y su mobiliario.'],
+  barra: ['Barra lateral del editor', 'Muestra la herramienta activa y las medidas del elemento seleccionado: ancho, fondo y alto.', 'Es donde se escriben las medidas reales de cada mueble.']
+};
+const pieza = (padre, id, etiqueta) => el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':etiqueta || PIEZAS[id][0], 'data-pieza':id}, padre);
+el('rect', {x:0, y:0, width:960, height:560, fill:'var(--mesa)'});
+const capa2D = el('g', {}), capa3D = el('g', {display:'none'});
+// lienzo 2D, 0,58 px por cm
+const K = 0.58, X0 = 44, Y0 = 70;
+const X = cm => X0 + cm * K, Y = cm => Y0 + cm * K;
+el('rect', {x:8, y:8, width:604, height:544, rx:10, fill:'var(--papel)', stroke:'var(--line)'}, capa2D);
+const rejilla = el('g', {}, capa2D);
+for (let x = 0; x <= 1000; x += 50) el('line', {x1:X(x), y1:8, x2:X(x), y2:552, stroke:'var(--cuad)', 'stroke-width':x % 100 ? .4 : .8}, rejilla);
+for (let y = -100; y <= 900; y += 50) if (Y(y) > 8 && Y(y) < 552) el('line', {x1:8, y1:Y(y), x2:612, y2:Y(y), stroke:'var(--cuad)', 'stroke-width':y % 100 ? .4 : .8}, rejilla);
+const capaMuros = el('g', {}, capa2D), capaZonas = el('g', {}, capa2D), capaMuebles = el('g', {}, capa2D), capaHuecos = el('g', {}, capa2D), capaCotas = el('g', {}, capa2D), capaChequeo = el('g', {opacity:0, 'pointer-events':'none'}, capa2D);
+const avisoPlano = txt(capa2D, 310, 545, '', {'text-anchor':'middle', 'font-size':14, fill:'var(--ko)'});
+// barra lateral del editor (derecha)
+const BX = 626;
+const barra = pieza(svg, 'barra');
+el('rect', {x:BX, y:8, width:326, height:544, rx:10, fill:'var(--card)', stroke:'var(--line)'}, barra);
+const pest = ['Construir', 'Decorar', 'Amueblar'].map((t, k) => {
+  const g = el('g', {}, barra);
+  const r = el('rect', {x:BX + 10 + k * 104, y:18, width:98, height:30, rx:7, fill:'var(--bg)', stroke:'var(--line)'}, g);
+  txt(g, BX + 59 + k * 104, 38, t, {'text-anchor':'middle', 'font-size':13});
+  return r;
+});
+const barTit = txt(barra, BX + 16, 78, 'Herramienta', {'font-size':12, fill:'var(--muted)'});
+const barHerr = txt(barra, BX + 16, 100, '—', {'font-size':17, fill:'var(--ink)'});
+const barSel = txt(barra, BX + 16, 138, 'Seleccionado', {'font-size':12, fill:'var(--muted)'});
+const barNom = txt(barra, BX + 16, 160, '—', {'font-size':16, fill:'var(--ink)'});
+const campos = ['Ancho', 'Fondo', 'Alto'].map((t, k) => {
+  txt(barra, BX + 16, 192 + k * 40, t, {'font-size':13, fill:'var(--muted)'});
+  el('rect', {x:BX + 90, y:174 + k * 40, width:120, height:28, rx:6, fill:'var(--bg)', stroke:'var(--line)'}, barra);
+  return txt(barra, BX + 200, 194 + k * 40, '—', {'text-anchor':'end', 'font-size':15, fill:'var(--ink)'});
+});
+campos.forEach((c, k) => txt(barra, BX + 218, 194 + k * 40, 'cm', {'font-size':13, fill:'var(--muted)'}));
+const barMedida = el('g', {opacity:0}, barra);
+el('rect', {x:BX + 16, y:310, width:294, height:52, rx:8, fill:'var(--warm-bg)', stroke:'var(--warm)'}, barMedida);
+txt(barMedida, BX + 28, 331, 'Escribe la medida y pulsa Intro', {'font-size':12, fill:'var(--warm)'});
+const barMedTxt = txt(barMedida, BX + 28, 352, '', {'font-size':16, fill:'var(--ink)', 'font-family':'ui-monospace,Menlo,Consolas,monospace'});
+const barLista = el('g', {}, barra);
+function pintaLista(items){
+  barLista.innerHTML = '';
+  txt(barLista, BX + 16, 392, 'Biblioteca', {'font-size':12, fill:'var(--muted)'});
+  items.slice(0, 6).forEach((t, k) => {
+    const x = BX + 16 + (k % 2) * 150, y = 402 + Math.floor(k / 2) * 46;
+    el('rect', {x, y, width:142, height:38, rx:7, fill:'var(--bg)', stroke:'var(--line)'}, barLista);
+    txt(barLista, x + 10, y + 24, t, {'font-size':12, fill:'var(--ink2)', 'font-weight':600});
+  });
+}
+function barraLateral(p){
+  pest.forEach((r, k) => { r.setAttribute('fill', k === p.pest ? 'var(--brand)' : 'var(--bg)'); r.nextSibling.setAttribute('fill', k === p.pest ? '#fff' : 'var(--ink2)'); });
+  barHerr.textContent = p.herr || '—'; barNom.textContent = p.sel || '—';
+  campos.forEach((c, k) => { c.textContent = p.medidas ? p.medidas[k] : '—'; c.setAttribute('fill', p.malas && p.malas[k] ? 'var(--ko)' : 'var(--ink)'); });
+  barMedida.setAttribute('opacity', p.tecleo ? 1 : 0); barMedTxt.textContent = p.tecleo || '';
+  pintaLista(p.lista || []);
+}
+
+/* ---- dibujo 2D */
+function rect(padre, e, at = {}){ return el('rect', Object.assign({x:X(e.x), y:Y(e.y), width:Math.max(1, e.w * K), height:Math.max(1, e.d * K)}, at), padre); }
+function dibujaMuros(D){
+  capaMuros.innerHTML = '';
+  const g = pieza(capaMuros, 'muro'), t = 30;
+  el('path', {d:`M ${X(-t)} ${Y(-t)} H ${X(D.L + t)} V ${Y(D.A + t)} H ${X(-t)} Z M ${X(0)} ${Y(0)} V ${Y(D.A)} H ${X(D.L)} V ${Y(0)} Z`, fill:'var(--muro)', 'fill-rule':'evenodd'}, g);
+  el('rect', {x:X(0), y:Y(0), width:D.L * K, height:D.A * K, fill:'var(--suelo)', opacity:.55}, capaMuros);
+}
+function cota(padre, x1, y1, x2, y2, texto, mala){
+  const g = el('g', {}, padre), col = mala ? 'var(--ko)' : 'var(--accent)';
+  el('line', {x1, y1, x2, y2, stroke:col, 'stroke-width':1.4, 'marker-start':'url(#fl)', 'marker-end':'url(#fl)'}, g);
+  const vx = x1 === x2;
+  const tx = vx ? x1 + 6 : (x1 + x2) / 2, ty = vx ? (y1 + y2) / 2 : y1 - 6;
+  const t = txt(g, tx, ty, texto, {'text-anchor':'middle', 'font-size':13, fill:col});
+  if (vx) t.setAttribute('transform', `rotate(90 ${tx} ${ty})`);
+  return g;
+}
+function dibujaCotas(D){
+  capaCotas.innerHTML = '';
+  const mala = Math.abs(D.L - REAL.L) > 10;
+  cota(capaCotas, X(0), Y(-30) - 10, X(D.L), Y(-30) - 10, m2(D.L / 100) + ' m', mala);
+  cota(capaCotas, X(D.L + 30) + 10, Y(0), X(D.L + 30) + 10, Y(D.A), m2(D.A / 100) + ' m', false);
+}
+function dibujaHuecos(D){
+  capaHuecos.innerHTML = '';
+  const gv = pieza(capaHuecos, 'ventana');
+  VENTANAS.forEach(x => {
+    el('rect', {x:X(x), y:Y(-30), width:VW * K, height:30 * K, fill:'var(--papel)'}, gv);
+    el('line', {x1:X(x), y1:Y(-15), x2:X(x + VW), y2:Y(-15), stroke:'var(--vent)', 'stroke-width':3}, gv);
+  });
+  const gp = pieza(capaHuecos, 'puerta');
+  el('rect', {x:X(PUERTA.x), y:Y(D.A), width:PUERTA.w * K, height:30 * K, fill:'var(--papel)'}, gp);
+  el('path', {d:`M ${X(PUERTA.x)} ${Y(D.A)} V ${Y(D.A - PUERTA.w)} A ${PUERTA.w * K} ${PUERTA.w * K} 0 0 1 ${X(PUERTA.x + PUERTA.w)} ${Y(D.A)}`, fill:'rgba(180,83,9,.08)', stroke:'var(--puerta)', 'stroke-width':2}, gp);
+}
+const nombres = [];
+function dibujaZonas(D){
+  capaZonas.innerHTML = '';
+  const grupos = D.E.filter(e => e.tipo === 'grupo');
+  const caja = lista => { const x = Math.min(...lista.map(e => e.x)) - 20, y = Math.min(...lista.map(e => e.y)) - 20, x2 = Math.max(...lista.map(e => e.x + e.w)) + 20, y2 = Math.max(...lista.map(e => e.y + e.d)) + 20; return {x:Math.max(0, x), y:Math.max(0, y), w:Math.min(D.L, x2) - Math.max(0, x), d:Math.min(D.A, y2) - Math.max(0, y)}; };
+  const Z = {
+    presentar:{x:0, y:120, w:175, d:420},
+    investigar:caja(grupos.slice(0, 3)), interactuar:caja(grupos.slice(3)),
+    crear:{x:0, y:0, w:175, d:118}, desarrollar:{x:0, y:560, w:195, d:140}
+  };
+  for (const k in Z){
+    const z = Z[k], g = pieza(capaZonas, 'zona', 'Zona ' + ZONAS[k].n);
+    rect(g, z, {fill:ZONAS[k].c, 'fill-opacity':.14, stroke:ZONAS[k].c, 'stroke-opacity':.5, 'stroke-dasharray':'5 4'});
+    const t = txt(g, X(z.x) + 5, Y(z.y) + 14, ZONAS[k].n, {'font-size':12, fill:ZONAS[k].c, class:'nombre'});
+    nombres.push(t);
+  }
+}
+function dibujaMueble(D, e, R){
+  const g = pieza(capaMuebles, e.tipo, e.n);
+  g.dataset.id = e.id;
+  const fuera = e.x + e.w > D.L + .5 || e.y + e.d > D.A + .5;
+  const linea = fuera ? 'var(--ko)' : '#334155';
+  if (e.tipo === 'grupo'){
+    const s = 35;
+    for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) rect(g, {x:e.x + i * e.dw, y:e.y + s + j * e.dd, w:e.dw, d:e.dd}, {fill:'#f8fafc', stroke:linea, 'stroke-width':1});
+    for (let i = 0; i < 2; i++){
+      rect(g, {x:e.x + i * e.dw + e.dw / 2 - 20, y:e.y, w:40, d:s - 3}, {rx:3, fill:'#94a3b8', stroke:linea, 'stroke-width':.8});
+      rect(g, {x:e.x + i * e.dw + e.dw / 2 - 20, y:e.y + s + 2 * e.dd + 3, w:40, d:s - 3}, {rx:3, fill:'#94a3b8', stroke:linea, 'stroke-width':.8});
+    }
+  } else if (e.tipo === 'taller'){
+    rect(g, {x:e.x, y:e.y + 38, w:160, d:70}, {fill:'#f8fafc', stroke:linea});
+    for (let i = 0; i < 3; i++) rect(g, {x:e.x + 10 + i * 52, y:e.y, w:40, d:34}, {rx:3, fill:'#94a3b8', stroke:linea, 'stroke-width':.8});
+  } else if (e.tipo === 'podcast'){
+    el('circle', {cx:X(e.x + 45), cy:Y(e.y + 45), r:40 * K, fill:'#f8fafc', stroke:linea}, g);
+    el('circle', {cx:X(e.x + 30), cy:Y(e.y + 45), r:5, fill:ZONAS.crear.c}, g); el('circle', {cx:X(e.x + 60), cy:Y(e.y + 45), r:5, fill:ZONAS.crear.c}, g);
+  } else if (e.tipo === 'puf'){
+    el('circle', {cx:X(e.x + 20), cy:Y(e.y + 20), r:20 * K, fill:'#f59e0b', stroke:linea}, g);
+    el('circle', {cx:X(e.x + 20), cy:Y(e.y + 90), r:20 * K, fill:'#f59e0b', stroke:linea}, g);
+  } else if (e.tipo === 'planta'){
+    el('circle', {cx:X(e.x + 17), cy:Y(e.y + 17), r:17 * K, fill:'#22c55e', stroke:'#15803d'}, g);
+  } else if (e.tipo === 'proyector'){
+    rect(g, e, {fill:'none', stroke:'#334155', 'stroke-dasharray':'3 3', 'stroke-width':1.4});
+  } else {
+    const col = {pizarra:'var(--piz)', pantalla:'#1e293b', impresora:'#78716c', estanteria:'#a16207'}[e.tipo] || '#cbd5e1';
+    rect(g, e, {fill:col, stroke:linea, 'stroke-width':1});
+  }
+  const malEnPaso = R && R.pasillos.par && R.pasillos.par.includes(e) && !R.pasillos.ok;
+  const malSalida = R && !R.salida.ok && R.salida.v.includes(e.n.toLowerCase());
+  if (fuera || malEnPaso || malSalida) rect(g, e, {fill:'none', stroke:'var(--ko)', 'stroke-width':2.5, 'stroke-dasharray':'6 3'});
+  return g;
+}
+function dibujaChequeo(D, R){
+  capaChequeo.innerHTML = '';
+  // barrido de la puerta y círculo de giro
+  rect(capaChequeo, R.salida.barrido, {fill:R.salida.ok ? 'rgba(22,163,74,.18)' : 'rgba(220,38,38,.25)'});
+  el('circle', {cx:X(R.salida.giro.cx), cy:Y(R.salida.giro.cy), r:GIRO.r * K, fill:R.salida.ok ? 'rgba(22,163,74,.15)' : 'rgba(220,38,38,.22)', stroke:R.salida.ok ? 'var(--ok)' : 'var(--ko)', 'stroke-dasharray':'4 3', 'stroke-width':1.5}, capaChequeo);
+  txt(capaChequeo, X(R.salida.giro.cx), Y(R.salida.giro.cy) + 4, 'Ø 1,20 m', {'text-anchor':'middle', 'font-size':11, fill:'var(--ink)'});
+  // pasillos medidos con la cinta
+  R.pasillos.pasos.forEach(({a, b, h}) => {
+    if (h.eje === 'solapa') return;
+    let x1, y1, x2, y2;
+    if (h.eje === 'x'){ const yy = (Math.max(a.y, b.y) + Math.min(a.y + a.d, b.y + b.d)) / 2; const [i, d] = a.x < b.x ? [a, b] : [b, a]; x1 = i.x + i.w; x2 = d.x; y1 = y2 = yy; }
+    else { const xx = (Math.max(a.x, b.x) + Math.min(a.x + a.w, b.x + b.w)) / 2; const [s, i] = a.y < b.y ? [a, b] : [b, a]; y1 = s.y + s.d; y2 = i.y; x1 = x2 = xx; }
+    const ok = h.v >= 90, col = ok ? 'var(--ok)' : 'var(--ko)';
+    el('line', {x1:X(x1), y1:Y(y1), x2:X(x2), y2:Y(y2), stroke:'var(--cinta)', 'stroke-width':4, 'stroke-linecap':'round'}, capaChequeo);
+    const tx = X((x1 + x2) / 2), ty = Y((y1 + y2) / 2);
+    el('rect', {x:tx - 24, y:ty - 10, width:48, height:18, rx:5, fill:'var(--card)', stroke:col}, capaChequeo);
+    txt(capaChequeo, tx, ty + 4, Math.round(h.v) + ' cm', {'text-anchor':'middle', 'font-size':11, fill:col});
+  });
+}
+
+/* ---- vista 3D (perspectiva isométrica sencilla) */
+const IC = 0.36, IX0 = 300, IY0 = 120;
+const P = (x, y, z) => [IX0 + (x - y) * IC * 0.866, IY0 + (x + y) * IC * 0.5 - z * IC];
+const pts = l => l.map(p => P(...p).map(v => v.toFixed(1)).join(',')).join(' ');
+function caja3(padre, x, y, z, w, d, h, col){
+  const g = el('g', {}, padre);
+  el('polygon', {points:pts([[x, y + d, z], [x + w, y + d, z], [x + w, y + d, z + h], [x, y + d, z + h]]), fill:col, 'fill-opacity':.85, stroke:'#1f2937', 'stroke-width':.6, filter:'url(#osc1)'}, g);
+  el('polygon', {points:pts([[x + w, y, z], [x + w, y + d, z], [x + w, y + d, z + h], [x + w, y, z + h]]), fill:col, 'fill-opacity':.7, stroke:'#1f2937', 'stroke-width':.6, filter:'url(#osc2)'}, g);
+  el('polygon', {points:pts([[x, y, z + h], [x + w, y, z + h], [x + w, y + d, z + h], [x, y + d, z + h]]), fill:col, stroke:'#1f2937', 'stroke-width':.6}, g);
+  return g;
+}
+function dibuja3D(D, R, hasta){
+  capa3D.innerHTML = '';
+  el('rect', {x:8, y:8, width:604, height:544, rx:10, fill:'var(--papel)', stroke:'var(--line)'}, capa3D);
+  txt(capa3D, 24, 34, 'Vista 3D (paredes delanteras cortadas)', {'font-size':13, fill:'var(--muted)'});
+  const H = 300;
+  if (hasta < 1){ txt(capa3D, 310, 280, 'Todavía no hay nada que ver en 3D', {'text-anchor':'middle', fill:'var(--muted)'}); return; }
+  el('polygon', {points:pts([[0, 0, 0], [D.L, 0, 0], [D.L, D.A, 0], [0, D.A, 0]]), fill:'var(--suelo)', stroke:'#64748b'}, capa3D);
+  if (hasta >= 3){
+    const Z = [['presentar', 0, 120, 175, 420], ['crear', 0, 0, 175, 118], ['desarrollar', 0, 560, 195, 140]];
+    Z.forEach(([k, x, y, w, d]) => el('polygon', {points:pts([[x, y, 0], [x + w, y, 0], [x + w, y + d, 0], [x, y + d, 0]]), fill:ZONAS[k].c, 'fill-opacity':.2}, capa3D));
+  }
+  // pared del fondo (ventanas) y pared izquierda
+  el('polygon', {points:pts([[0, 0, 0], [D.L, 0, 0], [D.L, 0, H], [0, 0, H]]), fill:'#cbd5e1', stroke:'#64748b'}, capa3D);
+  el('polygon', {points:pts([[0, 0, 0], [0, D.A, 0], [0, D.A, H], [0, 0, H]]), fill:'#e2e8f0', stroke:'#64748b'}, capa3D);
+  if (hasta >= 2) VENTANAS.forEach(x => el('polygon', {points:pts([[x, 0, 90], [x + VW, 0, 90], [x + VW, 0, 230], [x, 0, 230]]), fill:'#7dd3fc', stroke:'#0284c7'}, capa3D));
+  if (hasta >= 4){
+    const orden = D.E.filter(e => !e.techo).slice().sort((a, b) => (a.x + a.w / 2 + a.y + a.d / 2) - (b.x + b.w / 2 + b.y + b.d / 2));
+    orden.forEach(e => {
+      if (e.tipo === 'pizarra' || e.tipo === 'pantalla'){
+        const z0 = e.z0, h = e.h;
+        if (e.x === 0) el('polygon', {points:pts([[1, e.y, z0], [1, e.y + e.d, z0], [1, e.y + e.d, z0 + h], [1, e.y, z0 + h]]), fill:e.tipo === 'pizarra' ? '#15803d' : '#1e293b', stroke:'#0f172a'}, capa3D);
+        else caja3(capa3D, e.x, e.y, z0, e.w, e.d, h, '#1e293b');
+        return;
+      }
+      if (e.tipo === 'grupo'){
+        caja3(capa3D, e.x, e.y + 35, 0, e.w, 2 * e.dd, 75, '#f1f5f9');
+        for (let i = 0; i < 2; i++){ caja3(capa3D, e.x + i * e.dw + e.dw / 2 - 20, e.y, 0, 40, 32, 45, '#94a3b8'); caja3(capa3D, e.x + i * e.dw + e.dw / 2 - 20, e.y + 38 + 2 * e.dd, 0, 40, 32, 45, '#94a3b8'); }
+        return;
+      }
+      if (e.tipo === 'taller'){ for (let i = 0; i < 3; i++) caja3(capa3D, e.x + 10 + i * 52, e.y, 0, 40, 34, 45, '#94a3b8'); caja3(capa3D, e.x, e.y + 38, 0, 160, 70, 75, '#f1f5f9'); return; }
+      if (e.tipo === 'puf'){ caja3(capa3D, e.x, e.y, 0, 40, 40, 40, '#f59e0b'); caja3(capa3D, e.x, e.y + 70, 0, 40, 40, 40, '#f59e0b'); return; }
+      const col = {impresora:'#78716c', estanteria:'#a16207', planta:'#22c55e', podcast:'#f1f5f9'}[e.tipo] || '#cbd5e1';
+      caja3(capa3D, e.x, e.y, e.z0 || 0, e.w, e.d, e.h || 75, col);
+    });
+  }
+  if (R && !R.dentro.ok) txt(capa3D, 310, 540, '✖ Hay muebles que se salen del aula o se pisan', {'text-anchor':'middle', 'font-size':14, fill:'var(--ko)'});
+}
+el('defs', {}, svg).innerHTML = '<marker id="fl" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L10 5 L0 9 z" fill="currentColor" style="fill:var(--accent)"/></marker><filter id="osc1"><feComponentTransfer><feFuncR type="linear" slope=".82"/><feFuncG type="linear" slope=".82"/><feFuncB type="linear" slope=".82"/></feComponentTransfer></filter><filter id="osc2"><feComponentTransfer><feFuncR type="linear" slope=".68"/><feFuncG type="linear" slope=".68"/><feFuncB type="linear" slope=".68"/></feComponentTransfer></filter>';
+
+/* ------------------------------------------------------------ estado, monitor y comprobaciones */
+let hecho = 0;              // hasta qué fase se ha diseñado (0 nada … 6 todo)
+let vista = '2D', vel = 1, epoca = 0, instantaneo = false, chequeoActivo = null;
+let D = diseno(), R = evalua(D);
+function sleep(ms){ const e = epoca; return new Promise(r => setTimeout(() => { if (e === epoca) r(); }, instantaneo ? 0 : ms / vel)); }
+function pintaChequeos(){
+  $('#chequeos').innerHTML = CHEQUEOS.map(c => {
+    const r = R[c.id], visto = hecho >= 5;
+    const est = !visto ? '<span class="est">·</span>' : r.ok ? '<span class="est ok">✔</span>' : '<span class="est ko">✖</span>';
+    return `<li class="${chequeoActivo === c.id ? 'on-tu' : ''} ${visto && !r.ok ? 'falla' : ''}" data-c="${c.id}">${est}<span><b>${esc(c.t)}</b><small>${visto ? esc(r.v) : 'Se comprueba en la fase 5'}</small></span></li>`;
+  }).join('');
+}
+function refresca(){
+  const filas = [];
+  const visibles = D.E.filter(e => hecho >= e.fase);
+  const tipos = {};
+  visibles.forEach(e => { const k = e.tipo === 'grupo' ? 'grupo' : e.id; (tipos[k] = tipos[k] || []).push(e); });
+  if (hecho >= 1) filas.push(`<tr><th scope="row">Paredes (por dentro)</th><td class="num ${Math.abs(D.L - REAL.L) > 10 ? 'mal' : ''}">${D.L} × ${D.A}</td><td class="num">4</td><td>—</td></tr>`);
+  if (hecho >= 2) filas.push(`<tr><th scope="row">Puerta · ventanas</th><td class="num">${PUERTA.w} · ${VW}</td><td class="num">1 · 3</td><td>—</td></tr>`);
+  for (const k in tipos){
+    const l = tipos[k], e = l[0];
+    const med = e.tipo === 'grupo' ? `mesa ${e.dw} × ${e.dd}` : `${e.w} × ${e.d}${e.h ? ' × ' + e.h : ''}`;
+    const n = e.tipo === 'grupo' ? `${l.length} (${l.length * 4} puestos)` : e.tipo === 'taller' ? '1 (3 puestos)' : e.par ? '2' : '1';
+    filas.push(`<tr><th scope="row">${e.tipo === 'grupo' ? 'Grupos de 4 mesas' : esc(e.n)}</th><td class="num ${e.tipo === 'grupo' && C.bib ? 'mal' : ''}">${med}</td><td class="num">${n}</td><td>${e.zona ? ZONAS[e.zona].n : '—'}</td></tr>`);
+  }
+  $('#monitor').innerHTML = filas.join('') || '<tr><td colspan="4" style="color:var(--muted)">El plano está vacío.</td></tr>';
+  const sup = D.L * D.A / 1e4;
+  $('#vSup').textContent = hecho >= 1 ? m2(sup) + ' m²' : '—';
+  $('#vPorEst').textContent = hecho >= 1 ? m2(sup / 27) + ' m²' : '—';
+  $('#vPuestos').textContent = hecho >= 4 ? `${R.puestos.puestos} / 27` : '—';
+  $('#mPuestos').classList.toggle('mal', hecho >= 4 && R.puestos.puestos < 27);
+  $('#vPaso').textContent = hecho >= 4 ? R.pasillos.v : '—';
+  $('#mPaso').classList.toggle('mal', hecho >= 4 && !R.pasillos.ok);
+  pintaChequeos();
+}
+function dibuja(){
+  // dibuja el plano hasta la fase hecha
+  nombres.length = 0;
+  capaMuros.innerHTML = capaZonas.innerHTML = capaMuebles.innerHTML = capaHuecos.innerHTML = capaCotas.innerHTML = '';
+  avisoPlano.textContent = '';
+  if (hecho >= 1){ dibujaMuros(D); dibujaCotas(D); }
+  if (hecho >= 2) dibujaHuecos(D);
+  if (hecho >= 3) dibujaZonas(D);
+  if (hecho >= 4){ D.E.forEach(e => dibujaMueble(D, e, hecho >= 5 ? R : null)); if (!R.dentro.ok) avisoPlano.textContent = '✖ ' + (R.dentro.v.includes('fuera') ? 'Hay muebles que se salen del aula' : 'Hay muebles que se pisan'); }
+  if (hecho >= 5) dibujaChequeo(D, R); else capaChequeo.innerHTML = '';
+  capaChequeo.setAttribute('opacity', transparente && hecho >= 4 ? 1 : 0);
+  if (hecho >= 4 && transparente && hecho < 5) dibujaChequeo(D, R);
+  if (!$('#optNombres').getAttribute('aria-pressed') || $('#optNombres').getAttribute('aria-pressed') === 'false') svg.querySelectorAll('.nombre').forEach(t => t.setAttribute('display', 'none'));
+  dibuja3D(D, R, hecho);
+  refresca();
+}
+function ponVista(v){
+  vista = v;
+  $('#vista2D').setAttribute('aria-pressed', String(v === '2D')); $('#vista3D').setAttribute('aria-pressed', String(v === '3D'));
+  capa2D.setAttribute('display', v === '2D' ? 'inline' : 'none'); capa3D.setAttribute('display', v === '3D' ? 'inline' : 'none');
+}
+function explica(){
+  const t = [];
+  if (C.ojo) t.push('<p><b>Paredes a ojo.</b> Sin escribir la medida, el largo ha salido de 8,62 m en vez de 9,00. Son 38 cm: más que el margen de ±10 cm que pide la Tarea 3.7. El plano ya no es el aula, aunque todo «quepa».</p>');
+  if (C.bib) t.push('<p><b>Mesas de la biblioteca.</b> Cada mesa mide 160 × 80 cm en lugar de 70 × 50. Los grupos ocupan más del doble: se pisan y se salen por la derecha. En Floorplanner hay que pulsar cada mueble y escribir su ancho y su fondo reales en la barra lateral.</p>');
+  if (C.sep < 90) t.push(`<p><b>Grupos demasiado juntos.</b> Con ${C.sep} cm entre grupos, los pasillos no llegan a los 90 cm que necesita una silla de ruedas. Se ve con la cinta de medir: la medida sale en rojo.</p>`);
+  if (C.sep > 110) t.push(`<p><b>Grupos demasiado separados.</b> Con ${C.sep} cm, la segunda fila de mesas baja tanto que invade el círculo de giro delante de la puerta. Separar más no siempre es mejor: el aula tiene 7 m de ancho.</p>`);
+  if (C.est) t.push('<p><b>Estantería junto a la puerta.</b> Queda dentro del barrido de la hoja: la puerta no abre del todo y no queda sitio para girar con una silla de ruedas. Los muebles altos van contra una pared, lejos de la salida.</p>');
+  if (C.pant) t.push('<p><b>Pantalla enfrente de las ventanas.</b> Quien mira la pantalla tiene las ventanas a la espalda: la luz se refleja en la pantalla y no se ve bien. Desde la pantalla, se mira de frente a las ventanas y deslumbran. La pantalla va en una pared perpendicular a las ventanas.</p>');
+  $('#explica').innerHTML = t.join('') || '<p>Todo normal: paredes con la medida exacta, mesas de 70 × 50 cm, 100 cm entre grupos, la estantería lejos de la puerta y la pantalla con luz lateral. Prueba a cambiar algo y diseña de nuevo.</p>';
+}
+
+/* ------------------------------------------------------------ el diseño paso a paso */
+const FASES = [...document.querySelectorAll('#fases li')];
+function fase(k){ FASES.forEach((li, i) => { li.classList.toggle('activa', i === k); li.classList.toggle('hecha', k >= 0 && i < k); }); }
+const narra = h => { $('#narracion').innerHTML = h; };
+let modo = 'paso', enRonda = false, abrir = null, transparente = false;
+function puerta(){
+  if (instantaneo) return Promise.resolve();
+  if (modo === 'auto') return sleep(2000);
+  $('#btnPaso').textContent = 'Siguiente paso';
+  return new Promise(r => { abrir = r; });
+}
+async function teclea(texto){
+  // imita escribir la medida en el editor
+  for (let i = 1; i <= texto.length; i++){ barMedTxt.textContent = texto.slice(0, i); await sleep(90); }
+  await sleep(300);
+}
+async function ronda(){
+  enRonda = true; botones(false); const e = epoca;
+  D = diseno(); R = evalua(D); hecho = 0; chequeoActivo = null; ponVista('2D'); dibuja();
+  // 1
+  fase(0);
+  barraLateral({pest:0, herr:'Dibujar habitación', sel:'Habitación', lista:['Dibujar habitación', 'Dibujar pared', 'Superficie', 'Cinta de medir']});
+  if (C.ojo){
+    narra('Construir → <b>Dibujar habitación</b>. Arrastráis el ratón hasta que «parece» que la habitación tiene el tamaño del aula… y la soltáis <b>sin escribir la medida</b>.');
+    barMedida.setAttribute('opacity', 0);
+  } else {
+    narra('Construir → <b>Dibujar habitación</b>. Mientras arrastráis, escribís la medida interior del plano a 1:50, <b>9 × 7 m</b>, y pulsáis Intro.');
+    barMedida.setAttribute('opacity', 1); await teclea('9,7 ⏎'); if (e !== epoca) return;
+  }
+  hecho = 1; dibuja();
+  barraLateral({pest:0, herr:'Dibujar habitación', sel:'Habitación', medidas:[D.L, D.A, 300], malas:[Math.abs(D.L - REAL.L) > 10, false, false], lista:['Dibujar habitación', 'Dibujar pared', 'Superficie', 'Cinta de medir']});
+  narra(narraFase1());
+  await puerta(); if (e !== epoca) return;
+  // 2
+  fase(1);
+  hecho = 2; dibuja();
+  barraLateral({pest:0, herr:'Puertas y ventanas', sel:'Puerta', medidas:[PUERTA.w, 4, 210], lista:['Puerta simple', 'Puerta doble', 'Ventana', 'Ventana alta']});
+  narra('Desde la lista de puertas y ventanas, se arrastra cada elemento hasta su pared y se ajusta en la barra lateral: la <b>puerta de 90 cm</b> abajo a la derecha, con la hoja hacia dentro, y <b>tres ventanas de 180 cm</b> en la pared de arriba.');
+  await puerta(); if (e !== epoca) return;
+  // 3
+  fase(2);
+  hecho = 3; dibuja();
+  barraLateral({pest:1, herr:'Tipos de habitación', sel:'Zona Investigar', lista:['Presentar', 'Investigar', 'Interactuar', 'Crear', 'Desarrollar', 'Suelo de color']});
+  narra('Decorar: cada zona del Aula del Futuro tiene un suelo de otro color. <b>Presentar</b> junto a la pizarra, <b>Investigar</b> junto a las ventanas, <b>Interactuar</b> en el centro, <b>Crear</b> en la esquina más tranquila y <b>Desarrollar</b> abajo, con la mesa de taller.');
+  await puerta(); if (e !== epoca) return;
+  // 4
+  fase(3);
+  hecho = 4; dibuja();
+  barraLateral({pest:2, herr:'Amueblar', sel:'Mesa escolar', medidas:[D.dw, D.dd, 75], malas:[C.bib, C.bib, false], lista:['Mesa escolar', 'Silla', 'Pizarra', 'Pantalla', 'Estantería', 'Impresora 3D']});
+  narra(`Amueblar: se busca cada mueble en la biblioteca, se arrastra al plano y se pulsa para escribir su medida real. Seis grupos de cuatro mesas de <b>${D.dw} × ${D.dd} cm</b> y la mesa de taller dan <b>${R.puestos.puestos} puestos</b>. Además: pizarra, proyector, pantalla, impresora 3D, mesa de pódcast, pufs, estantería y plantas.` + (C.bib ? ' <b>¡Ojo!</b> Las mesas se han quedado con la medida de la biblioteca.' : ''));
+  await puerta(); if (e !== epoca) return;
+  // 5
+  fase(4);
+  hecho = 5; dibuja();
+  barraLateral({pest:0, herr:'Cinta de medir', sel:'Pasillo más estrecho', medidas:[isFinite(R.pasillos.min) ? Math.round(R.pasillos.min) : '—', '—', '—'], malas:[!R.pasillos.ok, false, false], lista:['Cinta de medir', 'Líneas de cota']});
+  capaChequeo.setAttribute('opacity', 1);
+  for (const c of CHEQUEOS){ chequeoActivo = c.id; pintaChequeos(); await sleep(instantaneo ? 0 : 650); if (e !== epoca) return; }
+  chequeoActivo = null; pintaChequeos();
+  const fallos = CHEQUEOS.filter(c => !R[c.id].ok);
+  narra('Con la <b>cinta de medir</b> se miden los pasillos entre bloques, el barrido de la puerta y el círculo de giro de 1,20 m. ' + (fallos.length ? `<b>No cumple ${fallos.length === 1 ? 'una comprobación' : fallos.length + ' comprobaciones'}</b>: ${fallos.map(c => c.t.toLowerCase()).join('; ')}.` : `Paso más estrecho: <b>${R.pasillos.v}</b>. <b>Cumple todas las comprobaciones.</b>`));
+  if (!transparente) capaChequeo.setAttribute('opacity', 1);
+  await puerta(); if (e !== epoca) return;
+  // 6
+  fase(5);
+  hecho = 6; dibuja(); ponVista('3D');
+  barraLateral({pest:0, herr:'Vista 3D', sel:'Proyecto «SdA3_EquipoN_AulaFuturo»', lista:['Paseo virtual', 'Exportar 3D', 'Compartir', 'Copiar al usuario']});
+  const ok = CHEQUEOS.every(c => R[c.id].ok);
+  narra('Se cambia a la <b>vista 3D</b> para revisar alturas y hacer el paseo virtual, y se envía una copia al docente (Proyectos &gt; Compartir &gt; Copiar al usuario &gt; Enviar una copia). ' + (ok ? '<b>El Aula del Futuro está lista para presentarla.</b>' : 'Antes de enviarla, toca <b>corregir lo que no cumple</b>: mira «Estropéalo a propósito».'));
+  explica(); refresca();
+  enRonda = false; botones(true);
+  $('#btnPaso').textContent = 'Otro diseño';
+  if (modo === 'auto' && !instantaneo){ await sleep(3000); if (e !== epoca || modo !== 'auto') return; ronda(); }
+}
+function narraFase1(){
+  const sup = m2(D.L * D.A / 1e4);
+  if (C.ojo) return `La habitación mide <b>${m2(D.L / 100)} × ${m2(D.A / 100)} m</b> por dentro: ${sup} m². En la pantalla casi no se nota, pero el plano dice 9,00 m. <b>Faltan ${REAL.L - D.L} cm.</b>`;
+  return `La habitación mide <b>9,00 × 7,00 m</b> por dentro: ${sup} m², ${m2(D.L * D.A / 1e4 / 27)} m² por estudiante. Las paredes son de 30 cm y la altura, 3 m.`;
+}
+function botones(si){ $('#btnGolpe').disabled = !si; }
+function reiniciar(){
+  epoca++; enRonda = false; abrir = null; instantaneo = false; chequeoActivo = null;
+  D = diseno(); R = evalua(D); hecho = 0; fase(-1); ponVista('2D'); dibuja(); explica(); botones(true);
+  barraLateral({pest:0, herr:'—', sel:'—', lista:['Dibujar habitación', 'Dibujar pared', 'Superficie', 'Cinta de medir']});
+  $('#btnPaso').textContent = 'Empezar el diseño';
+}
+async function deGolpe(){ reiniciar(); instantaneo = true; try { await ronda(); } finally { instantaneo = false; } }
+
+/* ------------------------------------------------------------ controles */
+$('#btnPaso').onclick = () => {
+  if (modo === 'auto'){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); }
+  if (enRonda && abrir){ const r = abrir; abrir = null; r(); return; }
+  if (!enRonda){ reiniciar(); ronda(); }
+};
+$('#btnAuto').onclick = () => {
+  const on = modo !== 'auto'; modo = on ? 'auto' : 'paso';
+  $('#btnAuto').setAttribute('aria-pressed', String(on));
+  if (on){ if (abrir){ const r = abrir; abrir = null; r(); } else if (!enRonda){ reiniciar(); ronda(); } }
+};
+$('#btnReiniciar').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); narra('Todo a cero: el plano vuelve a estar vacío.'); };
+$('#btnGolpe').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); deGolpe(); };
+$('#velocidad').onchange = e => { vel = +e.target.value; };
+$('#vista2D').onclick = () => ponVista('2D');
+$('#vista3D').onclick = () => ponVista('3D');
+function abrePieza(id, elId){
+  const [t, x, u] = PIEZAS[id]; $('#piezaTitulo').textContent = t; $('#piezaTexto').textContent = x; $('#piezaUso').textContent = u; $('#pieza').hidden = false;
+  const e = elId && D.E.find(z => z.id === elId);
+  if (e) barraLateral({pest:2, herr:'Seleccionar', sel:e.n, medidas:e.tipo === 'grupo' ? [e.dw, e.dd, 75] : [e.w, e.d, e.h || 75], malas:e.tipo === 'grupo' && C.bib ? [true, true, false] : null, lista:['Mesa escolar', 'Silla', 'Pizarra', 'Pantalla', 'Estantería', 'Impresora 3D']});
+}
+svg.addEventListener('click', ev => { const pz = ev.target.closest('[data-pieza]'); if (!pz) return; abrePieza(pz.dataset.pieza, pz.dataset.id); });
+svg.addEventListener('keydown', ev => { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.dataset && ev.target.dataset.pieza){ ev.preventDefault(); ev.target.dispatchEvent(new MouseEvent('click', {bubbles:true})); } });
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+$('#optTransp').onclick = e => { transparente = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(transparente)); dibuja(); };
+$('#optNombres').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); svg.querySelectorAll('.nombre').forEach(t => t.setAttribute('display', on ? 'inline' : 'none')); };
+function trasCambio(){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); narra('Cambio hecho. Pulsa «Empezar el diseño» o «Diseñar el aula de golpe» para ver qué pasa.'); }
+$('#ctlOjo').onchange = e => { C.ojo = e.target.checked; trasCambio(); };
+$('#ctlBib').onchange = e => { C.bib = e.target.checked; trasCambio(); };
+$('#ctlSep').oninput = e => { C.sep = +e.target.value; $('#ctlSepTxt').textContent = C.sep + ' cm'; trasCambio(); };
+$('#ctlEst').onchange = e => { C.est = e.target.checked; trasCambio(); };
+$('#ctlPant').onchange = e => { C.pant = e.target.checked; trasCambio(); };
+$('#normalidad').onclick = () => {
+  Object.assign(C, {ojo:false, bib:false, sep:100, est:false, pant:false});
+  ['#ctlOjo', '#ctlBib', '#ctlEst', '#ctlPant'].forEach(s => $(s).checked = false); $('#ctlSep').value = 100; $('#ctlSepTxt').textContent = '100 cm';
+  modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); narra('Todo vuelve a la normalidad.');
+};
+$('#probarError').onclick = () => {
+  $('#ctlOjo').checked = true; C.ojo = true; modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false');
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+  deGolpe().then(() => ponVista('2D'));
+};
+// preguntas
+document.querySelectorAll('.pregunta').forEach(f => f.addEventListener('change', () => {
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+}));
+// comprobación (se guarda en el navegador)
+const CLAVE = 'lab-aula-futuro-tyd3-sda3';
+let marcas = []; try { marcas = JSON.parse(localStorage.getItem(CLAVE) || '[]'); } catch(e){}
+document.querySelectorAll('#comprobacion input').forEach((c, i) => { c.checked = !!marcas[i]; c.onchange = () => { marcas[i] = c.checked; try { localStorage.setItem(CLAVE, JSON.stringify(marcas)); } catch(e){} }; });
+// tema
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+// arranque
+reiniciar();
+window.__lab = {C, get D(){ return D; }, get R(){ return R; }, get hecho(){ return hecho; }, ronda, deGolpe, reiniciar, evalua, diseno, set modo(v){ modo = v; }, get enRonda(){ return enRonda; }, ponVista};
+})();
+</script>
+</body>
+</html>

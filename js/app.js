@@ -11,6 +11,7 @@ const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwPupS6l45QGDCc0UutXPi
 const CLAVE_LS = 'marcas-sesion-clave';
 const FIJADOS_LS = 'aula-fijados';
 const SINC_LS = 'aula-fijados-sinc';
+const PAGINA_DOCENTE = /\/(guia-profesorado|moodle)\.html$/i;
 
 const $ = (sel) => document.querySelector(sel);
 const frame = $('#content-frame');
@@ -99,6 +100,7 @@ function makeLink(path, label) {
 
 function renderNode(node) {
   const li = document.createElement('li');
+  if (node.path && node.path.endsWith('/#docente')) li.className = 'solo-docente';
   if (node.type === 'file') {
     li.appendChild(makeLink(node.path, '📄 ' + node.name));
     return li;
@@ -143,8 +145,9 @@ function setAllOpen(open) {
 
 /* ---------------- Fijados ---------------- */
 
-// Cada navegador guarda sus páginas fijadas. Con la clave del docente (la misma de las marcas de
-// sesión) se sincronizan además en la hoja de Google; sin clave no se llama nunca al servidor.
+// Solo el docente fija páginas: sin su clave (la misma de las marcas de sesión) no se ve el botón ni
+// el apartado, y no se llama nunca al servidor. La lista buena es la de la hoja de Google; el
+// navegador guarda una copia para pintarla al instante.
 function leerClave() {
   try {
     return localStorage.getItem(CLAVE_LS) || '';
@@ -161,6 +164,16 @@ function guardarClave(valor) {
   } catch {}
 }
 
+// Solo cuando la hoja ha confirmado la clave, no por tenerla guardada. Oculta el material docente del
+// menú y del buscador, pero no lo protege: las páginas son públicas para quien tenga su dirección.
+function accesoDocente() {
+  return Boolean(leerClave()) && estadoSync.estado === 'ok';
+}
+
+function visibleEnPortal(path) {
+  return accesoDocente() || !PAGINA_DOCENTE.test(path);
+}
+
 function getFijados() {
   const list = storage(FIJADOS_LS);
   return Array.isArray(list) ? list : [];
@@ -172,9 +185,9 @@ function setFijados(list) {
 }
 
 function renderFijados() {
-  const list = getFijados().filter((p) => pages.has(p));
+  const list = getFijados().filter((p) => pages.has(p) && visibleEnPortal(p));
   const section = $('#fijados');
-  section.hidden = !list.length || Boolean($('#buscador').value.trim());
+  section.hidden = !leerClave() || !list.length || Boolean($('#buscador').value.trim());
   const ul = section.querySelector('ul');
   ul.innerHTML = '';
   for (const path of list) {
@@ -196,6 +209,7 @@ function renderBotonFijar() {
   const path = currentPath();
   const btn = $('#btn-fijar');
   const fijada = getFijados().includes(path);
+  btn.hidden = !leerClave();
   btn.disabled = !pages.has(path);
   btn.setAttribute('aria-pressed', fijada);
   btn.title = fijada ? 'Quitar de fijados' : 'Fijar esta página';
@@ -206,6 +220,7 @@ function renderBotonFijar() {
 // no quede pisado por la respuesta, ya antigua, de otro anterior.
 let colaPines = Promise.resolve();
 let pinesPendientes = 0;
+let estadoSync = { estado: 'pendiente' }; // pendiente | ok | error
 
 function sincronizarPines(cambios = {}, clave = leerClave()) {
   pinesPendientes++;
@@ -232,25 +247,40 @@ function sincronizarPines(cambios = {}, clave = leerClave()) {
   );
 }
 
+function motivoSync(err) {
+  if (err.message === 'clave') return 'La clave no es correcta.';
+  if (err.message === 'bloqueado') return 'Demasiados intentos. Espera 15 minutos.';
+  if (err.message === 'datos') return 'El Apps Script no reconoce los fijados: publica su nueva versión.';
+  return 'No se ha podido conectar. Inténtalo de nuevo.';
+}
+
+function marcarSync(estado, err) {
+  estadoSync = { estado, motivo: err ? motivoSync(err) : '' };
+  document.body.classList.toggle('acceso-docente', accesoDocente());
+  renderSyncPines();
+  renderFijados();
+  const consulta = $('#buscador').value;
+  if (consulta.trim()) search(consulta);
+}
+
 function clavePinesRechazada(err) {
   if (err.message !== 'clave') return;
   guardarClave('');
-  renderSyncPines();
+  renderFijados();
 }
 
 async function alternarFijado(path) {
-  if (!pages.has(path)) return;
+  if (!pages.has(path) || !leerClave()) return;
   const fijada = getFijados().includes(path);
   setFijados(fijada ? getFijados().filter((p) => p !== path) : [...getFijados(), path]);
-  if (!leerClave()) return;
   try {
     await sincronizarPines(fijada ? { quitar: [path] } : { poner: [path] });
+    marcarSync('ok');
   } catch (err) {
+    setFijados(fijada ? [...getFijados(), path] : getFijados().filter((p) => p !== path));
     clavePinesRechazada(err);
-    if (err.message !== 'clave') {
-      setFijados(fijada ? [...getFijados(), path] : getFijados().filter((p) => p !== path));
-    }
-    aviso('No se ha podido sincronizar el cambio');
+    marcarSync('error', err);
+    aviso('No se ha podido guardar el cambio');
   }
 }
 
@@ -261,9 +291,10 @@ async function arrancarSyncPines() {
   try {
     await sincronizarPines(storage(SINC_LS) ? {} : { poner: getFijados() });
     storage(SINC_LS, true);
+    marcarSync('ok');
   } catch (err) {
     clavePinesRechazada(err);
-    aviso('No se han podido sincronizar los fijados');
+    marcarSync('error', err);
   }
 }
 
@@ -279,17 +310,31 @@ function renderSyncPines(mostrarFormulario = false) {
     salir.addEventListener('click', () => {
       guardarClave('');
       setFijados([]);
-      renderSyncPines();
+      marcarSync('pendiente');
     });
-    caja.append('🔄 Fijados sincronizados · ', salir);
+    const { estado, motivo } = estadoSync;
+    if (estado === 'error') {
+      const reintentar = document.createElement('button');
+      reintentar.type = 'button';
+      reintentar.className = 'link-btn';
+      reintentar.textContent = 'Reintentar';
+      reintentar.addEventListener('click', () => {
+        marcarSync('pendiente');
+        arrancarSyncPines();
+      });
+      caja.append(`⚠️ Sin sincronizar. ${motivo} `, reintentar, ' · ', salir);
+    } else {
+      caja.append(estado === 'ok' ? '🔄 Fijados sincronizados · ' : '🔄 Sincronizando… · ', salir);
+    }
     return;
   }
   if (!mostrarFormulario) {
     const abrir = document.createElement('button');
     abrir.type = 'button';
     abrir.className = 'link-btn';
-    abrir.textContent = 'Sincronizar mis fijados (docente)';
+    abrir.textContent = 'Acceso docente';
     abrir.addEventListener('click', () => renderSyncPines(true));
+    if (estadoSync.estado === 'error') caja.append(`⚠️ ${estadoSync.motivo} `);
     caja.append(abrir);
     return;
   }
@@ -323,14 +368,12 @@ function renderSyncPines(mostrarFormulario = false) {
       await sincronizarPines({ poner: getFijados() }, clave.value.trim());
       guardarClave(clave.value.trim());
       storage(SINC_LS, true);
-      renderSyncPines();
+      renderFijados();
+      marcarSync('ok');
       aviso('Fijados sincronizados');
     } catch (err) {
       ok.disabled = false;
-      error.textContent =
-        err.message === 'clave' ? 'La clave no es correcta.'
-        : err.message === 'bloqueado' ? 'Demasiados intentos. Espera 15 minutos.'
-        : 'No se ha podido conectar. Inténtalo de nuevo.';
+      error.textContent = motivoSync(err);
       error.hidden = false;
     }
   });
@@ -385,11 +428,11 @@ function search(raw) {
   const results = new Map();
   for (const page of pages.values()) {
     const haystack = normalize([page.name, ...page.crumbs.map((c) => c.name)].join(' '));
-    if (haystack.includes(query)) results.set(page.path, null);
+    if (haystack.includes(query) && visibleEnPortal(page.path)) results.set(page.path, null);
   }
   for (const entry of textIndex || []) {
     if (results.size >= MAX_RESULTADOS) break;
-    if (results.has(entry.path) || !pages.has(entry.path)) continue;
+    if (results.has(entry.path) || !pages.has(entry.path) || !visibleEnPortal(entry.path)) continue;
     const snippet = makeSnippet(entry.text, query) || (entry.title && makeSnippet(entry.title, query));
     if (snippet) results.set(entry.path, snippet);
   }

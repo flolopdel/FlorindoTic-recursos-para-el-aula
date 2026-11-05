@@ -163,6 +163,20 @@ def ventanas(d):
     return res
 
 
+def nombre_con_criterios(m, d):
+    """Nombre de la Tarea en Moodle con los criterios que evalúa entre paréntesis, para pasarla a Séneca de un vistazo:
+    «2.4 · El gato en coordenadas (CYR.2.1.3, CYR.2.2.1)». Toma el `criterio` de la Tarea y los de las líneas de su
+    rúbrica, en el orden de `materias[].criterios`. Si el nombre ya termina con códigos entre paréntesis, lo deja igual."""
+    nombre = str(m.get('nombre') or '').strip()
+    if re.search(r'\(\s*[A-Z]{2,4}\.\d[^)]*\)\s*$', nombre):
+        return nombre
+    cs = [m['criterio']] if m.get('criterio') else []
+    cs += [l['criterio'] for l in arr(m.get('rubrica')) if isinstance(l, dict) and l.get('criterio')]
+    orden = [c for x in arr(d.get('materias')) for c in arr(x.get('criterios'))]
+    cs = sorted(set(cs), key=lambda c: (orden.index(c) if c in orden else len(orden), c))
+    return f'{nombre} ({", ".join(cs)})' if cs else nombre
+
+
 def nombre_enlace(u):
     u = u.lower()
     for clave, txt in (('laboratorio', 'Abrir el laboratorio'), ('forms.gle', 'Abrir el formulario'), ('docs.google.com/forms', 'Abrir el formulario'),
@@ -283,7 +297,7 @@ def tareas_de(d, src=None):
             if rep:
                 partes.append('<p><strong>📚 Para repasar lo que vimos en clase:</strong></p>\n' + rep)
             partes.append('<p><em>¿Tienes dudas? Repasa el bloque de la SdA al principio del tema o pregunta en clase.</em></p>')
-            t = {'nombre': m['nombre'], 'intro': '\n'.join(p for p in partes if p), 'adjuntos': adj, 'exts': exts or ['.pdf'],
+            t = {'nombre': nombre_con_criterios(m, d), 'intro': '\n'.join(p for p in partes if p), 'adjuntos': adj, 'exts': exts or ['.pdf'],
                  'docs': len(mis_docs),
                  'apto': m.get('correccion') == 'apto', 'texto': texto, 'archivo': archivo, 'sin': sin,
                  'grupos': grupos, 'rubrica': []}
