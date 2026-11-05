@@ -4,14 +4,14 @@
  *
  * Cómo usarlo:
  *  1. Entra en https://script.google.com con tu cuenta del centro → «Nuevo proyecto».
- *  2. Borra el contenido de Código.gs, pega este archivo completo y guarda (icono del disquete).
+ *  2. Crea un archivo nuevo (p. ej. «CYR2_SDA2.gs») o usa Código.gs, pega este archivo completo (puede convivir con los de otras SdA en el mismo proyecto) y guarda (icono del disquete).
  *  3. En la barra superior elige una función y pulsa «Ejecutar»:
- *       crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
- *   crearF1_EncuestaInicialVideojuegosY()  →  Encuesta inicial: videojuegos y programación (sesión 1, anónimo)
+ *       CYR2_SDA2_crearTodosLosFormularios()  crea los que aún no tienen enlace (los ya creados se saltan).
+ *   CYR2_SDA2_crearF1_EncuestaInicialVideojuegosY()  →  Encuesta inicial: videojuegos y programación (sesión 1, anónimo)
  *        ya creado: https://forms.gle/hZivwDLmTKPC5KDWA
- *   crearF2_GameTestersValoracionDe()  →  Game testers: valoración de un videojuego (sesión 16)
+ *   CYR2_SDA2_crearF2_GameTestersValoracionDe()  →  Game testers: valoración de un videojuego (sesión 16)
  *        ya creado: https://forms.gle/baUnhqKzfiWJHEtF9
- *   crearF3_DianaDeAutoevaluacionY()  →  Diana de autoevaluación y KWL (sesión 18)
+ *   CYR2_SDA2_crearF3_DianaDeAutoevaluacionY()  →  Diana de autoevaluación y KWL (sesión 18)
  *        ya creado: https://forms.gle/2edxMZVzCCYZrpWBA
  *     La primera vez Google pide permiso para crear formularios y guardarlos en tu Drive: acéptalo.
  *  4. En «Registro de ejecución» aparecen, de cada formulario, el enlace para el alumnado y el de edición.
@@ -21,6 +21,7 @@
  * cuentas del centro (sin que quede registrado quién responde). Revisa cada formulario antes de compartirlo.
  */
 
+var CYR2_SDA2 = (function () {
 var SDA = "SdA 2";
 
 function crearTodosLosFormularios() {
@@ -298,3 +299,16 @@ var FORMULARIOS = [
     "sesiones": "Sesión 18"
   }
 ];
+
+  return {
+    crearTodosLosFormularios: crearTodosLosFormularios,
+    crearF1_EncuestaInicialVideojuegosY: crearF1_EncuestaInicialVideojuegosY,
+    crearF2_GameTestersValoracionDe: crearF2_GameTestersValoracionDe,
+    crearF3_DianaDeAutoevaluacionY: crearF3_DianaDeAutoevaluacionY
+  };
+})();
+
+function CYR2_SDA2_crearTodosLosFormularios() { return CYR2_SDA2.crearTodosLosFormularios(); }
+function CYR2_SDA2_crearF1_EncuestaInicialVideojuegosY() { return CYR2_SDA2.crearF1_EncuestaInicialVideojuegosY(); }
+function CYR2_SDA2_crearF2_GameTestersValoracionDe() { return CYR2_SDA2.crearF2_GameTestersValoracionDe(); }
+function CYR2_SDA2_crearF3_DianaDeAutoevaluacionY() { return CYR2_SDA2.crearF3_DianaDeAutoevaluacionY(); }
