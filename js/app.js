@@ -11,6 +11,7 @@ const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwPupS6l45QGDCc0UutXPi
 const CLAVE_LS = 'marcas-sesion-clave';
 const FIJADOS_LS = 'aula-fijados';
 const SINC_LS = 'aula-fijados-sinc';
+const PAGINA_DOCENTE = /\/(guia-profesorado|moodle)\.html$/i;
 
 const $ = (sel) => document.querySelector(sel);
 const frame = $('#content-frame');
@@ -99,6 +100,7 @@ function makeLink(path, label) {
 
 function renderNode(node) {
   const li = document.createElement('li');
+  if (node.path && node.path.endsWith('/#docente')) li.className = 'solo-docente';
   if (node.type === 'file') {
     li.appendChild(makeLink(node.path, '📄 ' + node.name));
     return li;
@@ -162,6 +164,16 @@ function guardarClave(valor) {
   } catch {}
 }
 
+// Solo cuando la hoja ha confirmado la clave, no por tenerla guardada. Oculta el material docente del
+// menú y del buscador, pero no lo protege: las páginas son públicas para quien tenga su dirección.
+function accesoDocente() {
+  return Boolean(leerClave()) && estadoSync.estado === 'ok';
+}
+
+function visibleEnPortal(path) {
+  return accesoDocente() || !PAGINA_DOCENTE.test(path);
+}
+
 function getFijados() {
   const list = storage(FIJADOS_LS);
   return Array.isArray(list) ? list : [];
@@ -173,7 +185,7 @@ function setFijados(list) {
 }
 
 function renderFijados() {
-  const list = getFijados().filter((p) => pages.has(p));
+  const list = getFijados().filter((p) => pages.has(p) && visibleEnPortal(p));
   const section = $('#fijados');
   section.hidden = !leerClave() || !list.length || Boolean($('#buscador').value.trim());
   const ul = section.querySelector('ul');
@@ -244,7 +256,11 @@ function motivoSync(err) {
 
 function marcarSync(estado, err) {
   estadoSync = { estado, motivo: err ? motivoSync(err) : '' };
+  document.body.classList.toggle('acceso-docente', accesoDocente());
   renderSyncPines();
+  renderFijados();
+  const consulta = $('#buscador').value;
+  if (consulta.trim()) search(consulta);
 }
 
 function clavePinesRechazada(err) {
@@ -412,11 +428,11 @@ function search(raw) {
   const results = new Map();
   for (const page of pages.values()) {
     const haystack = normalize([page.name, ...page.crumbs.map((c) => c.name)].join(' '));
-    if (haystack.includes(query)) results.set(page.path, null);
+    if (haystack.includes(query) && visibleEnPortal(page.path)) results.set(page.path, null);
   }
   for (const entry of textIndex || []) {
     if (results.size >= MAX_RESULTADOS) break;
-    if (results.has(entry.path) || !pages.has(entry.path)) continue;
+    if (results.has(entry.path) || !pages.has(entry.path) || !visibleEnPortal(entry.path)) continue;
     const snippet = makeSnippet(entry.text, query) || (entry.title && makeSnippet(entry.title, query));
     if (snippet) results.set(entry.path, snippet);
   }

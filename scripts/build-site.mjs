@@ -57,6 +57,18 @@ async function* walkFiles(dir) {
   }
 }
 
+// Material del docente: se publica, pero no se ofrece a los buscadores ni va en los índices públicos.
+const PAGINA_DOCENTE = /\/(guia-profesorado|moodle)\.html$/;
+
+function conNoindex(html) {
+  const meta = '<meta name="robots" content="noindex">\n';
+  const head = html.match(/<head(\s[^>]*)?>\s*/i);
+  // moodle.html es un fragmento sin <head>: el navegador coloca ahí esta primera línea.
+  if (!head) return meta + html;
+  const pos = head.index + head[0].length;
+  return html.slice(0, pos) + meta + html.slice(pos);
+}
+
 function decodeEntities(text) {
   return text
     .replace(/&nbsp;/g, ' ')
@@ -155,6 +167,10 @@ async function main() {
     const pos = html.lastIndexOf('</body>');
     await fs.writeFile(dest, pos < 0 ? html + tag : html.slice(0, pos) + tag + html.slice(pos));
   }
+  for (const rel of published.filter((p) => PAGINA_DOCENTE.test(p))) {
+    const dest = path.join(OUT, rel);
+    await fs.writeFile(dest, conNoindex(await fs.readFile(dest, 'utf-8')));
+  }
   await fs.writeFile(path.join(OUT, '.nojekyll'), '');
   await fs.writeFile(path.join(OUT, '404.html'), page404());
   published.push('404.html');
@@ -167,6 +183,7 @@ async function main() {
     // Las páginas de redirección (nombres antiguos) se publican pero no se indexan ni van al sitemap.
     if (html.includes('florindotic:redirect')) continue;
     htmlFiles.push(rel);
+    if (PAGINA_DOCENTE.test(rel)) continue;
     const { title, text } = extractText(html);
     index.push({ path: rel, title, text });
   }
@@ -174,7 +191,7 @@ async function main() {
 
   console.log('4/5 Generando sitemap.xml y version.json…');
   const today = new Date().toISOString().slice(0, 10);
-  const urls = ['', ...htmlFiles.filter((p) => !p.endsWith('/_pagina.html'))]
+  const urls = ['', ...htmlFiles.filter((p) => !p.endsWith('/_pagina.html') && !PAGINA_DOCENTE.test(p))]
     .map((p) => `  <url><loc>${BASE_URL}${encodeURI(p)}</loc><lastmod>${today}</lastmod></url>`)
     .join('\n');
   await fs.writeFile(
