@@ -6,9 +6,8 @@ posterior) que contiene solo una sección (tema), visible, con:
   - el nombre de la SdA («SdA 2: Código en Acción…», de meta.titulo) y, como descripción de la sección,
     el bloque HTML de la SdA (moodle.html);
   - todas las Tareas de la SdA (X.1, X.2…), ocultas, con una descripción completa para el alumnado (sesiones, forma de
-    entrega y corrección; la descripción del JSON; los documentos que usa con «Ver» y «Copiar a mi Drive»; el paso a
-    paso de las prácticas de sus sesiones con enlaces a la web de clase y a los laboratorios; teoría y guía para
-    repasar) y los PDF del repositorio que usa como archivos adjuntos; tipo de entrega y calificación:
+    entrega y corrección; los documentos que usa con «Ver» y «Copiar a mi Drive»; la descripción del JSON;
+    enlaces a las sesiones de la web de clase donde se trabajó y a sus recursos para repasar) y los PDF del repositorio que usa como archivos adjuntos; tipo de entrega y calificación:
     escala «Apto / No apto» (No apto, Apto) o rúbrica 1-3-5-7-10 (0,75-7,5 en las líneas de presentación pública
     cuando la rúbrica lleva pesos 66/33), sin fechas de apertura, entrega ni límite (no generan avisos).
 No lleva foro de avisos, usuarios, grupos, bloques ni filtros. Se restaura con «Restaurar → Fusionar la copia de
@@ -165,34 +164,22 @@ def nombre_enlace(u):
     return 'Abrir el enlace'
 
 
-def paso_a_paso(sesiones, base):
-    """Lo que se hace en cada sesión de la Tarea: prácticas y pasos de la web de clase, con sus enlaces."""
-    out = []
-    for s in sesiones:
-        diap = [x for x in arr((s.get('clase') or {}).get('diapositivas')) if x.get('tipo') in ('practica', 'pasos')]
-        cab = f'<strong>Sesión {s.get("n")} · {X(s.get("titulo", ""))}</strong>'
-        if base:
-            cab += ' — ' + a_href(f'{base}clase.html#s{s.get("n")}', 'abrir la sesión en la web de clase')
-        out.append(f'<p>{cab}</p>')
-        if not diap:
-            continue
-        out.append('<ul>')
-        for x in diap:
-            li = f'<strong>{md(x.get("titulo", ""))}</strong>'
-            if x.get('enunciado'):
-                li += ': ' + md(x['enunciado'])
-            if x.get('pasos'):
-                li += '<ol>' + ''.join(f'<li>{md(p)}</li>' for p in arr(x['pasos'])) + '</ol>'
-            if x.get('enlace'):
-                li += ('' if x.get('pasos') else ' ') + '🔗 ' + ' · '.join(a_href(u, nombre_enlace(u) if t == 'Abrir' else t) for t, u in enlaces_doc(x['enlace']))
-            out.append(f'<li>{li}</li>')
-        out.append('</ul>')
-    return '\n'.join(out)
-
-
 def para_repasar(d, sesiones, carpeta, base):
-    """Teoría y apartados de la guía del alumnado relacionados con las sesiones de la Tarea."""
-    li, ns = [], {s.get('n') for s in sesiones}
+    """Dónde se trabajó en clase: cada sesión de la Tarea en la web de clase, los recursos que se usaron en ellas
+    (laboratorios, webs; no los documentos ni los formularios), la guía del alumnado, la teoría y la web de clase."""
+    li, ns, vistos = [], {s.get('n') for s in sesiones}, set()
+    for s in sesiones:
+        if base:
+            li.append(a_href(f'{base}clase.html#s{s.get("n")}', f'Sesión {s.get("n")} · {s.get("titulo", "")}'))
+    recursos = []
+    for s in sesiones:
+        for x in arr((s.get('clase') or {}).get('diapositivas')):
+            u = str(x.get('enlace') or '')
+            if not u.startswith('http') or re.search(r'docs\.google|drive\.google|forms\.gle|/forms/', u) or u in vistos:
+                continue
+            vistos.add(u)
+            recursos.append(a_href(u, f'{x.get("titulo") or nombre_enlace(u)}') + f' ({nombre_enlace(u).replace("Abrir ", "").replace("el enlace", "web")})')
+    li += recursos[:4]
     for ap in arr((d.get('guia_alumnado') or {}).get('apartados')):
         if ns & set(arr(ap.get('sesiones'))) and str(ap.get('id', '')).count('.') < 2 and base:
             li.append(a_href(f'{base}guia-alumnado.html#a-{ap.get("id")}', f'Guía del alumnado · {ap.get("id")}. {ap.get("titulo", "")}'))
@@ -261,14 +248,14 @@ def tareas_de(d, src=None):
             adj_txt = ('<p>📎 <strong>Archivos adjuntos:</strong> ' + ', '.join(X(os.path.basename(a)) for a in adj) +
                        ' (los tienes al final de esta página, para descargar o imprimir).</p>') if adj else ''
             partes = [ficha(m, ses_t, sin, grupos), bloque_documentos(mis_docs, sin), adj_txt, cuerpo]
-            pap = paso_a_paso(ses_t, base)
-            if pap:
-                partes.append('<p><strong>🧭 Paso a paso en las sesiones:</strong></p>\n' + pap)
-            rep = para_repasar(d, ses_t, carpeta, base)
-            if rep:
-                partes.append('<p><strong>📚 Para repasar:</strong></p>\n' + rep)
             if m.get('correccion') == 'apto' and arr(m.get('cotejo')) and 'apto si' not in (m.get('descripcion') or '').lower():
                 partes.append('<p><strong>✅ Será Apto si:</strong></p><ul>' + ''.join(f'<li>{md(c)}</li>' for c in arr(m['cotejo'])) + '</ul>')
+            if m.get('correccion') == 'rubrica' and 'rúbrica' not in (m.get('descripcion') or '').lower():
+                partes.append('<p>📊 <strong>Cómo se corrige:</strong> con la rúbrica que tienes al final de esta página; '
+                              'en cada línea verás qué hace falta para cada nota.</p>')
+            rep = para_repasar(d, ses_t, carpeta, base)
+            if rep:
+                partes.append('<p><strong>📚 Para repasar lo que vimos en clase:</strong></p>\n' + rep)
             partes.append('<p><em>¿Tienes dudas? Repasa el bloque de la SdA al principio del tema o pregunta en clase.</em></p>')
             t = {'nombre': m['nombre'], 'intro': '\n'.join(p for p in partes if p), 'adjuntos': adj,
                  'docs': len(mis_docs),
