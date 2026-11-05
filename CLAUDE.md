@@ -110,11 +110,15 @@ La **descripción de cada Tarea** se completa sola para que el alumnado sepa qu�
 2. Un recuadro con los **documentos** que usa: las plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra
    la Tarea («las Tareas 2.4, 2.5 y 2.8») o que la Tarea cita («plantilla A4»), con «Ver» (`/preview`) y «Copiar a mi
    Drive» (`/copy`); solo «Ver» si se entrega en papel.
-3. La `descripcion` del JSON y, si es Apto / No apto y no lo dice, la lista `cotejo`.
-4. **Paso a paso**: las diapositivas `practica` y `pasos` de sus sesiones, con enlace a `clase.html#sN` y a los
-   laboratorios o formularios. Sus sesiones van desde la siguiente a la Tarea anterior hasta la suya, más las posteriores
-   que su actividad de Séneca incluya; se pueden fijar con `"sesiones": [..]` en la Tarea.
-5. **Para repasar**: los apartados de `guia_alumnado` de esas sesiones, `teoria.html` si existe y la web de clase.
+3. La `descripcion` del JSON (qué hacer, cómo se entrega y qué hace falta para ser Apto o cómo se evalúa); si es Apto /
+   No apto y no lo dice, la lista `cotejo`; si es de rúbrica y no la menciona, una línea que remite a la rúbrica de Moodle.
+4. **Para repasar lo que vimos en clase**: enlaces a las sesiones de la Tarea en la web de clase (`clase.html#sN`), a los
+   recursos que se usaron en ellas (laboratorios, webs; como mucho 4), a los apartados de `guia_alumnado`, a
+   `teoria.html` si existe y a la web de clase. Sus sesiones van desde la siguiente a la Tarea anterior hasta la suya,
+   más las posteriores que su actividad de Séneca incluya; se pueden fijar con `"sesiones": [..]` en la Tarea.
+
+No se copia el detalle de las sesiones: la Tarea debe dejar claro, en poco texto, qué hay que hacer, qué hace falta para
+aprobar y qué se entrega y en qué formato. Eso lo da la `descripcion`, así que conviene que sea breve y concreta.
 
 Se **adjuntan** a la Tarea (archivos para descargar) los PDF, .docx u .odt de la carpeta de la SdA que la Tarea o sus
 prácticas nombran o enlazan, los de `"adjuntos": [..]` de la Tarea y el `"pdf"` de sus plantillas (p. ej.
