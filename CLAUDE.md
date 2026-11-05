@@ -125,6 +125,15 @@ prácticas nombran o enlazan, los de `"adjuntos": [..]` de la Tarea y el `"pdf"`
 `"pdf": "anexos/a4-cuaderno.pdf"`). Los Google Docs no se adjuntan solos: si se quiere, se descargan en PDF, se guardan
 en la carpeta de la SdA (se publican en la web) y se indican en `"pdf"`.
 
+**Recuperaciones** (`<curso>/recuperacion/sda-r<K>/sdar<K>.json`, con `meta.numero` «R<K>» y Tareas R<K>.1, R<K>.2…):
+se tratan igual que una SdA. Por defecto van al tema siguiente a las SdA ordinarias del curso (con `sda1` y `sda2`, R1 →
+tema 3, R2 → tema 4…); si el curso de Moodle las tiene en otro tema, se pone `"tema": T` en su bloque `moodle`.
+
+Tipos de archivo de la entrega: las extensiones que nombran `config` o la línea «Cómo se entrega» de la `descripcion`
+(«.pdf», «.aia»…), más imágenes si dice foto o captura y vídeo si dice vídeo. Si alguna no la conoce Moodle (.sb3, .hex,
+.aia, .apk, .pkt, .ino, .stl), la Tarea admite cualquier tipo, porque si no Moodle no deja guardar sus ajustes. Una Tarea
+sin `descripcion` lleva solo un resumen automático (qué se valora y cómo se entrega) y el script avisa.
+
 **Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`): en cada PR
 que toca una SdA se adjuntan las de esas SdA y se enlazan en un comentario; al fusionar en `main` se regeneran todas en
 la publicación **«Copias de Moodle»** (`releases/tag/copias-moodle`), sustituyendo las anteriores. No se guardan en el
