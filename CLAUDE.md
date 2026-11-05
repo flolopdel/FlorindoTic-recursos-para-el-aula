@@ -119,6 +119,11 @@ que falten antes, vacíos); si existe vacío, toma el nombre y el bloque; si ya 
 solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T` o se
 pone `"tema": T` en el bloque `moodle` de `sda<N>.json`.
 
+El **nombre de cada Tarea** lleva entre paréntesis los criterios que evalúa (el `criterio` de la Tarea y los de las
+líneas de su rúbrica, en el orden de `materias[].criterios`), para pasarla a Séneca de un vistazo:
+«2.4 · El gato en coordenadas y la bailarina (CYR.2.1.3, CYR.2.2.1)». Lo añade el script; si el `nombre` del JSON ya
+termina con los códigos entre paréntesis, lo respeta.
+
 La **descripción de cada Tarea** se completa sola para que el alumnado sepa qué hacer aunque no lea el bloque:
 1. Una línea con sus sesiones, si es individual o en equipo, cómo se entrega y cómo se corrige.
 2. Un recuadro con los **documentos** que usa: las plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra
