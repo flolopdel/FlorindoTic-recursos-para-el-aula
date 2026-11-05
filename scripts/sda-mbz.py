@@ -5,8 +5,10 @@ Genera, sin necesidad de un Moodle, una copia de curso en formato Moodle 4.1 (se
 posterior) que contiene solo una sección (tema), visible, con:
   - el nombre de la SdA («SdA 2: Código en Acción…», de meta.titulo) y, como descripción de la sección,
     el bloque HTML de la SdA (moodle.html);
-  - todas las Tareas de la SdA (X.1, X.2…), ocultas, con su descripción (más los enlaces «Ver» y «Copiar a mi Drive»
-    de las plantillas del anexo que usa cada una), tipo de entrega y calificación:
+  - todas las Tareas de la SdA (X.1, X.2…), ocultas, con una descripción completa para el alumnado (sesiones, forma de
+    entrega y corrección; la descripción del JSON; los documentos que usa con «Ver» y «Copiar a mi Drive»; el paso a
+    paso de las prácticas de sus sesiones con enlaces a la web de clase y a los laboratorios; teoría y guía para
+    repasar) y los PDF del repositorio que usa como archivos adjuntos; tipo de entrega y calificación:
     escala «Apto / No apto» (No apto, Apto) o rúbrica 1-3-5-7-10 (0,75-7,5 en las líneas de presentación pública
     cuando la rúbrica lleva pesos 66/33), sin fechas de apertura, entrega ni límite (no generan avisos).
 No lleva foro de avisos, usuarios, grupos, bloques ni filtros. Se restaura con «Restaurar → Fusionar la copia de
@@ -19,7 +21,7 @@ siguiente libre del curso), usa --tema o pon "tema": T en el bloque "moodle" del
 
 Uso:  python scripts/sda-mbz.py sda<N>.json moodle.html sda<N>-moodle.mbz [--tema T]
 """
-import html, io, json, re, sys, tarfile, time, hashlib
+import html, io, json, os, re, sys, tarfile, time, hashlib
 
 NULL = '$@NULL@$'
 X = lambda s: html.escape(str(s), quote=False)
@@ -80,28 +82,166 @@ def documentos_por_tarea(d):
 
 
 def bloque_documentos(docs, papel=False):
+    """Recuadro con los documentos que necesita la Tarea, al principio de la descripción para que nadie se lo salte."""
     if not docs:
         return ''
     li = []
     for a in docs:
-        enl = ' · '.join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener">{X(t)}</a>' for t, u in enlaces_doc(a['enlace']) if not (papel and t == 'Copiar a mi Drive'))
+        enl = ' · '.join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener"><strong>{X(t)}</strong></a>'
+                         for t, u in enlaces_doc(a['enlace']) if not (papel and t == 'Copiar a mi Drive'))
         li.append(f'<li>{X(a.get("id", ""))} · {X(a.get("titulo", ""))}: {enl}</li>')
-    return '<p><strong>Documentos para esta Tarea:</strong></p>\n<ul>' + ''.join(li) + '</ul>'
+    nota = ('Te la damos impresa en clase; aquí puedes verla.' if papel else
+            'Pulsa «Copiar a mi Drive» para tener tu copia y trabajar en ella (con «Ver» solo la miras).')
+    return ('<div style="border-left:4px solid #1a73e8 !important;background:#eef4fd !important;padding:8px 14px !important;margin:10px 0 !important;border-radius:6px !important">'
+            '<p style="margin:4px 0 !important"><strong>📄 Documentos que necesitas para esta Tarea</strong></p>'
+            f'<ul style="margin:4px 0 !important">{"".join(li)}</ul><p style="margin:4px 0 !important;font-size:90% !important">{nota}</p></div>')
 
 
-def con_documentos(intro, docs, papel=False):
-    """Pone los documentos antes de «Cómo se entrega» (o al final si la descripción no lo tiene).
-    En las Tareas que se entregan en papel solo se enlaza «Ver»: la ficha se da impresa."""
-    b = bloque_documentos(docs, papel)
-    if not b:
-        return intro
-    m = re.search(r'<p>(?:<strong>)?C[oó]mo se entrega', intro)
-    return intro[:m.start()] + b + '\n' + intro[m.start():] if m else intro + '\n' + b
+def md(txt):
+    """Texto de diapositiva (**negrita**, `código`) → HTML seguro."""
+    t = X(txt)
+    t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
+    return re.sub(r'`([^`]+)`', r'<code>\1</code>', t)
 
 
-def tareas_de(d):
+def a_href(url, texto):
+    return f'<a href="{html.escape(url)}" target="_blank" rel="noopener">{X(texto)}</a>'
+
+
+def url_base(d, src):
+    """Dirección web de la carpeta de la SdA (para enlazar clase.html, la teoría y la guía del alumnado)."""
+    u = ((d.get('moodle') or {}).get('area_texto') or {}).get('url_clase') or ''
+    if u.startswith('http'):
+        return u.rsplit('/', 1)[0] + '/'
+    ruta = os.path.abspath(src).replace(os.sep, '/')
+    if '/content/' in ruta:
+        return 'https://florindotic.es/content/' + ruta.split('/content/', 1)[1].rsplit('/', 1)[0] + '/'
+    return ''
+
+
+def ventanas(d):
+    """Sesiones de cada Tarea: desde la sesión siguiente a la Tarea anterior hasta la suya, más las posteriores que su
+    actividad de Séneca incluya (p. ej. las presentaciones). Las sesiones posteriores que otra Tarea reclama en Séneca
+    no se repiten. Una Tarea puede fijarlas con "sesiones": [..] en el JSON."""
+    ses = arr(d.get('sesiones'))
+    pos = {s.get('n'): i for i, s in enumerate(ses)}
+    con = [(i, m) for i, s in enumerate(ses) for m in arr(s.get('moodle')) if m.get('recurso') == 'Tarea']
+    sen = {}
+    for a in arr((d.get('seneca') or {}).get('actividades')):
+        if a.get('tarea'):
+            sen[str(a['tarea'])] = [pos[n] for n in arr(a.get('sesiones')) if n in pos]
+    cod = lambda m: (re.match(r'\s*(\d+\.\d+)', m['nombre']) or [None, None])[1]
+    reclamadas = {}  # sesiones posteriores a su Tarea que una actividad de Séneca incluye
+    for i, m in con:
+        for j in sen.get(cod(m), []):
+            if j > i:
+                reclamadas[j] = m['nombre']
+    res, prev = {}, -1
+    for i, m in con:
+        if m.get('sesiones'):
+            idx = [pos[n] for n in arr(m['sesiones']) if n in pos]
+        else:
+            idx = set(range(prev + 1, i + 1)) | {j for j in sen.get(cod(m), []) if j > i}
+            idx = sorted(j for j in idx if reclamadas.get(j, m['nombre']) == m['nombre'])
+            if not idx:  # comparte sesión con la Tarea anterior: usa las sesiones que cite su texto («sesiones 3 a 5»)
+                txt = f"{m.get('uso', '')} {m.get('descripcion', '')}"
+                r = re.search(r'sesi[oó]n(?:es)?\s+(\d+)(?:\s*(?:a|-|–|y)\s*(\d+))?', txt, re.I)
+                if r:
+                    a, b = int(r.group(1)), int(r.group(2) or r.group(1))
+                    idx = [pos[n] for n in range(a, b + 1) if n in pos]
+                idx = idx or [i]
+        res[m['nombre']] = [ses[j] for j in idx]
+        prev = max(prev, i)
+    return res
+
+
+def nombre_enlace(u):
+    u = u.lower()
+    for clave, txt in (('laboratorio', 'Abrir el laboratorio'), ('forms.gle', 'Abrir el formulario'), ('docs.google.com/forms', 'Abrir el formulario'),
+                       ('scratch.mit.edu', 'Abrir en Scratch'), ('makecode', 'Abrir en MakeCode'), ('tinkercad', 'Abrir en Tinkercad'),
+                       ('youtu', 'Ver el vídeo'), ('.pdf', 'Abrir el PDF')):
+        if clave in u:
+            return txt
+    return 'Abrir el enlace'
+
+
+def paso_a_paso(sesiones, base):
+    """Lo que se hace en cada sesión de la Tarea: prácticas y pasos de la web de clase, con sus enlaces."""
+    out = []
+    for s in sesiones:
+        diap = [x for x in arr((s.get('clase') or {}).get('diapositivas')) if x.get('tipo') in ('practica', 'pasos')]
+        cab = f'<strong>Sesión {s.get("n")} · {X(s.get("titulo", ""))}</strong>'
+        if base:
+            cab += ' — ' + a_href(f'{base}clase.html#s{s.get("n")}', 'abrir la sesión en la web de clase')
+        out.append(f'<p>{cab}</p>')
+        if not diap:
+            continue
+        out.append('<ul>')
+        for x in diap:
+            li = f'<strong>{md(x.get("titulo", ""))}</strong>'
+            if x.get('enunciado'):
+                li += ': ' + md(x['enunciado'])
+            if x.get('pasos'):
+                li += '<ol>' + ''.join(f'<li>{md(p)}</li>' for p in arr(x['pasos'])) + '</ol>'
+            if x.get('enlace'):
+                li += ('' if x.get('pasos') else ' ') + '🔗 ' + ' · '.join(a_href(u, nombre_enlace(u) if t == 'Abrir' else t) for t, u in enlaces_doc(x['enlace']))
+            out.append(f'<li>{li}</li>')
+        out.append('</ul>')
+    return '\n'.join(out)
+
+
+def para_repasar(d, sesiones, carpeta, base):
+    """Teoría y apartados de la guía del alumnado relacionados con las sesiones de la Tarea."""
+    li, ns = [], {s.get('n') for s in sesiones}
+    for ap in arr((d.get('guia_alumnado') or {}).get('apartados')):
+        if ns & set(arr(ap.get('sesiones'))) and str(ap.get('id', '')).count('.') < 2 and base:
+            li.append(a_href(f'{base}guia-alumnado.html#a-{ap.get("id")}', f'Guía del alumnado · {ap.get("id")}. {ap.get("titulo", "")}'))
+    if base and carpeta and os.path.isfile(os.path.join(carpeta, 'teoria.html')):
+        li.append(a_href(f'{base}teoria.html', 'Teoría de la SdA'))
+    if base:
+        li.append(a_href(f'{base}clase.html', 'Web de clase de la SdA (todas las sesiones)'))
+    return '<ul>' + ''.join(f'<li>{x}</li>' for x in li) + '</ul>' if li else ''
+
+
+def adjuntos_de(m, docs, sesiones, carpeta):
+    """PDF y documentos del repositorio que se adjuntan a la Tarea: el "pdf" (o "adjunto") de sus plantillas, los
+    "adjuntos" de la Tarea y los PDF de la carpeta de la SdA que la Tarea o sus prácticas nombran o enlazan."""
+    if not carpeta:
+        return []
+    nombres = []
+    for a in docs:
+        nombres += arr(a.get('pdf')) + arr(a.get('adjunto'))
+    nombres += arr(m.get('adjuntos'))
+    texto = json.dumps(m, ensure_ascii=False) + json.dumps([s.get('clase') for s in sesiones], ensure_ascii=False)
+    for f in sorted(os.listdir(carpeta)):
+        if re.search(r'\.(pdf|docx|odt)$', f, re.I) and re.search(r'(?<![\w-])' + re.escape(f) + r'(?![\w-])', texto):
+            nombres.append(f)
+    res = []
+    for n in nombres:
+        ruta = os.path.normpath(os.path.join(carpeta, n))
+        if os.path.isfile(ruta) and ruta not in res:
+            res.append(ruta)
+    return res
+
+
+def ficha(m, sesiones, sin, grupos):
+    ns = [s.get('n') for s in sesiones]
+    rango = (f'Sesión {ns[0]}' if len(ns) == 1 else f'Sesiones {ns[0]}-{ns[-1]}') if ns else ''
+    quien = '👥 En equipo (entrega una persona por equipo)' if grupos else '👤 Individual'
+    como = '📝 En papel, en clase (no se sube nada a Moodle)' if sin else '📤 Se entrega aquí, en Moodle'
+    nota = '✅ Apto / No apto' if m.get('correccion') == 'apto' else ('📊 Rúbrica (nota de 1 a 10; la ves más abajo)' if m.get('correccion') == 'rubrica' else '')
+    datos = ' · '.join(x for x in (f'📅 {rango}' if rango else '', quien, como, nota) if x)
+    # el resumen solo cuando no hay descripción para el alumnado (la descripción ya empieza por qué se entrega)
+    uso = f'<p><strong>🎯 En esta Tarea:</strong> {md(m["uso"])}</p>\n' if m.get('uso') and not m.get('descripcion') else ''
+    return uso + f'<p>{datos}</p>'
+
+
+def tareas_de(d, src=None):
     res = []
     docs = documentos_por_tarea(d)
+    vent = ventanas(d)
+    carpeta = os.path.dirname(os.path.abspath(src)) if src else None
+    base = url_base(d, src) if src else ''
     for s in arr(d.get('sesiones')):
         for m in arr(s.get('moodle')):
             if m.get('recurso') != 'Tarea':
@@ -114,10 +254,26 @@ def tareas_de(d):
                   ('en papel' in fuente and 'texto' not in fuente and 'archivo' not in fuente and 'pdf' not in fuente)
             texto = not sin and bool(re.search(r'texto en l[ií]nea|\benlace\b|\burl\b', fuente))
             archivo = not sin and bool(re.search(r'\.pdf|\bpdf\b|archivo|fichero|\.sb3|\.hex|\.pkt|foto|imagen|v[ií]deo|captura', fuente))
-            t = {'nombre': m['nombre'], 'intro': con_documentos(intro_html(m.get('descripcion') or m.get('uso', '')), docs.get(m['nombre']), sin),
-                 'docs': len(docs.get(m['nombre']) or []),
+            grupos = 'entrega por grupos: sí' in cfg
+            mis_docs, ses_t = docs.get(m['nombre']) or [], vent.get(m['nombre']) or []
+            adj = adjuntos_de(m, mis_docs, ses_t, carpeta)
+            cuerpo = intro_html(m.get('descripcion') or '')
+            adj_txt = ('<p>📎 <strong>Archivos adjuntos:</strong> ' + ', '.join(X(os.path.basename(a)) for a in adj) +
+                       ' (los tienes al final de esta página, para descargar o imprimir).</p>') if adj else ''
+            partes = [ficha(m, ses_t, sin, grupos), bloque_documentos(mis_docs, sin), adj_txt, cuerpo]
+            pap = paso_a_paso(ses_t, base)
+            if pap:
+                partes.append('<p><strong>🧭 Paso a paso en las sesiones:</strong></p>\n' + pap)
+            rep = para_repasar(d, ses_t, carpeta, base)
+            if rep:
+                partes.append('<p><strong>📚 Para repasar:</strong></p>\n' + rep)
+            if m.get('correccion') == 'apto' and arr(m.get('cotejo')) and 'apto si' not in (m.get('descripcion') or '').lower():
+                partes.append('<p><strong>✅ Será Apto si:</strong></p><ul>' + ''.join(f'<li>{md(c)}</li>' for c in arr(m['cotejo'])) + '</ul>')
+            partes.append('<p><em>¿Tienes dudas? Repasa el bloque de la SdA al principio del tema o pregunta en clase.</em></p>')
+            t = {'nombre': m['nombre'], 'intro': '\n'.join(p for p in partes if p), 'adjuntos': adj,
+                 'docs': len(mis_docs),
                  'apto': m.get('correccion') == 'apto', 'texto': texto, 'archivo': archivo, 'sin': sin,
-                 'grupos': 'entrega por grupos: sí' in cfg, 'rubrica': []}
+                 'grupos': grupos, 'rubrica': []}
             if not (t['texto'] or t['archivo']) and not sin:
                 # no dice cómo se entrega: se activan las dos opciones para que el alumnado pueda entregar
                 t['texto'] = t['archivo'] = True
@@ -141,7 +297,7 @@ def main(src, snippet, out, NSEC=None):
     meta = d['meta']; num = meta.get('numero', '')
     NSEC = int(NSEC or (d.get('moodle') or {}).get('tema') or num or 1)
     bloque = open(snippet, encoding='utf-8').read().strip()
-    tareas = tareas_de(d)
+    tareas = tareas_de(d, src)
     ahora = int(time.time())
     F = {}  # ruta → contenido
 
@@ -151,6 +307,9 @@ def main(src, snippet, out, NSEC=None):
     tit = str(meta.get('titulo', '')).strip()
     nombre_sec = tit if re.match(r'(?i)sda\s*\d', tit) else f'SdA {num}: {tit}'
     gi_id = 2   # grade_item 1 = total del curso
+    ficheros, blobs = [], {}  # entradas de files.xml y contenido de files/xx/<sha1>
+    MIME = {'.pdf': 'application/pdf', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            '.odt': 'application/vnd.oasis.opendocument.text'}
     crit_id = lvl_id = 0
     rubtotal = 0
 
@@ -194,7 +353,24 @@ def main(src, snippet, out, NSEC=None):
             f'      <hidden>0</hidden>\n      <locked>0</locked>\n      <locktime>0</locktime>\n      <needsupdate>0</needsupdate>\n'
             f'      <timecreated>{ahora}</timecreated>\n      <timemodified>{ahora}</timemodified>\n      <grade_grades>\n      </grade_grades>\n'
             f'    </grade_item>\n  </grade_items>\n  <grade_letters>\n  </grade_letters>\n</activity_gradebook>')
-        F[f'activities/assign_{mid}/inforef.xml'] = xml(f'<inforef>\n  <grade_itemref>\n    <grade_item>\n      <id>{gid}</id>\n    </grade_item>\n  </grade_itemref>\n</inforef>')
+        refs = ''
+        for k, ruta in enumerate([None] + t.get('adjuntos', []) if t.get('adjuntos') else []):
+            datos = open(ruta, 'rb').read() if ruta else b''
+            sha = hashlib.sha1(datos).hexdigest()
+            fid = len(ficheros) + 1
+            nombre = os.path.basename(ruta) if ruta else '.'
+            mime = MIME.get(os.path.splitext(nombre)[1].lower(), 'application/octet-stream') if ruta else NULL
+            ficheros.append(f'  <file id="{fid}">\n    <contenthash>{sha}</contenthash>\n    <contextid>{CTX + mid}</contextid>\n'
+                            f'    <component>mod_assign</component>\n    <filearea>introattachment</filearea>\n    <itemid>0</itemid>\n'
+                            f'    <filepath>/</filepath>\n    <filename>{X(nombre)}</filename>\n    <userid>{NULL}</userid>\n    <filesize>{len(datos)}</filesize>\n'
+                            f'    <mimetype>{mime}</mimetype>\n    <status>0</status>\n    <timecreated>{ahora}</timecreated>\n    <timemodified>{ahora}</timemodified>\n'
+                            f'    <source>{X(nombre) if ruta else NULL}</source>\n    <author>{NULL}</author>\n    <license>{"unknown" if ruta else NULL}</license>\n'
+                            f'    <sortorder>0</sortorder>\n    <repositorytype>{NULL}</repositorytype>\n    <repositoryid>{NULL}</repositoryid>\n'
+                            f'    <reference>{NULL}</reference>\n  </file>')
+            if ruta:
+                blobs[f'files/{sha[:2]}/{sha}'] = datos
+            refs += f'\n  <fileref>\n    <file>\n      <id>{fid}</id>\n    </file>\n  </fileref>'
+        F[f'activities/assign_{mid}/inforef.xml'] = xml(f'<inforef>{refs}\n  <grade_itemref>\n    <grade_item>\n      <id>{gid}</id>\n    </grade_item>\n  </grade_itemref>\n</inforef>')
         if t['rubrica']:
             crits = ''
             for k, c in enumerate(t['rubrica']):
@@ -275,7 +451,7 @@ def main(src, snippet, out, NSEC=None):
         f'      <locked>0</locked>\n      <locktime>0</locktime>\n      <needsupdate>1</needsupdate>\n      <timecreated>{ahora}</timecreated>\n'
         f'      <timemodified>{ahora}</timemodified>\n      <grade_grades>\n      </grade_grades>\n    </grade_item>\n  </grade_items>\n  <grade_letters>\n  </grade_letters>\n'
         f'  <grade_settings>\n    <grade_setting id="">\n      <name>minmaxtouse</name>\n      <value>1</value>\n    </grade_setting>\n  </grade_settings>\n</gradebook>')
-    F['files.xml'] = xml('<files>\n</files>')
+    F['files.xml'] = xml('<files>\n' + '\n'.join(ficheros) + ('\n' if ficheros else '') + '</files>')
     F['completion.xml'] = xml('<course_completion>\n</course_completion>')
     F['groups.xml'] = xml('<groups>\n  <groupings>\n  </groupings>\n</groups>')
     F['outcomes.xml'] = xml('<outcomes_definition>\n</outcomes_definition>')
@@ -317,6 +493,7 @@ def main(src, snippet, out, NSEC=None):
 
     # ---------- empaquetar (tar.gz con índice, como hace Moodle)
     datos = {k: v.encode('utf-8') for k, v in F.items()}
+    datos.update(blobs)
     dirs = sorted({'/'.join(k.split('/')[:i]) + '/' for k in datos for i in range(1, k.count('/') + 1)})
     lineas = [f'{d}\td\t0\t?' for d in dirs] + [f'{k}\tf\t{len(v)}\t{ahora}' for k, v in sorted(datos.items())]
     indice = (f'Moodle archive file index. Count: {len(lineas)}\n' + '\n'.join(lineas) + '\n').encode('utf-8')
@@ -329,7 +506,8 @@ def main(src, snippet, out, NSEC=None):
             add(k, v)
     ndocs = sum(t['docs'] for t in tareas)
     print(f'MBZ: {out} · tema {NSEC} «{nombre_sec}» con el bloque HTML · {len(tareas)} Tareas ({sum(t["apto"] for t in tareas)} Apto / No apto, {rubtotal} con rúbrica)'
-          + (f' · {ndocs} enlaces a documentos' if ndocs else ''))
+          + (f' · {ndocs} enlaces a documentos' if ndocs else '')
+          + (f' · {len(blobs)} archivos adjuntos' if blobs else ''))
     for t in tareas:
         if t['sin']:
             print(f'  aviso: «{t["nombre"]}» no tiene tipo de entrega (su config dice «ninguno» o en papel): en Moodle no se sube nada')
