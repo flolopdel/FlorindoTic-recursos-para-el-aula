@@ -87,10 +87,11 @@ content/
 
 ## Páginas fijadas del portal
 
-- `js/app.js` permite fijar cualquier página con el botón 📌 de la barra superior; aparecen en «Fijados», bajo el
-  buscador, y se quitan desde ahí. Cada navegador las guarda en `localStorage`, sin llamar al servidor.
-- Con la clave de las marcas de sesión, las del docente se sincronizan en la hoja «Fijados», a través de la misma
-  aplicación web (`scripts/marcas-sesion.gs`). A diferencia de las marcas, leerlas también pide la clave.
+- Solo el docente fija páginas: el botón 📌 de la barra superior y el apartado «Fijados», bajo el buscador, aparecen
+  en los navegadores con la clave de las marcas de sesión (se introduce en «Acceso docente», al pie de la barra lateral).
+  Sin clave, el portal no llama al servidor.
+- Se guardan en la hoja «Fijados», a través de la misma aplicación web (`scripts/marcas-sesion.gs`), y así se ven en
+  cualquier navegador. A diferencia de las marcas, leerlas también pide la clave.
 - La URL `/exec` está en `ENDPOINT` en `js/app.js` y en `js/marcas-sesion.js`: si cambia, hay que actualizar las dos.
 
 ## Material para imprimir
