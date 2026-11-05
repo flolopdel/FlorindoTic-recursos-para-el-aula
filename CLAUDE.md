@@ -155,12 +155,8 @@ sin `descripcion` lleva solo un resumen automático (qué se valora y cómo se e
 
 **Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`), solo al fusionar
 en `main`: se regeneran todas en la publicación **«Copias de Moodle»** (`releases/tag/copias-moodle`), sustituyendo las
-anteriores, y las que han cambiado se suben a una carpeta de **Google Drive**. En cada PR que toca una SdA solo se comprueba
+anteriores. En cada PR que toca una SdA solo se comprueba
 que se pueden generar y un comentario dice cuáles se crearán. No se guardan en el repositorio ni se editan a mano.
-
-La subida a Drive va por una aplicación web propia (`scripts/copias-drive.gs`, allí están los pasos para instalarla) y
-`scripts/subir-copias-drive.py`. Sus secretos de GitHub son `COPIAS_DRIVE_URL` y `COPIAS_DRIVE_CLAVE`: sin ellos, se omite
-la subida. Una copia solo se resube si cambia su huella, calculada de `sda<N>.json`, `moodle.html` y `scripts/sda-mbz.py`.
 
 ## Comprobar antes de abrir una PR
 
