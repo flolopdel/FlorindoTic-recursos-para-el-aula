@@ -41,6 +41,11 @@ const EXACT_LABELS = new Map([
   ['moodle', 'Bloque para Moodle'],
   ['cronometro-debate', 'Cronómetro del debate'],
   ['laboratorio-piedra-papel-tijera', 'Laboratorio: piedra, papel o tijera por radio'],
+  ['laboratorio-aula-futuro', 'Laboratorio: diseña el Aula del Futuro'],
+  ['laboratorio-rumba', 'Laboratorio: rumba en Scratch (Día del Flamenco)'],
+  ['laboratorio-scratch', 'Laboratorio: los retos de Scratch'],
+  ['laboratorio-roblox', 'Laboratorio: tu obby en Roblox'],
+  ['laboratorio-smart-city', 'Laboratorio: Smart City, diseño y alumbrado'],
 ]);
 
 function prettify(name) {
@@ -278,7 +283,7 @@ function landingPageTemplate({ title, description, backPath, items }) {
 
 async function walk(dir, relBase = '') {
   const entries = await fs.readdir(dir, { withFileTypes: true });
-  const inSda = relBase.split('/').some((seg) => /^sda\d+$/i.test(seg));
+  const inSda = relBase.split('/').some((seg) => /^sda(-r)?\d+$/i.test(seg));
 
   const dirs = [];
   for (const e of entries.filter((e) => e.isDirectory()).sort((a, b) => a.name.localeCompare(b.name, 'es'))) {
@@ -298,7 +303,6 @@ async function walk(dir, relBase = '') {
   const docenteChildren = [];
   const landingFolders = [];
   const landingFiles = [];
-  const landingDocente = [];
 
   for (const d of dirs) {
     const childPath = path.join(dir, d.name);
@@ -319,12 +323,13 @@ async function walk(dir, relBase = '') {
     const name = prettify(f.name.replace(/\.html$/i, ''));
     const docente = inSda && DOCENTE_FILES.has(f.name.toLowerCase());
     (docente ? docenteChildren : fileChildren).push({ type: 'file', name, path: `content/${rel}` });
-    (docente ? landingDocente : landingFiles).push({ type: 'file', name: docente ? `Docente · ${name}` : name, href: f.name });
+    // Las portadas son estáticas y las ve todo el mundo: el material docente solo se enlaza desde el menú.
+    if (!docente) landingFiles.push({ type: 'file', name, href: f.name });
   }
 
   // En una SdA: primero lo del alumnado (clase, guías, teoría), luego sesiones y al final el grupo «Docente».
   const children = inSda ? [...fileChildren, ...folderChildren] : [...folderChildren, ...fileChildren];
-  const landingItems = inSda ? [...landingFiles, ...landingFolders, ...landingDocente] : [...landingFolders, ...landingFiles];
+  const landingItems = inSda ? [...landingFiles, ...landingFolders] : [...landingFolders, ...landingFiles];
   if (docenteChildren.length) {
     children.push({ type: 'folder', name: 'Docente', path: `${relBase}/#docente`, children: docenteChildren });
   }

@@ -1,0 +1,133 @@
+# Copias de Moodle (.mbz) de las SdA, generadas siempre a partir de sda<N>.json y moodle.html.
+#  - En cada PR que toca una SdA: comprueba que se pueden generar y dice en un comentario cuáles se crearán al
+#    fusionar. No conserva ninguna copia.
+#  - Al fusionar en main: regenera todas y las deja en la publicación «Copias de Moodle» del repositorio
+#    (https://github.com/<repo>/releases/tag/copias-moodle), sustituyendo las anteriores, y sube a la carpeta de
+#    Google Drive las que han cambiado (scripts/copias-drive.gs explica cómo activarlo).
+# Las copias no se guardan en el repositorio ni se publican en la web.
+
+name: Copias de Moodle
+
+on:
+  pull_request:
+    paths:
+      - 'content/**/sda*/**'
+      - 'content/**/recuperacion/**'
+      - 'scripts/sda-mbz*.py'
+      - '.github/workflows/copias-moodle.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'content/**/sda*/**'
+      - 'content/**/recuperacion/**'
+      - 'scripts/sda-mbz*.py'
+      - 'scripts/subir-copias-drive.py'
+      - '.github/workflows/copias-moodle.yml'
+  workflow_dispatch:     # botón "Run workflow" para regenerarlas todas a mano
+
+permissions:
+  contents: write        # para actualizar la publicación «Copias de Moodle»
+  pull-requests: write   # para comentar en la PR
+
+concurrency:
+  group: copias-moodle-${{ github.ref }}
+  # En main no se cancela: cortar una subida a medias dejaría la publicación sin algunas copias.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Comprobar las copias que cambiarán, sin conservarlas
+        run: python scripts/sda-mbz-todas.py --simular --base=origin/${{ github.base_ref }} --md=copias.md
+
+      - name: Comentar en la PR
+        if: always() && hashFiles('copias.md') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tabla = require('fs').readFileSync('copias.md', 'utf8');
+            const body = [
+              '<!-- copias-moodle -->',
+              '### Copias de Moodle (.mbz)',
+              '',
+              tabla.startsWith('|') ? 'Estas son las copias que **se crearán al fusionar** esta PR. Aún no se ha guardado ninguna.' : '',
+              '',
+              tabla,
+              '',
+              'Al fusionar, quedarán en la publicación [Copias de Moodle](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/releases/tag/copias-moodle) y en la carpeta de Google Drive. Se restauran en el curso con «Restaurar» → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crean el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas ocultas y sin fechas.',
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const previo = comments.find((c) => c.body.includes('<!-- copias-moodle -->'));
+            if (previo) await github.rest.issues.updateComment({ owner, repo, comment_id: previo.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number, body });
+
+  main:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generar las copias de todas las SdA
+        id: generar
+        run: python scripts/sda-mbz-todas.py --out=copias-moodle --md=copias.md --huellas=huellas.json
+
+      - name: Actualizar la publicación «Copias de Moodle»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Copias de Moodle (.mbz) de cada SdA, regeneradas automáticamente desde \`main\` (commit ${GITHUB_SHA::7}, $(date -u '+%d/%m/%Y %H:%M') UTC). No se editan a mano: cambia la SdA y se regeneran solas."
+            echo ""
+            echo "Para importarla: en el curso, «Restaurar» → subir el .mbz → «Fusionar la copia de seguridad con este curso» → «Sobrescribir configuración del curso: No». Crea el tema indicado con el nombre y el bloque HTML de la SdA, y dentro las Tareas (ocultas y sin fechas)."
+            echo ""
+            cat copias.md
+          } > notas.md
+          if ! gh release view copias-moodle >/dev/null 2>&1; then
+            gh release create copias-moodle --title "Copias de Moodle" --notes-file notas.md --target "$GITHUB_SHA" --latest=false
+          else
+            gh release edit copias-moodle --notes-file notas.md --latest=false
+          fi
+          # quita las copias de SdA que ya no existen y sube las nuevas (sustituyendo las anteriores)
+          for a in $(gh release view copias-moodle --json assets -q '.assets[].name'); do
+            [ -f "copias-moodle/$a" ] || gh release delete-asset copias-moodle "$a" -y || echo "::warning::No se ha podido quitar $a"
+          done
+          # De una en una y con reintentos: --clobber borra la copia antes de subir la nueva, y un error
+          # pasajero de GitHub no debe impedir que se suban las demás.
+          errores=0
+          for f in copias-moodle/*.mbz; do
+            for intento in 1 2 3 4; do
+              gh release upload copias-moodle "$f" --clobber && break
+              if [ "$intento" = 4 ]; then
+                echo "::error::No se ha podido subir $(basename "$f") a la publicación"
+                errores=$((errores + 1))
+              else
+                sleep $((intento * 15))
+              fi
+            done
+          done
+          cat notas.md >> "$GITHUB_STEP_SUMMARY"
+          [ "$errores" = 0 ]
+
+      # Independiente de la publicación: si falla una, la otra se intenta igual y la ejecución sale en rojo.
+      - name: Subir a Google Drive las copias que han cambiado
+        if: ${{ !cancelled() && steps.generar.outcome == 'success' }}
+        env:
+          COPIAS_DRIVE_URL: ${{ secrets.COPIAS_DRIVE_URL }}
+          COPIAS_DRIVE_CLAVE: ${{ secrets.COPIAS_DRIVE_CLAVE }}
+        run: python scripts/subir-copias-drive.py copias-moodle huellas.json
