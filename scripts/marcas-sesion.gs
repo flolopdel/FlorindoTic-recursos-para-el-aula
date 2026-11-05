@@ -1,5 +1,6 @@
 // Marcas de sesión: guarda en una hoja de Google por qué sesión va cada grupo.
 // Las guías del profesorado las leen y escriben con js/marcas-sesion.js.
+// También guarda, en otra hoja, las páginas fijadas del docente en el portal (js/app.js).
 // Instalación (una sola vez):
 //   1. Crea una hoja de cálculo de Google y abre Extensiones → Apps Script.
 //   2. Pega este archivo, guarda y ejecuta la función instalar. Autoriza los permisos.
@@ -18,6 +19,9 @@
 
 const HOJA = 'Marcas';
 const CABECERA = ['Guía', 'Sesión', 'Grupo', 'Actualizado'];
+const HOJA_PINES = 'Fijados';
+const CABECERA_PINES = ['Página', 'Fijada'];
+const MAX_PINES = 60;
 const MAX_FALLOS = 5;
 const BLOQUEO_SEGUNDOS = 900;
 
@@ -40,6 +44,7 @@ function doPost(e) {
     return json_({ ok: false, error: 'datos' });
   }
   if (!d || typeof d !== 'object') return json_({ ok: false, error: 'datos' });
+  if (d.accion === 'pines') return pines_(d);
 
   const guia = String(d.guia || '');
   // Sin el arranque =, +, - o @ la hoja nunca lo interpreta como una fórmula.
@@ -61,6 +66,58 @@ function doPost(e) {
     lock.releaseLock();
   }
   return json_({ ok: true, marcas: leer_(guia) });
+}
+
+// Páginas fijadas del portal (js/app.js). A diferencia de las marcas, leerlas también pide la clave,
+// y por eso van por POST: la clave no debe viajar en una URL. Sin cambios, solo devuelve la lista.
+function pines_(d) {
+  const poner = rutas_(d.poner);
+  const quitar = rutas_(d.quitar);
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const rechazo = rechazoClave_(d.clave);
+    if (rechazo) return json_({ ok: false, error: rechazo });
+    if (!poner || !quitar) return json_({ ok: false, error: 'datos' });
+
+    const hoja = hojaPines_();
+    const pines = hoja.getDataRange().getDisplayValues().slice(1).map((f) => f[0]);
+    for (let i = pines.length - 1; i >= 0; i--) {
+      if (quitar.includes(pines[i])) {
+        hoja.deleteRow(i + 2);
+        pines.splice(i, 1);
+      }
+    }
+    for (const ruta of poner) {
+      if (pines.includes(ruta) || pines.length >= MAX_PINES) continue;
+      hoja.appendRow([ruta, new Date().toISOString().slice(0, 10)]);
+      pines.push(ruta);
+    }
+    return json_({ ok: true, pines });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Valida una lista de rutas. Empiezan por content/, así que la hoja no las toma por una fórmula.
+function rutas_(lista) {
+  if (lista === undefined) return [];
+  if (!Array.isArray(lista) || lista.length > MAX_PINES) return null;
+  const validas = lista.every((r) => typeof r === 'string' && /^content\/[^\x00-\x1f]{1,280}$/.test(r));
+  return validas ? lista : null;
+}
+
+function hojaPines_() {
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  let hoja = libro.getSheetByName(HOJA_PINES);
+  if (!hoja) {
+    hoja = libro.insertSheet(HOJA_PINES);
+    hoja.appendRow(CABECERA_PINES);
+    hoja.setFrozenRows(1);
+    hoja.getRange('A:B').setNumberFormat('@');
+  }
+  return hoja;
 }
 
 // Devuelve el motivo del rechazo, o null si la clave vale. Como CLAVE_FACIL es fácil de adivinar,
