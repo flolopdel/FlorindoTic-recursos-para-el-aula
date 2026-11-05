@@ -31,7 +31,8 @@ permissions:
 
 concurrency:
   group: copias-moodle-${{ github.ref }}
-  cancel-in-progress: true
+  # En main no se cancela: cortar una subida a medias dejaría la publicación sin algunas copias.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   pr:
@@ -83,6 +84,7 @@ jobs:
           python-version: '3.12'
 
       - name: Generar las copias de todas las SdA
+        id: generar
         run: python scripts/sda-mbz-todas.py --out=copias-moodle --md=copias.md --huellas=huellas.json
 
       - name: Actualizar la publicación «Copias de Moodle»
@@ -103,13 +105,28 @@ jobs:
           fi
           # quita las copias de SdA que ya no existen y sube las nuevas (sustituyendo las anteriores)
           for a in $(gh release view copias-moodle --json assets -q '.assets[].name'); do
-            [ -f "copias-moodle/$a" ] || gh release delete-asset copias-moodle "$a" -y
+            [ -f "copias-moodle/$a" ] || gh release delete-asset copias-moodle "$a" -y || echo "::warning::No se ha podido quitar $a"
           done
-          gh release upload copias-moodle copias-moodle/*.mbz --clobber
+          # De una en una y con reintentos: --clobber borra la copia antes de subir la nueva, y un error
+          # pasajero de GitHub no debe impedir que se suban las demás.
+          errores=0
+          for f in copias-moodle/*.mbz; do
+            for intento in 1 2 3 4; do
+              gh release upload copias-moodle "$f" --clobber && break
+              if [ "$intento" = 4 ]; then
+                echo "::error::No se ha podido subir $(basename "$f") a la publicación"
+                errores=$((errores + 1))
+              else
+                sleep $((intento * 15))
+              fi
+            done
+          done
           cat notas.md >> "$GITHUB_STEP_SUMMARY"
+          [ "$errores" = 0 ]
 
-      # Después de la publicación: si Drive falla, las copias ya están en GitHub y la ejecución sale en rojo.
+      # Independiente de la publicación: si falla una, la otra se intenta igual y la ejecución sale en rojo.
       - name: Subir a Google Drive las copias que han cambiado
+        if: ${{ !cancelled() && steps.generar.outcome == 'success' }}
         env:
           COPIAS_DRIVE_URL: ${{ secrets.COPIAS_DRIVE_URL }}
           COPIAS_DRIVE_CLAVE: ${{ secrets.COPIAS_DRIVE_CLAVE }}
