@@ -66,6 +66,11 @@ content/
 - `"hidden": true` en un `meta.json` oculta esa carpeta del menú (se publica igual).
 - Dentro de una SdA: `clase.html` primero, luego lo del alumnado, `sesiones/` y al final el grupo
   **Docente** (`guia-profesorado.html` y `moodle.html`).
+- El grupo **Docente** solo se ve en el portal con el acceso docente confirmado («Fijados sincronizados»). Sin él, esas
+  páginas tampoco salen en el buscador del portal, y las portadas `_pagina.html` no las enlazan nunca.
+- `scripts/build-site.mjs` les añade `noindex` al publicar y las deja fuera de `sitemap.xml` y `search-index.json`: no se
+  buscan por su contenido, solo por su título. Solo se ocultan: siguen siendo públicas para quien tenga la dirección, así
+  que no pongas ahí nada que no pueda ser público.
 - Etiquetas especiales de archivos: `EXACT_LABELS` en el script.
 
 ## Enlaces a Google Drive
