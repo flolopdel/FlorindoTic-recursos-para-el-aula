@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio: rumba en Scratch</title>
+<meta name="description" content="Laboratorio de la sesión bonus track de la SdA 2 de Computación y Robótica 2.º ESO para el Día del Flamenco: una rumba con la extensión Música de Scratch (piano, guitarra y, opcionalmente, palmero o palmera) que se ejecuta tiempo a tiempo, se estropea a propósito y con la que el alumnado compone su propia falseta.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --stage-line:#cbd5e1; --code-bg:#0f172a; --code-ink:#e2e8f0; --hueco:#f1f5f9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --stage-line:#334155; --code-bg:#020617; --hueco:#0b1220;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --stage-line:#334155; --code-bg:#020617; --hueco:#0b1220;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.retos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:0 0 14px;padding:0;list-style:none}
+.retos button{width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 12px;line-height:1.3}
+.retos button small{display:block;color:var(--muted);font-size:13px;font-weight:600}
+.retos button b{display:block}
+.retos button[aria-selected="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.retos .logro{float:right;font-size:13px;color:var(--ok);font-weight:800}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.banco-grid > *{min-width:0}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;border-radius:12px;overflow:hidden;border:2px solid var(--line);background:#fff}
+.escena:focus-visible{outline:3px solid var(--accent)}
+.escena svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton.bandera{background:#4caf50;color:#fff}
+.boton.parar{background:#ec5959;color:#fff}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:620px;flex:1;background:var(--hueco)}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);padding:6px 10px}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques de Scratch */
+.obj{margin:0 0 14px}
+.obj-cab{font-size:13px;font-weight:800;color:var(--ink2);margin:0 0 6px;display:flex;gap:6px;align-items:center}
+.obj-cab::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--c)}
+.obj-cab.cambiado{color:var(--ko)}
+.pila{margin:0 0 10px;font:600 13px/1.4 system-ui,sans-serif;display:inline-block;min-width:min(100%,230px);max-width:100%}
+.blk{--c:#4C97FF;background:var(--c);color:#fff;border-radius:5px;padding:5px 9px;margin:0 0 2px;position:relative;text-shadow:0 1px 0 rgba(0,0,0,.18);transition:box-shadow .12s}
+.blk.hat{border-radius:16px 16px 5px 5px;padding-top:9px}
+.blk.c{padding-bottom:7px}
+.blk .lin{display:block}
+.blk .cuerpo{margin:4px 0 4px 0;padding:4px 0 2px 14px;background:var(--hueco);border-radius:0 5px 5px 0;min-height:14px;text-shadow:none}
+.blk .cuerpo > .blk{margin-right:0}
+.pz{display:inline-block;border-radius:999px;padding:0 7px;margin:1px 2px;font-weight:700;vertical-align:middle;line-height:1.5}
+.pz.n{background:#fff;color:#575e75;text-shadow:none}
+.pz.d{background:rgba(0,0,0,.16)}
+.pz.rep{background:var(--c);color:#fff;border:1px solid rgba(0,0,0,.15)}
+.pz.bool{background:var(--c);color:#fff;border-radius:4px;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%);padding:0 12px;border:0}
+.sw{display:inline-block;width:18px;height:14px;border-radius:999px;border:2px solid #fff;vertical-align:middle}
+.hl{box-shadow:0 0 0 3px var(--hlc),0 0 12px var(--hlc)}
+.lin.hl{box-shadow:none;outline:3px solid var(--hlc);outline-offset:1px;border-radius:4px}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+.nuevo{outline:2px dashed var(--ok);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.hl{box-shadow:inset 4px 0 0 var(--hlc);background:rgba(255,255,255,.1)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.18)}
+pre.codigo span.obj-l{color:#94a3b8}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo,input.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 9px}
+input.campo.corto{width:5.2em}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr 1fr;margin-top:14px}
+@media(max-width:1100px){.paneles{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.vars{font-size:14px;margin:8px 0 0;color:var(--ink2)}
+.vars b{background:#FF8C1A;color:#fff;border-radius:6px;padding:0 6px;margin-right:4px}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:17px}
+.medida-item.mal .v{color:var(--ko)}.medida-item.bien .v{color:var(--ok)}
+.rompelo{margin-bottom:10px}
+.interruptor{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.interruptor input{margin-top:5px}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.ctl label{font-size:14px;font-weight:600}
+.objetivos{list-style:none;padding:0;margin:10px 0 0}
+.objetivos li{display:flex;gap:8px;align-items:flex-start;margin:6px 0;padding:7px 10px;border-radius:10px;background:var(--bg);font-size:15px}
+.objetivos li.hecho{background:var(--ok-bg)}
+.objetivos li .marca{font-weight:800;min-width:1.4em}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+.dos > *{min-width:0}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px;min-width:0}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px;min-width:0}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+code{background:var(--bg);border-radius:5px;padding:0 4px}
+@media print{.cab,.banco,.botonera{display:none}}
+/* ===== añadidos del laboratorio de la rumba ===== */
+.efem{display:grid;gap:14px;grid-template-columns:1.2fr 1fr;margin:0 0 16px}
+@media(max-width:820px){.efem{grid-template-columns:1fr}}
+.efem > div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;min-width:0}
+.efem h2{margin:0 0 6px;font-size:20px}
+.efem p{margin:6px 0}
+.aviso{background:var(--warm-bg);border-left:5px solid var(--warm)}
+.compas{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 0}
+.compas .tiempo{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--muted)}
+.compas .tiempo.fuerte{border-color:var(--warm)}
+.compas .tiempo.activo{background:var(--warm);color:#fff;border-color:var(--warm)}
+.compas .tiempo.palma{box-shadow:inset 0 0 0 3px var(--accent-soft)}
+.pianola-env{overflow-x:auto;margin-top:10px;border:1px solid var(--line);border-radius:12px}
+.pianola{border-collapse:collapse;font-size:12px;min-width:640px;width:100%}
+.pianola th,.pianola td{border:1px solid var(--line);padding:3px 2px;text-align:center;height:26px}
+.pianola th{font-weight:700;color:var(--muted);background:var(--bg)}
+.pianola th.fila{text-align:left;padding:3px 8px;white-space:nowrap;color:var(--ink2)}
+.pianola td.cab{font-weight:800;color:var(--muted)}
+.pianola td.cab.uno{color:var(--warm)}
+.pianola td.ahora{background:var(--brand-soft)}
+.pianola td.on{font-weight:800;color:var(--ink)}
+.pianola td.ok{background:var(--ok-bg);color:var(--ok)}
+.pianola td.ko{background:var(--ko-bg);color:var(--ko)}
+.pianola td.acorde{font-weight:800;color:var(--accent)}
+.editor{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
+@media(max-width:560px){.editor{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.editor fieldset{border:1px solid var(--line);border-radius:10px;padding:6px 8px;margin:0;min-width:0}
+.editor legend{font-size:13px;font-weight:800;color:var(--accent);padding:0 4px}
+.editor select{width:100%;margin:2px 0;font-size:13px;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+.editor select.tono{border-color:var(--ok);font-weight:700}
+.palmas-btn{background:var(--accent);color:#fff}
+.sonido{font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">Laboratorio: rumba en Scratch <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· Día del Flamenco · SdA 2 · Computación y Robótica 2.º ESO</span></div>
+    <a class="tb" href="clase.html#s19">📽 Clase</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 2 · Código en Acción</a> / <a href="clase.html#s19">Sesión 19 · Bonus track</a> / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Sesión bonus track · laboratorio de ampliación de la SdA 2 · 16 de noviembre, Día del Flamenco</p>
+  <h1>Rumba en Scratch: piano y guitarra a compás</h1>
+  <p class="lab-sub">Un piano que lleva los acordes, una guitarra que toca la falseta y, si quieres, un palmero o palmera. Cada uno es un objeto de Scratch con su propio programa de la extensión <b>Música</b>. Mira cómo se ponen de acuerdo para sonar a la vez, estropéalo a propósito para oír qué falla, compón tu propia falseta y móntalo después en Scratch.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>2.º ESO · sesión bonus track (después de la sesión 18)</dd></div>
+    <div><dt>Material</dt><dd>Un ordenador con Scratch y auriculares (o el altavoz del aula)</dd></div>
+    <div><dt>Programa</dt><dd>Extensión Música, eventos y mensajes, bucles, variables y condicionales</dd></div>
+    <div><dt>Referencia</dt><dd>Código y traducción oficial de la extensión Música de Scratch 3</dd></div>
+  </dl>
+</header>
+
+<section class="efem" aria-label="El Día del Flamenco">
+  <div>
+    <h2>💃 16 de noviembre, Día del Flamenco</h2>
+    <p>El 16 de noviembre de 2010 la UNESCO declaró el flamenco <b>Patrimonio Cultural Inmaterial de la Humanidad</b>, y desde el año siguiente Andalucía celebra ese día como el <b>Día del Flamenco</b>.</p>
+    <p>Paco de Lucía (Algeciras, 1947-2014) llevó la guitarra flamenca a todo el mundo. Su rumba <b>«Entre dos aguas»</b> (disco <i>Fuente y caudal</i>, 1973) es una de las piezas flamencas más conocidas. Escuchadla antes de empezar: ¿qué instrumentos oís? ¿Dónde caen las palmas?</p>
+    <p><a class="boton sec peq" style="display:inline-block;text-decoration:none" href="https://www.youtube.com/watch?v=U9cIIysvmss" target="_blank" rel="noopener">▶️ Escuchar «Entre dos aguas» en YouTube</a></p>
+  </div>
+  <div class="aviso">
+    <h2>©️ ¿Por qué no programamos su melodía?</h2>
+    <p>«Entre dos aguas» tiene <b>derechos de autor</b>: copiar su melodía nota a nota en un proyecto que publicamos sería usar una obra sin permiso, como vimos con las licencias en la sesión 11.</p>
+    <p>Lo que sí es de todos es el <b>idioma</b> del flamenco: el compás de la rumba, las palmas a contratiempo y la <b>cadencia andaluza</b> (La menor, Sol, Fa, Mi). Con eso compones <b>tu propia falseta</b>, que es tuya y puedes publicar con tu licencia.</p>
+  </div>
+</section>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong>El tablao (escenario de Scratch)</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optPalmero" aria-pressed="true">👏 Con palmero/a</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+          <button type="button" id="optSonido" aria-pressed="true">🔊 Sonido</button>
+        </div>
+      </div>
+      <div class="escena" id="escena" tabindex="0" aria-describedby="escenaAyuda">
+        <svg id="svg" viewBox="0 0 480 360" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">Tablao flamenco con los objetos de Scratch: el piano, la guitarra y, si está activado, el palmero o palmera. Arriba, el tempo, los cuatro tiempos del compás y el acorde que suena.</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera" aria-label="Eventos de Scratch">
+        <button type="button" class="boton bandera" id="btnBandera">🏁 Bandera verde</button>
+        <button type="button" class="boton parar" id="btnParar">⏹ Detener</button>
+        <button type="button" class="boton palmas-btn" id="btnPalmas">👏 Tus palmas (espacio)</button>
+        <button type="button" class="boton sec" id="btnG" hidden>Tecla g</button>
+      </div>
+      <p class="escena-pie" id="escenaAyuda">Pulsa un objeto para saber qué hace. Con el palmero o palmera activado, haz clic en el tablao y usa la barra espaciadora para dar tus palmas: puntúan en los tiempos 2 y 4.</p>
+      <div class="compas" aria-label="Compás">
+        <span style="font-size:14px;font-weight:700">Compás</span>
+        <span class="tiempo fuerte" data-t="1">1</span><span class="tiempo palma" data-t="2">2</span><span class="tiempo" data-t="3">3</span><span class="tiempo palma" data-t="4">4</span>
+        <span class="sonido" id="acordeTxt"></span>
+      </div>
+      <div class="pianola-env"><table class="pianola" aria-label="Lo que toca cada objeto en los 16 tiempos de una vuelta"><thead id="pianolaCab"></thead><tbody id="pianola"></tbody></table></div>
+    </div>
+
+    <aside class="programa" aria-label="El programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Formato del programa">
+          <button type="button" role="tab" id="tabBloques" aria-selected="true">Bloques</button>
+          <button type="button" role="tab" id="tabPseudo" aria-selected="false">Pseudocódigo</button>
+        </div>
+        <div class="seg" id="idioma" aria-label="Idioma de los bloques">
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <div class="leyenda-hl" id="leyenda"></div>
+      <div class="programa-cuerpo">
+        <div id="bloques"></div>
+        <pre class="codigo" id="pseudo" hidden></pre>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiarPseudo">Copiar pseudocódigo</button>
+        <button type="button" class="boton sec peq" id="copiarBloques">Copiar los bloques como texto</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar paso a paso</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.5">Cámara lenta (× 0,5)</option>
+          <option value="1" selected>Tiempo real</option>
+          <option value="2">Rápido (× 2)</option>
+        </select>
+        <label for="tempo" style="font-size:14px;font-weight:600">«dar al tempo el valor»</label>
+        <input class="campo corto" id="tempo" type="number" min="1" max="999" step="1" value="110">
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases del programa"></ol>
+      <p class="narracion" id="narracion" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Objeto</th><th>Bloque</th><th>Instrumento</th><th>Suena</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <p class="vars" id="vars"></p>
+      <div class="medidas" id="medidas"></div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo" id="fallos"></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+    <section class="panel-lab" aria-labelledby="tReto">
+      <h2 id="tReto">El reto</h2>
+      <p style="margin:0 0 4px;font-size:15px"><b>Compón tu falseta.</b> Elige una nota (o silencio) para cada tiempo. Las notas en <b style="color:var(--ok)">verde</b> son del acorde que toca el piano.</p>
+      <div class="editor" id="editor"></div>
+      <button type="button" class="boton sec peq" id="falsetaOriginal">Volver a la falseta del ejemplo</button>
+      <ul class="objetivos" id="objetivos" aria-live="polite"></ul>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">Los bloques de Música cuentan en <b>tiempos</b> y el tempo es <b>uno solo para todo el proyecto</b>: si el piano y la guitarra empiezan con el mismo mensaje y cada vuelta de su bucle dura lo mismo, suenan a compás aunque cambies el tempo.</p>
+  <div class="dos">
+    <div>
+      <h3 style="margin:0 0 6px">El piano: la cadencia andaluza en 16 tiempos</h3>
+      <div class="tabla-envoltura"><table class="reglas">
+        <thead><tr><th>Compás</th><th>Acorde</th><th>Arpegio del piano</th><th>Notas del acorde</th><th>Tiempos</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>La menor</td><td>57 · 60 · 64 · 60</td><td>La · Do · Mi</td><td>4</td></tr>
+          <tr><td>2</td><td>Sol</td><td>55 · 59 · 62 · 59</td><td>Sol · Si · Re</td><td>4</td></tr>
+          <tr><td>3</td><td>Fa</td><td>53 · 57 · 60 · 57</td><td>Fa · La · Do</td><td>4</td></tr>
+          <tr><td>4</td><td>Mi</td><td>52 · 56 · 59 · 56</td><td>Mi · Sol# · Si</td><td>4</td></tr>
+          <tr><th colspan="4">Una vuelta</th><th>16</th></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3 style="margin:0 0 6px">Cuenta los tiempos de cada bucle</h3>
+      <p>Piano: 16 notas de 1 tiempo = <b>16</b>. Guitarra: 16 casillas de 1 tiempo = <b>16</b>. Palmero/a: 1 + 1 + 1 + 1 = <b>4</b> (un compás).</p>
+      <p>Como 16 es múltiplo de 4, cuando el piano y la guitarra empiezan una vuelta, el palmero o palmera vuelve a estar en el tiempo 1. Si un bucle suma un tiempo de más o de menos, se va separando del resto en cada vuelta.</p>
+      <p>Las notas son números MIDI: <b>60</b> es el Do central y cada número es un semitono. El Sol# (56 o 68) del acorde de Mi es lo que le da el «sabor» andaluz.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Contar mal los tiempos de una vuelta</h2>
+  <div class="dos">
+    <div>
+      <p>Al copiar los bloques del piano es fácil dejar una nota <b>durante 2 tiempos</b> en vez de 1. Cada bloque funciona bien por separado, pero la vuelta del piano dura 17 tiempos y no 16.</p>
+      <p>En la primera vuelta casi no se nota; en la segunda, el piano cambia de acorde <b>un tiempo después</b> que la guitarra; en la cuarta ya va cuatro tiempos por detrás y suena «a otra canción». El programa no da ningún error: hay que <b>escuchar</b> y <b>contar</b>.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Activa el fallo, deja sonar dos o tres vueltas en automático y mira en la pianola cómo la fila del piano se retrasa. En «Lo que pasa dentro» verás el desfase en tiempos.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica en Scratch</p>
+  <h2 id="tPractica">Monta tu rumba en Scratch</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li>Crea un proyecto nuevo y añade la extensión <b>Música</b> (botón azul «Añadir extensión», abajo a la izquierda).</li>
+      <li>Dibuja en el editor de disfraces dos objetos: <b>Piano</b> y <b>Guitarra</b>. Si quieres palmas, añade un tercero: <b>Palmero/a</b>. Nada de fotos de personas.</li>
+      <li>En el <b>escenario</b>, una <b>pantalla de inicio</b> como la de tu videojuego: al hacer clic en la bandera, «cambiar fondo a Inicio» (con el texto «Haz clic para empezar»); <b>al hacer clic en este escenario</b>, «dar al tempo el valor 110», «cambiar fondo a Tablao» y «enviar ¡a compás!» (con palmero/a, también Puntos a 0). En el laboratorio, el botón de la bandera hace las dos cosas a la vez.</li>
+      <li>Anota qué <b>evento</b> pone en marcha cada objeto: la bandera, el clic en el escenario, la tecla espacio del palmero/a o «al recibir ¡a compás!».</li>
+      <li>El piano y la guitarra empiezan con <b>«al recibir ¡a compás!»</b>, fijan su instrumento y repiten su parte con <b>«por siempre»</b>. Copia los bloques del laboratorio (botón «Copiar los bloques como texto»).</li>
+      <li>Compón tu <b>falseta</b> para la guitarra: 16 tiempos con notas del modo (Mi, Fa, Sol, Sol#, La, Si, Do, Re). Pruébala antes aquí, en el reto.</li>
+      <li>Opcional: el palmero o palmera da palmas en los tiempos 2 y 4 y lleva la cuenta en la variable <b>pulso</b>; tus palmas con la barra espaciadora suman <b>Puntos</b> si caen en 2 o 4.</li>
+      <li>Provoca dos fallos del laboratorio en tu proyecto, anota qué pasa y arréglalos.</li>
+      <li>En «Notas y créditos» escribe: «Música original de [vuestros nombres de usuario], inspirada en la rumba flamenca». Comparte el proyecto en el estudio de la clase.</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de entregar</h3>
+      <ul class="comprobacion" id="comprobacion"></ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Se entrega en la <b>Tarea 2.10 · Bonus track: rumba en Scratch</b>: el enlace del proyecto compartido y un texto con la tabla de tu falseta, los dos fallos que provocaste y cómo los arreglaste.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false"></form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de Scratch y de su código</h3><ul>
+      <li>Los textos de los bloques en español e inglés son los de la traducción oficial: «tocar nota 60 durante 0.5 tiempos», «tocar tambor (8) Palmada durante 1 tiempos», «silencio de 1 tiempos», «fijar instrumento a (4) Guitarra», «dar al tempo el valor 60».</li>
+      <li>La duración de los bloques de Música se mide en tiempos: un tiempo dura 60 / tempo segundos.</li>
+      <li>El tempo se guarda en el <b>escenario</b>, así que es el mismo para todos los objetos; el instrumento, en cambio, es propio de cada objeto.</li>
+      <li>Scratch limita el tempo entre <b>20 y 500</b>: si escribes 800, toca a 500. Las duraciones se limitan entre 0 y 100 tiempos y las notas entre 0 y 130.</li>
+      <li>Si un objeto no fija su instrumento, toca con el <b>(1) Piano</b>.</li>
+      <li>Los números del tambor y de los instrumentos (8 Palmada, 1 Piano, 4 Guitarra) son los de la extensión.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>Los sonidos se sintetizan en el navegador: no son las muestras de Scratch, y la «Guitarra» de Scratch no suena como una guitarra flamenca.</li>
+      <li>Scratch revisa sus programas unas 30 veces por segundo, así que cada nota puede terminar unos milisegundos tarde; aquí el tiempo es exacto.</li>
+      <li>«pulso» cambia al principio de cada tiempo: una palmada tuya cuenta como «a compás» si cae en cualquier momento de los tiempos 2 o 4. En el baile real hay que ser mucho más preciso.</li>
+      <li>Los dibujos son propios, no de la biblioteca de Scratch. En «Paso a paso», cada clic avanza un tiempo para todos los objetos a la vez.</li>
+      <li>No se ha comprobado cuántas notas a la vez admite Scratch en un ordenador del aula; el código fija un máximo de 30 sonidos simultáneos.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js" target="_blank" rel="noopener">scratch-vm, src/extensions/scratch3_music/index.js</a>: tempo en el escenario, límites de tempo (20-500), de tiempos (0-100) y de notas (0-130), instrumentos y tambores.</li>
+    <li>Scratch Foundation. <a href="https://github.com/scratchfoundation/scratch-l10n" target="_blank" rel="noopener">scratch-l10n</a> (editor/extensions/es.json y en.json): textos de los bloques de Música.</li>
+    <li>Turismo de Andalucía. <a href="https://www.andalucia.org/actividades-y-atracciones/flamenco/patrimonio-mundial/" target="_blank" rel="noopener">El flamenco, Patrimonio de la Humanidad</a>: declaración de la UNESCO del 16 de noviembre de 2010 y Día del Flamenco en Andalucía.</li>
+    <li>Wikipedia. <a href="https://en.wikipedia.org/wiki/Fuente_y_caudal" target="_blank" rel="noopener">Fuente y caudal</a>: disco de 1973 de Paco de Lucía que abre con la rumba «Entre dos aguas».</li>
+    <li>Biografías y Vidas. <a href="https://www.biografiasyvidas.com/biografia/l/lucia.htm" target="_blank" rel="noopener">Paco de Lucía</a>.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s18"><small>Anterior</small>Sesión 18. Feria de Videojuegos Sostenibles (II)</a>
+  <a href="clase.html#s19"><small>Web de clase</small>Sesión 19 · Bonus track: rumba en Scratch</a>
+  <a href="../../comunes/pensamiento-computacional.html"><small>Repasa</small>Pensamiento computacional</a>
+</nav>
+<p class="pie">Laboratorio de la SdA 2 «Código en Acción: Videojuegos e Historias Interactivas Sostenibles» de Computación y Robótica 2.º ESO, para celebrar el Día del Flamenco. La falseta y el arpegio del ejemplo son originales y la cadencia andaluza es de uso común; el laboratorio no contiene ninguna melodía de «Entre dos aguas». Scratch es un proyecto de la Scratch Foundation (scratch.mit.edu); este laboratorio no está hecho ni respaldado por ella.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CAT = {control:'#FFAB19', eventos:'#FFBF00', operadores:'#59C059', variables:'#FF8C1A', apariencia:'#9966FF', musica:'#0FBD8C'};
+const NOMBRE = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const nota = m => NOMBRE[m % 12] + (Math.floor(m / 12) - 1);
+const nombreNota = m => NOMBRE[m % 12];
+const TAMBOR = {8:['(8) Palmada', '(8) Hand Clap', '👏']};
+const INSTR = {1:['(1) Piano', '(1) Piano'], 4:['(4) Guitarra', '(4) Guitar']};
+const ACORDES = [{n:'La menor', tonos:[9, 0, 4]}, {n:'Sol', tonos:[7, 11, 2]}, {n:'Fa', tonos:[5, 9, 0]}, {n:'Mi', tonos:[4, 8, 11]}];
+const ARPEGIO = [57, 60, 64, 60,  55, 59, 62, 59,  53, 57, 60, 57,  52, 56, 59, 56];
+const MODO = [64, 65, 67, 68, 69, 71, 72, 74, 76];
+const FALSETA0 = [76, 74, 72, 69,  74, 71, 67, 71,  72, 69, 65, 69,  71, 68, 64, 0];
+let falseta = FALSETA0.slice(), conPalmero = true;
+try { const g = JSON.parse(localStorage.getItem('lab-rumba-falseta') || 'null'); if (Array.isArray(g) && g.length === 16 && g.every(x => x === 0 || MODO.includes(x))) falseta = g; } catch(e){}
+try { if (localStorage.getItem('lab-rumba-palmero') === 'no') conPalmero = false; } catch(e){}
+
+/* ============================================================ fallos */
+const FALLOS = [
+  {id:'sinBucle', txt:'Quitar el «por siempre» del piano', exp:'<b>El piano toca una vuelta y se calla.</b> Sin bucle, sus 16 notas suenan una sola vez: la guitarra sigue sola y su falseta pierde los acordes que la sostienen.'},
+  {id:'cuentaMal', txt:'Piano: la última nota del Sol dura 2 tiempos', exp:'<b>El piano se retrasa un tiempo en cada vuelta.</b> Su bucle dura 17 tiempos y el de la guitarra 16: cada vuelta cambian de acorde en momentos distintos y suena desafinado aunque todas las notas sean correctas.'},
+  {id:'sinMensaje', txt:'Guitarra: empieza «al presionar tecla g»', exp:'<b>La guitarra no empieza con el piano.</b> Arranca cuando pulsas g, casi nunca justo al principio de un tiempo: queda desplazada para siempre. Por eso todos los instrumentos empiezan con el mismo mensaje.'},
+  {id:'sinInstrumento', txt:'Guitarra: quitar «fijar instrumento a (4) Guitarra»', exp:'<b>La falseta también suena con piano.</b> El instrumento es propio de cada objeto y, si no se fija, Scratch usa el (1) Piano: ahora no distingues la guitarra del acompañamiento. El ritmo no cambia, solo el timbre.'},
+  {id:'tempoLoco', txt:'Escenario: «dar al tempo el valor 800»', exp:'<b>Scratch no llega a 800.</b> Limita el tempo a 500: un tiempo dura 60 / 500 = 0,12 segundos y todo va a toda velocidad, pero sigue a compás porque todos usan el mismo tempo.'}
+];
+const F = {};
+FALLOS.forEach(f => F[f.id] = false);
+
+/* ============================================================ el programa
+   {n:5} número · {d:menú} desplegable · {v:var} variable · {b:…} condición */
+function tok(t){
+  return esc(t).replace(/\{([ndvb]):([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, (m, k, x) => {
+    if (k === 'n') return `<span class="pz n">${x}</span>`;
+    if (k === 'd') return `<span class="pz d">${x} ▾</span>`;
+    if (k === 'v') return `<span class="pz rep" style="--c:${CAT.variables}">${x}</span>`;
+    return `<span class="pz bool" style="--c:${CAT.operadores}">${x.replace(/\{v:([^}]*)\}/g, (q, y) => `<span class="pz rep" style="--c:${CAT.variables}">${y}</span>`).replace(/\{n:([^}]*)\}/g, (q, y) => `<span class="pz n">${y}</span>`)}</span>`;
+  });
+}
+const limpio = t => String(t).replace(/\{n:([^{}]*)\}/g, '($1)').replace(/\{v:([^{}]*)\}/g, '($1)').replace(/\{d:([^{}]*)\}/g, '[$1 v]').replace(/\{b:([^{}]*)\}/g, '<$1>');
+let uid = 0;
+const B = (cat, es, en, ps, extra = {}) => Object.assign({id:'b' + (++uid), cat, es, en, ps, beats:0}, extra);
+const tambor = (n, t) => B('musica', `tocar tambor {d:${TAMBOR[n][0]}} durante {n:${String(t).replace('.', ',')}} tiempos`, `play drum {d:${TAMBOR[n][1]}} for {n:${t}} beats`, `tocar palmada durante ${t} tiempo${t === 1 ? '' : 's'}`, {beats:t, drum:n});
+const tocaNota = (m, t, extra = {}) => B('musica', `tocar nota {n:${m}} durante {n:${t}} tiempos`, `play note {n:${m}} for {n:${t}} beats`, `tocar ${nota(m)} (${m}) durante ${t} tiempo${t === 1 ? '' : 's'}`, Object.assign({beats:t, note:m}, extra));
+const silencio = (t, extra = {}) => B('musica', `silencio de {n:${t}} tiempos`, `rest for {n:${t}} beats`, `silencio durante ${t} tiempo${t === 1 ? '' : 's'}`, Object.assign({beats:t, rest:true}, extra));
+const pulso = k => B('variables', `dar a {d:pulso} el valor {n:${k}}`, `set {d:pulso} to {n:${k}}`, `pulso = ${k}`, {pulso:k});
+const instr = k => B('musica', `fijar instrumento a {d:${INSTR[k][0]}}`, `set instrument to {d:${INSTR[k][1]}}`, `instrumento = ${INSTR[k][0].replace(/\(\d+\) /, '')}`, {instr:k});
+const siempre = cuerpo => B('control', 'por siempre', 'forever', 'por siempre:', {k:'siempre', cuerpo});
+const recibir = () => B('eventos', 'al recibir {d:¡a compás!}', 'when I receive {d:¡a compás!}', 'al recibir «¡a compás!»:', {hat:true});
+
+const SPR_TODOS = [
+  {key:'escenario', nombre:'Escenario', hl:'#FFBF00'},
+  {key:'piano', nombre:'Piano', hl:'#2563eb'},
+  {key:'guitarra', nombre:'Guitarra', hl:'#15803d'},
+  {key:'palmero', nombre:'Palmero/a', hl:'#7c3aed'}
+];
+const SPR = () => SPR_TODOS.filter(s => conPalmero || s.key !== 'palmero');
+let PROG = null;
+function programa(){
+  uid = 0;
+  const tempo = F.tempoLoco ? 800 : tempoPedido;
+  const e = [B('eventos', 'al hacer clic en 🏁', 'when 🏁 clicked', 'al pulsar la bandera:', {hat:true}),
+    B('musica', `dar al tempo el valor {n:${tempo}}`, `set tempo to {n:${tempo}}`, `tempo = ${tempo}`, {tempo, cambiado:F.tempoLoco}),
+    ...(conPalmero ? [B('variables', 'dar a {d:Puntos} el valor {n:0}', 'set {d:Puntos} to {n:0}', 'Puntos = 0', {puntos0:true})] : []),
+    B('eventos', 'enviar {d:¡a compás!}', 'broadcast {d:¡a compás!}', 'enviar «¡a compás!» a todos', {envia:true})];
+  const arp = ARPEGIO.map((m, i) => tocaNota(m, F.cuentaMal && i === 7 ? 2 : 1, {acorde:Math.floor(i / 4), slot:i, cambiado:F.cuentaMal && i === 7}));
+  const pia = F.sinBucle ? [recibir(), instr(1), ...arp.map(b => Object.assign(b, {cambiado:true}))] : [recibir(), instr(1), siempre(arp)];
+  const fal = falseta.map((m, i) => (m ? tocaNota(m, 1, {slot:i}) : silencio(1, {slot:i})));
+  const gHat = F.sinMensaje ? B('eventos', 'al presionar tecla {d:g}', 'when {d:g} key pressed', 'al pulsar la tecla g:', {hat:true, cambiado:true}) : recibir();
+  const gui = [gHat, ...(F.sinInstrumento ? [] : [instr(4)]), siempre(fal)];
+  const prog = {escenario:e, piano:pia, guitarra:gui};
+  if (conPalmero){
+    prog.palmero = [recibir(), siempre([pulso(1), silencio(1), pulso(2), tambor(8, 1), pulso(3), silencio(1), pulso(4), tambor(8, 1)])];
+    prog.espacio = [B('eventos', 'al presionar tecla {d:espacio}', 'when {d:space} key pressed', 'al pulsar espacio:', {hat:true}),
+      tambor(8, 0.25),
+      B('control', 'si {b:{v:pulso} = {n:2}} o {b:{v:pulso} = {n:4}} entonces', 'if {b:{v:pulso} = {n:2}} or {b:{v:pulso} = {n:4}} then', 'si pulso es 2 o 4:', {k:'si',
+        cuerpo:[B('variables', 'sumar a {d:Puntos} {n:1}', 'change {d:Puntos} by {n:1}', 'Puntos = Puntos + 1', {suma:true}), B('apariencia', 'decir {n:¡Olé!} durante {n:0,5} segundos', 'say {n:¡Olé!} for {n:0.5} seconds', 'decir «¡Olé!»', {ole:true})],
+        sino:[B('apariencia', 'decir {n:¡A destiempo!} durante {n:0,5} segundos', 'say {n:¡A destiempo!} for {n:0.5} seconds', 'decir «¡A destiempo!»', {destiempo:true})]})];
+  }
+  return prog;
+}
+
+/* ============================================================ sonido (Web Audio) */
+const AC = window.AudioContext || window.webkitAudioContext;
+let ctx = null, master = null, ruido = null, sonidoOn = true, activosSon = 0;
+const ksCache = {};
+function audio(){
+  if (!AC) return null;
+  if (!ctx){ ctx = new AC(); master = ctx.createGain(); master.gain.value = 0.6; master.connect(ctx.destination);
+    ruido = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = ruido.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+const ahora = () => (ctx ? ctx.currentTime : performance.now() / 1000);
+function limiteSon(dur){ if (activosSon >= 30) return false; activosSon++; setTimeout(() => activosSon--, dur * 1000 + 50); return true; }
+function cuerda(m, t, dur, piano){
+  if (!ctx || !sonidoOn || !limiteSon(dur)) return;
+  const f = 440 * Math.pow(2, (m - 69) / 12);
+  if (piano){
+    [1, 2.005].forEach((k, i) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'triangle'; o.frequency.value = f * k;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(i ? 0.05 : 0.22, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + Math.min(dur, 2) + 0.4);
+      o.connect(g).connect(master); o.start(t); o.stop(t + Math.min(dur, 2) + 0.5); });
+    return;
+  }
+  const key = m, sr = ctx.sampleRate, len = Math.floor(sr * 1.6);
+  if (!ksCache[key]){
+    const buf = ctx.createBuffer(1, len, sr), d = buf.getChannelData(0), N = Math.max(2, Math.round(sr / f));
+    for (let i = 0; i < N; i++) d[i] = (Math.random() * 2 - 1) * 0.5;
+    for (let i = N; i < len; i++) d[i] = 0.4985 * (d[i - N] + d[i - N + 1]);
+    ksCache[key] = buf;
+  }
+  const s = ctx.createBufferSource(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+  s.buffer = ksCache[key]; lp.type = 'lowpass'; lp.frequency.value = 3200;
+  g.gain.setValueAtTime(0.55, t); g.gain.setTargetAtTime(0.0001, t + Math.min(dur, 1.5), 0.08);
+  s.connect(lp).connect(g).connect(master); s.start(t); s.stop(t + Math.min(dur, 1.5) + 0.4);
+}
+function tamborSon(n, t){
+  if (!ctx || !sonidoOn || !limiteSon(0.4)) return;
+  if (n === 2){
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine';
+    o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.15);
+    g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    o.connect(g).connect(master); o.start(t); o.stop(t + 0.4); return;
+  }
+  const golpes = n === 8 ? [0, 0.009, 0.019] : [0];
+  golpes.forEach(dt => {
+    const s = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = ruido; bp.type = 'bandpass'; bp.frequency.value = n === 8 ? 1300 : 2400; bp.Q.value = n === 8 ? 1.2 : 3;
+    const v = n === 8 ? 0.9 : 0.6, dec = n === 8 ? 0.11 : 0.05;
+    g.gain.setValueAtTime(v, t + dt); g.gain.exponentialRampToValueAtTime(0.0001, t + dt + dec);
+    s.connect(bp).connect(g).connect(master); s.start(t + dt, Math.random() * 0.5); s.stop(t + dt + dec + 0.02);
+  });
+}
+
+
+/* ============================================================ el motor: tiempos, tempo y programas */
+let tempoPedido = 110, velocidad = 1;
+const clampTempo = v => Math.min(500, Math.max(20, +v || 60));
+const tempoEfectivo = () => clampTempo(F.tempoLoco ? 800 : tempoPedido);
+const bpm = () => tempoEfectivo() * velocidad;
+const T = {iniciado:false, corriendo:false, anclaT:0, anclaB:0, beat:0, limite:null, epoca:0};
+const beatEn = t => T.anclaB + (t - T.anclaT) * bpm() / 60;
+const tEn = b => T.anclaT + (b - T.anclaB) * 60 / bpm();
+let hilos = [], cola = [], modo = 'libre';
+const V = {pulso:0, Puntos:0};
+const EST = {};
+let arranques = {}, notas = [], malla = {}, palmasBien = 0, palmasMal = 0, cicloMalla = 0;
+function estadoInicial(){
+  SPR_TODOS.forEach(s => EST[s.key] = {bloque:null, suena:'—', dice:null, diceHasta:0, golpe:0, acorde:undefined});
+  V.pulso = 0; V.Puntos = 0; arranques = {piano:[], guitarra:[], palmero:[]}; notas = []; malla = {}; palmasBien = 0; palmasMal = 0; cicloMalla = 0;
+}
+function* recorre(lista){ for (const b of lista){ if (b.k === 'siempre'){ while (true) yield* recorre(b.cuerpo); } else if (!b.hat) yield b; } }
+function nuevoHilo(spr, beat){ const g = recorre(PROG[spr]); const h = {spr, g, sig:g.next().value, at:beat}; hilos.push(h); return h; }
+function bandera(){
+  audio(); reiniciaTransporte();
+  T.iniciado = true; T.corriendo = true; T.anclaT = ahora() + 0.08; T.anclaB = 0;
+  PROG.escenario.filter(b => !b.hat).forEach(b => encola(tEn(0), 'escenario', b, 0));
+  nuevoHilo('piano', 0);
+  if (conPalmero) nuevoHilo('palmero', 0);
+  if (!F.sinMensaje) nuevoHilo('guitarra', 0);
+  pintaBotones();
+}
+function teclaG(){
+  if (!F.sinMensaje || !T.corriendo || hilos.some(h => h.spr === 'guitarra')) return;
+  nuevoHilo('guitarra', Math.max(0, beatEn(ahora())));
+}
+function reiniciaTransporte(){ T.epoca++; T.iniciado = false; T.corriendo = false; T.beat = 0; T.limite = null; hilos = []; cola = []; estadoInicial(); pide(); }
+function encola(t, spr, b, beat){
+  const dur = b.beats * 60 / bpm();
+  if (b.drum) tamborSon(b.drum, t);
+  if (b.note) cuerda(b.note, t, dur, spr === 'piano' || (spr === 'guitarra' && F.sinInstrumento));
+  cola.push({t, ep:T.epoca, spr, b, beat, dur});
+}
+function avanza(){
+  if (!T.corriendo) return;
+  const horizonte = beatEn(ahora() + 0.12);
+  const lim = T.limite != null ? Math.min(horizonte, T.limite) : horizonte;
+  for (const h of hilos){
+    let guard = 0;
+    while (h.sig && h.at < lim - 1e-9 && guard++ < 200){
+      const b = h.sig;
+      if (b.slot === 0 && arranques[h.spr]) arranques[h.spr].push(h.at);
+      if (h.spr === 'palmero' && b.pulso === 1) arranques.palmero.push(h.at);
+      encola(tEn(h.at), h.spr, b, h.at);
+      h.at += b.beats; h.sig = h.g.next().value;
+    }
+  }
+  if (T.limite != null && beatEn(ahora()) >= T.limite){
+    T.beat = T.limite; T.corriendo = false; T.limite = null; narraPaso(Math.round(T.beat) - 1); pintaBotones();
+  }
+}
+setInterval(avanza, 25);
+
+/* tus palmas: el programa «al presionar tecla espacio» se ejecuta al momento, con el «pulso» que haya en ese instante */
+function palmas(){
+  if (!conPalmero){ narra('Activa <b>«Con palmero/a»</b>: sin él no hay variable «pulso» para saber en qué tiempo estás.'); return; }
+  if (!T.iniciado){ narra('Primero pulsa la <b>bandera verde</b>: sin ella no suena el compás y «pulso» vale 0.'); return; }
+  audio();
+  const t = ahora(), b = T.corriendo ? beatEn(t) : T.beat - 0.001;
+  tamborSon(8, t + 0.005);
+  const bien = V.pulso === 2 || V.pulso === 4, e = EST.palmero;
+  if (bien){ V.Puntos++; palmasBien++; e.dice = '¡Olé!'; } else { palmasMal++; e.dice = '¡A destiempo!'; }
+  e.diceHasta = performance.now() + 500; e.golpe = performance.now();
+  const si = PROG.espacio[2];
+  e.bloque = bien ? si.cuerpo[0].id : si.sino[0].id; e.suena = '👏 tu palmada';
+  vuelta(Math.max(0, b)); (malla.tu = malla.tu || {})[Math.floor(Math.max(0, b)) % 16] = bien ? '✔' : '✘';
+  if (V.Puntos >= 8) logro('palmas');
+  pide();
+}
+
+/* ============================================================ escena */
+const svg = $('#svg');
+svg.insertAdjacentHTML('beforeend', `
+<defs><pattern id="tablas" width="60" height="20" patternUnits="userSpaceOnUse"><rect width="60" height="20" fill="#b7793f"/><path d="M0 19.5 H60 M30 0 V20" stroke="#8a5a2b" stroke-width="1"/></pattern></defs>
+<rect width="480" height="250" fill="#fbeedd"/><path d="M40 250 V110 Q40 60 90 60 H390 Q440 60 440 110 V250" fill="#f6dcc0" stroke="#e0b98f" stroke-width="2"/>
+<rect y="250" width="480" height="110" fill="url(#tablas)"/>
+<g id="cabecera"></g><g id="gObjetos"></g><g id="gNotas"></g><g id="gBoc"></g>`);
+let verNombres = true;
+const POS = () => conPalmero ? {piano:[130, 236], guitarra:[290, 226], palmero:[410, 250]} : {piano:[160, 236], guitarra:[340, 226]};
+function dibujaObjeto(k){
+  const e = EST[k], [x, y] = POS()[k], s = SPR_TODOS.find(q => q.key === k);
+  const activo = e.bloque && T.iniciado ? `<circle r="48" fill="none" stroke="${s.hl}" stroke-width="2" stroke-dasharray="5 4"/>` : '';
+  const g = Math.max(0, 1 - (performance.now() - e.golpe) / 180);
+  let f = '';
+  if (k === 'piano'){
+    const tecla = e.tecla ?? -1;
+    f = `<rect x="-58" y="-48" width="116" height="62" rx="6" fill="#1f2937" stroke="#0f172a" stroke-width="2"/><rect x="-52" y="-42" width="104" height="22" rx="3" fill="#374151"/>` +
+      `<rect x="-58" y="14" width="116" height="26" fill="#111827"/>` +
+      Array.from({length:14}, (_, i) => `<rect x="${-56 + i * 8}" y="16" width="7.4" height="22" rx="1" fill="${i === tecla && g > 0 ? '#93c5fd' : '#fff'}" stroke="#94a3b8" stroke-width=".6"/>`).join('') +
+      [0, 1, 3, 4, 5, 7, 8, 10, 11, 12].map(i => `<rect x="${-51 + i * 8}" y="16" width="4.6" height="13" fill="#0f172a"/>`).join('') +
+      `<rect x="-52" y="40" width="6" height="18" fill="#1f2937"/><rect x="46" y="40" width="6" height="18" fill="#1f2937"/>`;
+  } else if (k === 'guitarra') f = `<g transform="rotate(20) scale(${1 + 0.05 * g})"><rect x="-4" y="-70" width="8" height="58" fill="#7c2d12"/><rect x="-7" y="-80" width="14" height="12" rx="2" fill="#451a03"/><circle cx="0" cy="-4" r="17" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="22" r="22" fill="#e8b26a" stroke="#7c2d12" stroke-width="2"/><circle cx="0" cy="4" r="7" fill="#3b1d0a"/><rect x="-9" y="28" width="18" height="4" fill="#7c2d12"/></g>`;
+  else if (k === 'palmero') f = `<circle cx="0" cy="-30" r="11" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/><path d="M-12 -18 L12 -18 L16 30 L-16 30 Z" fill="#0f172a"/>` +
+      `<g transform="translate(0 -6)"><ellipse cx="${-9 + 6 * g}" cy="0" rx="7" ry="10" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/><ellipse cx="${9 - 6 * g}" cy="0" rx="7" ry="10" fill="#c08457" stroke="#1e293b" stroke-width="1.5"/></g>` +
+      (g > 0.3 ? `<path d="M-22 -16 l-6 -6 M22 -16 l6 -6 M0 -22 v-8" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" opacity="${g}"/>` : '');
+  const nombre = verNombres ? `<text y="${k === 'piano' ? 74 : 58}" text-anchor="middle" font-size="12" font-weight="800" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(s.nombre)}</text>` : '';
+  return `<g class="svg-pieza" data-pieza="${k}" tabindex="0" role="button" aria-label="${esc(s.nombre)}: ver qué hace" transform="translate(${x} ${y})">${activo}${f}${nombre}</g>`;
+}
+let pedido = false;
+function pide(){ if (!pedido){ pedido = true; requestAnimationFrame(render); } }
+let ultimoCompas = -1;
+function render(){
+  pedido = false;
+  const t = ahora();
+  cola.sort((a, b) => a.t - b.t);
+  while (cola.length && cola[0].t <= t){ const ev = cola.shift(); if (ev.ep === T.epoca) aplica(ev); }
+  const b = T.corriendo ? Math.max(0, beatEn(t)) : T.beat;
+  const acorde = acordeAhora(), tb = T.iniciado ? Math.floor(b) % 4 + 1 : 0;
+  $('#cabecera').innerHTML = `<rect x="10" y="10" width="118" height="30" rx="8" fill="#fff" stroke="#e0b98f"/><text x="20" y="30" font-size="14" font-weight="800" fill="#0f766e">Tempo ${tempoEfectivo()}</text>` +
+    [1, 2, 3, 4].map(i => `<circle cx="${178 + (i - 1) * 32}" cy="25" r="12" fill="${tb === i ? '#c2410c' : '#fff'}" stroke="#c2410c" stroke-width="2"/><text x="${178 + (i - 1) * 32}" y="30" text-anchor="middle" font-size="13" font-weight="800" fill="${tb === i ? '#fff' : '#c2410c'}">${i}</text>`).join('') +
+    `<rect x="320" y="10" width="150" height="30" rx="8" fill="#fff" stroke="#e0b98f"/><text x="395" y="30" text-anchor="middle" font-size="14" font-weight="800" fill="#7c3aed">${T.iniciado && acorde ? esc(acorde) : 'Pulsa la bandera'}</text>`;
+  $('#gObjetos').innerHTML = Object.keys(POS()).map(dibujaObjeto).join('');
+  notas = notas.filter(n => t - n.t < 1.4);
+  $('#gNotas').innerHTML = notas.map(n => { const p = (t - n.t) / 1.4; return `<text x="${n.x + 14 * Math.sin(p * 5)}" y="${n.y - 60 * p}" font-size="15" font-weight="800" fill="${n.c}" opacity="${1 - p}" text-anchor="middle">♪ ${esc(n.txt)}</text>`; }).join('');
+  const ep = EST.palmero;
+  $('#gBoc').innerHTML = conPalmero && ep.dice && performance.now() < ep.diceHasta ? `<g><rect x="${448 - ep.dice.length * 8 - 22}" y="166" width="${ep.dice.length * 8 + 22}" height="28" rx="12" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="${448 - ep.dice.length * 4 - 11}" y="185" text-anchor="middle" font-size="14" font-weight="700" fill="${ep.dice === '¡Olé!' ? '#15803d' : '#b91c1c'}">${esc(ep.dice)}</text></g>` : '';
+  document.querySelectorAll('.compas .tiempo').forEach(s => s.classList.toggle('activo', +s.dataset.t === tb));
+  $('#acordeTxt').textContent = T.iniciado ? `Compás ${Math.floor(b / 4) + 1} · tiempo ${tb} · ${acorde || '—'}` : '';
+  if (T.corriendo && modo === 'auto'){ const c = Math.floor(b / 4); if (c !== ultimoCompas){ ultimoCompas = c; narraCompas(c); } }
+  pintaPianola(b); marcaResaltado(); refresca(); vigila(b);
+  if (T.corriendo || notas.length || cola.length || performance.now() < ep.diceHasta + 200 || SPR_TODOS.some(s => performance.now() - EST[s.key].golpe < 250)) pide();
+}
+function vuelta(beat){ const c = Math.floor(beat / 16 + 1e-6); if (c > cicloMalla){ cicloMalla = c; malla = {}; } }
+function aplica(ev){
+  const e = EST[ev.spr], b = ev.b;
+  vuelta(ev.beat);
+  e.bloque = b.id;
+  if (b.tempo !== undefined) e.suena = `tempo ${clampTempo(b.tempo)}${b.tempo > 500 ? ' (pedido ' + b.tempo + ')' : ''}`;
+  if (b.puntos0) V.Puntos = 0;
+  if (b.pulso) V.pulso = b.pulso;
+  const col = Math.floor(ev.beat + 1e-6) % 16, m = (malla[ev.spr] = malla[ev.spr] || {});
+  if (b.drum){ e.golpe = performance.now(); e.suena = TAMBOR[b.drum][0]; m[col] = '👏'; }
+  if (b.note){
+    e.suena = `${nota(b.note)} (${b.note})`; e.golpe = performance.now();
+    if (ev.spr === 'piano'){ e.acorde = b.acorde; e.tecla = ((b.note - 52) % 14 + 14) % 14; }
+    const [x, y] = POS()[ev.spr] || [0, 0]; notas.push({t:ev.t, x, y:y - 60, txt:nombreNota(b.note), c:ev.spr === 'piano' ? '#1d4ed8' : '#15803d'});
+    for (let k = 0; k < Math.round(b.beats); k++) m[(col + k) % 16] = k ? '·' : nombreNota(b.note);
+  }
+  if (b.rest && ev.spr === 'guitarra'){ e.suena = 'silencio'; m[col] = '—'; }
+  if (b.rest && ev.spr === 'palmero'){ e.suena = 'silencio'; }
+}
+function acordeAhora(){ const a = EST.piano && EST.piano.acorde; return a === undefined || !T.iniciado ? null : ACORDES[a].n; }
+function pintaPianola(b){
+  const col = T.iniciado ? Math.floor(b) % 16 : -1;
+  $('#pianolaCab').innerHTML = `<tr><th class="fila">Tiempo</th>${Array.from({length:16}, (_, i) => `<td class="cab${i % 4 === 0 ? ' uno' : ''}">${i % 4 + 1}</td>`).join('')}</tr>` +
+    `<tr><th class="fila">Acorde</th>${ACORDES.map(a => `<td class="acorde" colspan="4">${a.n}</td>`).join('')}</tr>`;
+  const filas = [['piano', 'Piano'], ['guitarra', 'Guitarra'], ...(conPalmero ? [['palmero', 'Palmero/a'], ['tu', 'Tus palmas']] : [])];
+  $('#pianola').innerHTML = filas.map(([k, n]) => `<tr><th class="fila">${n}</th>${Array.from({length:16}, (_, i) => { const v = (malla[k] || {})[i] || ''; const cls = [i === col ? 'ahora' : '', v ? 'on' : '', v === '✔' ? 'ok' : v === '✘' ? 'ko' : ''].join(' '); return `<td class="${cls}">${esc(v)}</td>`; }).join('')}</tr>`).join('');
+}
+
+/* ============================================================ programa: bloques y pseudocódigo */
+let idioma = 'es';
+function pintaBloque(b){
+  const cls = (b.cambiado ? ' cambiado' : '') + (b.hat ? ' hat' : '') + (b.k ? ' c' : '');
+  const txt = tok(b[idioma]);
+  if (b.k){
+    let h = `<div class="blk${cls}" style="--c:${CAT[b.cat]}" data-b="${b.id}"><span class="lin">${txt}</span><div class="cuerpo">${b.cuerpo.map(pintaBloque).join('')}</div>`;
+    if (b.sino) h += `<span class="lin">${idioma === 'es' ? 'si no' : 'else'}</span><div class="cuerpo">${b.sino.map(pintaBloque).join('')}</div>`;
+    return h + '</div>';
+  }
+  return `<div class="blk${cls}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${txt}</div>`;
+}
+const pilas = k => k === 'palmero' ? [PROG.palmero, PROG.espacio] : [PROG[k]];
+function pintaPrograma(){
+  PROG = programa();
+  $('#bloques').innerHTML = SPR().map(s => {
+    const cambiado = pilas(s.key).some(p => p.some(b => b.cambiado || (b.cuerpo || []).some(c => c.cambiado))) || (s.key === 'guitarra' && F.sinInstrumento);
+    const aviso = s.key === 'guitarra' && F.sinInstrumento ? `<p style="font-size:13px;color:var(--ko);margin:0 0 4px">Falta «fijar instrumento a (4) Guitarra».</p>` : '';
+    return `<div class="obj"><div class="obj-cab${cambiado ? ' cambiado' : ''}" style="--c:${s.hl}">${idioma === 'es' ? (s.key === 'escenario' ? 'Escenario' : 'Objeto') : (s.key === 'escenario' ? 'Stage' : 'Sprite')}: ${esc(s.nombre)}</div>${aviso}${pilas(s.key).map(p => `<div class="pila">${p.map(pintaBloque).join('')}</div>`).join('')}</div>`;
+  }).join('');
+  $('#leyenda').innerHTML = SPR().map(s => `<span style="--c:${s.hl}">${esc(s.nombre)}</span>`).join('');
+  $('#pseudo').innerHTML = textoPseudo().map(l => `<span data-b="${l.id || ''}" class="${l.obj ? 'obj-l' : ''}${l.cambiado ? ' cambiado' : ''}">${esc(l.txt)}</span>`).join('');
+  pide();
+}
+function textoPseudo(){
+  const out = [];
+  const rec = (lista, n) => lista.forEach(b => {
+    out.push({id:b.id, txt:'    '.repeat(n) + b.ps, cambiado:b.cambiado});
+    if (b.cuerpo) rec(b.cuerpo, n + 1);
+    if (b.sino){ out.push({txt:'    '.repeat(n) + 'si no:'}); rec(b.sino, n + 1); }
+  });
+  SPR().forEach(s => { out.push({txt:`# ${s.nombre}`, obj:true}); pilas(s.key).forEach(p => rec(p, 0)); out.push({txt:''}); });
+  return out;
+}
+function textoBloques(){
+  const out = [];
+  const rec = (lista, n) => lista.forEach(b => {
+    out.push('  '.repeat(n) + limpio(b[idioma]));
+    if (b.cuerpo){ rec(b.cuerpo, n + 1); if (b.sino){ out.push('  '.repeat(n) + (idioma === 'es' ? 'si no' : 'else')); rec(b.sino, n + 1); } out.push('  '.repeat(n) + (idioma === 'es' ? 'fin' : 'end')); }
+  });
+  SPR().forEach(s => { out.push(`// ${s.key === 'escenario' ? 'Escenario' : 'Objeto'}: ${s.nombre}`); pilas(s.key).forEach((p, i) => { if (i) out.push(''); rec(p, 0); }); out.push(''); });
+  return out.join('\n');
+}
+function marcaResaltado(){
+  document.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+  SPR().forEach(s => { const id = EST[s.key].bloque; if (!id) return;
+    document.querySelectorAll(`[data-b="${id}"]`).forEach(el => { el.style.setProperty('--hlc', s.hl); (el.classList.contains('c') ? el.querySelector('.lin') : el).classList.add('hl'); }); });
+}
+
+/* ============================================================ paneles */
+function desfase(){
+  const con = x => { const r = ((x % 16) + 16) % 16; return r > 8 ? r - 16 : r; };
+  const ult = a => a.length ? a[a.length - 1] : null;
+  const p = ult(arranques.piano), g = ult(arranques.guitarra);
+  return {piano:p == null ? null : con(p), guitarra:g == null ? null : con(g), pianoVivo:hilos.some(h => h.spr === 'piano' && h.sig)};
+}
+const dice = (v, m, f) => v == null ? '—' : Math.abs(v) < 1e-6 ? 'a compás' : `${Math.abs(v).toFixed(Number.isInteger(v) ? 0 : 2).replace('.', ',')} tiempo${Math.abs(v) === 1 ? '' : 's'} ${v < 0 ? (f ? 'adelantada' : 'adelantado') : (f ? 'retrasada' : 'retrasado')}`;
+function refresca(){
+  $('#monitor').innerHTML = SPR().map(s => { const e = EST[s.key]; const b = e.bloque ? buscaBloque(e.bloque) : null;
+    const ins = s.key === 'guitarra' ? INSTR[F.sinInstrumento ? 1 : 4][0] : s.key === 'piano' ? INSTR[1][0] : s.key === 'palmero' ? '(8) Palmada' : '—';
+    return `<tr><td><b style="color:${s.hl}">${esc(s.nombre)}</b></td><td>${b ? esc(limpio(b.es)) : '—'}</td><td>${esc(ins)}</td><td class="num">${esc(e.suena)}</td></tr>`; }).join('');
+  $('#vars').innerHTML = `<b>tempo</b>${tempoEfectivo()}` + (conPalmero ? ` <b>pulso</b>${V.pulso} <b>Puntos</b>${V.Puntos}` : '');
+  const d = desfase(), seg = 60 / tempoEfectivo(), ped = F.tempoLoco ? 800 : tempoPedido;
+  const items = [
+    {et:'Tempo pedido → real', v:`${ped} → ${tempoEfectivo()}`, mal:ped !== tempoEfectivo()},
+    {et:'Un tiempo dura', v:`${seg.toFixed(2).replace('.', ',')} s`},
+    {et:'Piano (acordes)', v:!T.iniciado ? '—' : !d.pianoVivo ? 'parado' : d.piano == null ? '—' : dice(d.piano, false, false), mal:T.iniciado && (!d.pianoVivo || (d.piano != null && d.piano !== 0)), bien:T.iniciado && d.pianoVivo && d.piano === 0},
+    {et:'Guitarra frente al piano', v:d.guitarra == null ? (F.sinMensaje && T.iniciado ? 'esperando la g' : '—') : dice(d.guitarra, false, true), mal:d.guitarra != null && Math.abs(d.guitarra) > 1e-6, bien:d.guitarra != null && Math.abs(d.guitarra) < 1e-6}
+  ];
+  if (conPalmero) items.push({et:'Tus palmas', v:`${palmasBien} ✔ · ${palmasMal} ✘`});
+  $('#medidas').innerHTML = items.map(m => `<div class="medida-item${m.mal ? ' mal' : m.bien ? ' bien' : ''}"><span class="et">${esc(m.et)}</span><span class="v">${esc(m.v)}</span></div>`).join('');
+}
+function buscaBloque(id){ let r = null; const rec = l => l.forEach(b => { if (b.id === id) r = b; if (b.cuerpo) rec(b.cuerpo); if (b.sino) rec(b.sino); }); Object.values(PROG).forEach(rec); return r; }
+function pintaFases(b){
+  const FASES = ['Bandera: tempo y mensaje', 'Todos «al recibir ¡a compás!»', 'Cada bucle cuenta sus tiempos', conPalmero ? 'Palmas en 2 y 4' : 'Cada acorde, 4 tiempos', 'Una vuelta: 16 tiempos'];
+  const f = !T.iniciado ? -1 : b < 0.5 ? 1 : b < 4 ? 2 : b < 16 ? 3 : 4;
+  $('#fases').innerHTML = FASES.map((x, i) => `<li class="${i === f ? 'activa' : i < f ? 'hecha' : ''}">${i + 1}. ${esc(x)}</li>`).join('');
+}
+function narra(h){ $('#narracion').innerHTML = h; }
+function resumenTiempo(beat){
+  const i = beat % 16, ac = ACORDES[Math.floor(i / 4)].n, tb = beat % 4 + 1, g = falseta[i];
+  const partes = [`<b>Compás ${Math.floor(beat / 4) + 1}, tiempo ${tb}</b> (${ac}).`, `El piano toca <b>${nota(ARPEGIO[i])}</b> (${ARPEGIO[i]}) del acorde.`];
+  partes.push(g ? `La guitarra toca <b>${nota(g)}</b> (${g}).` : 'La guitarra hace un silencio.');
+  if (conPalmero) partes.push(tb === 2 || tb === 4 ? '👏 El palmero da palmada: buen momento para las tuyas.' : `El palmero pone pulso a ${tb} y espera.`);
+  return partes.join(' ');
+}
+function narraPaso(beat){ if (beat < 0) return; narra(resumenTiempo(beat) + (Object.values(F).some(x => x) ? ' <i>Hay fallos activos: lo que suena puede no coincidir con este resumen.</i>' : '')); }
+function narraCompas(c){ if (Object.values(F).some(x => x)) return; narra(`<b>Compás ${c + 1}</b> · ${ACORDES[c % 4].n}. Tempo ${tempoEfectivo()}: cada tiempo dura ${(60 / tempoEfectivo()).toFixed(2).replace('.', ',')} s.` + (conPalmero ? ' Da tus palmas en los tiempos 2 y 4.' : '')); }
+
+/* ============================================================ fallos, reto y objetivos */
+function pintaFallos(){
+  $('#fallos').innerHTML = FALLOS.map(f => `<label class="interruptor"><input type="checkbox" id="f_${f.id}" data-fallo="${f.id}"${F[f.id] ? ' checked' : ''}><span>${esc(f.txt)}</span></label>`).join('');
+  explica();
+}
+function explica(){
+  const act = FALLOS.filter(f => F[f.id]);
+  $('#explica').innerHTML = act.length ? act.map(f => `<p>${f.exp}</p>`).join('') : '<p>Todo normal: un tempo y un mismo mensaje para empezar. Activa un fallo, pulsa la bandera y escucha.</p>';
+  $('#btnG').hidden = !F.sinMensaje;
+  $('#btnPalmas').hidden = !conPalmero;
+}
+const OBJ = () => [
+  {id:'vuelta', txt:'Escucha una vuelta completa (16 tiempos) sin fallos activos.'},
+  {id:'falseta', txt:'Compón tu falseta: cambia al menos 4 casillas y escúchala entera.'},
+  {id:'tempo', txt:'Sube el tempo a 140 o más y escucha una vuelta a compás.'},
+  {id:'fallos', txt:'Provoca los cinco fallos (uno a uno) y lee qué pasa.'},
+  ...(conPalmero ? [{id:'palmas', txt:'Opcional: consigue 8 puntos con tus palmas en los tiempos 2 y 4.'}] : [])
+];
+const LOGROS = {};
+try { Object.assign(LOGROS, JSON.parse(localStorage.getItem('lab-rumba-logros') || '{}')); } catch(e){}
+const fallosVistos = new Set();
+function logro(id){ if (LOGROS[id]) return; LOGROS[id] = true; try { localStorage.setItem('lab-rumba-logros', JSON.stringify(LOGROS)); } catch(e){} pintaObjetivos(); }
+function pintaObjetivos(){ $('#objetivos').innerHTML = OBJ().map(o => `<li class="${LOGROS[o.id] ? 'hecho' : ''}"><span class="marca">${LOGROS[o.id] ? '✔' : '○'}</span><span>${esc(o.txt)}</span></li>`).join(''); }
+const cambiadas = () => falseta.filter((m, i) => m !== FALSETA0[i]).length;
+function vigila(b){
+  pintaFases(b);
+  if (!T.iniciado || b < 16) return;
+  const sinFallos = !Object.values(F).some(x => x);
+  if (sinFallos) logro('vuelta');
+  if (sinFallos && cambiadas() >= 4) logro('falseta');
+  if (sinFallos && tempoEfectivo() >= 140) logro('tempo');
+}
+function pintaEditor(){
+  $('#editor').innerHTML = [0, 1, 2, 3].map(c => `<fieldset><legend>${c + 1} · ${ACORDES[c].n}</legend>${[0, 1, 2, 3].map(k => { const i = c * 4 + k, v = falseta[i];
+    const tono = v && ACORDES[c].tonos.includes(v % 12);
+    return `<label class="sr" for="s${i}">Compás ${c + 1}, tiempo ${k + 1}</label><select id="s${i}" data-i="${i}" class="${tono ? 'tono' : ''}">${[0, ...MODO].map(m => `<option value="${m}"${m === v ? ' selected' : ''}>${m ? `${nota(m)} (${m})${ACORDES[c].tonos.includes(m % 12) ? ' ●' : ''}` : '— silencio'}</option>`).join('')}</select>`; }).join('')}</fieldset>`).join('');
+}
+
+/* ============================================================ controles */
+function pintaBotones(){
+  $('#btnPaso').textContent = T.iniciado && modo === 'paso' ? 'Siguiente paso' : 'Empezar paso a paso';
+  $('#btnAuto').setAttribute('aria-pressed', String(modo === 'auto'));
+}
+function cambiaPrograma(){
+  const estaba = T.iniciado;
+  pararAuto(); reiniciaTransporte(); modo = 'libre'; pintaPrograma(); explica(); pintaBotones();
+  if (estaba) narra('Has cambiado el programa: pulsa otra vez la bandera para probarlo.');
+}
+function pararAuto(){ if (T.corriendo && modo === 'auto'){ T.beat = beatEn(ahora()); T.corriendo = false; } if (modo === 'auto') modo = 'libre'; pintaBotones(); }
+$('#btnBandera').onclick = () => { modo = 'libre'; bandera(); narra('🏁 Bandera: el escenario fija el tempo y <b>envía «¡a compás!»</b>. Todos los que lo reciben empiezan a la vez.'); };
+$('#btnParar').onclick = () => { modo = 'libre'; reiniciaTransporte(); pintaBotones(); narra('⏹ Detenido. Pulsa la bandera para volver a empezar.'); };
+$('#btnPalmas').onclick = palmas;
+$('#btnG').onclick = () => { teclaG(); narra('Has pulsado la <b>g</b>: la guitarra empieza ahora, sin esperar al principio del compás.'); };
+$('#btnPaso').onclick = () => {
+  if (!T.iniciado || modo !== 'paso'){ modo = 'paso'; bandera(); if (F.sinMensaje) nuevoHilo('guitarra', 0.5); T.corriendo = true; T.limite = 1; }
+  else if (!T.corriendo){ T.anclaT = ahora() + 0.02; T.anclaB = T.beat; T.limite = T.beat + 1; T.corriendo = true; }
+  pintaBotones(); pide();
+};
+$('#btnAuto').onclick = () => {
+  if (modo === 'auto'){ pararAuto(); narra('Automático en pausa. Pulsa «Siguiente paso» o «Automático» para seguir.'); return; }
+  if (!T.iniciado){ modo = 'auto'; bandera(); }
+  else { modo = 'auto'; T.limite = null; if (!T.corriendo){ T.anclaT = ahora() + 0.02; T.anclaB = T.beat; T.corriendo = true; } }
+  ultimoCompas = -1; pintaBotones(); pide();
+};
+$('#btnReiniciar').onclick = () => { modo = 'libre'; reiniciaTransporte(); pintaBotones(); narra('Todo a cero. Pulsa la bandera, «Empezar paso a paso» o «Automático».'); };
+function reancla(fn){ const corr = T.corriendo, b = corr ? beatEn(ahora()) : T.beat; fn(); if (corr){ T.anclaT = ahora(); T.anclaB = b; } }
+$('#velocidad').onchange = e => reancla(() => { velocidad = +e.target.value; });
+$('#tempo').onchange = e => { const v = Math.round(+e.target.value) || 110; e.target.value = v; reancla(() => { tempoPedido = v; }); pintaPrograma();
+  narra(v === clampTempo(v) ? `«dar al tempo el valor ${v}»: un tiempo dura ${(60 / clampTempo(v)).toFixed(2).replace('.', ',')} s, para todos los objetos a la vez.` : `Has pedido ${v}, pero Scratch limita el tempo entre 20 y 500: toca a <b>${clampTempo(v)}</b>.`); };
+$('#fallos').onchange = e => { const c = e.target.closest('[data-fallo]'); if (!c) return; F[c.dataset.fallo] = c.checked; if (c.checked){ fallosVistos.add(c.dataset.fallo); if (fallosVistos.size === FALLOS.length) logro('fallos'); } cambiaPrograma(); };
+$('#normalidad').onclick = () => { FALLOS.forEach(f => F[f.id] = false); pintaFallos(); cambiaPrograma(); narra('Todo vuelve a la normalidad.'); };
+$('#probarError').onclick = () => {
+  FALLOS.forEach(f => F[f.id] = false); F.cuentaMal = true; fallosVistos.add('cuentaMal'); pintaFallos(); cambiaPrograma();
+  modo = 'auto'; bandera(); ultimoCompas = -1; pintaBotones();
+  narra('<b>Error activado:</b> una nota del piano dura 2 tiempos. Mira la fila del piano en la pianola y el desfase en «Lo que pasa dentro».');
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+};
+$('#editor').onchange = e => { const s = e.target.closest('select'); if (!s) return; falseta[+s.dataset.i] = +s.value;
+  try { localStorage.setItem('lab-rumba-falseta', JSON.stringify(falseta)); } catch(x){} pintaEditor(); cambiaPrograma(); narra(`Tu falseta tiene ${cambiadas()} casilla${cambiadas() === 1 ? '' : 's'} cambiada${cambiadas() === 1 ? '' : 's'}. Pulsa la bandera para escucharla: sigue sumando 16 tiempos.`); };
+$('#falsetaOriginal').onclick = () => { falseta = FALSETA0.slice(); try { localStorage.removeItem('lab-rumba-falseta'); } catch(e){} pintaEditor(); cambiaPrograma(); };
+function ponPalmero(v){ conPalmero = v; $('#optPalmero').setAttribute('aria-pressed', String(v)); try { localStorage.setItem('lab-rumba-palmero', v ? 'si' : 'no'); } catch(e){} pintaObjetivos(); cambiaPrograma(); }
+$('#optPalmero').onclick = () => { ponPalmero(!conPalmero); narra(conPalmero ? 'Con palmero/a: da palmas en los tiempos 2 y 4 y lleva la cuenta en «pulso». Con la barra espaciadora, tú también.' : 'Sin palmero/a: solo piano y guitarra.'); };
+$('#optNombres').onclick = e => { verNombres = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(verNombres)); pide(); };
+$('#optSonido').onclick = e => { sonidoOn = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(sonidoOn)); e.currentTarget.textContent = sonidoOn ? '🔊 Sonido' : '🔇 Sin sonido'; };
+$('#tabBloques').onclick = () => { $('#tabBloques').setAttribute('aria-selected', 'true'); $('#tabPseudo').setAttribute('aria-selected', 'false'); $('#bloques').hidden = false; $('#pseudo').hidden = true; $('#idioma').hidden = false; };
+$('#tabPseudo').onclick = () => { $('#tabPseudo').setAttribute('aria-selected', 'true'); $('#tabBloques').setAttribute('aria-selected', 'false'); $('#bloques').hidden = true; $('#pseudo').hidden = false; $('#idioma').hidden = true; };
+$('#idioma').onclick = e => { const b = e.target.closest('[data-lang]'); if (!b) return; idioma = b.dataset.lang; $('#idioma').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintaPrograma(); };
+function copiar(texto){
+  const ok = () => { $('#copiado').textContent = 'Copiado ✓'; setTimeout(() => $('#copiado').textContent = '', 1800); };
+  const manual = () => { const t = $('#copiaManual'); t.hidden = false; t.value = texto; t.select(); $('#copiado').textContent = 'Selecciona y copia (Ctrl+C)'; };
+  try { navigator.clipboard.writeText(texto).then(ok, manual); } catch(e){ manual(); }
+}
+$('#copiarPseudo').onclick = () => copiar(textoPseudo().map(l => l.txt).join('\n').trim() + '\n');
+$('#copiarBloques').onclick = () => copiar(textoBloques());
+$('#escena').addEventListener('keydown', e => {
+  if (e.key === ' ' || e.code === 'Space'){ e.preventDefault(); palmas(); }
+  else if (e.key === 'g' || e.key === 'G'){ teclaG(); }
+  else if (e.key === 'Enter'){ const p = e.target.closest('[data-pieza]'); if (p) abrePieza(p.dataset.pieza); }
+});
+const PIEZAS = {
+  piano:['Piano', 'Objeto con el instrumento (1) Piano. Toca la cadencia andaluza en arpegio: La menor, Sol, Fa y Mi, cuatro notas de 1 tiempo por acorde.', 'Lleva los acordes: su bucle dura 16 tiempos.'],
+  guitarra:['Guitarra', 'Objeto con el instrumento (4) Guitarra. Toca la falseta: 16 casillas de 1 tiempo, que puedes cambiar en el reto.', 'Debe empezar con el mismo mensaje que el piano.'],
+  palmero:['Palmero/a (opcional)', 'Da una palmada (8) en los tiempos 2 y 4 y pone «pulso» al número de cada tiempo. Con la barra espaciadora das tus propias palmas.', 'Si tu palmada cae cuando pulso es 2 o 4, suma un punto y dice «¡Olé!».']
+};
+function abrePieza(k){ const p = PIEZAS[k]; if (!p) return; $('#piezaTitulo').textContent = p[0]; $('#piezaTexto').textContent = p[1]; $('#piezaUso').textContent = p[2]; $('#pieza').hidden = false; }
+svg.addEventListener('click', e => { const p = e.target.closest('[data-pieza]'); if (p) abrePieza(p.dataset.pieza); $('#escena').focus({preventScroll:true}); });
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+
+/* comprobación de la práctica, preguntas y tema */
+const CHECK = ['El piano y la guitarra empiezan «al recibir ¡a compás!».', 'Cada bucle suma 16 tiempos (lo he contado).', 'La guitarra tiene «fijar instrumento a (4) Guitarra» y el piano «(1) Piano».', 'La falseta es mía: no copia ninguna canción con derechos.', 'Opcional: el palmero/a da palmas en 2 y 4 y mis palmas suman Puntos.', 'He provocado dos fallos y he anotado cómo los arreglé.', 'Notas y créditos completos y proyecto compartido en el estudio.'];
+let marcadas = {}; try { marcadas = JSON.parse(localStorage.getItem('lab-rumba-check') || '{}'); } catch(e){}
+$('#comprobacion').innerHTML = CHECK.map((c, i) => `<li><label><input type="checkbox" data-c="${i}"${marcadas[i] ? ' checked' : ''}><span>${esc(c)}</span></label></li>`).join('');
+$('#comprobacion').onchange = e => { const c = e.target.closest('[data-c]'); if (!c) return; marcadas[c.dataset.c] = c.checked; try { localStorage.setItem('lab-rumba-check', JSON.stringify(marcadas)); } catch(x){} };
+const PREG = [
+  {q:'Subes el tempo de 110 a 140 mientras suena. ¿Qué pasa?', ops:['El piano va más rápido y la guitarra se queda atrás.', 'Todo va más rápido y sigue a compás.', 'Solo cambia la guitarra, porque es la que hace la melodía.'], ok:1, expl:'El tempo vive en el escenario y es el mismo para todos: cada «tiempo» se acorta igual en todos los objetos.'},
+  {q:'En el piano, una nota dura 2 tiempos en vez de 1. ¿Qué oyes?', ops:['Un error rojo de Scratch y el programa se para.', 'Nada: Scratch lo corrige solo.', 'El piano se retrasa un tiempo en cada vuelta y cambia de acorde después que la guitarra.'], ok:2, expl:'Su vuelta dura 17 tiempos y la de la guitarra 16: cada vuelta se separan un tiempo más. Scratch no avisa; hay que contar.'},
+  {q:'¿Por qué el piano y la guitarra empiezan con «al recibir ¡a compás!» y no cada uno con su tecla?', ops:['Para que arranquen en el mismo instante y no se desplacen.', 'Porque las teclas no funcionan con la extensión Música.', 'Para que suenen más fuerte.'], ok:0, expl:'Un mensaje pone en marcha a todos a la vez. Si la guitarra empieza al pulsar una tecla, casi nunca cae justo al principio de un tiempo y queda desplazada para siempre.'}
+];
+$('#preguntas').innerHTML = PREG.map((p, i) => `<fieldset class="pregunta" data-correcta="${p.ok}" data-expl="${esc(p.expl)}"><legend>${i + 1}. ${esc(p.q)}</legend>${p.ops.map((o, k) => `<label class="opcion"><input type="radio" name="p${i}" value="${k}"><span>${esc(o)}</span></label>`).join('')}<p class="respuesta" hidden></p></fieldset>`).join('');
+$('#preguntas').addEventListener('change', e => {
+  const f = e.target.closest('.pregunta'); if (!f) return; const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta; m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+});
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+/* ============================================================ arranque */
+$('#optPalmero').setAttribute('aria-pressed', String(conPalmero));
+estadoInicial(); pintaFallos(); pintaEditor(); pintaObjetivos(); pintaPrograma(); pintaBotones();
+narra('Pulsa la <b>bandera verde</b> (o «Automático») para escuchar la rumba, o «Empezar paso a paso» para ir tiempo a tiempo.');
+window.__lab = {
+  get T(){ return T; }, get V(){ return V; }, get EST(){ return EST; }, get PROG(){ return PROG; }, get F(){ return F; }, get LOGROS(){ return LOGROS; },
+  get falseta(){ return falseta.slice(); }, get malla(){ return malla; }, get modo(){ return modo; }, get conPalmero(){ return conPalmero; }, ponPalmero,
+  desfase, programa:() => PROG, textoBloques, textoPseudo, palmas, bandera, teclaG,
+  get ronda(){ return T.iniciado ? Math.floor((T.corriendo ? beatEn(ahora()) : T.beat) / 16) : -1; }, beat:() => (T.corriendo ? beatEn(ahora()) : T.beat)
+};
+})();
+</script>
+</body>
+</html>
