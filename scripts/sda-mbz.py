@@ -31,18 +31,23 @@ X = lambda s: html.escape(str(s), quote=False)
 arr = lambda x: x if isinstance(x, list) else ([] if x is None else [x])
 
 
+def enlaza(t):
+    """Texto ya escapado: las direcciones http(s) pasan a enlaces que se abren en otra pestaña."""
+    return re.sub(r'https?://[^\s<>"«»]+[^\s<>"«».,;:)]', lambda m: f'<a href="{m.group(0)}" target="_blank" rel="noopener">{m.group(0)}</a>', t)
+
+
 def intro_html(txt):
     """Texto de la descripción (párrafos, «• » para viñetas) → HTML para Moodle."""
     out, lista = [], []
     def cierra():
         if lista:
-            out.append('<ul>' + ''.join(f'<li>{X(x)}</li>' for x in lista) + '</ul>'); lista.clear()
+            out.append('<ul>' + ''.join(f'<li>{enlaza(X(x))}</li>' for x in lista) + '</ul>'); lista.clear()
     for linea in str(txt or '').split('\n'):
         b = linea.strip()
         if not b: cierra(); continue
         if b.startswith('• '): lista.append(b[2:]); continue
         cierra()
-        out.append(f'<p><strong>{X(b)}</strong></p>' if b.endswith(':') and len(b) < 60 else f'<p>{X(b)}</p>')
+        out.append(f'<p><strong>{X(b)}</strong></p>' if b.endswith(':') and len(b) < 60 else f'<p>{enlaza(X(b))}</p>')
     cierra()
     return '\n'.join(out)
 
