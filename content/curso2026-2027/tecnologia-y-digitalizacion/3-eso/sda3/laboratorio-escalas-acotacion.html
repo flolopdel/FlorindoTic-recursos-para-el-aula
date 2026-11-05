@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El plano del aula a escala</title>
+<meta name="description" content="Laboratorio de ampliación de la SdA 3 de Tecnología y Digitalización 3.º ESO: el aula real pasa a una hoja A4 a escala, paso a paso, con la cuenta de una calculadora de escalas, la acotación según la norma y la comprobación con la regla.">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#dfe5ec;
+  --brand:#0f766e; --brand-soft:#ccfbf1; --accent:#7c3aed; --accent-soft:#ede9fe;
+  --ok:#15803d; --ok-bg:#dcfce7; --ko:#b91c1c; --ko-bg:#fee2e2; --warm:#c2410c; --warm-bg:#fff7ed;
+  --tu:#ca8a04;
+  --mesa:#e7ecef; --placa:#1f2937; --placa-borde:#111827; --led-off:#3b1d1d; --led-on:#ff3b30; --oro:#c8a23a;
+  --suelo:#eadfcb; --muro:#64748b; --vent:#0ea5e9; --puerta:#b45309; --piz:#15803d; --cinta:#eab308;
+  --papel:#fffdf6; --papel-borde:#cbd5e1; --tinta:#1f2937; --cuad:#bfdbfe;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+    --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+    --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+    --tu:#facc15; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+    --suelo:#3b3427; --muro:#94a3b8; --papel:#ece7da; --papel-borde:#475569;
+    --code-bg:#020617;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1220; --card:#111a2e; --ink:#e5e9f0; --ink2:#cbd5e1; --muted:#94a3b8; --line:#23304a;
+  --brand:#2dd4bf; --brand-soft:#134e4a; --accent:#a78bfa; --accent-soft:#2e1065;
+  --ok:#4ade80; --ok-bg:#14532d; --ko:#f87171; --ko-bg:#450a0a; --warm:#fdba74; --warm-bg:#2a1608;
+  --tu:#facc15; --mesa:#162033; --placa:#0b0f17; --placa-borde:#334155; --led-off:#2a1515;
+  --suelo:#3b3427; --muro:#94a3b8; --papel:#ece7da; --papel-borde:#475569;
+  --code-bg:#020617;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--brand)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.saltar{position:absolute;left:-999px}.saltar:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+.marco{max-width:1240px;margin:0 auto;padding:0 16px}
+.cab{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cab-in{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.cab-in .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cab-in a.tb,.tb{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tb:hover{border-color:var(--brand);color:var(--brand)}
+@media(max-width:640px){.cab-in .ocultar-movil{display:none}}
+.migas{font-size:14px;color:var(--muted);margin:18px 0 6px}.migas a{color:var(--muted)}
+.lab-cab h1{margin:2px 0 6px;font-size:clamp(28px,4.4vw,42px);line-height:1.1}
+.lab-num{margin:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--accent)}
+.lab-sub{margin:0 0 14px;font-size:18px;color:var(--ink2);max-width:62em}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 18px;padding:0}
+.ficha div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.ficha dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ficha dd{margin:2px 0 0;font-weight:600}
+.banco{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.banco-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.banco-grid > *{min-width:0}
+@media(max-width:980px){.banco-grid{grid-template-columns:1fr}}
+.escena-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font-size:14px;font-weight:600}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--brand);color:#fff}
+.escena{position:relative;background:var(--mesa);border-radius:12px;overflow:hidden}
+.escena svg{display:block;width:100%;height:auto}
+.botonera{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.boton{border:0;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-weight:700}
+.boton.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.boton.peq{padding:6px 10px;font-size:14px}
+.boton:disabled{opacity:.45;cursor:not-allowed}
+.boton[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.escena-pie{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pieza{position:absolute;right:10px;top:10px;max-width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px}
+.pieza h3{margin:0 0 4px;font-size:16px;padding-right:18px}.pieza p{margin:4px 0}.pieza .uso{color:var(--brand);font-weight:600}
+.pieza .cerrar{position:absolute;right:6px;top:2px;border:0;background:none;font-size:20px;color:var(--muted)}
+.programa{border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.programa-cab{display:flex;flex-wrap:wrap;gap:8px;padding:8px;border-bottom:1px solid var(--line)}
+.programa-cuerpo{padding:10px;overflow:auto;max-height:640px;flex:1}
+.programa-pie{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border-top:1px solid var(--line);font-size:14px}
+.leyenda-hl{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);padding:6px 10px 0}
+.leyenda-hl span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+/* bloques */
+.pila{margin:0 0 12px;font:600 13px/1.35 system-ui,sans-serif}
+.blk{--c:#1e90ff;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;margin:2px 0;position:relative;transition:box-shadow .15s}
+.blk.hat{border-radius:14px 14px 6px 6px;padding-top:7px}
+.blk .cuerpo{margin:4px 0 2px 10px;padding:3px 0 3px 8px;border-left:3px solid rgba(255,255,255,.55);background:var(--bg);border-radius:0 6px 6px 0}
+.blk .cuerpo .blk{margin:3px 6px 3px 0}
+.rama{display:block}
+.pill{display:inline-block;background:rgba(255,255,255,.92);color:#111827;border-radius:999px;padding:0 7px;margin:0 2px;font-weight:700}
+.pill.var{background:#dc143c;color:#fff;border:1px solid rgba(255,255,255,.6)}
+.pill.mat{background:#9400d3;color:#fff}
+.pill.log{background:#00a4a6;color:#fff}
+.pill.arr{background:#a94400;color:#fff}
+.pill.ico{background:#1e90ff;color:#fff;padding:1px 6px}
+.mini{display:inline-grid;grid-template-columns:repeat(5,4px);gap:1px;vertical-align:middle;background:#0b1220;padding:2px;border-radius:3px}
+.mini i{width:4px;height:4px;background:#3b1d1d;display:block}.mini i.on{background:#ff3b30}
+.on-tu{box-shadow:0 0 0 3px var(--tu)}
+.cambiado{outline:2px dashed var(--ko);outline-offset:2px}
+pre.codigo{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:10px 0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:auto}
+pre.codigo span{display:block;padding:0 12px;white-space:pre}
+pre.codigo span.on-tu{background:rgba(250,204,21,.22);box-shadow:inset 4px 0 0 var(--tu)}
+pre.codigo span.cambiado{outline:0;background:rgba(248,113,113,.22)}
+.mando{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mando-botones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select.campo{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;list-style:none;padding:0;margin:12px 0 8px}
+.fases li{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;color:var(--muted)}
+.fases li.hecha{color:var(--ink2);background:var(--bg)}
+.fases li.activa{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:700}
+.narracion{margin:6px 0 0;min-height:3.2em;font-size:16px}
+.paneles{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px}
+.paneles > *{min-width:0}
+@media(max-width:980px){.paneles{grid-template-columns:1fr}}
+.panel-lab{min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel-lab h2{margin:0 0 10px;font-size:19px}
+.tabla{width:100%;border-collapse:collapse;font-size:14px}
+.tabla th,.tabla td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tabla thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tabla td.mal{color:var(--ko);font-weight:700}
+.tabla-envoltura{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.medidas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.medida-item{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.medida-item .et{display:block;font-size:12px;color:var(--muted)}.medida-item .v{font-weight:800;font-size:18px}
+.medida-item.mal .v{color:var(--ko)}
+.rompelo{margin-bottom:12px}.rompelo h3{margin:0 0 6px;font-size:15px}
+.interruptor{display:flex;gap:8px;align-items:flex-start}
+.rango{display:flex;gap:10px;align-items:center}.rango input{flex:1;min-width:0}
+.explica{background:var(--warm-bg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;min-height:2.6em}
+.explica p{margin:4px 0}
+.bloque{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:16px 0}
+@media(max-width:640px){.bloque{padding:14px 16px}}
+.etq{margin:0 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.bloque h2{margin:0;font-size:24px}
+.idea{font-size:clamp(19px,2.4vw,24px);font-weight:700;line-height:1.35;margin:4px 0 0}
+.dos{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:14px}
+.dos > *{min-width:0}
+@media(max-width:820px){.dos{grid-template-columns:1fr}}
+.nota{background:var(--ko-bg);border-radius:12px;padding:12px 16px}
+.nota h3{margin:0 0 6px}
+.reglas{border-collapse:collapse;margin-top:10px;font-size:15px}
+.reglas th,.reglas td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.reglas td.g{background:var(--ok-bg)}.reglas td.p{background:var(--ko-bg)}.reglas td.e{background:var(--bg)}
+ol.pasos{margin:0;padding-left:1.3em}ol.pasos li{margin:6px 0}
+.comprobacion{list-style:none;padding:0;margin:0}.comprobacion li{margin:6px 0}
+.comprobacion label{display:flex;gap:8px;align-items:flex-start}
+.pregunta{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 12px;min-width:0}
+.pregunta legend{font-weight:700;padding:0 6px}
+.opcion{display:flex;gap:8px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:7px 10px;margin:6px 0;cursor:pointer}
+.opcion.ok{border-color:var(--ok);background:var(--ok-bg)}.opcion.ko{border-color:var(--ko);background:var(--ko-bg)}
+.respuesta{margin:6px 0 0;padding:8px 12px;border-radius:10px;background:var(--bg)}
+.real{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+.real > *{min-width:0}
+@media(max-width:820px){.real{grid-template-columns:1fr}}
+.real > div{background:var(--bg);border-radius:12px;padding:12px 16px}
+.real h3{margin:0 0 6px;font-size:16px}.real ul{margin:0;padding-left:1.2em}.real li{margin:4px 0}
+.fuentes li{margin:6px 0}
+.navlab{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.navlab a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.navlab a small{display:block;color:var(--muted)}
+.pie{color:var(--muted);font-size:14px;padding:10px 0 40px}
+.svg-pieza{cursor:pointer}
+.svg-pieza:focus{outline:none}.svg-pieza:focus-visible > *{stroke:var(--brand);stroke-width:3}
+@media print{.cab,.banco,.botonera{display:none}}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cab">
+  <div class="cab-in">
+    <div class="t">El plano del aula a escala <span class="ocultar-movil" style="color:var(--muted);font-weight:500">· SdA 3 · Tecnología y Digitalización 3.º ESO</span></div>
+    <a class="tb" href="clase.html#s18">📽 Clase</a>
+    <a class="tb ocultar-movil" href="teoria.html#s6">📘 Teoría</a>
+    <button type="button" class="tb" id="tema" aria-label="Cambiar entre tema claro y oscuro">🌓</button>
+  </div>
+</header>
+<main id="contenido" class="marco">
+<nav class="migas" aria-label="Estás en"><a href="clase.html">SdA 3 · Un Aula del Futuro</a> / <a href="clase.html#s18">18. Bonus track</a> / Laboratorio</nav>
+
+<header class="lab-cab">
+  <p class="lab-num">Sesión bonus track · laboratorio de ampliación de la SdA 3</p>
+  <h1>El plano del aula a escala</h1>
+  <p class="lab-sub">Un aula de 8 metros no cabe en un folio, pero su plano sí. Aquí ves cómo cada medida del aula se convierte en milímetros de papel con una sola cuenta, cómo se dibuja y se acota según la norma, y qué pasa cuando la escala, las unidades o las cotas se equivocan.</p>
+  <dl class="ficha">
+    <div><dt>Para</dt><dd>Quien ha entregado el dossier técnico (Tarea 3.6) y quiere profundizar en escalas y acotación</dd></div>
+    <div><dt>Material</dt><dd>Cinta métrica, A4, escuadra, cartabón, regla, lápices H y HB; micro:bit opcional</dd></div>
+    <div><dt>Programa</dt><dd>Calculadora de escalas: papel (mm) = real (cm) × 10 ÷ escala</dd></div>
+    <div><dt>Referencia</dt><dd>Escalas de la norma ISO 5455 y normas de acotación de la SdA</dd></div>
+  </dl>
+</header>
+
+<section class="banco" aria-label="Laboratorio interactivo">
+  <div class="banco-grid">
+    <div class="escena-marco">
+      <div class="escena-barra">
+        <strong>Del aula al papel</strong>
+        <div class="seg" aria-label="Opciones de la vista">
+          <button type="button" id="optTransp" aria-pressed="false">Transparente</button>
+          <button type="button" id="optNombres" aria-pressed="true">Nombres</button>
+        </div>
+      </div>
+      <div class="escena" id="escena">
+        <svg id="svg" viewBox="0 0 960 560" role="img" aria-labelledby="svgDesc"><desc id="svgDesc">A la izquierda, el aula real vista desde arriba, de 8 por 6,5 metros, con su pizarra, sus tres ventanas y la puerta; debajo, una micro:bit que hace de calculadora de escalas. A la derecha, una hoja A4 apaisada con su margen y su cajetín, donde se dibuja la planta del aula a escala y se acota.</desc></svg>
+        <div class="pieza" id="pieza" hidden role="dialog" aria-labelledby="piezaTitulo">
+          <button type="button" class="cerrar" id="piezaCerrar" aria-label="Cerrar">×</button>
+          <h3 id="piezaTitulo"></h3><p id="piezaTexto"></p><p class="uso" id="piezaUso"></p>
+        </div>
+      </div>
+      <div class="botonera" aria-label="Acciones sobre la calculadora">
+        <button type="button" class="boton peq" data-accion="a">A: convertir la siguiente medida</button>
+        <button type="button" class="boton peq sec" data-accion="b">B: cambiar de escala</button>
+        <button type="button" class="boton peq sec" id="btnGolpe">Dibujar el plano de golpe</button>
+      </div>
+      <p class="escena-pie">Pulsa una pieza del dibujo para saber qué es. Con «Transparente» se ven las líneas de construcción: la cuadrícula de 10 mm, el hueco que hay en la hoja para la planta y cómo cada esquina del aula va a parar al papel.</p>
+    </div>
+
+    <aside class="programa" aria-label="El programa">
+      <div class="programa-cab">
+        <div class="seg" role="tablist" aria-label="Formato del programa">
+          <button type="button" role="tab" id="tabBloques" aria-selected="true">Bloques</button>
+          <button type="button" role="tab" id="tabPython" aria-selected="false">Python</button>
+        </div>
+        <div class="seg" id="idioma" aria-label="Idioma de los bloques">
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <div class="leyenda-hl"><span style="--c:var(--tu)">Lo que ejecuta ahora la calculadora</span><span style="--c:var(--ko)">Línea cambiada por un fallo</span></div>
+      <div class="programa-cuerpo">
+        <div id="bloques"></div>
+        <pre class="codigo" id="python" hidden></pre>
+      </div>
+      <div class="programa-pie">
+        <button type="button" class="boton sec peq" id="copiarJS">Copiar para MakeCode (JavaScript)</button>
+        <button type="button" class="boton sec peq" id="copiarPy">Copiar Python</button>
+        <span id="copiado" aria-live="polite"></span>
+        <textarea id="copiaManual" rows="4" hidden aria-label="Texto para copiar" style="width:100%"></textarea>
+      </div>
+    </aside>
+
+    <div class="mando">
+      <div class="mando-botones">
+        <button type="button" class="boton" id="btnPaso">Empezar el plano</button>
+        <button type="button" class="boton sec" id="btnAuto" aria-pressed="false">Automático</button>
+        <button type="button" class="boton sec" id="btnReiniciar">Reiniciar</button>
+        <label class="sr" for="velocidad">Velocidad</label>
+        <select class="campo" id="velocidad">
+          <option value="0.4">Cámara lenta</option>
+          <option value="1" selected>Tiempo real</option>
+          <option value="3">Rápido (×3)</option>
+        </select>
+      </div>
+      <ol class="fases" id="fases" aria-label="Fases del plano">
+        <li>1. Medís el aula con la cinta y anotáis cada medida en centímetros</li>
+        <li>2. La calculadora pasa el largo y el ancho al papel y mira si caben</li>
+        <li>3. Se dibujan los muros a escala en el A4</li>
+        <li>4. Puerta, ventanas y pizarra van a su sitio con la misma cuenta</li>
+        <li>5. Se acota: líneas auxiliares, línea de cota, flechas y cifra real</li>
+        <li>6. Se comprueba con la regla y se rellena el cajetín</li>
+      </ol>
+      <p class="narracion" id="narracion" aria-live="polite">Pulsa «Empezar el plano» para verlo paso a paso, o «Automático» para que se haga solo. Con «A» y «B», debajo del dibujo, manejas la calculadora como en la placa real.</p>
+    </div>
+  </div>
+
+  <div class="paneles">
+    <section class="panel-lab" aria-labelledby="tDentro">
+      <h2 id="tDentro">Lo que pasa dentro</h2>
+      <div class="tabla-envoltura"><table class="tabla"><thead><tr><th>Medida</th><th>Aula real</th><th>Anotada</th><th>Cuenta</th><th>Papel</th><th>¿Cabe?</th><th>Cifra de la cota</th></tr></thead><tbody id="monitor"></tbody></table></div>
+      <div class="medidas">
+        <div class="medida-item" id="mEsc"><span class="et">Escala</span><span class="v num" id="vEsc">—</span></div>
+        <div class="medida-item" id="mCabe"><span class="et">¿Cabe la planta en el hueco?</span><span class="v" id="vCabe">—</span></div>
+        <div class="medida-item" id="mRegla"><span class="et">La regla mide el largo</span><span class="v num" id="vRegla">—</span></div>
+        <div class="medida-item" id="mVerdad"><span class="et">¿El plano dice la verdad?</span><span class="v" id="vVerdad">—</span></div>
+      </div>
+    </section>
+    <section class="panel-lab" aria-labelledby="tRompe">
+      <h2 id="tRompe">Estropéalo a propósito</h2>
+      <div class="rompelo"><h3>Escala elegida</h3>
+        <div class="seg" id="ctlEscala"><button type="button" data-v="20" aria-pressed="false">1:20</button><button type="button" data-v="50" aria-pressed="true">1:50 (la buena)</button><button type="button" data-v="100" aria-pressed="false">1:100</button></div></div>
+      <div class="rompelo"><h3>La cuenta del programa</h3>
+        <div class="seg" id="ctlCuenta"><button type="button" data-v="0" aria-pressed="true">× 10 ÷ escala</button><button type="button" data-v="1" aria-pressed="false">Sin pasar a mm</button><button type="button" data-v="2" aria-pressed="false">× escala</button></div></div>
+      <div class="rompelo"><label class="interruptor" for="ctlCifra"><input type="checkbox" id="ctlCifra"> Escribir en la cota lo que mide en el papel (el error común)</label></div>
+      <div class="rompelo"><label class="interruptor" for="ctlPegadas"><input type="checkbox" id="ctlPegadas"> Cotas pegadas y dentro del dibujo, con las grandes más cerca</label></div>
+      <div class="rompelo"><h3><label for="ctlErr">Error al medir el largo con la cinta</label></h3>
+        <div class="rango"><input type="range" id="ctlErr" min="-30" max="30" step="5" value="0"><span class="num" id="ctlErrTxt">0 cm</span></div></div>
+      <div class="explica" id="explica" aria-live="polite"></div>
+      <button type="button" class="boton sec peq" id="normalidad">Volver a la normalidad</button>
+    </section>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tIdea">
+  <p class="etq">La idea clave</p>
+  <h2 id="tIdea" class="sr">La idea clave</h2>
+  <p class="idea">En el plano se dibuja más pequeño, pero se escribe la medida real. Para dibujar: papel (mm) = real (cm) × 10 ÷ escala. Para la cota: la medida del aula, sin tocar.</p>
+  <div class="dos">
+    <div>
+      <h3 style="margin:6px 0">El aula de 8,00 × 6,50 m en un A4</h3>
+      <p style="margin:4px 0;color:var(--ink2)">En la hoja hay un hueco de unos 175 × 140 mm para la planta, porque el resto lo ocupan el margen, las cotas y el cajetín.</p>
+      <div class="tabla-envoltura"><table class="reglas" aria-label="Tamaño de la planta en el papel según la escala">
+        <thead><tr><th>Escala</th><th>Largo 800 cm</th><th>Ancho 650 cm</th><th>¿Cabe?</th></tr></thead>
+        <tbody>
+          <tr><th>1:20</th><td>400 mm</td><td>325 mm</td><td class="p">No: se sale del A4</td></tr>
+          <tr><th>1:50</th><td>160 mm</td><td>130 mm</td><td class="g">Sí, y se ve bien</td></tr>
+          <tr><th>1:100</th><td>80 mm</td><td>65 mm</td><td class="e">Sí, pero muy pequeño</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3 style="margin:6px 0">Un ejemplo resuelto</h3>
+      <p style="margin:4px 0">La pared larga mide <b>800 cm</b> y dibujamos a <b>1:50</b>.</p>
+      <p style="margin:4px 0">1. A milímetros: 800 cm × 10 = 8 000 mm.</p>
+      <p style="margin:4px 0">2. Entre la escala: 8 000 ÷ 50 = <b>160 mm</b> en el papel.</p>
+      <p style="margin:4px 0">3. En la cota se escribe <b>800</b>, la medida real (en cm, como en vuestro plano).</p>
+      <p style="margin:4px 0;color:var(--ink2)">Al revés, con la regla: 160 mm × 50 = 8 000 mm = 800 cm. Si no sale lo mismo, algo se ha dibujado mal.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tError">
+  <p class="etq">El error común</p>
+  <h2 id="tError">Escribir en la cota lo que mide la línea</h2>
+  <div class="dos">
+    <div>
+      <p>Mides con la regla la pared dibujada, sale 160 mm, y escribes «160» en la cota. Parece lógico, pero quien lea el plano entenderá que la pared mide 160 cm: menos de dos metros. Con ese plano, el mobiliario se compraría para un aula cinco veces más pequeña.</p>
+      <p>La cota no cuenta lo que mide el dibujo, sino lo que mide el objeto. Por eso el mismo plano se puede imprimir más grande o más pequeño y sus cotas siguen siendo verdad.</p>
+    </div>
+    <div class="nota">
+      <h3>Pruébalo</h3>
+      <p>Activa el error y dibuja el plano de golpe: las cifras de las cotas son las del papel y la comprobación del final dice que el plano miente.</p>
+      <p><button type="button" class="boton peq" id="probarError">Probar en la simulación</button></p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPractica">
+  <p class="etq">La práctica con el material real</p>
+  <h2 id="tPractica">Otro espacio del instituto, en un A4 y a la escala justa</h2>
+  <div class="dos">
+    <ol class="pasos">
+      <li>Elegid con el docente un espacio distinto de vuestra aula: el aula de informática, el taller, la biblioteca o un trozo del pasillo. Dentro, nadie se sube a sillas ni mesas, y la cinta no se suelta de golpe.</li>
+      <li>Medid con la cinta el largo, el ancho, las puertas, las ventanas y un elemento fijo (pizarra, pilar o armario). Anotadlo todo en centímetros en un croquis a mano alzada.</li>
+      <li>Elegid la escala con la cuenta: pasad el largo y el ancho al papel con 1:20, 1:50 y 1:100 y quedaos con la mayor que quepa en un hueco de unos 175 × 140 mm. Si queréis, cargad la calculadora en una micro:bit (botón «Copiar para MakeCode», pegadlo en la pestaña JavaScript y cambiad las medidas por las vuestras).</li>
+      <li>Dibujad la planta en A4 apaisado con escuadra, cartabón y lápiz H: muros con dos líneas, puertas con su giro y ventanas.</li>
+      <li>Acotad en centímetros con lápiz HB: medidas generales fuera del dibujo, cotas pequeñas más cerca que las grandes, cifra encima de la línea y siempre la medida real. Completad el cajetín con la escala.</li>
+      <li>Comprobad tres cotas con la regla: medid en el papel, multiplicad por la escala y comparad con lo que medisteis. Anotadlo en una tabla de pruebas.</li>
+      <li>En el laboratorio, provocad dos de los fallos de «Estropéalo a propósito» y explicad con vuestras palabras qué se ve mal y por qué: va en la entrega.</li>
+    </ol>
+    <div>
+      <h3 style="margin:0 0 8px">Antes de dar la práctica por hecha</h3>
+      <ul class="comprobacion" id="comprobacion">
+        <li><label><input type="checkbox"> Todas las medidas del croquis están en cm y las hemos tomado dos veces.</label></li>
+        <li><label><input type="checkbox"> Hemos hecho la cuenta con tres escalas y sabemos explicar por qué elegimos una.</label></li>
+        <li><label><input type="checkbox"> La planta cabe en la hoja con sus cotas y el cajetín indica la escala.</label></li>
+        <li><label><input type="checkbox"> Todas las cifras de cota son medidas reales, no lo que mide el dibujo.</label></li>
+        <li><label><input type="checkbox"> En la tabla de pruebas, tres cotas medidas con la regla coinciden (±1 mm).</label></li>
+        <li><label><input type="checkbox"> Hemos explicado dos fallos provocados en el laboratorio.</label></li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted)">Las casillas se guardan en este navegador.</p>
+      <p style="font-size:15px">Entregadlo en la <b>Tarea 3.9</b>: un PDF con el croquis y el plano escaneados o fotografiados, la tabla de las tres escalas, la tabla de pruebas con la regla y la explicación de los dos fallos. Si usáis la micro:bit, añadid el enlace de MakeCode.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tPreg">
+  <p class="etq">Tres preguntas</p>
+  <h2 id="tPreg">¿Lo has entendido?</h2>
+  <form id="preguntas" style="margin-top:12px" onsubmit="return false">
+    <fieldset class="pregunta" data-correcta="b" data-expl="650 cm × 10 = 6 500 mm, y 6 500 ÷ 50 = 130 mm. Primero se pasa a milímetros y después se divide entre la escala, porque 1:50 dibuja 50 veces más pequeño.">
+      <legend>1. A escala 1:50, ¿cuánto mide en el papel la pared de 650 cm?</legend>
+      <label class="opcion"><input type="radio" name="q1" value="a"><span>13 mm</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="b"><span>130 mm</span></label>
+      <label class="opcion"><input type="radio" name="q1" value="c"><span>325 mm</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="c" data-expl="La cota siempre lleva la medida real del objeto: 160 mm × 50 = 8 000 mm = 800 cm. Si el plano va en cm, se escribe 800.">
+      <legend>2. En un plano a 1:50 mides con la regla una pared y da 160 mm. El plano va acotado en cm. ¿Qué cifra escribes en su cota?</legend>
+      <label class="opcion"><input type="radio" name="q2" value="a"><span>160</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="b"><span>16</span></label>
+      <label class="opcion"><input type="radio" name="q2" value="c"><span>800</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+    <fieldset class="pregunta" data-correcta="a" data-expl="A 1:20 el largo serían 400 mm y no cabe en un A4 (297 mm). A 1:100 cabe, pero queda muy pequeño. 1:50 es la mayor escala que cabe: el dibujo sale lo más grande posible sin salirse.">
+      <legend>3. Tienes que dibujar el aula de 8,00 × 6,50 m en un hueco de 175 × 140 mm. ¿Qué escala eliges?</legend>
+      <label class="opcion"><input type="radio" name="q3" value="a"><span>1:50, la mayor que cabe.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="b"><span>1:20, para que se vea más grande.</span></label>
+      <label class="opcion"><input type="radio" name="q3" value="c"><span>1:100, porque cuanto más pequeño, mejor.</span></label>
+      <p class="respuesta" hidden></p>
+    </fieldset>
+  </form>
+</section>
+
+<section class="bloque" aria-labelledby="tReal">
+  <p class="etq">Qué es real y qué es aproximado</p>
+  <h2 id="tReal">Un modelo simplificado, con lo dudoso a la vista</h2>
+  <div class="real">
+    <div><h3>Sale de las normas y de MakeCode</h3><ul>
+      <li>La escala es la relación entre una medida del dibujo y la medida real. 1:20, 1:50 y 1:100 son escalas de reducción recomendadas por la norma ISO 5455, y la escala principal se escribe en el cajetín.</li>
+      <li>El A4 mide 297 × 210 mm.</li>
+      <li>Las normas de acotación de la SdA: cotas fuera del dibujo y separadas de él, las pequeñas más cerca que las grandes, la cifra encima de la línea de cota y todas en la misma unidad. La cifra es siempre la medida real del objeto.</li>
+      <li>El programa usa bloques que existen en MakeCode para micro:bit: matrices, «round» (redondear), «show number» y los iconos «yes» (✔) y «no» (✖), con los dibujos de los LED de su código.</li>
+    </ul></div>
+    <div><h3>Aproximado en la simulación</h3><ul>
+      <li>Las medidas del aula son un ejemplo típico, no las de vuestra aula. Las posiciones de la puerta, las ventanas y la pizarra también.</li>
+      <li>El hueco de 175 × 140 mm para la planta, el margen de 10 mm y el tamaño del cajetín son una elección para este laboratorio: cada centro o departamento usa su propio formato.</li>
+      <li>Las cifras de las cotas, el grosor de las líneas y las flechas se han dibujado más grandes de lo que irían en el papel para que se lean en la pantalla.</li>
+      <li>Los textos de los bloques en español y el Python no se han podido comprobar en el editor: pueden cambiar un poco según la versión de MakeCode. Los de inglés salen de su código.</li>
+      <li>En la placa real, «mostrar número» hace pasar las cifras de una en una por los LED; aquí se ve el número entero en un bocadillo.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="tFuentes">
+  <p class="etq">Fuentes</p>
+  <h2 id="tFuentes" class="sr">Fuentes</h2>
+  <ul class="fuentes">
+    <li>ISO. <a href="https://www.iso.org/standard/11500.html" target="_blank" rel="noopener">ISO 5455:1979 Technical drawings — Scales</a>: definición de escala, escalas recomendadas y designación «ESCALA 1:X».</li>
+    <li>Oficina Nacional de Normalización (Cuba). <a href="https://descargas.epconsgtmo.co.cu/Normalizacion%20Actualizadas/Normas%20de%20la%20construccion/Normas%20De%20Dibujo/NC%20ISO%205455-2004%20Dibujo%20T%C3%A9cnico.Escalas.pdf" target="_blank" rel="noopener">NC ISO 5455:2004 Dibujo técnico. Escalas</a>: traducción al español de la norma, con la escala principal en el cuadro de rotulación.</li>
+    <li>Blog Averroes, Junta de Andalucía. <a href="https://blogsaverroes.juntadeandalucia.es/franmdibujotecnico/files/2021/05/acotacion.pdf" target="_blank" rel="noopener">Acotación</a>: normas básicas de acotación para el aula.</li>
+    <li>Microsoft. <a href="https://github.com/microsoft/pxt-microbit/blob/master/libs/core/icons.ts" target="_blank" rel="noopener">pxt-microbit, libs/core/icons.ts</a>: dibujo de los iconos «yes» y «no» en los 25 LED.</li>
+    <li>Microsoft. <a href="https://github.com/microsoft/pxt/blob/master/libs/pxt-common/pxt-core.d.ts" target="_blank" rel="noopener">pxt, libs/pxt-common/pxt-core.d.ts</a>: la función Math.round que usa el bloque de redondear.</li>
+  </ul>
+</section>
+
+<nav class="bloque navlab" aria-label="Seguir">
+  <a href="clase.html#s17"><small>Anterior</small>Sesión 17. Pitch de startup</a>
+  <a href="clase.html#s18"><small>Web de clase</small>Sesión 18. Bonus track</a>
+  <a href="teoria.html#s7"><small>Teoría</small>La escala y la acotación</a>
+</nav>
+<p class="pie">Laboratorio de ampliación de la SdA 3 «Un Aula del Futuro» de Tecnología y Digitalización 3.º ESO. La simulación es un modelo simplificado y marca lo que no se ha podido comprobar. micro:bit es una marca de la Micro:bit Educational Foundation.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const fmt = n => (Math.round(n * 10) / 10).toLocaleString('es-ES');
+
+/* ------------------------------------------------------------ el aula de ejemplo (cm, interior) */
+const AULA = {largo:800, ancho:650, muro:30, puerta:{x:620, w:90}, ventanas:[80, 310, 540], ventanaW:180, pizarra:{y:175, h:300}};
+const NOMBRES = ['largo', 'ancho', 'puerta', 'ventana', 'pizarra'];
+const ETIQUETAS = ['Largo del aula', 'Ancho del aula', 'Puerta', 'Ventana', 'Pizarra'];
+const REALES = () => [AULA.largo, AULA.ancho, AULA.puerta.w, AULA.ventanaW, AULA.pizarra.h];
+const LIMITES = [175, 140, 0, 0, 0];
+
+/* ------------------------------------------------------------ iconos (pxt-microbit, libs/core/icons.ts) */
+const ICONOS = {
+  Yes: ['.....', '....#', '...#.', '#.#..', '.#...'],
+  No:  ['#...#', '.#.#.', '..#..', '.#.#.', '#...#']
+};
+const mini = nombre => `<span class="mini" aria-hidden="true">${ICONOS[nombre].join('').split('').map(c => `<i class="${c === '#' ? 'on' : ''}"></i>`).join('')}</span>`;
+
+/* ------------------------------------------------------------ estado (lo que haría la placa) */
+const V = {medidas:[800, 650, 90, 180, 300], limites:LIMITES.slice(), escala:50, i:0, papel:0};
+let cuentaMal = 0;          // 0 bien, 1 sin pasar a mm, 2 multiplica por la escala
+let cifraPapel = false, pegadas = false, errLargo = 0;
+const RES = [null, null, null, null, null];   // resultado de cada conversión
+function cuentaDe(cm){      // la misma cuenta que el bloque «establecer papel», sin redondear (para dibujar)
+  if (cuentaMal === 1) return cm / V.escala;
+  if (cuentaMal === 2) return cm * 10 * V.escala;
+  return cm * 10 / V.escala;
+}
+const textoCuenta = cm => cuentaMal === 1 ? `${cm} ÷ ${V.escala}` : cuentaMal === 2 ? `${cm} × 10 × ${V.escala}` : `${cm} × 10 ÷ ${V.escala}`;
+
+/* ------------------------------------------------------------ el programa: una sola definición */
+const CAT = {basico:'#1e90ff', entrada:'#d400d4', logica:'#00a4a6', variables:'#dc143c', mates:'#9400d3', funciones:'#3455db', matrices:'#a94400'};
+function programa(){
+  const lista = V.medidas.join(', '), listaL = V.limites.join(', ');
+  const listaEs = V.medidas.map(n => `{n:${n}}`).join(' '), listaLEs = V.limites.map(n => `{n:${n}}`).join(' ');
+  const cuenta = [
+    {es:'{m:redondear} ({a:obtener valor en} {v:i} {a:de} {v:medidas} {m:×} {n:10} {m:÷} {v:escala})', en:'{m:round} ({v:medidas} {a:get value at} {v:i} {m:×} {n:10} {m:÷} {v:escala})', py:'papel = Math.round(medidas[i] * 10 / escala)', js:'papel = Math.round(medidas[i] * 10 / escala)'},
+    {es:'{m:redondear} ({a:obtener valor en} {v:i} {a:de} {v:medidas} {m:÷} {v:escala})', en:'{m:round} ({v:medidas} {a:get value at} {v:i} {m:÷} {v:escala})', py:'papel = Math.round(medidas[i] / escala)', js:'papel = Math.round(medidas[i] / escala)'},
+    {es:'{m:redondear} ({a:obtener valor en} {v:i} {a:de} {v:medidas} {m:×} {n:10} {m:×} {v:escala})', en:'{m:round} ({v:medidas} {a:get value at} {v:i} {m:×} {n:10} {m:×} {v:escala})', py:'papel = Math.round(medidas[i] * 10 * escala)', js:'papel = Math.round(medidas[i] * 10 * escala)'}
+  ][cuentaMal];
+  return [
+    {hat:true, id:'ini', cat:'basico', es:'al iniciar', en:'on start', cuerpo:[
+      {id:'ini_m', cat:'matrices', es:`establecer {v:medidas} a {a:matriz de} ${listaEs}`, en:`set {v:medidas} to {a:array of} ${listaEs}`, py:[`medidas = [${lista}]`], js:[`let medidas = [${lista}]`]},
+      {id:'ini_l', cat:'matrices', es:`establecer {v:limites} a {a:matriz de} ${listaLEs}`, en:`set {v:limites} to {a:array of} ${listaLEs}`, py:[`limites = [${listaL}]`], js:[`let limites = [${listaL}]`]},
+      {id:'ini_v', cat:'variables', es:'establecer {v:escala} a {n:50} · {v:i} a {n:0} · {v:papel} a {n:0}', en:'set {v:escala} to {n:50} · {v:i} to {n:0} · {v:papel} to {n:0}', py:['escala = 50', 'i = 0', 'papel = 0'], js:['let escala = 50', 'let i = 0', 'let papel = 0']}
+    ]},
+    {hat:true, id:'fc', cat:'funciones', es:'función convertir', en:'function convertir', py:'def convertir():', pyGlobal:'global papel', js:'function convertir () {', cuerpo:[
+      {id:'cv_p', cat:'variables', es:'establecer {v:papel} a ' + cuenta.es, en:'set {v:papel} to ' + cuenta.en, py:[cuenta.py], js:[cuenta.js], cambiado:cuentaMal !== 0},
+      {id:'cv_n', cat:'basico', es:'mostrar número {v:papel}', en:'show number {v:papel}', py:['basic.show_number(papel)'], js:['basic.showNumber(papel)']},
+      {si:true, id:'cv_si', ramas:[
+        {id:'cv_if', es:'si {a:obtener valor en} {v:i} {a:de} {v:limites} {l:>} {n:0} {l:y} {v:papel} {l:>} {a:obtener valor en} {v:i} {a:de} {v:limites} entonces', en:'if {v:limites} {a:get value at} {v:i} {l:>} {n:0} {l:and} {v:papel} {l:>} {v:limites} {a:get value at} {v:i} then', py:'if limites[i] > 0 and papel > limites[i]:', js:'if (limites[i] > 0 && papel > limites[i]) {', cuerpo:[
+          {id:'cv_no', cat:'basico', es:'mostrar ícono {i:No}', en:'show icon {i:No}', py:['basic.show_icon(IconNames.NO)'], js:['basic.showIcon(IconNames.No)']}]},
+        {id:'cv_else', es:'si no', en:'else', py:'else:', js:'} else {', cuerpo:[
+          {id:'cv_yes', cat:'basico', es:'mostrar ícono {i:Yes}', en:'show icon {i:Yes}', py:['basic.show_icon(IconNames.YES)'], js:['basic.showIcon(IconNames.Yes)']}]}
+      ]}
+    ]},
+    {hat:true, id:'ba', cat:'entrada', es:'al presionar el botón {n:A}', en:'on button {n:A} pressed', py:'def on_button_pressed_a():', pyGlobal:'global i', pyReg:'input.on_button_pressed(Button.A, on_button_pressed_a)', js:'input.onButtonPressed(Button.A, function () {', jsEnd:'})', cuerpo:[
+      {id:'ba_c', cat:'funciones', es:'llamar convertir', en:'call convertir', py:['convertir()'], js:['convertir()']},
+      {id:'ba_i', cat:'variables', es:'establecer {v:i} a {m:resto de} ({v:i} {m:+} {n:1}) {m:÷} {a:longitud de la matriz} {v:medidas}', en:'set {v:i} to {m:remainder of} ({v:i} {m:+} {n:1}) {m:÷} {a:length of array} {v:medidas}', py:['i = (i + 1) % len(medidas)'], js:['i = (i + 1) % medidas.length']}
+    ]},
+    {hat:true, id:'bb', cat:'entrada', es:'al presionar el botón {n:B}', en:'on button {n:B} pressed', py:'def on_button_pressed_b():', pyGlobal:'global escala, i', pyReg:'input.on_button_pressed(Button.B, on_button_pressed_b)', js:'input.onButtonPressed(Button.B, function () {', jsEnd:'})', cuerpo:[
+      {si:true, id:'bb_si', ramas:[
+        {id:'bb_20', es:'si {v:escala} {l:=} {n:20} entonces', en:'if {v:escala} {l:=} {n:20} then', py:'if escala == 20:', js:'if (escala == 20) {', cuerpo:[
+          {id:'bb_a50', cat:'variables', es:'establecer {v:escala} a {n:50}', en:'set {v:escala} to {n:50}', py:['escala = 50'], js:['escala = 50']}]},
+        {id:'bb_50', es:'si no, si {v:escala} {l:=} {n:50} entonces', en:'else if {v:escala} {l:=} {n:50} then', py:'elif escala == 50:', js:'} else if (escala == 50) {', cuerpo:[
+          {id:'bb_a100', cat:'variables', es:'establecer {v:escala} a {n:100}', en:'set {v:escala} to {n:100}', py:['escala = 100'], js:['escala = 100']}]},
+        {id:'bb_otro', es:'si no', en:'else', py:'else:', js:'} else {', cuerpo:[
+          {id:'bb_a20', cat:'variables', es:'establecer {v:escala} a {n:20}', en:'set {v:escala} to {n:20}', py:['escala = 20'], js:['escala = 20']}]}
+      ]},
+      {id:'bb_i', cat:'variables', es:'establecer {v:i} a {n:0}', en:'set {v:i} to {n:0}', py:['i = 0'], js:['i = 0']},
+      {id:'bb_n', cat:'basico', es:'mostrar número {v:escala}', en:'show number {v:escala}', py:['basic.show_number(escala)'], js:['basic.showNumber(escala)']}
+    ]}
+  ];
+}
+
+/* ------------------------------------------------------------ pintar bloques, Python y JavaScript */
+let idioma = 'es';
+function piezasTxt(txt){
+  return esc(txt).replace(/\{(\w):([^}]*)\}/g, (m, t, v) => {
+    if (t === 'i') return `<span class="pill ico">${mini(v)}</span>`;
+    const cls = {v:'var', m:'mat', l:'log', a:'arr', n:''}[t] || '';
+    return `<span class="pill ${cls}">${v}</span>`;
+  });
+}
+function pintaBloque(b){
+  if (b.si){
+    return `<div class="blk" style="--c:${CAT.logica}" data-b="${b.id}">${b.ramas.map(r => `<span class="rama" data-b="${r.id}">${piezasTxt(r[idioma])}</span><div class="cuerpo">${r.cuerpo.map(pintaBloque).join('')}</div>`).join('')}</div>`;
+  }
+  return `<div class="blk ${b.hat ? 'hat' : ''} ${b.cambiado ? 'cambiado' : ''}" style="--c:${CAT[b.cat]}" data-b="${b.id}">${piezasTxt(b[idioma])}${b.cuerpo ? `<div class="cuerpo">${b.cuerpo.map(pintaBloque).join('')}</div>` : ''}</div>`;
+}
+function textoPython(prog){
+  const L = [];
+  const add = (id, txt, nivel, cambiado) => L.push({id, txt:'    '.repeat(nivel) + txt, cambiado:!!cambiado});
+  const cuerpo = (lista, nivel) => lista.forEach(b => {
+    if (b.si) b.ramas.forEach(r => { add(r.id, r.py, nivel); cuerpo(r.cuerpo, nivel + 1); });
+    else b.py.forEach(t => add(b.id, t, nivel, b.cambiado));
+  });
+  prog.forEach(h => {
+    if (h.id === 'ini'){ cuerpo(h.cuerpo, 0); L.push({id:'', txt:''}); return; }
+    add(h.id, h.py, 0);
+    if (h.pyGlobal) add(h.id, h.pyGlobal, 1);
+    cuerpo(h.cuerpo, 1);
+    if (h.pyReg) add(h.id, h.pyReg, 0);
+    L.push({id:'', txt:''});
+  });
+  return L;
+}
+function textoJS(prog){
+  const L = [];
+  const add = (t, n) => L.push('    '.repeat(n) + t);
+  const cuerpo = (lista, n) => lista.forEach(b => {
+    if (b.si){ b.ramas.forEach(r => { add(r.js, n); cuerpo(r.cuerpo, n + 1); }); add('}', n); }
+    else b.js.forEach(t => add(t, n));
+  });
+  prog.forEach(h => {
+    if (h.id === 'ini'){ cuerpo(h.cuerpo, 0); L.push(''); return; }
+    add(h.js, 0); cuerpo(h.cuerpo, 1); add(h.jsEnd || '}', 0); L.push('');
+  });
+  return L.join('\n').trim() + '\n';
+}
+const textoPy = () => textoPython(programa()).map(l => l.txt).join('\n').trim() + '\n';
+function pintaPrograma(){
+  const prog = programa();
+  $('#bloques').innerHTML = prog.map(h => `<div class="pila">${pintaBloque(h)}</div>`).join('');
+  $('#python').innerHTML = textoPython(prog).map(l => `<span data-b="${l.id}" class="${l.cambiado ? 'cambiado' : ''}">${esc(l.txt) || ' '}</span>`).join('');
+  marcaResaltado();
+}
+let resalte = null;
+function hl(id){ resalte = id; marcaResaltado(); }
+function marcaResaltado(){
+  document.querySelectorAll('.on-tu').forEach(e => e.classList.remove('on-tu'));
+  if (resalte) document.querySelectorAll(`[data-b="${resalte}"]`).forEach(e => e.classList.add('on-tu'));
+}
+
+/* ------------------------------------------------------------ escena SVG */
+const svg = $('#svg');
+const el = (tag, at = {}, padre = svg) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); padre.appendChild(e); return e; };
+const txt = (padre, x, y, t, at = {}) => { const e = el('text', Object.assign({x, y, 'font-size':13, fill:'var(--ink2)', 'font-weight':700}, at), padre); e.textContent = t; return e; };
+const PIEZAS = {
+  muro: ['Muro', 'Las paredes del aula, de unos 30 cm de grosor. En planta se dibujan con dos líneas paralelas.', 'En el plano también se pasan a escala: a 1:50, 30 cm de muro son 6 mm de papel.'],
+  ventana: ['Ventana', 'Un hueco en el muro con su cristal. En planta se dibuja con líneas finas dentro del grueso del muro.', 'Cada una mide 180 cm. Su ancho y su posición se convierten con la misma cuenta que el resto.'],
+  puerta: ['Puerta y su giro', 'La hoja de la puerta y el arco que barre al abrirse.', 'Mide 90 cm. El arco indica hacia dónde abre y qué espacio hay que dejar libre delante.'],
+  pizarra: ['Pizarra', 'Un elemento fijo de la pared, útil para orientarse en el plano.', 'Mide 300 cm. Se acota en el lado izquierdo, fuera del dibujo.'],
+  persona: ['Una persona, para comparar', 'Unos 45 cm de hombro a hombro, vista desde arriba.', 'Sirve para hacerse una idea del tamaño real del aula.'],
+  cinta: ['Cinta métrica', 'Mide en centímetros. Se mide a la altura del suelo, de pared a pared.', 'Cada medida se anota en cm en el croquis: es la que luego va en las cotas.'],
+  calc: ['Calculadora de escalas (micro:bit)', 'Una micro:bit con un programa: el botón A convierte la siguiente medida y el B cambia de escala.', 'Muestra los milímetros de papel y después ✔ si cabe en el hueco o ✖ si no cabe.'],
+  hoja: ['Hoja A4 apaisada', 'Mide 297 × 210 mm. Aquí está dibujada a tamaño proporcional.', 'Todo el plano tiene que caber dentro del margen, con sus cotas y el cajetín.'],
+  margen: ['Margen o recuadro', 'Una línea a 10 mm del borde de la hoja que enmarca el dibujo.', 'Nada del plano debe salirse de este recuadro.'],
+  cajetin: ['Cajetín (cuadro de rotulación)', 'El recuadro con los datos del plano: qué es, quién lo hace, la fecha y la escala.', 'La norma pide escribir aquí la escala principal del dibujo.'],
+  hueco: ['Hueco para la planta', 'El espacio que queda libre para la planta después de reservar el margen, las cotas y el cajetín: unos 175 × 140 mm.', 'Es lo que comprueba la calculadora con su lista «limites».'],
+  cota: ['Una cota', 'Tiene cuatro partes: dos líneas auxiliares que salen de los extremos, la línea de cota paralela a la medida, las flechas en sus extremos y la cifra encima.', 'La cifra es la medida real en cm, nunca lo que mide la línea en el papel.'],
+  regla: ['Regla', 'Mide el dibujo en milímetros.', 'Para comprobar: lo que mide en el papel × escala ÷ 10 tiene que dar la medida real en cm.']
+};
+function pieza(padre, id, etiqueta){ return el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':etiqueta || PIEZAS[id][0], 'data-pieza':id}, padre); }
+el('rect', {x:0, y:0, width:960, height:560, fill:'var(--mesa)'});
+el('defs', {}).innerHTML = '<marker id="flecha" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 1 L10 5 L0 9 z" fill="#1f2937"/></marker>';
+
+/* ---- el aula real (izquierda), 0,34 px por cm */
+const RK = 0.34, RX = 38, RY = 96;
+const rx = cm => RX + cm * RK, ry = cm => RY + cm * RK;
+txt(svg, 22, 40, 'El aula real, vista desde arriba', {'font-size':16, 'font-weight':800, fill:'var(--ink)'});
+const tReal = txt(svg, 22, 60, '8,00 m × 6,50 m', {'font-size':13, fill:'var(--muted)'});
+const gReal = el('g', {});
+{
+  const m = AULA.muro * RK;
+  const gm = pieza(gReal, 'muro');
+  el('rect', {x:rx(0) - m, y:ry(0) - m, width:AULA.largo * RK + 2 * m, height:AULA.ancho * RK + 2 * m, fill:'var(--muro)'}, gm);
+  el('rect', {x:rx(0), y:ry(0), width:AULA.largo * RK, height:AULA.ancho * RK, fill:'var(--suelo)'}, gReal);
+  // mesas en filas, tenues
+  for (let f = 0; f < 5; f++) for (let c = 0; c < 6; c++) el('rect', {x:rx(120 + c * 105), y:ry(140 + f * 95), width:70 * RK, height:50 * RK, rx:2, fill:'var(--muro)', opacity:.25}, gReal);
+  const gv = pieza(gReal, 'ventana', 'Ventanas');
+  AULA.ventanas.forEach(x => el('rect', {x:rx(x), y:ry(0) - m, width:AULA.ventanaW * RK, height:m, fill:'var(--vent)'}, gv));
+  const gp = pieza(gReal, 'puerta');
+  el('rect', {x:rx(AULA.puerta.x), y:ry(AULA.ancho), width:AULA.puerta.w * RK, height:m, fill:'var(--suelo)'}, gp);
+  el('path', {d:`M ${rx(AULA.puerta.x)} ${ry(AULA.ancho)} l 0 ${-AULA.puerta.w * RK} A ${AULA.puerta.w * RK} ${AULA.puerta.w * RK} 0 0 1 ${rx(AULA.puerta.x + AULA.puerta.w)} ${ry(AULA.ancho)}`, fill:'none', stroke:'var(--puerta)', 'stroke-width':2.5}, gp);
+  const gz = pieza(gReal, 'pizarra');
+  el('rect', {x:rx(0), y:ry(AULA.pizarra.y), width:5, height:AULA.pizarra.h * RK, fill:'var(--piz)'}, gz);
+  const gpe = pieza(gReal, 'persona');
+  el('circle', {cx:rx(60), cy:ry(560), r:22 * RK, fill:'var(--accent)', opacity:.8}, gpe);
+}
+const nomReal = [['Pizarra', rx(0) + 8, ry(330), {fill:'var(--piz)'}], ['Ventanas', rx(400), ry(0) - 16, {'text-anchor':'middle', fill:'var(--vent)'}], ['Puerta', rx(665), ry(AULA.ancho) + 26, {'text-anchor':'middle', fill:'var(--puerta)'}]]
+  .map(([t, x, y, at]) => { const e = txt(svg, x, y, t, Object.assign({class:'nombre', 'font-size':12}, at)); return e; });
+const gCinta = pieza(svg, 'cinta'); gCinta.setAttribute('opacity', 0);
+const cintaLinea = el('line', {stroke:'var(--cinta)', 'stroke-width':5, 'stroke-linecap':'round'}, gCinta);
+const cintaCaja = el('rect', {width:54, height:22, rx:6, fill:'var(--cinta)', stroke:'#854d0e'}, gCinta);
+const cintaTxt = el('text', {'font-size':12, 'font-weight':800, fill:'#422006', 'text-anchor':'middle'}, gCinta);
+
+/* ---- la calculadora (micro:bit), abajo a la izquierda */
+const CX = 70, CY = 384;
+const gCalc = pieza(svg, 'calc');
+el('rect', {x:CX, y:CY, width:170, height:128, rx:14, fill:'var(--placa)', stroke:'var(--placa-borde)', 'stroke-width':3}, gCalc);
+el('rect', {x:CX + 4, y:CY + 106, width:162, height:18, rx:3, fill:'var(--oro)', opacity:.9}, gCalc);
+const LEDS = [];
+for (let f = 0; f < 5; f++) for (let c = 0; c < 5; c++) LEDS.push(el('rect', {x:CX + 52 + c * 14, y:CY + 16 + f * 14, width:10, height:10, rx:2, fill:'var(--led-off)'}, gCalc));
+const btnA = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':'Botón A de la calculadora: convertir la siguiente medida', 'data-boton':'A'}, svg);
+el('circle', {cx:CX + 24, cy:CY + 52, r:12, fill:'#111827', stroke:'#9ca3af', 'stroke-width':2}, btnA); txt(btnA, CX + 24, CY + 84, 'A', {'text-anchor':'middle', fill:'#e5e7eb'});
+const btnB = el('g', {class:'svg-pieza', tabindex:0, role:'button', 'aria-label':'Botón B de la calculadora: cambiar de escala', 'data-boton':'B'}, svg);
+el('circle', {cx:CX + 146, cy:CY + 52, r:12, fill:'#111827', stroke:'#9ca3af', 'stroke-width':2}, btnB); txt(btnB, CX + 146, CY + 84, 'B', {'text-anchor':'middle', fill:'#e5e7eb'});
+txt(svg, CX + 85, CY - 10, 'Calculadora de escalas', {'text-anchor':'middle', class:'nombre', fill:'var(--ink2)'});
+const bocata = el('g', {opacity:0});
+el('rect', {x:CX + 178, y:CY + 26, width:94, height:40, rx:10, fill:'var(--card)', stroke:'var(--tu)', 'stroke-width':2}, bocata);
+const bocataTxt = txt(bocata, CX + 225, CY + 52, '', {'text-anchor':'middle', 'font-size':16, fill:'var(--ink)'});
+function pintaLeds(img){ LEDS.forEach((r, k) => r.setAttribute('fill', img && img[Math.floor(k / 5)][k % 5] === '#' ? 'var(--led-on)' : 'var(--led-off)')); }
+
+/* ---- la hoja A4 (derecha), 2 px por mm */
+const SX = 340, SY = 62, K = 2;
+const px = mm => SX + mm * K, py = mm => SY + mm * K;
+txt(svg, SX, 40, 'La hoja A4 apaisada (297 × 210 mm)', {'font-size':16, 'font-weight':800, fill:'var(--ink)'});
+const gHoja = pieza(svg, 'hoja');
+el('rect', {x:px(0), y:py(0), width:297 * K, height:210 * K, fill:'var(--papel)', stroke:'var(--papel-borde)', 'stroke-width':1.5}, gHoja);
+const capaConstr = el('g', {opacity:0, 'pointer-events':'none'});   // líneas de construcción (Transparente)
+for (let x = 10; x < 297; x += 10) el('line', {x1:px(x), y1:py(0), x2:px(x), y2:py(210), stroke:'var(--cuad)', 'stroke-width':x % 50 ? .5 : 1}, capaConstr);
+for (let y = 10; y < 210; y += 10) el('line', {x1:px(0), y1:py(y), x2:px(297), y2:py(y), stroke:'var(--cuad)', 'stroke-width':y % 50 ? .5 : 1}, capaConstr);
+const gMargen = pieza(svg, 'margen');
+el('rect', {x:px(10), y:py(10), width:277 * K, height:190 * K, fill:'none', stroke:'#1f2937', 'stroke-width':1.6}, gMargen);
+el('rect', {x:px(10), y:py(10), width:277 * K, height:6, fill:'transparent'}, gMargen);
+const gCaj = pieza(svg, 'cajetin');
+el('rect', {x:px(222), y:py(170), width:65 * K, height:30 * K, fill:'var(--papel)', stroke:'#1f2937', 'stroke-width':1.4}, gCaj);
+el('line', {x1:px(222), y1:py(180), x2:px(287), y2:py(180), stroke:'#1f2937'}, gCaj);
+el('line', {x1:px(222), y1:py(190), x2:px(287), y2:py(190), stroke:'#1f2937'}, gCaj);
+const cajT = [txt(gCaj, px(224), py(177), 'AULA · PLANTA', {'font-size':11, fill:'#1f2937'}), txt(gCaj, px(224), py(187), 'ESCALA —', {'font-size':11, fill:'#1f2937'}), txt(gCaj, px(224), py(197), 'Cotas en cm · Equipo', {'font-size':10, fill:'#1f2937', 'font-weight':600})];
+const gHueco = pieza(capaConstr, 'hueco');
+const huecoRect = el('rect', {fill:'rgba(124,58,237,.06)', stroke:'var(--accent)', 'stroke-dasharray':'6 4', 'stroke-width':1.5}, gHueco);
+const huecoTxt = txt(gHueco, 0, 0, 'hueco para la planta: 175 × 140 mm', {'font-size':11, fill:'var(--accent)'});
+const capaProy = el('g', {}, capaConstr);
+const capaPlano = el('g', {});
+const capaRegla = el('g', {});
+const nomHoja = [['Margen', px(12), py(8), {}], ['Cajetín', px(254), py(167), {'text-anchor':'middle'}]].map(([t, x, y, at]) => txt(svg, x, y, t, Object.assign({class:'nombre', 'font-size':11, fill:'var(--muted)'}, at)));
+const avisoHoja = txt(svg, px(148), py(210) + 26, '', {'text-anchor':'middle', 'font-size':15, fill:'var(--ko)'});
+// la capa de construcción va por encima del papel, pero por debajo del plano
+svg.insertBefore(capaConstr, gMargen);
+
+/* ------------------------------------------------------------ geometría del plano (mm de papel) */
+const OX = 32, OY = 40;    // esquina exterior del muro, arriba a la izquierda
+function geometria(){
+  const t = cuentaDe(AULA.muro), IX = OX + t, IY = OY + t;
+  const L = cuentaDe(V.medidas[0]), A = cuentaDe(AULA.ancho);
+  return {t, IX, IY, L, A, X: cm => IX + cuentaDe(cm), Y: cm => IY + cuentaDe(cm)};
+}
+const lim = v => Math.max(-5000, Math.min(5000, v));
+function linea(padre, x1, y1, x2, y2, at = {}){ return el('line', Object.assign({x1:px(lim(x1)), y1:py(lim(y1)), x2:px(lim(x2)), y2:py(lim(y2)), stroke:'#1f2937', 'stroke-width':1.4, 'stroke-linecap':'round'}, at), padre); }
+function trazar(nodos, ms){
+  // dibuja cada trazo poco a poco (stroke-dashoffset)
+  const e = epoca;
+  nodos.forEach(n => { let L = 0; try { L = n.getTotalLength(); } catch(_){} if (!L || L > 20000) return; n.style.strokeDasharray = L; n.style.strokeDashoffset = L; n.dataset.largo = L; });
+  if (instantaneo || ms <= 0){ nodos.forEach(n => { n.style.strokeDasharray = ''; n.style.strokeDashoffset = ''; }); return Promise.resolve(); }
+  const dur = ms / vel, t0 = performance.now();
+  return new Promise(res => {
+    const paso = t => {
+      if (e !== epoca) return res();
+      const k = Math.min(1, (t - t0) / dur);
+      nodos.forEach(n => { if (n.dataset.largo) n.style.strokeDashoffset = (1 - k) * n.dataset.largo; });
+      if (k < 1) requestAnimationFrame(paso); else { nodos.forEach(n => { n.style.strokeDasharray = ''; n.style.strokeDashoffset = ''; }); res(); }
+    };
+    requestAnimationFrame(paso);
+  });
+}
+function dibujaMuros(){
+  const G = geometria(), g = pieza(capaPlano, 'muro', 'Muros del plano');
+  const ext = [[OX, OY], [G.IX + G.L + G.t, OY], [G.IX + G.L + G.t, G.IY + G.A + G.t], [OX, G.IY + G.A + G.t]];
+  const int = [[G.IX, G.IY], [G.IX + G.L, G.IY], [G.IX + G.L, G.IY + G.A], [G.IX, G.IY + G.A]];
+  const nodos = [];
+  [ext, int].forEach(P => P.forEach((p, k) => { const q = P[(k + 1) % 4]; nodos.push(linea(g, p[0], p[1], q[0], q[1], {'stroke-width':2})); }));
+  // proyección de las esquinas (solo en Transparente)
+  capaProy.innerHTML = '';
+  [[0, 0], [AULA.largo, 0], [AULA.largo, AULA.ancho], [0, AULA.ancho]].forEach(([cx, cy], k) => {
+    el('line', {x1:rx(cx), y1:ry(cy), x2:px(lim(int[k][0])), y2:py(lim(int[k][1])), stroke:'var(--accent)', 'stroke-dasharray':'3 5', 'stroke-width':1}, capaProy);
+  });
+  return nodos;
+}
+function dibujaHuecos(){
+  const G = geometria(), nodos = [], borra = 'var(--papel)';
+  const gv = pieza(capaPlano, 'ventana', 'Ventanas del plano');
+  AULA.ventanas.forEach(x => {
+    const a = G.X(x), b = G.X(x + AULA.ventanaW);
+    el('rect', {x:px(lim(a)), y:py(lim(OY)) - 1, width:Math.max(0, px(lim(b)) - px(lim(a))), height:Math.max(0, G.t * K) + 2, fill:borra}, gv);
+    nodos.push(linea(gv, a, OY, a, G.IY, {'stroke-width':1.2}), linea(gv, b, OY, b, G.IY, {'stroke-width':1.2}));
+    nodos.push(linea(gv, a, OY + G.t / 2, b, OY + G.t / 2, {stroke:'var(--vent)', 'stroke-width':1.6}));
+  });
+  const gp = pieza(capaPlano, 'puerta', 'Puerta del plano');
+  const a = G.X(AULA.puerta.x), b = G.X(AULA.puerta.x + AULA.puerta.w), yi = G.IY + G.A, w = cuentaDe(AULA.puerta.w);
+  el('rect', {x:px(lim(a)), y:py(lim(yi)) - 1, width:Math.max(0, px(lim(b)) - px(lim(a))), height:Math.max(0, G.t * K) + 2, fill:borra}, gp);
+  nodos.push(linea(gp, a, yi, a, yi - w, {stroke:'var(--puerta)', 'stroke-width':1.6}));
+  nodos.push(el('path', {d:`M ${px(lim(a))} ${py(lim(yi - w))} A ${w * K} ${w * K} 0 0 1 ${px(lim(b))} ${py(lim(yi))}`, fill:'none', stroke:'var(--puerta)', 'stroke-width':1.2, 'stroke-dasharray':''}, gp));
+  const gz = pieza(capaPlano, 'pizarra', 'Pizarra del plano');
+  nodos.push(linea(gz, G.IX + .8, G.Y(AULA.pizarra.y), G.IX + .8, G.Y(AULA.pizarra.y + AULA.pizarra.h), {stroke:'var(--piz)', 'stroke-width':3}));
+  return nodos;
+}
+function cifraDe(k){ const real = V.medidas[k]; return cifraPapel ? Math.round(cuentaDe(real)) : real; }
+function cota(padre, dir, a, b, base, linea_, texto, etiqueta){
+  // dir 'h': cota horizontal de x=a a x=b; las auxiliares salen de y=base hasta y=linea_
+  // dir 'v': cota vertical de y=a a y=b; las auxiliares salen de x=base hasta x=linea_
+  const g = pieza(padre, 'cota', 'Cota: ' + etiqueta), nodos = [], s = Math.sign(linea_ - base) || -1;
+  const fino = {'stroke-width':.9};
+  if (dir === 'h'){
+    nodos.push(linea(g, a, base + s * 1, a, linea_ + s * 2, fino), linea(g, b, base + s * 1, b, linea_ + s * 2, fino));
+    nodos.push(linea(g, a, linea_, b, linea_, Object.assign({'marker-start':'url(#flecha)', 'marker-end':'url(#flecha)'}, fino)));
+    const t = txt(g, (px(lim(a)) + px(lim(b))) / 2, py(lim(linea_)) - 4, String(texto), {'text-anchor':'middle', 'font-size':12, fill:cifraPapel ? '#b91c1c' : '#1f2937', class:'cifra'});
+    nodos.cifra = t;
+  } else {
+    nodos.push(linea(g, base + s * 1, a, linea_ + s * 2, a, fino), linea(g, base + s * 1, b, linea_ + s * 2, b, fino));
+    nodos.push(linea(g, linea_, a, linea_, b, Object.assign({'marker-start':'url(#flecha)', 'marker-end':'url(#flecha)'}, fino)));
+    const cx = px(lim(linea_)) - 4, cy = (py(lim(a)) + py(lim(b))) / 2;
+    const t = txt(g, cx, cy, String(texto), {'text-anchor':'middle', 'font-size':12, fill:cifraPapel ? '#b91c1c' : '#1f2937', transform:`rotate(-90 ${cx} ${cy})`, class:'cifra'});
+    nodos.cifra = t;
+  }
+  // zona amplia para pulsar
+  el('rect', {x:Math.min(px(lim(dir === 'h' ? a : linea_)), px(lim(dir === 'h' ? b : linea_))) - 6, y:Math.min(py(lim(dir === 'h' ? linea_ : a)), py(lim(dir === 'h' ? linea_ : b))) - 10, width:Math.abs(px(lim(dir === 'h' ? b : linea_)) - px(lim(dir === 'h' ? a : linea_))) + 12, height:Math.abs(py(lim(dir === 'h' ? linea_ : b)) - py(lim(dir === 'h' ? linea_ : a))) + 14, fill:'transparent'}, g);
+  return nodos;
+}
+function dibujaCotas(){
+  const G = geometria(), out = [];
+  const extD = G.IX + G.L + G.t, extB = G.IY + G.A + G.t;
+  // separaciones (mm de papel): bien = fuera, pequeñas cerca (10) y grandes lejos (18); mal = dentro y pegadas
+  const d1 = pegadas ? -7 : 10, d2 = pegadas ? -3 : 18;
+  const v0 = AULA.ventanas[0];
+  out.push(cota(capaPlano, 'h', G.X(v0), G.X(v0 + AULA.ventanaW), OY, pegadas ? G.IY - d1 : OY - d1, cifraDe(3), 'ventana'));
+  out.push(cota(capaPlano, 'h', G.IX, G.IX + G.L, G.IY, pegadas ? G.IY - d2 : OY - d2, cifraDe(0), 'largo'));
+  out.push(cota(capaPlano, 'v', G.IY, G.IY + G.A, G.IX + G.L, pegadas ? G.IX + G.L + d2 : extD + 10, cifraDe(1), 'ancho'));
+  out.push(cota(capaPlano, 'h', G.X(AULA.puerta.x), G.X(AULA.puerta.x + AULA.puerta.w), G.IY + G.A, pegadas ? G.IY + G.A + d2 : extB + 10, cifraDe(2), 'puerta'));
+  out.push(cota(capaPlano, 'v', G.Y(AULA.pizarra.y), G.Y(AULA.pizarra.y + AULA.pizarra.h), G.IX, pegadas ? G.IX - d2 + 4 : OX - 10, cifraDe(4), 'pizarra'));
+  return out;
+}
+
+/* ------------------------------------------------------------ la simulación ejecuta el mismo programa */
+let vel = 1, epoca = 0, instantaneo = false;
+function sleep(ms){ const e = epoca; return new Promise(r => setTimeout(() => { if (e === epoca) r(); }, instantaneo ? 0 : ms / vel)); }
+async function mostrarNumero(n){ bocataTxt.textContent = String(n).length > 7 ? n.toExponential(1) : n.toLocaleString('es-ES'); bocata.setAttribute('opacity', 1); pintaLeds(null); await sleep(700); }
+async function mostrarIcono(nombre){ pintaLeds(ICONOS[nombre]); await sleep(500); }
+async function convertir(){
+  hl('fc');
+  const k = V.i, cm = V.medidas[k];
+  V.papel = Math.round(cuentaDe(cm)); hl('cv_p'); refresca();
+  hl('cv_n'); await mostrarNumero(V.papel);
+  hl('cv_si');
+  let cabe;
+  if (V.limites[k] > 0 && V.papel > V.limites[k]){ hl('cv_if'); hl('cv_no'); cabe = false; await mostrarIcono('No'); }
+  else { hl('cv_else'); hl('cv_yes'); cabe = V.limites[k] > 0 ? true : null; await mostrarIcono('Yes'); }
+  RES[k] = {cm, papel:V.papel, cabe, cuenta:textoCuenta(cm)};
+  refresca();
+  return k;
+}
+async function botonA(){ hl('ba'); hl('ba_c'); const k = await convertir(); V.i = (V.i + 1) % V.medidas.length; hl('ba_i'); refresca(); return k; }
+async function botonB(){
+  hl('bb'); hl('bb_si');
+  if (V.escala == 20){ hl('bb_20'); V.escala = 50; hl('bb_a50'); }
+  else if (V.escala == 50){ hl('bb_50'); V.escala = 100; hl('bb_a100'); }
+  else { hl('bb_otro'); V.escala = 20; hl('bb_a20'); }
+  V.i = 0; hl('bb_i');
+  hl('bb_n'); await mostrarNumero(V.escala);
+}
+
+/* ------------------------------------------------------------ monitor y explicaciones */
+let reglaMm = null, plano = {muros:false, huecos:false, cotas:false, comprobado:false};
+const realDe = k => REALES()[k];
+function verdad(){
+  if (reglaMm == null) return null;
+  const leido = reglaMm * V.escala / 10;                     // lo que dice el dibujo, en cm
+  const cifra = cifraDe(0);
+  return {leido, cifra, dibujoOk:Math.abs(leido - AULA.largo) <= V.escala / 10, cifraOk:cifra === AULA.largo};
+}
+function refresca(){
+  const reales = REALES();
+  $('#monitor').innerHTML = NOMBRES.map((n, k) => {
+    const r = RES[k], anot = V.medidas[k], difiere = anot !== reales[k];
+    const cifra = plano.cotas ? cifraDe(k) : '—';
+    return `<tr><th scope="row">${ETIQUETAS[k]}</th><td class="num">${reales[k]} cm</td><td class="num ${difiere ? 'mal' : ''}">${anot} cm</td>`
+      + `<td class="num">${r ? esc(r.cuenta) : '—'}</td><td class="num ${r && cuentaMal ? 'mal' : ''}">${r ? r.papel.toLocaleString('es-ES') + ' mm' : '—'}</td>`
+      + `<td>${r ? (r.cabe === null ? '·' : r.cabe ? '✔' : '<span style="color:var(--ko)">✖</span>') : '—'}</td>`
+      + `<td class="num ${plano.cotas && cifra !== reales[k] ? 'mal' : ''}">${cifra}</td></tr>`;
+  }).join('');
+  $('#vEsc').textContent = '1:' + V.escala;
+  const rL = RES[0], rA = RES[1];
+  let cabe = '—';
+  if (rL && rA){ const ok = rL.cabe && rA.cabe; cabe = ok ? '✔ sí' : '✖ no'; $('#mCabe').classList.toggle('mal', !ok); } else $('#mCabe').classList.remove('mal');
+  $('#vCabe').textContent = cabe;
+  $('#vRegla').textContent = reglaMm == null ? '—' : fmt(reglaMm) + ' mm → ' + fmt(reglaMm * V.escala / 10) + ' cm';
+  const vd = verdad();
+  if (vd){ const ok = vd.dibujoOk && vd.cifraOk && V.medidas[0] === AULA.largo; $('#vVerdad').textContent = ok ? '✔ sí' : '✖ no'; $('#mVerdad').classList.toggle('mal', !ok); }
+  else { $('#vVerdad').textContent = '—'; $('#mVerdad').classList.remove('mal'); }
+  cajT[1].textContent = 'ESCALA 1:' + V.escala;
+}
+function explica(){
+  const t = [];
+  if (V.escala === 20) t.push('<p><b>Escala demasiado grande.</b> A 1:20 el largo son 8 000 ÷ 20 = 400 mm, más que la hoja entera (297 mm). La calculadora enseña ✖ y la planta se sale del papel.</p>');
+  if (V.escala === 100) t.push('<p><b>Cabe, pero pequeño.</b> A 1:100 el aula ocupa 80 × 65 mm: cabe de sobra, pero la puerta se queda en 9 mm y las cotas se amontonan. Se suele elegir la mayor escala que cabe: aquí, 1:50.</p>');
+  if (cuentaMal === 1) t.push(`<p><b>Sin pasar a milímetros.</b> La cuenta divide los centímetros entre la escala y toma el resultado como milímetros: 800 ÷ ${V.escala} = ${fmt(800 / V.escala)} mm. El dibujo sale 10 veces más pequeño de lo que debe, aunque «cabe».</p>`);
+  if (cuentaMal === 2) t.push(`<p><b>Multiplicar en vez de dividir.</b> 1:${V.escala} significa que el dibujo es ${V.escala} veces más pequeño, así que hay que dividir. Al multiplicar, el largo saldría ${(800 * 10 * V.escala / 1000).toLocaleString('es-ES')} metros de papel.</p>`);
+  if (cifraPapel) t.push('<p><b>Cifra del papel en la cota.</b> En las cotas (en rojo) se escriben los milímetros del dibujo. Quien lea el plano creerá que la pared mide esos centímetros. La cifra tiene que ser la medida real.</p>');
+  if (pegadas) t.push('<p><b>Cotas pegadas y dentro.</b> Las cotas se meten dentro de la planta, casi tocando las paredes, y la del largo queda más cerca que la de la ventana. Se mezclan con el dibujo y las líneas se cruzan: incumplen las normas 4 y 7.</p>');
+  if (errLargo !== 0) t.push(`<p><b>Error de medida.</b> Habéis anotado ${V.medidas[0]} cm en vez de 800. A 1:${V.escala}, ${Math.abs(errLargo)} cm de error son ${fmt(Math.abs(errLargo) * 10 / V.escala)} mm en el papel: casi no se ve, pero la cota dice ${V.medidas[0]} y el mobiliario no encajaría. Por eso cada medida se toma dos veces.</p>`);
+  $('#explica').innerHTML = t.join('') || '<p>Todo normal: escala 1:50, la cuenta bien hecha, cotas fuera del dibujo con la medida real y el largo bien medido. Prueba a cambiar algo y dibuja el plano de nuevo.</p>';
+}
+
+/* ------------------------------------------------------------ la cinta y la regla */
+async function animaCinta(x1, y1, x2, y2, total, etiqueta){
+  gCinta.setAttribute('opacity', 1);
+  const e = epoca, dur = instantaneo ? 0 : 1200 / vel, t0 = performance.now();
+  await new Promise(res => {
+    const paso = t => {
+      if (e !== epoca) return res();
+      const k = dur ? Math.min(1, (t - t0) / dur) : 1;
+      const x = x1 + (x2 - x1) * k, y = y1 + (y2 - y1) * k;
+      cintaLinea.setAttribute('x1', x1); cintaLinea.setAttribute('y1', y1); cintaLinea.setAttribute('x2', x); cintaLinea.setAttribute('y2', y);
+      cintaCaja.setAttribute('x', x - 27); cintaCaja.setAttribute('y', y - 11);
+      cintaTxt.setAttribute('x', x); cintaTxt.setAttribute('y', y + 4); cintaTxt.textContent = Math.round(total * k) + ' cm';
+      if (k < 1) requestAnimationFrame(paso); else res();
+    };
+    requestAnimationFrame(paso);
+  });
+  await sleep(400);
+}
+function ponRegla(){
+  // la regla se apoya dentro de la planta, junto a la pared de arriba
+  const G = geometria(), y0 = py(lim(G.IY)) + (pegadas ? 30 : 6);
+  capaRegla.innerHTML = '';
+  const g = pieza(capaRegla, 'regla');
+  const x0 = px(lim(G.IX)), x1 = px(lim(G.IX + G.L));
+  el('rect', {x:x0 - 6, y:y0, width:Math.max(30, x1 - x0) + 12, height:18, fill:'rgba(250,204,21,.6)', stroke:'#a16207', rx:2}, g);
+  const n = Math.min(400, Math.floor(G.L / 10));
+  for (let k = 0; k <= n; k++) el('line', {x1:px(G.IX + k * 10), y1:y0, x2:px(G.IX + k * 10), y2:y0 + (k % 5 ? 6 : 10), stroke:'#713f12', 'stroke-width':1}, g);
+  reglaMm = Math.round(G.L * 10) / 10;
+  txt(g, Math.max(x0, Math.min(x1, 930)) - 2, y0 + 34, 'la regla mide ' + fmt(reglaMm) + ' mm', {'text-anchor':'end', 'font-size':12, fill:'#1f2937'});
+}
+
+/* ------------------------------------------------------------ el plano paso a paso */
+const FASES = [...document.querySelectorAll('#fases li')];
+function fase(k){ FASES.forEach((li, i) => { li.classList.toggle('activa', i === k); li.classList.toggle('hecha', k >= 0 && i < k); }); }
+const narra = h => { $('#narracion').innerHTML = h; };
+let modo = 'paso', enRonda = false, abrir = null;
+function puerta(){
+  if (instantaneo) return Promise.resolve();
+  if (modo === 'auto') return sleep(1800);
+  $('#btnPaso').textContent = 'Siguiente paso';
+  return new Promise(r => { abrir = r; });
+}
+function limpiaPlano(){
+  capaPlano.innerHTML = ''; capaRegla.innerHTML = ''; capaProy.innerHTML = '';
+  for (let k = 0; k < 5; k++) RES[k] = null;
+  reglaMm = null; plano = {muros:false, huecos:false, cotas:false, comprobado:false};
+  V.i = 0; V.papel = 0; bocata.setAttribute('opacity', 0); pintaLeds(null); avisoHoja.textContent = '';
+  gCinta.setAttribute('opacity', 0);
+}
+function colocaHueco(){
+  const G = geometria();
+  huecoRect.setAttribute('x', px(G.IX)); huecoRect.setAttribute('y', py(G.IY)); huecoRect.setAttribute('width', 175 * K); huecoRect.setAttribute('height', 140 * K);
+  huecoTxt.setAttribute('x', px(G.IX) + 6); huecoTxt.setAttribute('y', py(G.IY + 140) - 6);
+}
+async function ronda(){
+  enRonda = true; botonesManuales(false); const e = epoca;
+  limpiaPlano(); refresca(); colocaHueco();
+  // 1
+  fase(0);
+  narra(`Medís de pared a pared con la cinta, a la altura del suelo. El largo da <b>${V.medidas[0]} cm</b>${errLargo ? ` (¡ojo!, el aula mide ${AULA.largo}: os habéis equivocado ${errLargo > 0 ? '+' : ''}${errLargo} cm)` : ''} y el ancho, <b>${V.medidas[1]} cm</b>. También anotáis la puerta (90), una ventana (180) y la pizarra (300).`);
+  await animaCinta(rx(0), ry(0) + 10, rx(AULA.largo), ry(0) + 10, V.medidas[0]); if (e !== epoca) return;
+  await animaCinta(rx(AULA.largo) - 10, ry(0), rx(AULA.largo) - 10, ry(AULA.ancho), V.medidas[1]); if (e !== epoca) return;
+  await puerta(); if (e !== epoca) return;
+  // 2
+  fase(1); gCinta.setAttribute('opacity', 0);
+  await botonA(); if (e !== epoca) return;
+  await botonA(); if (e !== epoca) return;
+  const rL = RES[0], rA = RES[1], cabe = rL.cabe && rA.cabe;
+  narra(`Pulsáis A dos veces. Largo: ${esc(rL.cuenta)} = <b>${rL.papel.toLocaleString('es-ES')} mm</b>; ancho: ${esc(rA.cuenta)} = <b>${rA.papel.toLocaleString('es-ES')} mm</b>. El hueco de la hoja es de 175 × 140 mm, así que ` + (cabe ? 'la calculadora enseña ✔: <b>cabe</b>.' : 'la calculadora enseña ✖: <b>no cabe</b>. Lo dibujamos igualmente para ver qué pasa.'));
+  await puerta(); if (e !== epoca) return;
+  // 3
+  fase(2);
+  const muros = dibujaMuros(); plano.muros = true;
+  narra(`Con escuadra y cartabón se trazan los muros: dos líneas por pared, separadas ${fmt(cuentaDe(AULA.muro))} mm (los 30 cm de muro a 1:${V.escala}). La planta mide ${fmt(geometria().L)} × ${fmt(geometria().A)} mm en el papel.`);
+  await trazar(muros, 1400); if (e !== epoca) return;
+  const G = geometria();
+  if (px(G.IX + G.L + G.t) > px(287) || py(G.IY + G.A + G.t) > py(200)) avisoHoja.textContent = '✖ La planta se sale del recuadro de la hoja';
+  else if (G.L < 40) avisoHoja.textContent = '⚠ La planta ha salido diminuta';
+  await puerta(); if (e !== epoca) return;
+  // 4
+  fase(3);
+  await botonA(); if (e !== epoca) return;
+  await botonA(); if (e !== epoca) return;
+  await botonA(); if (e !== epoca) return;
+  const huecos = dibujaHuecos(); plano.huecos = true;
+  narra(`Pulsáis A tres veces más: puerta ${RES[2].papel.toLocaleString('es-ES')} mm, ventana ${RES[3].papel.toLocaleString('es-ES')} mm y pizarra ${RES[4].papel.toLocaleString('es-ES')} mm. Sus posiciones se pasan con la misma cuenta: la puerta empieza a ${AULA.puerta.x} cm de la esquina, que son ${fmt(cuentaDe(AULA.puerta.x))} mm en el papel.`);
+  await trazar(huecos, 1200); if (e !== epoca) return;
+  await puerta(); if (e !== epoca) return;
+  // 5
+  fase(4);
+  const cotas = dibujaCotas(); plano.cotas = true;
+  const todas = cotas.flat(); cotas.forEach(c => c.cifra.setAttribute('opacity', 0));
+  refresca();
+  narra('Se acota cada medida: primero las <b>líneas auxiliares</b>, después la <b>línea de cota</b> con sus <b>flechas</b> y, encima, la <b>cifra</b>. ' + (cifraPapel ? '<b>¡Ojo!</b> Con el error activado, las cifras son los milímetros del papel.' : 'La cifra es la medida real en cm: 800, 650, 90, 180 y 300, sea cual sea la escala.'));
+  await trazar(todas, 1500); if (e !== epoca) return;
+  cotas.forEach(c => c.cifra.setAttribute('opacity', 1));
+  await puerta(); if (e !== epoca) return;
+  // 6
+  fase(5);
+  ponRegla(); plano.comprobado = true; refresca();
+  const vd = verdad();
+  let fin = `Ponéis la regla sobre el largo: mide <b>${fmt(reglaMm)} mm</b>. Al revés: ${fmt(reglaMm)} × ${V.escala} ÷ 10 = <b>${fmt(vd.leido)} cm</b>, y la cota dice <b>${vd.cifra}</b>. `;
+  if (vd.dibujoOk && vd.cifraOk && V.medidas[0] === AULA.largo) fin += 'El aula real mide 800 cm: <b>todo cuadra</b>. Se escribe «ESCALA 1:' + V.escala + '» en el cajetín y el plano está listo.';
+  else if (V.medidas[0] !== AULA.largo && vd.cifraOk === false && !cifraPapel) fin += `El dibujo y la cota coinciden entre sí, pero el aula real mide 800 cm: <b>el error de medida se ha copiado al plano</b>.`;
+  else fin += '<b>No cuadra</b>: el dibujo, la cota o las dos dicen algo distinto de los 800 cm del aula real. Mira «Estropéalo a propósito».';
+  narra(fin);
+  explica(); refresca();
+  enRonda = false; botonesManuales(true);
+  $('#btnPaso').textContent = 'Otro plano';
+  if (modo === 'auto' && !instantaneo){ await sleep(2600); if (e !== epoca || modo !== 'auto') return; ronda(); }
+}
+function botonesManuales(si){ document.querySelectorAll('[data-accion]').forEach(b => b.disabled = !si); $('#btnGolpe').disabled = !si; }
+function reiniciar(){
+  epoca++; enRonda = false; abrir = null; instantaneo = false;
+  limpiaPlano(); hl(null); fase(-1); botonesManuales(true); refresca(); explica(); colocaHueco();
+  $('#btnPaso').textContent = 'Empezar el plano';
+}
+async function deGolpe(){
+  reiniciar(); instantaneo = true;
+  try { await ronda(); } finally { instantaneo = false; }
+}
+
+/* ------------------------------------------------------------ controles */
+$('#btnPaso').onclick = () => {
+  if (modo === 'auto'){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); }
+  if (enRonda && abrir){ const r = abrir; abrir = null; r(); return; }
+  if (!enRonda){ reiniciar(); ronda(); }
+};
+$('#btnAuto').onclick = () => {
+  const on = modo !== 'auto';
+  modo = on ? 'auto' : 'paso';
+  $('#btnAuto').setAttribute('aria-pressed', String(on));
+  if (on){ if (abrir){ const r = abrir; abrir = null; r(); } else if (!enRonda){ reiniciar(); ronda(); } }
+};
+$('#btnReiniciar').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); reiniciar(); narra('Todo a cero: la hoja vuelve a estar en blanco.'); };
+$('#btnGolpe').onclick = () => { modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); deGolpe(); };
+$('#velocidad').onchange = e => { vel = +e.target.value; };
+function sincronizaEscala(){ $('#ctlEscala').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.v === V.escala))); }
+async function accionA(){
+  if (enRonda) return;
+  const k = await botonA();
+  const r = RES[k];
+  narra(`A: ${ETIQUETAS[k].toLowerCase()}, ${esc(r.cuenta)} = <b>${r.papel.toLocaleString('es-ES')} mm</b>` + (r.cabe === null ? '.' : r.cabe ? ' → ✔ cabe en el hueco.' : ' → ✖ no cabe en el hueco.'));
+}
+async function accionB(){
+  if (enRonda) return;
+  await botonB(); sincronizaEscala();
+  limpiaPlano(); refresca(); explica(); colocaHueco(); fase(-1);
+  narra(`B: la escala pasa a <b>1:${V.escala}</b> y la lista vuelve al principio (i = 0). Pulsa A para convertir el largo, o «Dibujar el plano de golpe».`);
+}
+document.querySelectorAll('[data-accion]').forEach(b => b.onclick = () => { if (b.dataset.accion === 'a') accionA(); else accionB(); });
+// piezas del dibujo
+function abrePieza(id){ const [t, x, u] = PIEZAS[id]; $('#piezaTitulo').textContent = t; $('#piezaTexto').textContent = x; $('#piezaUso').textContent = u; $('#pieza').hidden = false; }
+svg.addEventListener('click', ev => {
+  const bt = ev.target.closest('[data-boton]');
+  if (bt){ abrePieza('calc'); if (bt.dataset.boton === 'A') accionA(); else accionB(); return; }
+  const pz = ev.target.closest('[data-pieza]'); if (!pz) return;
+  abrePieza(pz.dataset.pieza);
+});
+svg.addEventListener('keydown', ev => { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.dataset && (ev.target.dataset.pieza || ev.target.dataset.boton)){ ev.preventDefault(); ev.target.dispatchEvent(new MouseEvent('click', {bubbles:true})); } });
+$('#piezaCerrar').onclick = () => { $('#pieza').hidden = true; };
+// opciones de la vista
+$('#optTransp').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on));
+  capaConstr.setAttribute('opacity', on ? 1 : 0); capaConstr.setAttribute('pointer-events', on ? 'auto' : 'none'); };
+$('#optNombres').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on));
+  svg.querySelectorAll('.nombre').forEach(t => t.setAttribute('display', on ? 'inline' : 'none')); };
+// programa
+$('#tabBloques').onclick = () => { $('#tabBloques').setAttribute('aria-selected', 'true'); $('#tabPython').setAttribute('aria-selected', 'false'); $('#bloques').hidden = false; $('#python').hidden = true; $('#idioma').hidden = false; };
+$('#tabPython').onclick = () => { $('#tabPython').setAttribute('aria-selected', 'true'); $('#tabBloques').setAttribute('aria-selected', 'false'); $('#bloques').hidden = true; $('#python').hidden = false; $('#idioma').hidden = true; };
+$('#idioma').onclick = e => { const b = e.target.closest('[data-lang]'); if (!b) return; idioma = b.dataset.lang; $('#idioma').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintaPrograma(); };
+function copiar(texto){
+  const ok = () => { $('#copiado').textContent = 'Copiado ✓'; setTimeout(() => $('#copiado').textContent = '', 1800); };
+  const manual = () => { const t = $('#copiaManual'); t.hidden = false; t.value = texto; t.select(); $('#copiado').textContent = 'Selecciona y copia (Ctrl+C)'; };
+  try { navigator.clipboard.writeText(texto).then(ok, manual); } catch(e){ manual(); }
+}
+$('#copiarJS').onclick = () => copiar(textoJS(programa()));
+$('#copiarPy').onclick = () => copiar(textoPy());
+// estropéalo
+function segmento(sel, cb){ $(sel).onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; $(sel).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); cb(+b.dataset.v); }; }
+function trasCambio(){ modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false'); pintaPrograma(); reiniciar(); narra('Cambio hecho. Pulsa «Empezar el plano» o «Dibujar el plano de golpe» para ver qué pasa.'); }
+segmento('#ctlEscala', v => { V.escala = v; trasCambio(); });
+segmento('#ctlCuenta', v => { cuentaMal = v; trasCambio(); });
+$('#ctlCifra').onchange = e => { cifraPapel = e.target.checked; trasCambio(); };
+$('#ctlPegadas').onchange = e => { pegadas = e.target.checked; trasCambio(); };
+$('#ctlErr').oninput = e => { errLargo = +e.target.value; V.medidas[0] = AULA.largo + errLargo; $('#ctlErrTxt').textContent = (errLargo > 0 ? '+' : '') + errLargo + ' cm'; trasCambio(); };
+function normalidad(){
+  V.escala = 50; cuentaMal = 0; cifraPapel = false; pegadas = false; errLargo = 0; V.medidas = REALES();
+  sincronizaEscala();
+  $('#ctlCuenta').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === '0')));
+  $('#ctlCifra').checked = false; $('#ctlPegadas').checked = false; $('#ctlErr').value = 0; $('#ctlErrTxt').textContent = '0 cm';
+  modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false');
+  pintaPrograma(); reiniciar(); narra('Todo vuelve a la normalidad: escala 1:50, la cuenta bien hecha y las cotas en su sitio.');
+}
+$('#normalidad').onclick = normalidad;
+$('#probarError').onclick = () => {
+  $('#ctlCifra').checked = true; cifraPapel = true; pintaPrograma(); explica();
+  modo = 'paso'; $('#btnAuto').setAttribute('aria-pressed', 'false');
+  document.querySelector('.banco').scrollIntoView({behavior:'smooth', block:'start'});
+  deGolpe();
+};
+// preguntas
+document.querySelectorAll('.pregunta').forEach(f => f.addEventListener('change', () => {
+  const m = f.querySelector('input:checked'); if (!m) return;
+  f.querySelectorAll('.opcion').forEach(o => o.classList.remove('ok', 'ko'));
+  const ok = m.value === f.dataset.correcta;
+  m.closest('.opcion').classList.add(ok ? 'ok' : 'ko');
+  if (!ok) f.querySelector(`input[value="${f.dataset.correcta}"]`).closest('.opcion').classList.add('ok');
+  const r = f.querySelector('.respuesta'); r.hidden = false; r.innerHTML = (ok ? '<b>¡Bien!</b> ' : '<b>Casi.</b> ') + esc(f.dataset.expl);
+}));
+// comprobación (se guarda en el navegador)
+const CLAVE = 'lab-plano-escala-tyd3-sda3';
+let marcas = []; try { marcas = JSON.parse(localStorage.getItem(CLAVE) || '[]'); } catch(e){}
+document.querySelectorAll('#comprobacion input').forEach((c, i) => { c.checked = !!marcas[i]; c.onchange = () => { marcas[i] = c.checked; try { localStorage.setItem(CLAVE, JSON.stringify(marcas)); } catch(e){} }; });
+// tema
+$('#tema').onclick = () => { const r = document.documentElement, oscuro = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('lab-tema', r.dataset.theme); } catch(e){} };
+try { const t = localStorage.getItem('lab-tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+// arranque
+pintaPrograma(); refresca(); explica(); colocaHueco();
+window.__lab = {V, RES, ronda, deGolpe, reiniciar, programa, textoJS, textoPython:textoPy, get plano(){ return plano; }, get reglaMm(){ return reglaMm; }, set modo(v){ modo = v; }, get enRonda(){ return enRonda; }, verdad};
+})();
+</script>
+</body>
+</html>
