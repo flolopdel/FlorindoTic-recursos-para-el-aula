@@ -119,6 +119,11 @@ que falten antes, vacíos); si existe vacío, toma el nombre y el bloque; si ya 
 solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T` o se
 pone `"tema": T` en el bloque `moodle` de `sda<N>.json`.
 
+El **nombre de cada Tarea** lleva entre paréntesis los criterios que evalúa (el `criterio` de la Tarea y los de las
+líneas de su rúbrica, en el orden de `materias[].criterios`), para pasarla a Séneca de un vistazo:
+«2.4 · El gato en coordenadas y la bailarina (CYR.2.1.3, CYR.2.2.1)». Lo añade el script; si el `nombre` del JSON ya
+termina con los códigos entre paréntesis, lo respeta.
+
 La **descripción de cada Tarea** se completa sola para que el alumnado sepa qué hacer aunque no lea el bloque:
 1. Una línea con sus sesiones, si es individual o en equipo, cómo se entrega y cómo se corrige.
 2. Un recuadro con los **documentos** que usa: las plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra
@@ -148,10 +153,14 @@ Tipos de archivo de la entrega: las extensiones que nombran `config` o la línea
 .aia, .apk, .pkt, .ino, .stl), la Tarea admite cualquier tipo, porque si no Moodle no deja guardar sus ajustes. Una Tarea
 sin `descripcion` lleva solo un resumen automático (qué se valora y cómo se entrega) y el script avisa.
 
-**Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`): en cada PR
-que toca una SdA se adjuntan las de esas SdA y se enlazan en un comentario; al fusionar en `main` se regeneran todas en
-la publicación **«Copias de Moodle»** (`releases/tag/copias-moodle`), sustituyendo las anteriores. No se guardan en el
-repositorio ni se editan a mano.
+**Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`), solo al fusionar
+en `main`: se regeneran todas en la publicación **«Copias de Moodle»** (`releases/tag/copias-moodle`), sustituyendo las
+anteriores, y las que han cambiado se suben a una carpeta de **Google Drive**. En cada PR que toca una SdA solo se comprueba
+que se pueden generar y un comentario dice cuáles se crearán. No se guardan en el repositorio ni se editan a mano.
+
+La subida a Drive va por una aplicación web propia (`scripts/copias-drive.gs`, allí están los pasos para instalarla) y
+`scripts/subir-copias-drive.py`. Sus secretos de GitHub son `COPIAS_DRIVE_URL` y `COPIAS_DRIVE_CLAVE`: sin ellos, se omite
+la subida. Una copia solo se resube si cambia su huella, calculada de `sda<N>.json`, `moodle.html` y `scripts/sda-mbz.py`.
 
 ## Comprobar antes de abrir una PR
 
