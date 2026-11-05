@@ -105,10 +105,21 @@ que falten antes, vacíos); si existe vacío, toma el nombre y el bloque; si ya 
 solo añade las Tareas. Para usar otro tema (el siguiente libre del curso, por ejemplo) se genera con `--tema T` o se
 pone `"tema": T` en el bloque `moodle` de `sda<N>.json`.
 
-La descripción de cada Tarea lleva al final (antes de «Cómo se entrega», si lo tiene) los **documentos** que usa: las
-plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra la Tarea («las Tareas 2.4, 2.5 y 2.8») o que la
-Tarea cita por su código («plantilla A4»). Los Google Docs se enlazan con «Ver» (`/preview`) y «Copiar a mi Drive»
-(`/copy`), solo «Ver» si la Tarea se entrega en papel; un PDF de Drive, con `/view`.
+La **descripción de cada Tarea** se completa sola para que el alumnado sepa qué hacer aunque no lea el bloque:
+1. Una línea con sus sesiones, si es individual o en equipo, cómo se entrega y cómo se corrige.
+2. Un recuadro con los **documentos** que usa: las plantillas de `anexos.plantillas` con `enlace` cuya `entrega` nombra
+   la Tarea («las Tareas 2.4, 2.5 y 2.8») o que la Tarea cita («plantilla A4»), con «Ver» (`/preview`) y «Copiar a mi
+   Drive» (`/copy`); solo «Ver» si se entrega en papel.
+3. La `descripcion` del JSON y, si es Apto / No apto y no lo dice, la lista `cotejo`.
+4. **Paso a paso**: las diapositivas `practica` y `pasos` de sus sesiones, con enlace a `clase.html#sN` y a los
+   laboratorios o formularios. Sus sesiones van desde la siguiente a la Tarea anterior hasta la suya, más las posteriores
+   que su actividad de Séneca incluya; se pueden fijar con `"sesiones": [..]` en la Tarea.
+5. **Para repasar**: los apartados de `guia_alumnado` de esas sesiones, `teoria.html` si existe y la web de clase.
+
+Se **adjuntan** a la Tarea (archivos para descargar) los PDF, .docx u .odt de la carpeta de la SdA que la Tarea o sus
+prácticas nombran o enlazan, los de `"adjuntos": [..]` de la Tarea y el `"pdf"` de sus plantillas (p. ej.
+`"pdf": "anexos/a4-cuaderno.pdf"`). Los Google Docs no se adjuntan solos: si se quiere, se descargan en PDF, se guardan
+en la carpeta de la SdA (se publican en la web) y se indican en `"pdf"`.
 
 **Las copias las genera GitHub** (`.github/workflows/copias-moodle.yml`, con `scripts/sda-mbz-todas.py`): en cada PR
 que toca una SdA se adjuntan las de esas SdA y se enlazan en un comentario; al fusionar en `main` se regeneran todas en
