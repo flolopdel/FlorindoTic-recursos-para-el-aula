@@ -34,6 +34,7 @@ const EXACT_LABELS = new Map([
   ['presentacion_digitalizacion', 'Presentación de Digitalización'],
   ['presentacion_tecnologia', 'Presentación de Tecnología'],
   ['presentacion_tecnologia_y_digitalizacion', 'Presentación de Tecnología y Digitalización'],
+  ['reto-bebras', 'Reto Bebras: cómo funciona el concurso'],
   ['clase', 'Clase (para proyectar)'],
   ['guia-profesorado', 'Guía del profesorado'],
   ['guia-alumnado', 'Guía del alumnado'],

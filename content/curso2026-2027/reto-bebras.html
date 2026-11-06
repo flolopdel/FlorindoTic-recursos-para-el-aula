@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reto Bebras</title>
+<meta name="description" content="Cómo funciona el día del Concurso Bebras en ViLLE: entrar, hacer las tareas, enviarlas y finalizar. Con simulador de práctica y test de comprobación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#FFF8EE; --surface:#FFFFFF; --ink:#2A1E14; --muted:#6B5B4C;
+  --line:#EADBC8; --accent:#B4581F; --accent-ink:#FFFFFF; --hl:#FCEBD8;
+  --blue:#3D6FD8; --blue-bg:#E6EEFC; --ok:#22834A; --ok-bg:#DEF3E6; --bad:#C63D2F; --bad-bg:#FBE3E0;
+  --timer:#FFE6A6; --shadow:0 6px 24px rgba(80,50,20,.10);
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1A140F; --surface:#251D16; --ink:#F6ECDF; --muted:#BFAE9C;
+  --line:#3E3227; --accent:#F0A06A; --accent-ink:#1A140F; --hl:#3A2A1D;
+  --blue:#7EA4F5; --blue-bg:#1E2A45; --ok:#5CCB89; --ok-bg:#173527; --bad:#FF8A7C; --bad-bg:#43211D;
+  --timer:#5A4718; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1A140F; --surface:#251D16; --ink:#F6ECDF; --muted:#BFAE9C;
+  --line:#3E3227; --accent:#F0A06A; --accent-ink:#1A140F; --hl:#3A2A1D;
+  --blue:#7EA4F5; --blue-bg:#1E2A45; --ok:#5CCB89; --ok-bg:#173527; --bad:#FF8A7C; --bad-bg:#43211D;
+  --timer:#5A4718; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.in{max-width:1000px;margin-inline:auto;padding-inline:16px}
+
+/* cabecera */
+.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .in{display:flex;align-items:center;gap:16px;min-height:54px}
+.brand{font-family:var(--f-display);font-weight:800;white-space:nowrap;text-decoration:none;color:var(--ink);display:flex;gap:8px;align-items:center}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{padding:7px 11px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.9rem;white-space:nowrap}
+.nav a:hover{background:var(--hl);color:var(--ink)}
+
+/* hero */
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--line)}
+.hero .in{display:grid;grid-template-columns:1.3fr .7fr;gap:32px;align-items:center}
+.kicker{font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}
+.hero h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800;margin-top:6px}
+.lead{font-size:1.15rem;margin-top:16px;color:var(--muted);max-width:34em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.9rem}
+.hero-art{justify-self:center;width:min(240px,60vw)}
+
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+section h2{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800}
+.sub{color:var(--muted);margin-top:8px;max-width:42em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.grid3 h3{font-size:1.15rem;margin-bottom:6px}
+.big{font-size:2rem}
+
+/* pasos */
+.steps{display:grid;grid-template-columns:260px 1fr;gap:20px;margin-top:24px}
+.steplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.steplist button{width:100%;text-align:left;display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font-weight:700}
+.steplist button .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--hl);font-weight:800;font-size:.9rem}
+.steplist button[aria-selected="true"]{border-color:var(--accent);background:var(--hl)}
+.steplist button[aria-selected="true"] .n{background:var(--accent);color:var(--accent-ink)}
+.steplist button.done .n{background:var(--ok);color:#fff}
+.stepview{min-height:320px;display:flex;flex-direction:column;gap:14px}
+.stepview h3{font-size:1.4rem}
+.stepview ul{margin:0;padding-left:20px}
+.mock{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:16px;display:flex;justify-content:center}
+.stepnav{display:flex;justify-content:space-between;gap:10px;margin-top:auto}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:800;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.tip{border-left:4px solid var(--blue);background:var(--blue-bg);border-radius:8px;padding:10px 14px}
+.warn{border-left:4px solid var(--bad);background:var(--bad-bg);border-radius:8px;padding:10px 14px}
+
+/* iconos de los botones */
+.ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--blue);vertical-align:middle}
+.ico svg{width:20px;height:20px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.legend div{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-weight:700}
+
+/* mini maquetas */
+.paper{background:#fff;color:#222;border:2px dashed #999;border-radius:8px;padding:12px 14px;display:flex;gap:14px;align-items:center;font-size:.9rem;max-width:360px}
+.qr{width:64px;height:64px;flex:none}
+.login{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;width:min(280px,100%);display:flex;flex-direction:column;gap:8px}
+.login .fake{border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--muted);font-size:.9rem;background:var(--bg)}
+.login .go{background:var(--blue);color:#fff;border-radius:6px;padding:7px;text-align:center;font-weight:800}
+.mini-list{width:min(380px,100%);display:flex;flex-direction:column;gap:6px}
+.mini-list .bar{background:var(--blue);color:#fff;border-radius:6px;padding:6px;text-align:center;font-weight:800;font-size:.9rem}
+.mini-list .tm{background:var(--timer);border-radius:6px;padding:4px;text-align:center;font-size:.85rem;font-weight:700}
+.mini-list .row{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:.88rem;display:flex;gap:8px;align-items:center}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--bad);flex:none}
+.dot.sent{background:var(--ok)}
+.mini-list .fin{background:var(--ok);color:#fff;border-radius:6px;padding:6px;text-align:center;font-weight:800;font-size:.9rem}
+
+/* simulador */
+.sim-wrap{margin-top:24px}
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;min-height:440px;display:flex;flex-direction:column}
+.sim-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px;background:var(--hl);font-size:.82rem;font-weight:800;color:var(--muted)}
+.sim-body{padding:20px;flex:1;display:flex;flex-direction:column;gap:14px;position:relative}
+.sim .bluebar{background:var(--blue);color:#fff;border-radius:8px;padding:8px;text-align:center;font-weight:800}
+.sim .timer{background:var(--timer);border-radius:8px;padding:6px;text-align:center;font-weight:800}
+.sim .timer b{font-variant-numeric:tabular-nums;background:var(--surface);border-radius:6px;padding:1px 8px;margin-left:6px}
+.sim .timer.low b{color:var(--bad)}
+.tasklist{display:flex;flex-direction:column;gap:8px}
+.tasklist button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;font-weight:700}
+.tasklist button:hover{border-color:var(--blue)}
+.finish{background:var(--ok);color:#fff;border:0;border-radius:8px;padding:10px;font-weight:800}
+.field{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.9rem}
+.field input{font:inherit;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);color:var(--ink)}
+.loginbox{max-width:320px;margin:10px auto;width:100%;display:flex;flex-direction:column;gap:12px}
+.err{color:var(--bad);font-weight:700;font-size:.9rem;min-height:1.4em}
+.toolbar{display:flex;justify-content:center;gap:10px}
+.toolbar button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--blue);display:grid;place-items:center}
+.toolbar button svg{width:22px;height:22px}
+.toolbar button:hover{background:var(--blue-bg)}
+.taskgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.taskgrid .stmt{background:var(--bg);border-radius:10px;padding:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts button{border:2px solid var(--blue);background:var(--surface);border-radius:10px;padding:12px 8px;font-weight:800;font-size:1.05rem;min-height:56px}
+.opts button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.sentnote{font-size:.88rem;color:var(--muted);text-align:center;min-height:1.4em}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-width:220px;margin:10px auto 0}
+.board div{aspect-ratio:1;border-radius:6px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:1.1rem}
+.board .start{background:var(--hl)}
+.cmds{font-size:1.4rem;letter-spacing:.15em;text-align:center;font-weight:800;margin-top:8px}
+.beads{font-size:1.6rem;text-align:center;letter-spacing:.1em;margin-top:6px}
+.overlay{position:absolute;inset:0;background:rgba(20,12,6,.45);display:grid;place-items:center;padding:16px}
+.modal{background:var(--surface);border-radius:16px;padding:22px;text-align:center;max-width:340px;width:100%;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;align-items:center}
+.modal .row-b{display:flex;gap:12px;justify-content:center}
+.modal .row-b button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--blue);display:grid;place-items:center}
+.modal .row-b button.main{background:var(--blue-bg);border-color:var(--blue)}
+.modal .row-b svg{width:22px;height:22px}
+.res{display:flex;flex-direction:column;gap:8px}
+.res div{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.ok{color:var(--ok);font-weight:800}.ko{color:var(--bad);font-weight:800}
+.coach{font-size:.92rem;background:var(--blue-bg);border-radius:8px;padding:8px 12px}
+
+/* qué pasa si */
+.faq{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+summary{font-weight:800;cursor:pointer}
+details p{margin-top:8px;color:var(--muted)}
+
+/* test */
+.quiz{display:flex;flex-direction:column;gap:16px;margin-top:24px}
+.q h3{font-size:1.08rem;margin-bottom:10px}
+.q .choices{display:flex;flex-direction:column;gap:8px}
+.q button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px}
+.q button.right{border-color:var(--ok);background:var(--ok-bg);font-weight:800}
+.q button.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.q .fb{margin-top:8px;font-weight:700;min-height:1.4em}
+.score{font-family:var(--f-display);font-size:1.3rem;font-weight:800}
+
+/* lista */
+.check{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+.check label{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:600}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--ok);flex:none}
+.check label:has(input:checked){background:var(--ok-bg);border-color:var(--ok)}
+.progress{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:14px}
+.progress span{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+
+footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem}
+
+@media (max-width:800px){
+  .hero .in{grid-template-columns:1fr}
+  .hero-art{display:none}
+  .grid3{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .steplist{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .steplist li{flex:none}
+  .steplist button span.t{display:none}
+  .taskgrid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.progress span{transition:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-send" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l5 5h-3v6h-4V8H7z"/><path fill="currentColor" d="M4 15h3v3h10v-3h3v6H4z"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M19 9a7.5 7.5 0 0 0-13.2-1.6M5 15a7.5 7.5 0 0 0 13.2 1.6"/><path fill="currentColor" d="M4 3v6h6zM20 21v-6h-6z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M16 4v16L6 12z"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M10 7l6 5-6 5z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h16v3H4zM4 10.5h16v3H4zM4 16h16v3H4z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="in">
+    <a class="brand" href="#inicio"><span aria-hidden="true">🦫</span> Reto Bebras</a>
+    <nav class="nav" aria-label="Apartados">
+      <a href="#que-es">Qué es</a>
+      <a href="#pasos">Paso a paso</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#y-si">¿Y si…?</a>
+      <a href="#despues">Después</a>
+      <a href="#test">Test</a>
+      <a href="#lista">Antes de empezar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="hero">
+    <div class="in">
+      <div>
+        <p class="kicker">Concurso de pensamiento computacional</p>
+        <h1>Reto Bebras: cómo funciona el día del concurso</h1>
+        <p class="lead">Aquí tienes todo lo que tienes que hacer en la plataforma <strong>ViLLE</strong>: entrar con tu tira de papel, resolver las tareas, enviarlas y finalizar el concurso. Al final puedes practicar con un simulador.</p>
+        <div class="chips">
+          <span class="chip">⏱️ Tiempo limitado</span>
+          <span class="chip">🧩 Tareas de lógica</span>
+          <span class="chip">🔁 Puedes reenviar</span>
+          <span class="chip">🏅 Diploma al final</span>
+        </div>
+      </div>
+      <svg class="hero-art" viewBox="0 0 200 200" role="img" aria-label="Dibujo de un castor con una tableta">
+        <circle cx="100" cy="100" r="96" fill="var(--hl)"/>
+        <ellipse cx="100" cy="150" rx="58" ry="34" fill="#8A5A34"/>
+        <ellipse cx="100" cy="96" rx="48" ry="44" fill="#A86F42"/>
+        <circle cx="64" cy="58" r="12" fill="#8A5A34"/><circle cx="136" cy="58" r="12" fill="#8A5A34"/>
+        <ellipse cx="100" cy="112" rx="26" ry="18" fill="#D9A877"/>
+        <circle cx="82" cy="88" r="7" fill="#2A1E14"/><circle cx="118" cy="88" r="7" fill="#2A1E14"/>
+        <circle cx="84" cy="86" r="2.2" fill="#fff"/><circle cx="120" cy="86" r="2.2" fill="#fff"/>
+        <ellipse cx="100" cy="104" rx="9" ry="6" fill="#2A1E14"/>
+        <rect x="92" y="114" width="7" height="11" rx="1.5" fill="#fff"/><rect x="101" y="114" width="7" height="11" rx="1.5" fill="#fff"/>
+        <rect x="62" y="132" width="76" height="50" rx="7" fill="#3D6FD8"/>
+        <rect x="68" y="138" width="64" height="36" rx="3" fill="#E6EEFC"/>
+        <path d="M76 150h30M76 158h44M76 166h22" stroke="#3D6FD8" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <section id="que-es">
+    <div class="in">
+      <h2>¿Qué es el Concurso Bebras?</h2>
+      <p class="sub">Es un concurso internacional que se organiza a la vez en muchos países. Sus tareas son pequeños retos de lógica que se resuelven pensando como un ordenador. No hace falta saber programar.</p>
+      <div class="grid3">
+        <div class="card"><div class="big" aria-hidden="true">🌍</div><h3>Internacional</h3><p>Lo organizan varios países a la vez. Compites con estudiantes de tu misma edad.</p></div>
+        <div class="card"><div class="big" aria-hidden="true">👥</div><h3>Por edades</h3><p>Hay categorías por edad: <strong>Cadetes</strong> (12-14 años, 1.º y 2.º ESO) y <strong>Juniors</strong> (14-16 años, 3.º y 4.º ESO), entre otras.</p></div>
+        <div class="card"><div class="big" aria-hidden="true">💻</div><h3>En ViLLE</h3><p>Se hace en línea en la plataforma ViLLE, con un usuario y una contraseña que te da tu profe.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pasos">
+    <div class="in">
+      <h2>Paso a paso</h2>
+      <p class="sub">Pulsa cada paso o usa los botones <em>Anterior</em> y <em>Siguiente</em>.</p>
+      <div class="steps">
+        <ul class="steplist" role="tablist" id="steplist"></ul>
+        <div class="card stepview" id="stepview" role="tabpanel" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulador">
+    <div class="in">
+      <h2>Simulador de práctica</h2>
+      <p class="sub">Practica cómo se usa la plataforma antes del día del concurso. <strong>No es la web real</strong> y las tareas no son las del concurso: solo sirven para que aprendas los botones.</p>
+      <div class="sim-wrap">
+        <div class="sim" id="sim" aria-live="polite">
+          <div class="sim-head"><span>🧪 Simulador · no es ViLLE de verdad</span><button class="btn ghost" id="simReset" style="padding:4px 10px;font-size:.8rem">Empezar de nuevo</button></div>
+          <div class="sim-body" id="simBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="y-si">
+    <div class="in">
+      <h2>¿Y si…?</h2>
+      <p class="sub">Problemas que pueden pasar durante el concurso y qué hacer.</p>
+      <div class="faq">
+        <details><summary>…he pulsado «Finalizar concurso» sin querer?</summary><p>No te preocupes, pero <strong>no toques nada más y avisa a tu profe</strong>. Desde su vista puede reabrirte el concurso: con el tiempo completo o solo con el que te quedaba.</p></details>
+        <details><summary>…he cambiado de idea en una tarea que ya había enviado?</summary><p>Cambia la respuesta y vuelve a pulsar <strong>Enviar</strong>. Puedes enviar una tarea todas las veces que quieras: <strong>solo cuenta la última respuesta enviada</strong>.</p></details>
+        <details><summary>…quiero empezar una tarea desde cero?</summary><p>Pulsa <strong>Resetear</strong> (las dos flechas en círculo). La tarea vuelve a como estaba al principio.</p></details>
+        <details><summary>…se me acaba el tiempo?</summary><p>El tiempo se ve arriba, en el temporizador. Cuando llega a cero el concurso termina. Envía cada tarea en cuanto la tengas: lo que no se envía no cuenta.</p></details>
+        <details><summary>…no puedo entrar o he perdido mi tira de papel?</summary><p>Levanta la mano y avisa a tu profe. Tiene tus datos en su vista de docente. Revisa que escribes bien el usuario y la contraseña (mayúsculas, minúsculas y números).</p></details>
+        <details><summary>…una tarea me cuesta mucho?</summary><p>Pasa a la siguiente con la flecha o vuelve a la lista de tareas. Ya volverás a ella si te sobra tiempo.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="despues">
+    <div class="in">
+      <h2>Después del concurso</h2>
+      <div class="grid3">
+        <div class="card"><div class="big" aria-hidden="true">🔒</div><h3>Se cierra</h3><p>Cuando tu profe cierra el concurso del grupo, ya no se pueden cambiar las respuestas.</p></div>
+        <div class="card"><div class="big" aria-hidden="true">📊</div><h3>Ves tu puntuación</h3><p>Al entrar en ViLLE verás tu puntuación final en la página principal. Cuando termina el concurso en todo el país, verás también un ranking de tu grupo de edad: muestra solo las puntuaciones más altas y cuántos estudiantes las han conseguido, sin nombres.</p></div>
+        <div class="card"><div class="big" aria-hidden="true">🏅</div><h3>Diploma</h3><p>Tu profe descarga los diplomas del grupo desde la plataforma.</p></div>
+      </div>
+      <div class="tip" style="margin-top:20px"><strong>Tus datos y la investigación.</strong> Como el concurso se hace en muchos países, se usan algunos datos para investigar, sin que se sepa quién es quién: país e idioma, grupo de edad, género, puntuación, respuestas y tiempo en cada tarea. Si tu familia no quiere que se usen tus datos, puede decírselo a tu profe y lo desmarcará.</div>
+    </div>
+  </section>
+
+  <section id="test">
+    <div class="in">
+      <h2>¿Lo tienes claro? Test rápido</h2>
+      <p class="sub">Cinco preguntas. Elige una respuesta en cada una.</p>
+      <div class="quiz" id="quiz"></div>
+      <p class="score" id="quizScore" style="margin-top:16px"></p>
+    </div>
+  </section>
+
+  <section id="lista">
+    <div class="in">
+      <h2>Antes de empezar</h2>
+      <p class="sub">Marca cada punto cuando esté listo.</p>
+      <div class="check" id="check"></div>
+      <div class="progress" aria-hidden="true"><span id="checkBar"></span></div>
+      <p id="checkMsg" style="margin-top:10px;font-weight:800"></p>
+    </div>
+  </section>
+</main>
+
+<footer><div class="in">Aula TIC de Florindo · Basado en las instrucciones oficiales del Concurso Bebras para el profesorado (plataforma ViLLE).</div></footer>
+
+<script>
+const $ = (s, el=document) => el.querySelector(s);
+const icon = (id) => `<svg aria-hidden="true"><use href="#i-${id}"/></svg>`;
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- Paso a paso ---------- */
+const QR = `<svg class="qr" viewBox="0 0 21 21" aria-hidden="true"><rect width="21" height="21" fill="#fff"/><path fill="#222" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zM15 1v5h5V1zM16 2h3v3h-3zM0 14h7v7H0zM1 15v5h5v-5zM2 16h3v3H2zM9 0h2v2H9zM12 2h1v3h-1zM8 4h3v1H8zM9 8h3v2H9zM14 9h2v1h-2zM17 8h3v2h-3zM8 12h2v3H8zM12 12h3v2h-3zM16 12h2v1h-2zM19 12h2v4h-2zM11 16h2v2h-2zM14 15h3v2h-3zM9 19h4v2H9zM15 18h2v3h-2zM18 18h3v1h-3zM0 9h2v2H0zM3 9h3v1H3zM4 11h2v2H4z"/></svg>`;
+const STEPS = [
+  { t:'Tu tira de papel', h:'1. Recoge tu tira de papel',
+    body:`<p>Tu profe te da una tira de papel con <strong>tu nombre, tu usuario, tu contraseña</strong> y un <strong>código QR</strong>.</p>
+    <div class="mock"><div class="paper">${QR}<div><strong>Lucía Ejemplo</strong><br>Usuario: <code>bcxyz1234</code><br>Contraseña: <code>k7mp2qa</code></div></div></div>
+    <div class="warn">Es <strong>solo tuya</strong>: no la enseñes ni la cambies con nadie.</div>` },
+  { t:'Inicia sesión', h:'2. Inicia sesión en ViLLE',
+    body:`<p>Tienes dos formas de entrar:</p>
+    <ul><li><strong>Escanea el código QR</strong> de tu tira y escribe solo tu contraseña, o</li>
+    <li>entra en <a href="https://ville.utu.fi" target="_blank" rel="noopener">ville.utu.fi</a> y escribe tu <strong>usuario</strong> y tu <strong>contraseña</strong>.</li></ul>
+    <div class="mock"><div class="login"><strong style="text-align:center">ViLLE</strong><div class="fake">bcxyz1234</div><div class="fake">•••••••</div><div class="go">Entrar</div></div></div>` },
+  { t:'Empieza el concurso', h:'3. Lee la descripción y empieza',
+    body:`<p>Lee la descripción del concurso. Para empezar, <strong>pulsa el nombre del concurso</strong> en la lista de retos.</p>
+    <div class="mock"><div class="mini-list"><div class="row" style="justify-content:center;font-weight:800">Retos</div><div class="row"><span class="dot"></span> 1. Concurso Bebras</div></div></div>
+    <div class="tip">En cuanto lo abres empieza a correr tu tiempo.</div>` },
+  { t:'Mira el tiempo', h:'4. Vigila el temporizador',
+    body:`<p>Tienes un <strong>tiempo limitado</strong>. Lo ves siempre arriba, en el temporizador. Debajo está la lista de tareas.</p>
+    <div class="mock"><div class="mini-list"><div class="bar">Concurso Bebras</div><div class="tm">Tiempo restante <b>00:44:40</b></div><div class="row"><span class="dot"></span> 1. Tarea uno</div><div class="row"><span class="dot"></span> 2. Tarea dos</div><div class="row"><span class="dot"></span> 3. Tarea tres</div><div class="fin">Finalizar concurso</div></div></div>` },
+  { t:'Los botones', h:'5. Abre una tarea y usa los botones',
+    body:`<p>Abre cada tarea <strong>pulsando sobre ella</strong>. Arriba tienes tres botones:</p>
+    <div class="legend"><div><span class="ico">${icon('send')}</span> Enviar la tarea</div><div><span class="ico">${icon('reset')}</span> Resetear (empezar de cero)</div><div><span class="ico">${icon('back')}</span> Volver a la lista</div></div>
+    <div class="tip">Puedes enviar una tarea <strong>varias veces</strong>. Se corrige <strong>la última respuesta que envíes</strong>.</div>` },
+  { t:'Avanza', h:'6. Pasa a la siguiente tarea',
+    body:`<p>Al enviar sale el mensaje <em>«¡Tarea enviada!»</em>. Desde ahí puedes:</p>
+    <div class="legend"><div><span class="ico">${icon('next')}</span> Ir a la siguiente tarea</div><div><span class="ico">${icon('list')}</span> Volver a la lista de tareas</div><div><span class="ico">${icon('x')}</span> Cerrar el mensaje y seguir en la tarea</div></div>
+    <p>En la lista, las tareas ya enviadas se distinguen de las que faltan. Revisa que no te dejas ninguna.</p>` },
+  { t:'Finaliza', h:'7. Pulsa «Finalizar concurso»',
+    body:`<p>Cuando hayas terminado (o se acabe el tiempo), pulsa el botón verde <strong>Finalizar concurso</strong> al final de la lista.</p>
+    <div class="mock"><div class="mini-list"><div class="fin">Finalizar concurso</div></div></div>
+    <div class="warn">Antes de pulsarlo, comprueba que has enviado todas las tareas. Después ya no puedes cambiar nada (salvo que tu profe te lo reabra).</div>` },
+];
+let step = 0; const seen = new Set([0]);
+function renderSteps(){
+  $('#steplist').innerHTML = STEPS.map((s,i)=>`<li><button role="tab" aria-selected="${i===step}" class="${seen.has(i)&&i!==step?'done':''}" data-i="${i}"><span class="n">${i+1}</span><span class="t">${s.t}</span></button></li>`).join('');
+  const s = STEPS[step];
+  $('#stepview').innerHTML = `<h3>${s.h}</h3>${s.body}<div class="stepnav"><button class="btn ghost" id="prev" ${step===0?'disabled':''}>← Anterior</button><button class="btn" id="next">${step===STEPS.length-1?'Ir al simulador →':'Siguiente →'}</button></div>`;
+  $('#prev').onclick = ()=>goStep(step-1);
+  $('#next').onclick = ()=> step===STEPS.length-1 ? location.hash='#simulador' : goStep(step+1);
+}
+function goStep(i){ step=i; seen.add(i); renderSteps(); }
+$('#steplist').addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) goStep(+b.dataset.i); });
+renderSteps();
+
+/* ---------- Simulador ---------- */
+const USER='practica1', PASS='castor';
+const TASKS = [
+  { name:'El castor repartidor',
+    stmt:`<p>El castor sale de la casilla 🦫 y sigue estas órdenes, una casilla cada vez:</p><div class="cmds">→ → ↓ ↓ ← ↓</div>
+      <div class="board">${(()=>{const L={'3,1':'A','3,2':'B','2,1':'C','3,0':'D'};let h='';for(let r=0;r<4;r++)for(let c=0;c<4;c++){h+= r===0&&c===0?'<div class="start">🦫</div>':`<div>${L[r+','+c]||''}</div>`;}return h;})()}</div>`,
+    q:'¿En qué letra termina?', opts:['A','B','C','D'], ok:0 },
+  { name:'Las pulseras',
+    stmt:`<p>Una castora hace una pulsera siguiendo siempre el mismo patrón:</p><div class="beads">🔵🔴🔴🔵🔴🔴🔵❔❔</div>`,
+    q:'¿Qué dos cuentas van después?', opts:['🔴🔴','🔵🔴','🔴🔵','🔵🔵'], ok:0 },
+  { name:'Los troncos',
+    stmt:`<p>Cuatro castores han traído un tronco cada uno.</p><ul><li>El de Ana es más largo que el de Beto.</li><li>El de Carla es más corto que el de Beto.</li><li>El de Dani es más largo que el de Ana.</li></ul>`,
+    q:'¿Quién trajo el tronco más corto?', opts:['Ana','Beto','Carla','Dani'], ok:2 },
+];
+const SIM_TIME = 6*60;
+let S;
+function simInit(){ clearInterval(S?.tick); S={screen:'login', err:'', left:SIM_TIME, cur:0, draft:TASKS.map(()=>null), sent:TASKS.map(()=>null), modal:null, tick:null, timeUp:false}; simRender(); }
+function startTimer(){ S.tick=setInterval(()=>{ S.left--; if(S.left<=0){ S.left=0; clearInterval(S.tick); S.timeUp=true; S.screen='fin'; S.modal=null; simRender(); return;} const t=$('#simTimer'); if(t){ t.querySelector('b').textContent=fmt(S.left); t.classList.toggle('low',S.left<60);} },1000); }
+const fmt = s => `00:${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+const timerHTML = () => `<div class="timer ${S.left<60?'low':''}" id="simTimer">Tiempo restante <b>${fmt(S.left)}</b></div>`;
+
+function simRender(){
+  const b = $('#simBody'); let h='';
+  if(S.screen==='login'){
+    h = `<div class="loginbox"><p class="coach">Usa los datos de esta tira de práctica: usuario <code>${USER}</code> · contraseña <code>${PASS}</code></p>
+      <strong style="text-align:center;font-family:var(--f-display);font-size:1.4rem">Iniciar sesión</strong>
+      <label class="field">Usuario<input id="u" autocomplete="off" autocapitalize="none"></label>
+      <label class="field">Contraseña<input id="p" type="password" autocomplete="off"></label>
+      <div class="err">${esc(S.err)}</div><button class="btn" id="login">Entrar</button></div>`;
+  } else if(S.screen==='retos'){
+    h = `<p class="coach">👉 Lee la descripción y pulsa el nombre del concurso para empezar.</p>
+      <div class="card" style="box-shadow:none"><strong>Descripción</strong><p style="margin-top:6px">Este concurso de práctica tiene 3 tareas y ${SIM_TIME/60} minutos. Puedes enviar cada tarea varias veces: cuenta la última respuesta enviada. Al terminar, pulsa «Finalizar concurso».</p></div>
+      <div class="tasklist"><strong style="text-align:center">Retos</strong><button id="openChallenge"><span class="dot"></span> 1. Concurso de práctica</button></div>`;
+  } else if(S.screen==='lista'){
+    const pend = S.sent.filter(x=>x===null).length;
+    h = `<div class="bluebar">Concurso de práctica</div>${timerHTML()}
+      <p class="coach">${pend? `👉 Pulsa una tarea para abrirla. Te faltan ${pend} por enviar (punto rojo).` : '✅ Has enviado todas. Si quieres revisar alguna, ábrela; si no, pulsa «Finalizar concurso».'}</p>
+      <div class="tasklist">${TASKS.map((t,i)=>`<button data-t="${i}"><span class="dot ${S.sent[i]!==null?'sent':''}"></span> ${i+1}. ${t.name}</button>`).join('')}</div>
+      <button class="finish" id="finish">Finalizar concurso</button>`;
+  } else if(S.screen==='tarea'){
+    const t=TASKS[S.cur], d=S.draft[S.cur], s=S.sent[S.cur];
+    h = `<div class="toolbar"><button id="tBack" aria-label="Volver a la lista de tareas" title="Volver a la lista">${icon('back')}</button><button id="tReset" aria-label="Resetear la tarea" title="Resetear">${icon('reset')}</button><button id="tSend" aria-label="Enviar la tarea" title="Enviar">${icon('send')}</button></div>
+      ${timerHTML()}
+      <div class="taskgrid"><div class="stmt"><strong>Tarea ${S.cur+1}: ${t.name}</strong>${t.stmt}</div>
+      <div><p style="font-weight:800;margin-bottom:10px">${t.q}</p><div class="opts">${t.opts.map((o,i)=>`<button aria-pressed="${d===i}" data-o="${i}">${o}</button>`).join('')}</div>
+      <p class="sentnote" style="margin-top:10px">${s===null?'Aún no has enviado esta tarea.':`Respuesta enviada: <strong>${t.opts[s]}</strong>${d!==s?' · has cambiado la respuesta: <strong>vuelve a enviar</strong> para que cuente.':''}`}</p></div></div>
+      <p class="coach">Elige una respuesta y pulsa <span class="ico" style="width:26px;height:26px">${icon('send')}</span> Enviar.</p>`;
+    if(S.modal==='enviada') h += `<div class="overlay"><div class="modal" role="dialog" aria-label="Tarea enviada"><div class="big">🦫</div><strong style="font-size:1.2rem">¡Tarea enviada!</strong>
+      <div class="row-b"><button id="mList" aria-label="Volver a la lista de tareas" title="Lista de tareas">${icon('list')}</button><button id="mClose" aria-label="Cerrar" title="Cerrar">${icon('x')}</button><button class="main" id="mNext" aria-label="Siguiente tarea" title="Siguiente tarea">${icon('next')}</button></div></div></div>`;
+    if(S.modal==='vacia') h += `<div class="overlay"><div class="modal"><strong>Primero elige una respuesta.</strong><button class="btn" id="mClose">Vale</button></div></div>`;
+  } else if(S.screen==='fin'){
+    const correct = TASKS.reduce((n,t,i)=>n+(S.sent[i]===t.ok?1:0),0);
+    h = `<div class="bluebar">Concurso de práctica · terminado</div>
+      <p class="coach">${S.timeUp?'⏰ Se acabó el tiempo: el concurso se cierra solo.':'✅ Has pulsado «Finalizar concurso».'} En el concurso real <strong>no verás aún tu puntuación</strong>: aparece cuando tu profe cierra el concurso. Aquí te la enseñamos para practicar.</p>
+      <div class="res">${TASKS.map((t,i)=>{const s=S.sent[i];return `<div><span>${i+1}. ${t.name}</span><span class="${s===null?'ko':(s===t.ok?'ok':'ko')}">${s===null?'Sin enviar':(s===t.ok?'✔ Correcta':'✘ Incorrecta')}</span></div>`;}).join('')}</div>
+      <p class="score" style="text-align:center">${correct} de ${TASKS.length} correctas</p>
+      ${S.sent.some(x=>x===null)?'<p class="warn">Las tareas sin enviar no cuentan, aunque tuvieras la respuesta marcada.</p>':''}
+      <button class="btn" id="again">Volver a practicar</button>`;
+  }
+  if(S.screen==='lista' && S.modal==='confirm'){
+    const pend = S.sent.filter(x=>x===null).length;
+    h += `<div class="overlay"><div class="modal" role="dialog"><strong>¿Seguro que quieres finalizar?</strong><p>${pend?`⚠️ Te quedan <strong>${pend}</strong> tarea(s) sin enviar.`:'Has enviado todas las tareas.'} Después no podrás cambiar nada.</p><div style="display:flex;gap:10px"><button class="btn ghost" id="cNo">Volver</button><button class="btn" id="cYes">Finalizar</button></div></div></div>`;
+  }
+  b.innerHTML = h;
+  bindSim();
+}
+function bindSim(){
+  const on=(id,f)=>{const e=$('#'+id); if(e) e.onclick=f;};
+  if(S.screen==='login'){
+    const doLogin=()=>{ const u=$('#u').value.trim(), p=$('#p').value;
+      if(u!==USER||p!==PASS){ S.err = u!==USER?'Usuario incorrecto. Míralo bien en la tira.':'Contraseña incorrecta. Cuidado con mayúsculas y minúsculas.'; simRender(); $('#u').value=u; return; }
+      S.screen='retos'; S.err=''; simRender(); };
+    on('login',doLogin);
+    ['u','p'].forEach(id=>$('#'+id).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();}));
+  }
+  on('openChallenge',()=>{ S.screen='lista'; startTimer(); simRender(); });
+  document.querySelectorAll('[data-t]').forEach(x=>x.onclick=()=>{ S.cur=+x.dataset.t; S.screen='tarea'; simRender(); });
+  on('finish',()=>{ S.modal='confirm'; simRender(); });
+  on('cNo',()=>{ S.modal=null; simRender(); });
+  on('cYes',()=>{ S.modal=null; clearInterval(S.tick); S.screen='fin'; simRender(); });
+  document.querySelectorAll('[data-o]').forEach(x=>x.onclick=()=>{ S.draft[S.cur]=+x.dataset.o; simRender(); });
+  on('tBack',()=>{ S.screen='lista'; simRender(); });
+  on('tReset',()=>{ S.draft[S.cur]=null; simRender(); });
+  on('tSend',()=>{ if(S.draft[S.cur]===null){ S.modal='vacia'; } else { S.sent[S.cur]=S.draft[S.cur]; S.modal='enviada'; } simRender(); });
+  on('mClose',()=>{ S.modal=null; simRender(); });
+  on('mList',()=>{ S.modal=null; S.screen='lista'; simRender(); });
+  on('mNext',()=>{ S.modal=null; if(S.cur<TASKS.length-1){ S.cur++; } else { S.screen='lista'; } simRender(); });
+  on('again',simInit);
+}
+$('#simReset').onclick = simInit;
+simInit();
+
+/* ---------- Test ---------- */
+const QUIZ = [
+  { q:'Envías la misma tarea tres veces con respuestas distintas. ¿Cuál se corrige?', o:['La primera que enviaste','La última que enviaste','La que más se repita','Ninguna: solo se puede enviar una vez'], ok:1, fb:'Se corrige siempre la última respuesta enviada.' },
+  { q:'¿Cómo puedes entrar en ViLLE?', o:['Con tu correo del instituto','Escaneando el QR y escribiendo tu contraseña, o con usuario y contraseña en ville.utu.fi','Con el usuario de un compañero','No hace falta entrar'], ok:1, fb:'Usa los datos de tu tira de papel: QR + contraseña, o usuario + contraseña.' },
+  { q:'Has pulsado «Finalizar concurso» sin querer. ¿Qué haces?', o:['Cierro el navegador y me voy','Creo otra cuenta','Aviso a mi profe, que puede reabrírmelo','Nada, ya no tiene arreglo'], ok:2, fb:'Tu profe puede cambiar tu estado y devolverte el tiempo.' },
+  { q:'¿Para qué sirve el botón de las dos flechas en círculo?', o:['Para enviar la tarea','Para resetear la tarea y empezarla de cero','Para pasar a la siguiente','Para finalizar el concurso'], ok:1, fb:'Es el botón Resetear: deja la tarea como al principio.' },
+  { q:'¿Cuándo verás tu puntuación final?', o:['Nada más pulsar cada tarea','En cuanto envío la primera tarea','Cuando mi profe cierra el concurso (o termina el plazo en todo el país)','Nunca'], ok:2, fb:'La puntuación aparece en tu página principal cuando se cierra el concurso.' },
+];
+const answers = QUIZ.map(()=>null);
+function renderQuiz(){
+  $('#quiz').innerHTML = QUIZ.map((x,i)=>`<div class="card q"><h3>${i+1}. ${x.q}</h3><div class="choices">${x.o.map((o,j)=>{
+    let c=''; if(answers[i]!==null){ if(j===x.ok) c='right'; else if(j===answers[i]) c='wrong'; }
+    return `<button class="${c}" data-q="${i}" data-j="${j}" ${answers[i]!==null?'disabled':''}>${o}</button>`;}).join('')}</div>
+    <p class="fb">${answers[i]===null?'':(answers[i]===x.ok?'<span class="ok">✔ ¡Correcto!</span> ':'<span class="ko">✘ No.</span> ')+(answers[i]===null?'':x.fb)}</p></div>`).join('');
+  const done=answers.filter(a=>a!==null).length, good=answers.filter((a,i)=>a===QUIZ[i].ok).length;
+  $('#quizScore').innerHTML = done===QUIZ.length ? `${good} / ${QUIZ.length} ${good===QUIZ.length?'🏆 ¡Listo para el concurso!':''} <button class="btn ghost" id="quizAgain" style="margin-left:10px">Repetir</button>` : '';
+  const a=$('#quizAgain'); if(a) a.onclick=()=>{ answers.fill(null); renderQuiz(); };
+}
+$('#quiz').addEventListener('click',e=>{ const b=e.target.closest('button[data-q]'); if(!b) return; answers[+b.dataset.q]=+b.dataset.j; renderQuiz(); });
+renderQuiz();
+
+/* ---------- Lista de comprobación ---------- */
+const CHECK = ['Tengo mi tira de papel con usuario y contraseña','He entrado en ViLLE y veo el concurso','Sé dónde está el temporizador','Sé enviar, resetear y volver a la lista','Sé que cuenta la última respuesta enviada','Revisaré que todas las tareas estén enviadas antes de finalizar'];
+const KEY='reto-bebras-check';
+let checked=[]; try{ checked=JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){}
+function renderCheck(){
+  $('#check').innerHTML = CHECK.map((c,i)=>`<label><input type="checkbox" data-c="${i}" ${checked.includes(i)?'checked':''}> ${c}</label>`).join('');
+  const n=checked.length; $('#checkBar').style.width=(100*n/CHECK.length)+'%';
+  $('#checkMsg').textContent = n===CHECK.length ? '🦫 ¡Todo listo! Mucha suerte en el reto.' : `${n} de ${CHECK.length}`;
+}
+$('#check').addEventListener('change',e=>{ const i=+e.target.dataset.c; checked = e.target.checked ? [...new Set([...checked,i])] : checked.filter(x=>x!==i); try{ localStorage.setItem(KEY,JSON.stringify(checked)); }catch(err){} renderCheck(); });
+renderCheck();
+</script>
+</body>
+</html>
